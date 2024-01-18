@@ -1,0 +1,282 @@
+#include "pch.h"
+#include "CPlayerScript.h"
+
+#include <Engine\CMeshRender.h>
+#include <Engine\CMaterial.h>
+
+#include <Engine\CRenderMgr.h>
+#include <Engine\CRigidbody.h>
+#include <Engine\CFSM.h>
+
+#include <Engine\CIdleState.h>
+#include <Engine\CWalkState.h>
+#include <Engine\CRollState.h>
+#include <Engine\CAttackState.h>
+CPlayerScript::CPlayerScript()
+	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
+	, m_fSpeed(100.f)
+	, m_iActive(1)
+	, m_pFSM(nullptr)
+{
+	AddScriptParam(SCRIPT_PARAM::FLOAT, &m_fSpeed, "Player Speed");
+	AddScriptParam(SCRIPT_PARAM::INT, &m_iActive, "Player Active");
+}
+
+CPlayerScript::~CPlayerScript()
+{
+	if (nullptr != m_pFSM)
+		delete m_pFSM;
+}
+
+void CPlayerScript::begin()
+{
+	//MeshRender()->GetDynamicMaterial(0);
+}
+
+void CPlayerScript::tick()
+{
+	if (m_iActive == 0)
+		return;
+
+	STATE_TYPE eType = m_pFSM->GetCurStateType();
+	if (eType != STATE_TYPE::ATTACK &&
+		eType != STATE_TYPE::ROLL)
+	{
+		rotate();
+	}
+
+	m_pFSM->final_tick();
+	//Vec3 vCurPos = Transform()->GetRelativePos();
+
+	//Vec3 vFoward = Transform()->GetRelativeDir(DIR_TYPE::FRONT);
+	//Vec3 vUp = Transform()->GetRelativeDir(DIR_TYPE::UP);
+	//Vec3 vRight = Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
+	//
+	//Vec3 vForce = Vec3::Zero;
+	//if (KEY_PRESSED(KEY::LSHIFT))
+	//{
+	//	m_fSpeed = 1600.f;
+	//}
+	//else
+	//{
+	//	m_fSpeed = 800.f;
+	//}
+	//
+	//if (KEY_PRESSED(KEY::W))
+	//{
+	//	vFoward *= m_fSpeed;
+	//	
+	//	vForce += vFoward;
+	//}
+	//
+	//else if (KEY_PRESSED(KEY::S))
+	//{
+	//	
+	//	vFoward *= m_fSpeed;
+	//	
+	//	vForce -= vFoward;
+	//
+	//}
+	//
+	//if (KEY_PRESSED(KEY::A))
+	//{
+	//	vRight *= m_fSpeed;
+	//	
+	//	vForce -= vRight;
+	//
+	//}
+	//
+	//else if (KEY_PRESSED(KEY::D))
+	//{
+	//	vRight *= m_fSpeed;
+	//	
+	//	vForce += vRight;
+	//}
+	//
+	//Rigidbody()->AddForce(vForce);
+	//Transform()->SetRelativePos(vCurPos);
+}
+
+void CPlayerScript::SetFSM(CFSM* _pFSM)
+{
+	m_pFSM = _pFSM;
+	m_pFSM->SetOwner(GetOwner());
+}
+
+void CPlayerScript::Initialize()
+{
+	CGameObject* pArtorias = GetOwner();
+	// ============
+	// FBX Loading
+	// ============	
+
+	vector<Ptr<CMeshData>> vecMeshData = {};
+	CGameObject* pObj = nullptr;
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\house.fbx");
+	//pMeshData = CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\house.mdat");
+	//pObj = pMeshData->Instantiate();
+	//pObj->SetName(L"House");
+
+	//vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Artorias4.fbx");
+
+	for (int i = 0; i < 16; ++i)
+	{
+		wstring strNum = std::to_wstring(i);
+		Ptr<CMeshData> pMeshData =
+			CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\Artorias4" + strNum + L".mdat");
+		//Ptr<CMeshData> pMeshData = pVecMeshData[i];
+
+		if (pMeshData != nullptr)
+		{
+			pObj = pMeshData->Instantiate();
+			pObj->SetName(L"Artorias4" + strNum);
+			pArtorias->AddChild(pObj);
+
+			pObj->Animator3D()->CreateAnimationF(L"Idle", 0, 69);
+			pObj->Animator3D()->CreateAnimationF(L"Walk_Front", 71, 130);
+			pObj->Animator3D()->CreateAnimationF(L"Walk_Back", 133, 191);
+			pObj->Animator3D()->CreateAnimationF(L"Walk_Left", 193, 252);
+			pObj->Animator3D()->CreateAnimationF(L"Walk_Right", 254, 313);
+			pObj->Animator3D()->CreateAnimationF(L"Run_Front", 315, 334);
+			pObj->Animator3D()->CreateAnimationF(L"Roll_Front", 336, 376);
+			pObj->Animator3D()->CreateAnimationF(L"Roll_Back", 377, 417);
+			pObj->Animator3D()->CreateAnimationF(L"Roll_Left", 419, 458);
+			pObj->Animator3D()->CreateAnimationF(L"Roll_Right", 460, 499);
+			pObj->Animator3D()->CreateAnimationF(L"Attack0", 501, 599);
+			pObj->Animator3D()->CreateAnimationF(L"Attack1", 601, 690);
+			pObj->Animator3D()->CreateAnimationF(L"Attack2", 693, 792);
+			pObj->Animator3D()->CreateAnimationF(L"Attack3", 794, 879);
+			//pObj->Animator3D()->CreateAnimationF(L"Attack4", 882, 981);
+			pObj->Animator3D()->CreateAnimationF(L"Attack5", 982, 1097);
+			pObj->Animator3D()->CreateAnimationF(L"Jump", 1099, 1212);
+			pObj->Animator3D()->CreateAnimationF(L"Attack6", 1214, 1287);
+			pObj->Animator3D()->CreateAnimationF(L"Attack7", 1290, 1363);
+			pObj->Animator3D()->CreateAnimationF(L"Dead", 1465, 1685);
+
+			pObj->Animator3D()->Play(L"Idle", true);
+			//pObj->Animator3D()->StartEvent() = std::bind(std::bind(&SkillLuck::create_luck, this)
+		}
+	}
+	//SpawnGameObject(pAritorias, Vec3(0.f, 0.f, 100.f), L"Default");
+	Transform()->SetRelativeScale(2.f, 2.f, 2.f);
+	Transform()->SetRelativeRot(-XM_PI / 2.f, 0.f, 0.f);
+
+	m_pFSM = new CFSM();
+	m_pFSM->SetOwner(pArtorias);
+
+	CIdleState* pIdle = new CIdleState();
+	pIdle->SetName(L"Idle");
+	m_pFSM->AddState(STATE_TYPE::IDLE, pIdle);
+
+	CWalkState* pWalk = new CWalkState();
+	pWalk->SetName(L"Walk_");
+	m_pFSM->AddState(STATE_TYPE::WALK, pWalk);
+
+	CRollState* pRoll = new CRollState;
+	pRoll->SetName(L"Roll_");
+	m_pFSM->AddState(STATE_TYPE::ROLL, pRoll);
+
+	set_attack();
+
+	m_pFSM->SetState(STATE_TYPE::IDLE);
+	ChanageState(m_pFSM, STATE_TYPE::IDLE);
+}
+
+void CPlayerScript::Shoot()
+{
+	// 미사일 프리팹 참조
+	Ptr<CPrefab> pMissilePrefab = CResMgr::GetInst()->FindRes<CPrefab>(L"MissilePrefab");
+	Vec3 vMissilePos = Transform()->GetRelativePos() + Vec3(0.f, 0.5f, 0.f) * Transform()->GetRelativeScale();
+	CGameObject* pCloneMissile = pMissilePrefab->Instantiate();
+
+	// 레벨에 추가
+	SpawnGameObject(pCloneMissile, vMissilePos, L"PlayerProjectile");
+}
+
+void CPlayerScript::set_attack()
+{
+	CAttackState* pAttack = new CAttackState;
+	pAttack->SetName(L"Attack");
+	m_pFSM->AddState(STATE_TYPE::ATTACK, pAttack);
+
+	//Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+
+	tAttackInfo attack0 = {};
+	attack0.fForce = 10.f;
+	attack0.iAttackNum = 0;
+	pAttack->AddAttack(attack0);
+
+	tAttackInfo attack1 = {};
+	attack1.fForce = 10.f;
+	attack1.iAttackNum = 1;
+	pAttack->AddAttack(attack1);
+
+	tAttackInfo attack2 = {};
+	attack2.iAttackNum = 2;
+	attack2.fForce = 10.f;
+	pAttack->AddAttack(attack2);
+
+	tAttackInfo attack3 = {};
+	attack3.fForce = 10.f;
+	attack3.iAttackNum = 3;
+	pAttack->AddAttack(attack3);
+
+	tAttackInfo attack4 = {};
+	attack4.fForce = 10.f;
+	attack4.iAttackNum = 4;
+	pAttack->AddAttack(attack4);
+
+	tAttackInfo attack5 = {};
+	attack5.fForce = 10.f;
+	attack5.iAttackNum = 5;
+	pAttack->AddAttack(attack5);
+
+	tAttackInfo attack6 = {};
+	attack6.fForce = 10.f;
+	attack6.iAttackNum = 6;
+	pAttack->AddAttack(attack6);
+
+	tAttackInfo attack7 = {};
+	attack7.fForce = 10.f;
+	attack7.iAttackNum = 7;
+	pAttack->AddAttack(attack7);
+}
+
+void CPlayerScript::rotate()
+{
+	Vec3 vRot = Transform()->GetRelativeRot();
+	Vec2 vMouseDir = CKeyMgr::GetInst()->GetMouseDir();
+	vRot.y += (DT / 2.f * vMouseDir.x);
+
+	if (vRot.y != 0.f)
+		int a = 10;
+
+	Vec3 vNewRot = {};
+	vNewRot.y = vRot.y;
+	vNewRot.x = -XM_PI / 2.f;
+
+	Transform()->SetRelativeRot(vNewRot);
+
+}
+
+
+
+void CPlayerScript::BeginOverlap(CCollider2D* _Other)
+{
+
+}
+
+
+
+
+
+void CPlayerScript::SaveToLevelFile(FILE* _File)
+{
+	fwrite(&m_fSpeed, sizeof(float), 1, _File);
+}
+
+void CPlayerScript::LoadFromLevelFile(FILE* _File)
+{
+	fread(&m_fSpeed, sizeof(float), 1, _File);
+}

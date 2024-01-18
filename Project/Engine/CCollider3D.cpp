@@ -1,0 +1,76 @@
+#include "pch.h"
+#include "CCollider3D.h"
+
+#include "CTransform.h"
+CCollider3D::CCollider3D() :
+	CComponent(COMPONENT_TYPE::COLLIDER3D)
+	, m_Shape(COLLIDER3D_TYPE::CUBE)
+	, m_bAbsolute(false)
+	, m_iCollisionCount(0)
+	, m_matCollider3D(Matrix::Identity)
+	, m_vOffsetScale(Vec3::One)
+{
+	SetName(L"Collider3D");
+}
+
+CCollider3D::~CCollider3D()
+{
+
+}
+
+void CCollider3D::finaltick()
+{
+	// 충돌 회수가 음수인 경우
+	assert(0 <= m_iCollisionCount);
+
+	m_matCollider3D = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
+	m_matCollider3D *= XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, m_vOffsetPos.z);
+
+	const Matrix& matWorld = Transform()->GetWorldMat();
+
+	if (m_bAbsolute)
+	{
+		Matrix matParentScaleInv = XMMatrixInverse(nullptr, Transform()->GetWorldScaleMat());
+		m_matCollider3D = m_matCollider3D * matParentScaleInv * matWorld;
+	}
+	else
+	{
+		// 충돌체 월드 * 오브젝트 월드
+		m_matCollider3D *= matWorld;
+	}
+
+	// DebugShape 요청
+	Vec4 vColor = Vec4(0.f, 1.f, 0.f, 1.f);
+	if (0 < m_iCollisionCount)
+		vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+
+	if (COLLIDER3D_TYPE::CUBE == m_Shape)
+		DrawDebugCube(m_matCollider3D, vColor, 0.f, true);
+	else
+		DrawDebugCircle(m_matCollider3D, vColor, 0.f);
+}
+
+void CCollider3D::BeginOverlap(CCollider3D* _Other)
+{
+	int a = 10;
+}
+
+void CCollider3D::OnOverlap(CCollider3D* _Other)
+{
+
+}
+
+void CCollider3D::EndOverlap(CCollider3D* _Other)
+{
+
+}
+
+void CCollider3D::SaveToLevelFile(FILE* _File)
+{
+}
+
+void CCollider3D::LoadFromLevelFile(FILE* _File)
+{
+}
+
+

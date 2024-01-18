@@ -1,0 +1,79 @@
+1. Deferred Rendering
+  - 광원 처리(Directional Light, Point Light, Spot Light)
+
+2. 태양계 구현하기(과제)
+ - 실행파일 형태로 제출
+
+
+3. Frustum Culling
+
+
+4. 그림자
+
+
+5. Tessellation( Hull Shader, Domain Shader )
+
+
+
+// 리소스 구하기
+3d Max
+5. FBX Loading
+  - CMesh
+  - CMaterial
+  - CTexture 
+  - KeyFrame Bone Matrix
+
+- Grid Shader
+
+
+6. 3DAnimation
+  - Skinning Compute Shader
+  - Bone Animation
+  - Animation Weight Blending
+
+
+7. LandScape (지형)
+   - Tessellation( Hull Shader, Domain Shader )
+  - 지형, 높이맵
+   - 브러쉬 적용, 가중치 Splating 
+  - CTexture 개선 : 밉레벨 지원
+
+8. Instancing
+  - Draw Call 줄이기
+
+
+
+
+
+PostProcess
+Depth Fog
+Distortion
+Cartoon Shader
+Motion Blur - Camera, Animation
+
+Weapon Trail - Component화
+	       시작, 끝점 설정, 매 프레임마다 위치 기록, 전체를 하나의 메쉬로 연결
+
+Camera 효과
+FOV, Camera Shake
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
