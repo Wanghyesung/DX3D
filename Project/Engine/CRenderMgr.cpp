@@ -50,7 +50,7 @@ void CRenderMgr::render()
     ClearMRT();
 
     // Dynamic ShadowMap
-    //render_shadowmap();
+    render_shadowmap();
 
     // 렌더 함수 호출
     (this->*RENDER_FUNC)();

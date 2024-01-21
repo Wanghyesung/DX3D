@@ -223,6 +223,9 @@
     <ClInclude Include="CMotionBlur.h">
       <Filter>Source\06. Component\10. MotionBlur</Filter>
     </ClInclude>
+    <ClInclude Include="CWeightMapShader.h">
+      <Filter>Source\08. ShaderCode\Compute\LandScape\WeightMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -441,6 +444,9 @@
     <ClCompile Include="CMotionBlur.cpp">
       <Filter>Source\06. Component\10. MotionBlur</Filter>
     </ClCompile>
+    <ClCompile Include="CWeightMapShader.cpp">
+      <Filter>Source\08. ShaderCode\Compute\LandScape\WeightMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -650,6 +656,9 @@
     <Filter Include="Source\06. Component\10. MotionBlur">
       <UniqueIdentifier>{25e754e4-cfc1-4963-9cf3-c52f62980948}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\08. ShaderCode\Compute\LandScape\WeightMap">
+      <UniqueIdentifier>{7a844757-0c4f-4b15-a5ea-0edf6a3333ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -666,9 +675,6 @@
     </FxCompile>
     <FxCompile Include="test.fx">
       <Filter>Source\08. ShaderCode</Filter>
-    </FxCompile>
-    <FxCompile Include="func.fx">
-      <Filter>Source\08. ShaderCode\Util</Filter>
     </FxCompile>
     <FxCompile Include="value.fx">
       <Filter>Source\08. ShaderCode\Util</Filter>
@@ -718,13 +724,19 @@
     <FxCompile Include="heightmap.fx">
       <Filter>Source\08. ShaderCode\Compute\LandScape\HeightMap</Filter>
     </FxCompile>
-    <FxCompile Include="raycast.fx">
-      <Filter>Source\08. ShaderCode\Compute\LandScape\Raycast</Filter>
-    </FxCompile>
     <FxCompile Include="motionblur.fx">
       <Filter>Source\08. ShaderCode\Blur</Filter>
     </FxCompile>
     <FxCompile Include="middle.fx">
+      <Filter>Source\08. ShaderCode\Render\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="raycast.fx">
+      <Filter>Source\08. ShaderCode\Compute\LandScape\Raycast</Filter>
+    </FxCompile>
+    <FxCompile Include="func.fx">
+      <Filter>Source</Filter>
+    </FxCompile>
+    <FxCompile Include="weightmap.fx">
       <Filter>Source\08. ShaderCode\Render\3D</Filter>
     </FxCompile>
   </ItemGroup>

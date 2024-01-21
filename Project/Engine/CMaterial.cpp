@@ -193,15 +193,18 @@ int CMaterial::Load(const wstring& _strFilePath)
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
 
 	// Entity
+	//메테리얼 이름 가져오기
 	wstring strName;
 	LoadWString(strName, pFile);
 	SetName(strName);
 
+	//리소스 키 값
 	// Res
 	wstring strKey;
 	LoadWString(strKey, pFile);
 	
-	// Shader
+	//
+	// Shader셋팅하기
 	LoadResRef(m_pShader, pFile);
 
 	// Constant

@@ -156,7 +156,10 @@ void CGameObject::render()
 void CGameObject::render_shadowmap()
 {
 	if (nullptr != m_RenderCom)
+	{
 		m_RenderCom->render_shadowmap();
+	}
+		
 }
 
 void CGameObject::AddComponent(CComponent* _Component)

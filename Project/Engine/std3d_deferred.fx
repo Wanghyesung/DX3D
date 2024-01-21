@@ -15,7 +15,7 @@ struct VS_IN
     
     //»À °¡ÁßÄ¡
     float4 vWeights : BLENDWEIGHT;
-    //
+    //»À ÀÎµ¦½º
     float4 vIndices : BLENDINDICES;
     
 };

@@ -60,17 +60,18 @@ void CS_Raycast(int3 _iThreadID : SV_DispatchThreadID)
     for (int i = 0; i < 3; ++i)
     {
         //몇번째 패치인지 확인 후 uv값 가져오기
-        float2 uv = float2(saturate(vPos[i].x / (float)FACE_X), saturate(1.f - vPos[i].z / (float)FACE_Z));
+        float2 uv = float2(saturate(vPos[i].x / (float) FACE_X), saturate(1.f - vPos[i].z / (float) FACE_Z));
+        //해당 지점의 높이값 추출
         vPos[i].y = HEIGHT_MAP.SampleLevel(g_sam_0, uv, 0).x;
     }
 
     float3 vCrossPoint = (float3) 0.f;
     float fDist = 0.f;
 
-    //내 레이와 충돌했다면
+    //패치와 내 레이와 충돌했다면 거리값과 겹치는 지점을 가져옴
     if (IntersectsLay(vPos, CAM_POS.xyz, CAM_DIR.xyz, vCrossPoint, fDist))
     {
-        OUTPUT[0].vUV = float2(saturate(vCrossPoint.x / (float)FACE_X), saturate(1.f - vCrossPoint.z / (float)FACE_Z));
+        OUTPUT[0].vUV = float2(saturate(vCrossPoint.x / (float) FACE_X), saturate(1.f - vCrossPoint.z / (float) FACE_Z));
         OUTPUT[0].fDist = fDist;
         OUTPUT[0].success = 1;
     }

@@ -118,15 +118,16 @@ void CPlayerScript::Initialize()
 	//pObj = pMeshData->Instantiate();
 	//pObj->SetName(L"House");
 
-	//vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Artorias4.fbx");
+	vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Artorias4.fbx");
 
-	for (int i = 0; i < 16; ++i)
+	for (int i = 0; i < pVecMeshData.size(); ++i)
 	{
 		wstring strNum = std::to_wstring(i);
-		Ptr<CMeshData> pMeshData =
-			CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\Artorias4" + strNum + L".mdat");
+		//Ptr<CMeshData> pMeshData =
+		//	CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\Artorias4" + strNum + L".mdat");
 		//Ptr<CMeshData> pMeshData = pVecMeshData[i];
 
+		Ptr<CMeshData> pMeshData = pVecMeshData[i];
 		if (pMeshData != nullptr)
 		{
 			pObj = pMeshData->Instantiate();

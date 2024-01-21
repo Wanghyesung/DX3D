@@ -3,7 +3,11 @@
 
 #include "CResMgr.h"
 #include "CTransform.h"
-
+#include "CAnimator3D.h"
+#include "CStructuredBuffer.h"
+#include "CConstBuffer.h"
+#include "CDevice.h"
+#include "struct.h"
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
 	, m_fBounding(500.f)
@@ -18,14 +22,27 @@ CRenderComponent::~CRenderComponent()
 
 void CRenderComponent::render_shadowmap()
 {
+	Transform()->UpdateData();
+	
+	//내 재질이 아니라 그림자 전용 재질로 렌더링
 	Ptr<CMaterial> pShadowMapMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"ShadowMapMtrl");
 
-
-	Transform()->UpdateData();
+	if (Animator3D())
+	{
+		pShadowMapMtrl->SetAnim3D(true);
+		//pShadowMapMtrl->SetBoneCount();
+		Animator3D()->GetFinalBoneMat()->UpdateData(30, PIPELINE_STAGE::PS_VERTEX);
+	}
 
 	pShadowMapMtrl->UpdateData();
-
 	GetMesh()->render(0);
+
+	if (Animator3D())
+	{
+		//clear작업
+		pShadowMapMtrl->SetAnim3D(false);
+		Animator3D()->GetFinalBoneMat()->Clear();
+	}
 }
 
 

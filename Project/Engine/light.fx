@@ -7,6 +7,11 @@
 struct VS_IN
 {
     float3 vPos : POSITION;
+    
+     //뼈 가중치
+    float4 vWeights : BLENDWEIGHT;
+    //뼈 인덱스
+    float4 vIndices : BLENDINDICES;
 };
 
 struct VS_OUT
@@ -85,8 +90,8 @@ PS_OUT PS_DirLightShader(VS_OUT _in)
     // 그림자 판정
     float fShadowPow = 0.f;
     float3 vWorldPos = mul(float4(vViewPos, 1.f), g_matViewInv).xyz;
-    float4 vLightProj = mul(float4(vWorldPos, 1.f), LightVP);
-    float2 vShadowMapUV = vLightProj.xy / vLightProj.w;
+    float4 vLightProj = mul(float4(vWorldPos, 1.f), LightVP);//빛쪽 투영좌표계로 좌표계 변환
+    float2 vShadowMapUV = vLightProj.xy / vLightProj.w; // -> -1~1 ndc좌표계
     vShadowMapUV.x = vShadowMapUV.x / 2.f + 0.5f;
     vShadowMapUV.y = (1.f - vShadowMapUV.y / 2.f) - 0.5f;
     
@@ -102,7 +107,7 @@ PS_OUT PS_DirLightShader(VS_OUT _in)
         float fDepth = vLightProj.z / vLightProj.w;
         float fLightDepth = ShadowMapTargetTex.Sample(g_sam_1, vShadowMapUV);
     
-        if (fLightDepth + 0.002f <= fDepth)
+        if (fLightDepth + 0.0002f <= fDepth)
         {
             // 그림자
             fShadowPow = 0.8f;
@@ -245,8 +250,8 @@ float4 PS_MergeShader(VS_OUT _in) : SV_Target
     float fShadowPow = ShadowTargetTex.Sample(g_sam_0, vScreenUV).r;
     
     
-    vOutColor.xyz = vColor.xyz * vDiffuse.xyz + // * (1.f - fShadowPow) +
-                    (vSpecular.xyz * vColor.a) + //* (1.f - fShadowPow) +
+    vOutColor.xyz = vColor.xyz * vDiffuse.xyz * (1.f - fShadowPow) +
+                    (vSpecular.xyz * vColor.a)* (1.f - fShadowPow) +
                     vEmissive.xyz;
     
     //vColor.a = 0.f;
@@ -266,8 +271,15 @@ VS_SHADOW_OUT VS_ShadowMap(VS_IN _in)
     
     // 사용하는 메쉬가 RectMesh(로컬 스페이스에서 반지름 0.5 짜리 정사각형)
     // 따라서 2배로 키워서 화면 전체가 픽셀쉐이더가 호출될 수 있게 한다.
+
+    //애니메이션이 들어있다면
+    if(g_iAnim)
+    {
+        AnimationSkinning(_in.vPos, _in.vWeights, _in.vIndices, 0);
+    }
+    
     output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
-        
+    
     output.vProjPos = output.vPosition;
     output.vProjPos.xyz /= output.vProjPos.w;
             

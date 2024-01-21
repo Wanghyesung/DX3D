@@ -162,6 +162,7 @@ void CreateTestLevel()
 	pMainCam->Camera()->SetLayerMaskAll(true);	// 모든 레이어 체크
 	pMainCam->Camera()->SetLayerMask((int)LAYER_TYPE::UI, false);// UI Layer 는 렌더링하지 않는다.
 
+
 	SpawnGameObject(pMainCam, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Camera);
 
 	// UI cameara
@@ -191,6 +192,10 @@ void CreateTestLevel()
 	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
 
 	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), 0);
+
+
+
+
 
 	//pObject = new CGameObject;
 	//pObject->SetName(L"Decal");

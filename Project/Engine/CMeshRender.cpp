@@ -3,6 +3,7 @@
 
 #include "CTransform.h"
 #include "CAnimator2D.h"
+#include "CAnimator3D.h"
 
 CMeshRender::CMeshRender()
 	: CRenderComponent(COMPONENT_TYPE::MESHRENDER)		
@@ -67,4 +68,5 @@ void CMeshRender::render()
 
 	if (Animator3D())
 		Animator3D()->ClearData();
+	//다음 프레임 그림자 렌더링에서 지우기
 }

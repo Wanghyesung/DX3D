@@ -100,9 +100,10 @@ void CCamera::CalRay()
 
 	// view space 에서의 방향
 	//비율 해당 위치를 전체 크기에 비율값을 구함 
-	// 값을 깊이? z31 , 32로 나눔 
-	m_ray.vDir.x = ((((vMousePos.x - tVP.TopLeftX) * 2.f / tVP.Width) - 1.f) - m_matProj._31) / m_matProj._11;
-	m_ray.vDir.y = (-(((vMousePos.y - tVP.TopLeftY) * 2.f / tVP.Height) - 1.f) - m_matProj._32) / m_matProj._22;
+	//화면 좌표를 투영 좌표로 변환
+	//투영좌표를 m_matProj.11 , 22(투영행렬은 11, 22에만 영향을 끼치기 때문에 이 성분만 나누면 view좌표가 나옴)
+	m_ray.vDir.x = ((((vMousePos.x - tVP.TopLeftX) * 2.f / tVP.Width) - 1.f)/* - m_matProj._31*/) / m_matProj._11;
+	m_ray.vDir.y = (-(((vMousePos.y - tVP.TopLeftY) * 2.f / tVP.Height) - 1.f) /*- m_matProj._32*/) / m_matProj._22;
 	m_ray.vDir.z = 1.f;
 
 	// world space 에서의 방향

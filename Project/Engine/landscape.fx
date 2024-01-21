@@ -10,9 +10,19 @@
 // LandScape
 #define FaceX           g_int_0
 #define FaceZ           g_int_1
+
 #define ColorTexture    g_tex_0
 #define NormalTexture   g_tex_1
 #define HeightMap       g_tex_2
+
+#define TileCount       g_float_1 //타일 배열 개수
+#define WeightMapResolution g_vec2_1 //가중치 버퍼 해상도
+
+#define  CamWorldPos    g_vec4_0.xyz
+
+#define TileTexArr g_arrtex_0 //tile 배열 텍스쳐
+StructuredBuffer<float4> WEIGH_MAP : register(t17);
+
 // ========================
 struct VS_IN
 {
@@ -24,6 +34,8 @@ struct VS_OUT
 {
     float3 vLocalPos : POSITION;
     float2 vUV : TEXCOORD;
+    
+    float3 vWorldPos : POSITION1;
 };
 
 VS_OUT VS_LandScape(VS_IN _in)
@@ -32,6 +44,8 @@ VS_OUT VS_LandScape(VS_IN _in)
 
     output.vLocalPos = _in.vPos;
     output.vUV = _in.vUV;
+
+    output.vWorldPos = mul(float4(_in.vPos, 1.f), g_matWorld).xyz;
 
     return output;
 }
@@ -54,11 +68,23 @@ PatchOutput PatchConstFunc(InputPatch<VS_OUT, 3> _input
     , uint PatchID : SV_PrimitiveID)
 {
     PatchOutput output = (PatchOutput)0.f;
+    //생성된 패치 중간점 위치를 잡는다
+    float3 vUpDown = (_input[1].vWorldPos + _input[2].vWorldPos) / 2.f;
+    float3 vLeftRight = (_input[0].vWorldPos + _input[2].vWorldPos) / 2.f;
+    float3 vSlide = (_input[0].vWorldPos + _input[1].vWorldPos) / 2.f;
+    float3 vMid = (_input[0].vWorldPos + _input[1].vWorldPos + _input[2].vWorldPos) / 3.f;
 
-    output.Edges[0] = 16;
-    output.Edges[1] = 16;
-    output.Edges[2] = 16;
-    output.Inside = 16;
+    float3 vCamWorldPos = CamWorldPos;
+    vCamWorldPos.y = 0.f;
+    
+    //카메라를 기준으로 가까워지면 분할이 많아지게 비율을 가져옴
+    output.Edges[0] = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vUpDown), 1, 4, 1000.f, 4000.f));
+    output.Edges[1] = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vLeftRight), 1, 4, 1000.f, 4000.f));
+    output.Edges[2] = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vSlide), 1, 4, 1000.f, 4000.f));
+    output.Inside = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vMid), 1, 4, 1000.f, 4000.f));
+
+    return output;
+   
 
     return output;
 }
@@ -92,7 +118,8 @@ struct DS_OUT
 {
     float4 vPosition : SV_Position;
     float2 vUV : TEXCOORD;
-
+    float2 vFullUV : TEXCOORD1;
+    
     float3 vViewPos : POSITION;
     float3 vViewNormal : NORMAL;
     float3 vViewTangent : TANGENT;
@@ -142,7 +169,8 @@ DS_OUT DS_LandScape(const OutputPatch<HS_OUT, 3> _origin
     // 투영좌표계
     output.vPosition = mul(float4(vLocalPos, 1.f), g_matWVP);
     output.vUV = vUV;
-
+    output.vFullUV = vHeightMapUV;
+    
     //vNormal = float3(0.f, 1.f, 0.f);
     
     output.vViewPos = mul(float4(vLocalPos, 1.f), g_matWV).xyz;
@@ -167,11 +195,57 @@ PS_OUT PS_LandScape(DS_OUT _in)
 {
     PS_OUT output = (PS_OUT)0.f;
 
+    float3 vViewNormal = _in.vViewNormal;
+    
+    //타일 배열텍스쳐가 있으면    
     output.vColor = float4(0.8f, 0.8f, 0.8f, 1.f);
-    output.vNormal = float4(_in.vViewNormal, 1.f);
+    
+    if(g_btexarr_0)
+    {
+        float2 derivX = ddx(_in.vUV); //인접픽셀과 X축 편민분값을 구한다
+        float2 derivY = ddy(_in.vUV);
+    
+        //타일 색상
+        int2 iWightIdx = (int2) (_in.vFullUV * WeightMapResolution);
+        float4 vWeight = WEIGH_MAP[iWightIdx.y * (int) WeightMapResolution.x + iWightIdx.x];
+        //123 색상 텍스쳐 , 456 노말
+        float4 vColor = (float4) 0.4f;
+        
+        int iMaxWeightIdx = -1;
+        float fMaxWeight = 0.f;
+        
+        for (int i = 0; i < TileCount; ++i)
+        {
+            //거리에 따라서 텍스쳐레벨을 결정함 벌수록 높은 레벨
+            //내 텍스쳐 i번째의 색으로 가중치를 곱한다
+            vColor += TileTexArr.SampleGrad(g_sam_0, float3(_in.vUV, i), derivX, derivY) * vWeight[i];
+            //vColor += TileTexArr.SampleLevel(g_sam_0, float3(_in.vUV, i), 0) * vWeight[i];
+
+            //노말은 가중치중에 가장 높은 텍스쳐를 고른다
+            if(fMaxWeight < vWeight[i])
+            {
+                fMaxWeight = vWeight[i];
+                iMaxWeightIdx = i;
+            }
+        }
+        output.vColor = float4(vColor.rgb, 1.f);
+        
+        //타일 노말
+        if(-1 != iMaxWeightIdx)
+        {
+            float3 vTangentSpaceNormal = TileTexArr.SampleGrad(g_sam_0, float3(_in.vUV, iMaxWeightIdx + TileCount), derivX, derivY).xyz;
+            //float3 vTangentSpaceNormal = TileTexArr.SampleLevel(g_sam_0, float3(_in.vUV, iMaxWeightIdx + TileCount), 0).xyz;
+            vTangentSpaceNormal = vTangentSpaceNormal * 2.f - 1.f;
+
+            float3x3 matTBN = { _in.vViewTangent, _in.vViewBinormal, _in.vViewNormal };
+            vViewNormal = normalize(mul(vTangentSpaceNormal, matTBN));
+        }
+    }
+    
+    output.vNormal = float4(vViewNormal, 1.f);
     output.vPosition = float4(_in.vViewPos, 1.f);
-    output.vEmissive;
     output.vData = float4(1.f, 0.f, 0.f, 1.f);
+    output.vEmissive;
 
     return output;
 }

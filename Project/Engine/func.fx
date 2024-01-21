@@ -4,7 +4,7 @@
 #include "value.fx"
 
 void CalcLight2D(float3 _vWorldPos, inout tLightColor _Light)
-{       
+{
     for (uint i = 0; i < g_Light2DCount; ++i)
     {
         if (g_Light2DBuffer[i].LightType == 0)
@@ -36,7 +36,7 @@ void CalcLight2D(float3 _vWorldPos, float3 _vWorldDir, inout tLightColor _Light)
         if (g_Light2DBuffer[i].LightType == 0)
         {
             float fDiffusePow = saturate(dot(-g_Light2DBuffer[i].vWorldDir.xyz, _vWorldDir));
-            _Light.vDiffuse.rgb += g_Light2DBuffer[i].Color.vDiffuse.rgb * fDiffusePow;                        
+            _Light.vDiffuse.rgb += g_Light2DBuffer[i].Color.vDiffuse.rgb * fDiffusePow;
             _Light.vAmbient.rgb += g_Light2DBuffer[i].Color.vAmbient.rgb;
         }
         else if (g_Light2DBuffer[i].LightType == 1)
@@ -99,7 +99,7 @@ void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLi
         
         
         // 포인트 라이트로부터 거리체크
-        float fDist = distance(_vViewPos, vLightViewPos);            
+        float fDist = distance(_vViewPos, vLightViewPos);
         fDistPow = saturate(cos((fDist / LightInfo.Radius) * (PI / 2.f)));
                                
         // ViewSpace 에서의 노말벡터와 광원의 방향을 내적 (램버트 코사인 법칙)    
@@ -123,7 +123,7 @@ void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLi
     }
       
     // 결과 전달하기
-    _Light.vDiffuse += LightInfo.Color.vDiffuse * fLightPow; 
+    _Light.vDiffuse += LightInfo.Color.vDiffuse * fLightPow;
     _Light.vAmbient += LightInfo.Color.vAmbient;
     _SpecPow += fSpecPow;
 }
@@ -133,58 +133,58 @@ void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLi
 // ======
 static float GaussianFilter[5][5] =
 {
-    0.003f,  0.0133f, 0.0219f, 0.0133f, 0.003f,
+    0.003f, 0.0133f, 0.0219f, 0.0133f, 0.003f,
     0.0133f, 0.0596f, 0.0983f, 0.0596f, 0.0133f,
     0.0219f, 0.0983f, 0.1621f, 0.0983f, 0.0219f,
     0.0133f, 0.0596f, 0.0983f, 0.0596f, 0.0133f,
-    0.003f,  0.0133f, 0.0219f, 0.0133f, 0.003f,
+    0.003f, 0.0133f, 0.0219f, 0.0133f, 0.003f,
 };
 
 void GaussianSample(in Texture2D _NoiseTex, float2 _vResolution, float _NomalizedThreadID, out float3 _vOut)
 {
-    float2 vUV = float2(_NomalizedThreadID, 0.5f);       
+    float2 vUV = float2(_NomalizedThreadID, 0.5f);
     
     vUV.x += g_AccTime * 0.5f;
     
     // sin 그래프로 텍스쳐의 샘플링 위치 UV 를 계산
-    vUV.y -= (sin((_NomalizedThreadID - (g_AccTime/*그래프 우측 이동 속도*/)) * 2.f * 3.1415926535f * 10.f/*반복주기*/) / 2.f);
+    vUV.y -= (sin((_NomalizedThreadID - (g_AccTime /*그래프 우측 이동 속도*/)) * 2.f * 3.1415926535f * 10.f /*반복주기*/) / 2.f);
     
-    if( 1.f < vUV.x)
+    if (1.f < vUV.x)
         vUV.x = frac(vUV.x);
-    else if(vUV.x < 0.f)
+    else if (vUV.x < 0.f)
         vUV.x = 1.f + frac(vUV.x);
     
-    if( 1.f < vUV.y)
+    if (1.f < vUV.y)
         vUV.y = frac(vUV.y);
     else if (vUV.y < 0.f)
         vUV.y = 1.f + frac(vUV.y);
         
-    int2 pixel = vUV * _vResolution;           
+    int2 pixel = vUV * _vResolution;
     int2 offset = int2(-2, -2);
-    float3 vOut = (float3) 0.f;    
+    float3 vOut = (float3) 0.f;
     
     for (int i = 0; i < 5; ++i)
     {
         for (int j = 0; j < 5; ++j)
-        {            
+        {
             vOut += _NoiseTex[pixel + offset + int2(j, i)].xyz * GaussianFilter[i][j];
         }
-    }        
+    }
     
-    _vOut = vOut;    
+    _vOut = vOut;
 }
 
 
 matrix GetBoneMat(int _iBoneIdx, int _iRowIdx)
 {
+    //열(row) = 0
     return g_arrBoneMat[(g_iBoneCount * _iRowIdx) + _iBoneIdx];
 }
 
 void Skinning(inout float3 _vPos, inout float3 _vTangent, inout float3 _vBinormal, inout float3 _vNormal
-    , inout float4 _vWeight, inout float4 _vIndices
-    , int _iRowIdx)
+    , inout float4 _vWeight, inout float4 _vIndices , int _iRowIdx)
 {
-    tSkinningInfo info = (tSkinningInfo)0.f;
+    tSkinningInfo info = (tSkinningInfo) 0.f;
 
     if (_iRowIdx == -1)
         return;
@@ -194,7 +194,7 @@ void Skinning(inout float3 _vPos, inout float3 _vTangent, inout float3 _vBinorma
         if (0.f == _vWeight[i])
             continue;
 
-        matrix matBone = GetBoneMat((int)_vIndices[i], _iRowIdx);
+        matrix matBone = GetBoneMat((int) _vIndices[i], _iRowIdx);
 
         info.vPos += (mul(float4(_vPos, 1.f), matBone) * _vWeight[i]).xyz;
         info.vTangent += (mul(float4(_vTangent, 0.f), matBone) * _vWeight[i]).xyz;
@@ -208,32 +208,72 @@ void Skinning(inout float3 _vPos, inout float3 _vTangent, inout float3 _vBinorma
     _vNormal = normalize(info.vNormal);
 }
 
+void AnimationSkinning(inout float3 _vPos, inout float4 _vWeight, inout float4 _vIndices, int _iRowIdx)
+{
+    tSkinningInfo info = (tSkinningInfo) 0.f;
+
+    if (_iRowIdx == -1)
+        return;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (0.f == _vWeight[i])
+            continue;
+
+        matrix matBone = GetBoneMat((int) _vIndices[i], _iRowIdx);
+
+        info.vPos += (mul(float4(_vPos, 1.f), matBone) * _vWeight[i]).xyz;
+    }
+
+    _vPos = info.vPos;
+}
 
 int IntersectsLay(float3 _vertices[3], float3 _vStart, float3 _vDir, out float3 _vCrossPoint, out float _fResult)
 {
+    //지형 로컬영역에서의 _vDir
+    
+    //직선의 방정식 R(t) = v1 + t * vDir
+    //R(t) 직선상의 모든 점
+    //v1 직선상의 임의 한 점
+    //t : v1로 부터 떨어진 거리
+    //vDir 직선의 방향(벡터)
+    
+    //내적 : (d)
+    //평면의 방정식 : pN d (p0 - p1) = 0
+    //pn 평면에 수직인방향벡터
+    //p0 평면상의 임의 한 점
+    //p1 평면상의 임의의 한 점
+    //(p0 - p1) 평면위의 선분(벡터)
+    
+    //위의 두 방정식이 있고 직선의 교차점이 평면상의 임의의 한 점이 되므로
+    //p1 = R(t)가 된다
+ 
+    
     float3 edge[2] = { (float3) 0.f, (float3) 0.f };
     edge[0] = _vertices[1].xyz - _vertices[0].xyz;
     edge[1] = _vertices[2].xyz - _vertices[0].xyz;
-
+        
+     //t = (pN d p0 - pn d v1) / pN d vDir
     float3 normal = normalize(cross(edge[0], edge[1]));
-    //외적 y값
     float b = dot(normal, _vDir);
 
-    float3 w0 = _vStart - _vertices[0].xyz;
-    float a = -dot(normal, w0);
+    float3 v1 = _vStart - _vertices[0].xyz;
+    float a = -dot(normal, v1);
     float t = a / b;
 
+    //거리
     _fResult = t;
 
+    //교차 점
     float3 p = _vStart + t * _vDir;
-
     _vCrossPoint = p;
-
+    
     float uu, uv, vv, wu, wv, inverseD;
     uu = dot(edge[0], edge[0]);
     uv = dot(edge[0], edge[1]);
     vv = dot(edge[1], edge[1]);
 
+    //평면상에 두 점의 벡터
     float3 w = p - _vertices[0].xyz;
     wu = dot(w, edge[0]);
     wv = dot(w, edge[1]);
@@ -253,6 +293,25 @@ int IntersectsLay(float3 _vertices[3], float3 _vStart, float3 _vDir, out float3 
     }
 
     return 1;
+}
+
+
+float GetTessFactor(float _Length, int _iMinLevel, int _iMaxLevel, float _MinDistance, float _MaxDistance)
+{
+    if (_MaxDistance < _Length)
+    {
+        return 0.f;
+    }
+    else if (_Length < _MinDistance)
+    {
+        return _iMaxLevel;
+    }
+    else
+    {
+        float fLevel = _iMaxLevel - (_iMaxLevel - _iMinLevel) * ((_Length - _MinDistance) / (_MaxDistance - _MinDistance));
+
+        return fLevel;
+    }
 }
 
 
