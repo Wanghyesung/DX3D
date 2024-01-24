@@ -54,6 +54,23 @@ void CAnimation3D::Reset()
 	m_fCurTime = m_fStartTime;
 }
 
+void CAnimation3D::SetFrame(int _iStartFrame)
+{
+	m_iCurFrame = _iStartFrame; 
+	m_fCurTime = float(_iStartFrame) / float(30);
+
+	if (m_iCurFrame >= m_iEndFrame)
+	{
+		m_iCurFrame = m_iEndFrame;
+		m_fCurTime = m_fEndTime;
+	}
+	else if (m_iCurFrame <= m_iStartFrame)
+	{
+		m_iCurFrame = m_iStartFrame;
+		m_fCurTime = m_fStartTime;
+	}
+}
+
 CAnimation3D::CAnimation3D() :
 	m_iStartFrame(0),
 	m_iEndFrame(0),

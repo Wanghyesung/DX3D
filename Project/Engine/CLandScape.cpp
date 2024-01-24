@@ -47,7 +47,7 @@ void CLandScape::finaltick()
 
 
 
-
+	m_eMod = LANDSCAPE_MOD::NONE;
 	if (LANDSCAPE_MOD::NONE == m_eMod)
 	{
 		return;
@@ -131,6 +131,10 @@ void CLandScape::render()
 	m_pWeightMapBuffer->Clear();
 }
 
+void CLandScape::render(UINT _iSubset)
+{
+	render();
+}
 
 void CLandScape::SetFace(UINT _iFaceX, UINT _iFaceZ)
 {

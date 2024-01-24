@@ -149,6 +149,7 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 
 	FbxVector4* pFbxPos = _pFbxMesh->GetControlPoints();
 
+	
 	for (int i = 0; i < iVtxCnt; ++i)
 	{
 		Container.vecPos[i].x = (float)pFbxPos[i].mData[0];
@@ -741,6 +742,7 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 	{
 		tKeyFrame tFrame = {};
 		FbxTime   tTime = 0;
+
 
 		tTime.SetFrame(i, eTimeMode);
 

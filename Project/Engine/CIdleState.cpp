@@ -7,22 +7,22 @@
 
 void CIdleState::final_tick()
 {
-	if (KEY_TAP(KEY::A))
+	if (KEY_PRESSED(KEY::A))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::WALK);
 		GetFSM()->SetDir(L"Left");
 	}
-	else if (KEY_TAP(KEY::S))
+	else if (KEY_PRESSED(KEY::S))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::WALK);
 		GetFSM()->SetDir(L"Back");
 	}
-	else if (KEY_TAP(KEY::W))
+	else if (KEY_PRESSED(KEY::W))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::WALK);
 		GetFSM()->SetDir(L"Front");
 	}
-	else if (KEY_TAP(KEY::D))
+	else if (KEY_PRESSED(KEY::D))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::WALK);
 		GetFSM()->SetDir(L"Right");

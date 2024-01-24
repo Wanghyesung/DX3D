@@ -15,6 +15,7 @@
 #include "Animator2DUI.h"
 #include "TileMapUI.h"
 #include "Light2DUI.h"
+#include "CAnimator3DUI.h"
 
 #include "MeshDataUI.h"
 #include "TextureUI.h"
@@ -64,6 +65,10 @@ InspectorUI::InspectorUI()
 	m_arrComUI[(UINT)COMPONENT_TYPE::ANIMATOR2D]->SetSize(0.f, 150.f);
 	AddChildUI(m_arrComUI[(UINT)COMPONENT_TYPE::ANIMATOR2D]);
 
+	m_arrComUI[(UINT)COMPONENT_TYPE::ANIMATOR3D] = new CAnimator3DUI;
+	m_arrComUI[(UINT)COMPONENT_TYPE::ANIMATOR3D]->SetSize(0.f, 150.f);
+	AddChildUI(m_arrComUI[(UINT)COMPONENT_TYPE::ANIMATOR3D]);
+
 	m_arrComUI[(UINT)COMPONENT_TYPE::LIGHT2D] = new Light2DUI;
 	m_arrComUI[(UINT)COMPONENT_TYPE::LIGHT2D]->SetSize(0.f, 150.f);
 	AddChildUI(m_arrComUI[(UINT)COMPONENT_TYPE::LIGHT2D]);
@@ -104,6 +109,7 @@ InspectorUI::InspectorUI()
 	m_arrResUI[(UINT)RES_TYPE::SOUND] = new SoundUI;
 	m_arrResUI[(UINT)RES_TYPE::SOUND]->SetSize(0.f, 0.f);
 	AddChildUI(m_arrResUI[(UINT)RES_TYPE::SOUND]);
+
 }
 
 InspectorUI::~InspectorUI()

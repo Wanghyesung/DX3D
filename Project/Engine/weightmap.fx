@@ -4,6 +4,7 @@
 #include "value.fx"
 #include "struct.fx"
 
+//텍스쳐 4장 (rgba float4)
 struct tWeight_4
 {
     float arrWeight[4];
@@ -47,9 +48,10 @@ void CS_WeightMap(int3 _iThreadID : SV_DispatchThreadID)
     float4 vBrushColor = BRUSH_TEX.SampleLevel(g_sam_0, vUV, 0);
 
     // 2차원 인덱스 좌표를 1차원 인덱스로 계산
+    // 몇번째 텍스쳐인지 구함
     uint iIdx = (_iThreadID.y * WIDTH) + _iThreadID.x;
 
-    // 현재 가중치
+    // 현재 가중치 (WEIGHT_MAP iIdx 위치에 가중치에 접근)
     float arrWeight[4] = WEIGHT_MAP[iIdx].arrWeight;
 
     // 증가 량

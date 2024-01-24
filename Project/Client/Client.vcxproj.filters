@@ -110,8 +110,11 @@
     <Filter Include="Manager\LevelSaveLoad">
       <UniqueIdentifier>{bd45bcb0-5b2d-4b83-a548-af8817de8f6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\InspectorUI\ComponentUI\Collider3DUI">
+    <Filter Include="UI\InspectorUI\ComponentUI\10. Collider3DUI">
       <UniqueIdentifier>{0a5afdb7-bb34-4952-b06d-62dc01d8ad9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\InspectorUI\ComponentUI\11. Animator3DUI">
+      <UniqueIdentifier>{af92c27c-ac85-4c01-a706-d9206b1e51f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -240,7 +243,10 @@
       <Filter>UI\InspectorUI\ComponentUI\08. ParticleSystemUI</Filter>
     </ClInclude>
     <ClInclude Include="Collider3DUI.h">
-      <Filter>UI\InspectorUI\ComponentUI\Collider3DUI</Filter>
+      <Filter>UI\InspectorUI\ComponentUI\10. Collider3DUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimator3DUI.h">
+      <Filter>UI\InspectorUI\ComponentUI\11. Animator3DUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -377,7 +383,10 @@
       <Filter>UI\InspectorUI\ComponentUI\08. ParticleSystemUI</Filter>
     </ClCompile>
     <ClCompile Include="Collider3DUI.cpp">
-      <Filter>UI\InspectorUI\ComponentUI\Collider3DUI</Filter>
+      <Filter>UI\InspectorUI\ComponentUI\10. Collider3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator3DUI.cpp">
+      <Filter>UI\InspectorUI\ComponentUI\11. Animator3DUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -75,3 +75,8 @@ void CSkyBox::render()
 	// ·»´õ
 	GetMesh()->render(0);
 }
+
+void CSkyBox::render(UINT _iSubset)
+{
+	render();
+}

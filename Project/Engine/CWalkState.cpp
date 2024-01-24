@@ -59,6 +59,11 @@ void CWalkState::final_tick()
 		ChanageState(GetFSM(), STATE_TYPE::ROLL);
 		return;
 	}
+	else if (KEY_PRESSED(KEY::SPACE))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::RUN);
+		return;
+	}
 
 	if (vForce == Vec3::Zero)
 	{

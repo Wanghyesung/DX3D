@@ -186,6 +186,11 @@ void CAnimator3D::CreateAnimationT(const wstring& _strAnimName, float _fStartTim
 	m_mapAnim.insert(make_pair(_strAnimName, pAnim));
 }
 
+void CAnimator3D::SetCurFrame(int _iCurFame)
+{
+	m_pCurAnimation->SetFrame(_iCurFame);
+}
+
 CAnimation3D* CAnimator3D::FindAnimation(const wstring& _strName)
 {
 	map<wstring, CAnimation3D*>::iterator iter =
@@ -279,7 +284,10 @@ void CAnimator3D::Play(const std::wstring& _strName, bool _bRepeat)
 
 	CAnimation3D* pAnim = FindAnimation(_strName);
 	if (pAnim)
+	{
 		m_pCurAnimation = pAnim;
+		//m_iCurAnim = pAnim->GetAnimIdx;
+	}
 
 	pEvents = FindEvents(m_pCurAnimation->GetKey());
 	if (pEvents)

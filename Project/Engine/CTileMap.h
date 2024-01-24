@@ -17,12 +17,13 @@ private:
 public:
     virtual void finaltick() override;
     virtual void render() override;
+    virtual void render(UINT _iSubset)override;
 
     void UpdateData();
 
     void SetTileCount(UINT _iXCount, UINT _iYCount);
     void SetSliceSize(Vec2 _vSliceSize)  { m_vSliceSize = _vSliceSize; }
-
+    
 
     virtual void SaveToLevelFile(FILE* _File) override;
     virtual void LoadFromLevelFile(FILE* _File) override;

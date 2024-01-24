@@ -234,6 +234,38 @@ struct tMTAnimClip
 	FbxTime::EMode	eMode; //30프레임
 };
 
+
+// ===========
+// Instancing
+// ===========
+union uInstID
+{
+	struct
+	{
+		UINT iMesh;
+		WORD iMtrl;
+		WORD iMtrlIdx;
+	};
+	ULONG64 llID;
+};
+
+class CGameObject;
+struct tInstObj
+{
+	CGameObject* pObj;
+	UINT iMtrlIdx;
+};
+
+//같은 메쉬 , 재질 (메쉬 인덱스)인 오브젝트들끼리 모아서
+//한번에 렌더링처리 그 때 오브젝트마다 위치를 이 구조체에 저장
+struct tInstancingData
+{
+	Matrix matWorld;
+	Matrix matWV;
+	Matrix matWVP;
+	int    iRowIdx; //몇번째 메쉬인지
+};
+
 // ===================
 // 상수버퍼 대응 구조체
 // ===================
@@ -301,6 +333,28 @@ struct tGlobal
 };
 
 extern tGlobal GlobalData;
+
+
+struct tAttackInfo
+{
+	int iAttackNum;
+
+	//공격할때 움직임
+	float fForce;
+
+	//공격판정 시작프레임
+	int iStartFrame;
+	int iEndFrame;
+
+	//공격 히트박스
+	Vec3 vAttackScale;
+	Vec3 vAttackPos;
+	Vec3 vAttackRot;
+
+	//상대적일지
+};
+
+
 
 
 

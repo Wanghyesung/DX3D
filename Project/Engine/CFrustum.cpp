@@ -62,6 +62,7 @@ bool CFrustum::FrustumCheck(Vec3 _vPos)
 {
     for (int i = 0; i < FT_END; ++i)
     {
+        //w에 어떠한 점과 평면의 최소거리가있음
         Vec3 vNormal = m_arrFace[i];
         if(vNormal.Dot(_vPos) + m_arrFace[i].w > 0)
             return false;

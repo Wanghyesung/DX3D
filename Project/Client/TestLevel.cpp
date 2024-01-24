@@ -17,6 +17,7 @@
 #include <Script\CPlayerScript.h>
 #include <Script\CMonsterScript.h>
 #include <Script\CCameraMoveScript.h>
+#include <Script\CTerrainScript.h>
 
 #include "CLevelSaveLoad.h"
 
@@ -138,6 +139,7 @@ void CreateTestLevel()
 	//
 	//SpawnGameObject(pObject, Vec3(0.f, -1000.f, 0.f), L"Default");
 
+	
 	CGameObject* pAritorias = new CGameObject;
 	pAritorias->SetName(L"Aritorias");
 	pAritorias->AddComponent(new CTransform());
@@ -145,7 +147,33 @@ void CreateTestLevel()
 	CPlayerScript* pScript = new CPlayerScript();
 	pAritorias->AddComponent(pScript);
 	pScript->Initialize(); //fbx load, FSM , components
-	SpawnGameObject(pAritorias, Vec3(0.f, 0.f, 100.f), L"Default");
+	SpawnGameObject(pAritorias, Vec3(300.f, 0.f, 100.f), (int)LAYER_TYPE::Player);
+	
+	
+
+
+	//CGameObject* pMonster = new CGameObject;
+	//pMonster->SetName(L"Taurus_Demon");
+	//pMonster->AddComponent(new CTransform());
+	//pMonster->AddComponent(new CRigidbody());
+	//CMonsterScript* pMonsterScript = new CMonsterScript();
+	//pMonster->AddComponent(pMonsterScript);
+	//pMonsterScript->Initialize(L"Taurus_Demon_Fianl"); //fbx load, FSM , components
+	//SpawnGameObject(pMonster, Vec3(400.f, 0.f, 400.f), L"Default");
+
+	CGameObject* pMonster = new CGameObject;
+	pMonster->SetName(L"Balder_Knight");
+	pMonster->AddComponent(new CTransform());
+	pMonster->AddComponent(new CRigidbody());
+	CMonsterScript* pMonsterScript = new CMonsterScript();
+	pMonster->AddComponent(pMonsterScript);
+	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+	SpawnGameObject(pMonster, Vec3(2400.f, 0.f, 2400.f), (int)LAYER_TYPE::Monster);
+	
+	//CTerrainScript* pTerrainScript = new CTerrainScript();
+	//pStage->AddComponent(pTerrainScript);
+	//pTerrainScript->Initialize(L"test"); //fbx load, FSM , components
+	//SpawnGameObject(pStage, Vec3(200.f, 0.f, 200.f), (int)LAYER_TYPE::Terrain);
 
 	// Main Camera Object »ý¼º
 	CGameObject* pMainCam = new CGameObject;
@@ -180,22 +208,39 @@ void CreateTestLevel()
 
 	// LandScape Object
 	CGameObject* pLandScape = new CGameObject;
+
 	pLandScape->SetName(L"LandScape");
 
 	pLandScape->AddComponent(new CTransform);
+	pLandScape->AddComponent(new CCollider3D());
+	pLandScape->Collider3D()->SetAbsolute(true);
+	pLandScape->Collider3D()->SetOffsetPos(Vec3(9000.f, 0.f, 9000.f));
+	pLandScape->Collider3D()->SetOffsetScale(Vec3(18000.f, 0.f, 18000.f));
 	pLandScape->AddComponent(new CLandScape);
 
-	pLandScape->Transform()->SetRelativeScale(Vec3(500.f, 3000.f, 500.f));
+	pLandScape->Transform()->SetRelativeScale(Vec3(1000.f, 3000.f, 1000.f));
 
 	pLandScape->LandScape()->SetFace(18, 18);
 	pLandScape->LandScape()->SetFrustumCheck(false);
 	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
 
-	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), 0);
+	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);
 
+	
+	CGameObject* pLandform = new CGameObject;
+	pLandform->SetName(L"Landform");
+	pLandform->AddComponent(new CTransform);
+	pLandform->AddComponent(new CCollider3D);
+	CTerrainScript* pTerrainScript = new CTerrainScript();
+	pLandform->AddComponent(pTerrainScript);
+	pTerrainScript->Initialize(L"Plain_CastleTower_Ruin_01");
+	pLandform->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
 
+	pLandform->Collider3D()->SetOffsetScale(Vec3(332.f, 442.f, 355.f));
+	pLandform->Collider3D()->SetOffsetPos(Vec3(0.f, 222.f, 0.f));
+	//pLandform->Transform()->SetRelativeRot(Vec3(-XM_PI/2.f, 0.f, 0.f));
 
-
+	SpawnGameObject(pLandform, Vec3(9000.f, 0.f, 9000.f), (int)LAYER_TYPE::landform);
 
 	//pObject = new CGameObject;
 	//pObject->SetName(L"Decal");

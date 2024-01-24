@@ -26,6 +26,9 @@ enum class LAYER_TYPE
 	Background,
 	Player,
 	Monster,
+	LandScape, //전체 땅
+	landform, //지형지물
+	Terrain, //지형
 	Light,
 	Camera,
 	UI = 31,
@@ -261,6 +264,16 @@ enum class STATE_TYPE
 	END,
 };
 
+enum class MONSTER_STATE_TYPE
+{
+	IDLE,
+	WALK,
+	RUN,
+	ROLL,
+	ATTACK,
+	JUMP,
+	END,
+};
 
 enum class SHAPE_TYPE
 {

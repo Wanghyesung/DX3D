@@ -255,10 +255,20 @@ int IntersectsLay(float3 _vertices[3], float3 _vStart, float3 _vDir, out float3 
         
      //t = (pN d p0 - pn d v1) / pN d vDir
     float3 normal = normalize(cross(edge[0], edge[1]));
+    //ㄱ광선의 방향과 표면의 방향을 내적하여 얼마나 일치하는지 확인 b =0 이면 광선이 평면에 수직한 방향
+    //각도를 구한다
     float b = dot(normal, _vDir);
 
+    //광선의 시작점에서 삼각형 평면까지의 거리
     float3 v1 = _vStart - _vertices[0].xyz;
+    
+    //벡터 a는 광선의 시작점 _vStart에서 삼각형 평면 상의 한 점까지의 벡터에 삼각형의 법선 벡터 normal을 내적한 값입니다.
+    //이 값은 광선의 시작점에서 삼각형 평면까지의 수직 거리를 나타냅니다. (a = -dot(normal, v1))
+    //내적은 두 벡터의 방향이 얼마나 비슷한지를 나타내는데, 음수 값은 두 벡터의 방향이 반대임을 의미합니다.
+    //따라서, a는 광선의 시작점에서 삼각형 평면까지의 수직 거리를 나타내는데,
+    //음수로 나타냄으로써 광선이 삼각형 평면으로부터 아래쪽에 위치하고 있다는 것을 알 수 있습니다.
     float a = -dot(normal, v1);
+    
     float t = a / b;
 
     //거리
@@ -268,12 +278,20 @@ int IntersectsLay(float3 _vertices[3], float3 _vStart, float3 _vDir, out float3 
     float3 p = _vStart + t * _vDir;
     _vCrossPoint = p;
     
+    //Triangle-Triangle Intersection
+    //삼각형 보간법 삼각형 ABC의 세 꼭지점에 대한 Barycentric 좌표 (u, v, w)는 다음과 같이 정의됩니다.
+    //P = u * A + v * B + w * C
+    //여기서 (u, v, w)는 Barycentric 좌표이며, u + v + w = 1이어야 합니다.
+    //삼각형의 한 점 P가 삼각형 내부에 있다면, 이 점 P를 구성하는 Barycentric 좌표 (u, v, w)는 모두 0에서 1 사이의 값을 가져야 합니다. 
+    //코드에서 u와 v는 이러한 조건을 검사하고, (u + v)의 값도 1을 넘지 않도록 확인하고 있습니다.
+    
+    //https://wjdgh283.tistory.com/entry/%EC%82%BC%EA%B0%81%ED%98%95-%EC%95%88%EC%97%90-%EC%9E%88%EB%8A%94-%EC%A0%90%EC%9D%98-%EB%AC%B4%EA%B2%8C%EC%A4%91%EC%8B%AC-%EC%A2%8C%ED%91%9Cbarycentric-coordinate-%EA%B5%AC%ED%95%98%EA%B8%B0
     float uu, uv, vv, wu, wv, inverseD;
     uu = dot(edge[0], edge[0]);
     uv = dot(edge[0], edge[1]);
     vv = dot(edge[1], edge[1]);
 
-    //평면상에 두 점의 벡터
+    
     float3 w = p - _vertices[0].xyz;
     wu = dot(w, edge[0]);
     wv = dot(w, edge[1]);

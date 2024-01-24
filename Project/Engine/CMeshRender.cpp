@@ -5,6 +5,7 @@
 #include "CAnimator2D.h"
 #include "CAnimator3D.h"
 
+
 CMeshRender::CMeshRender()
 	: CRenderComponent(COMPONENT_TYPE::MESHRENDER)		
 {
@@ -16,6 +17,10 @@ CMeshRender::~CMeshRender()
 
 void CMeshRender::finaltick()
 {
+	//Vec3 vPos = GetMesh()->GetVtxSysMem()->vPos;
+	//Matrix matScale = Transform()->GetWorldScaleMat();
+	//Vec3 vScale = XMVector4Transform(vPos, matScale);
+	//int a = 10;
 }
 
 void CMeshRender::render()
@@ -69,4 +74,37 @@ void CMeshRender::render()
 	if (Animator3D())
 		Animator3D()->ClearData();
 	//다음 프레임 그림자 렌더링에서 지우기
+}
+
+void CMeshRender::render(UINT _iSubset)
+{
+	if (nullptr == GetMesh() || nullptr == GetMaterial(_iSubset))
+		return;
+
+	// Transform 에 UpdateData 요청
+	Transform()->UpdateData();
+
+	// Animator2D 컴포넌트가 있다면
+	if (Animator2D())
+	{
+		Animator2D()->UpdateData();
+	}
+
+	if (Animator3D())
+	{
+		Animator3D()->UpdateData();
+		GetMaterial(_iSubset)->SetAnim3D(true); //Animation Mesh 알리기
+		GetMaterial(_iSubset)->SetBoneCount(Animator3D()->GetBoneCount());
+	}
+
+	GetMaterial(_iSubset)->UpdateData();
+
+	GetMesh()->render(_iSubset);
+
+	// Animation 관련 정보 제거
+	if (Animator2D())
+		Animator2D()->Clear();
+
+	if (Animator3D())
+		Animator3D()->ClearData();
 }

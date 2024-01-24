@@ -47,6 +47,7 @@ private:
     //map<wstring, void (*)()> m_mapAnimFun;
 
     CAnimation3D* m_pCurAnimation;
+    UINT          m_iCurAnim;
 
     vector<float>				m_vecClipUpdateTime;
     vector<Matrix>				m_vecFinalBoneMat; // 텍스쳐에 전달할 최종 행렬정보
@@ -86,14 +87,16 @@ public:
 
     //animation에서 할당
     void SetNextFrame(int _iNextFrame) { m_iNextFrameIdx = _iNextFrame; }
-    void SetCurFrame(int _iCurFame) { m_iFrameIdx = _iCurFame; }
+    void SetCurFrame(int _iCurFame);
     void SetRatio(float _fRatio) { m_fRatio = _fRatio; }
+    UINT GetCurAnimIdx() { return m_iCurAnim; }
 
     const vector<tMTAnimClip>* GetAnimClip() { return m_pVecClip; }
 
     Events* FindEvents(const std::wstring& _strName);
     void Play(const std::wstring& _strName, bool _bRepeat);
     void Stop(bool _bStop) { m_bStop = _bStop; }
+    bool IsStop() { return m_bStop; }
 
     CAnimation3D* GetCurAnim() { return m_pCurAnimation; }
     //animation event

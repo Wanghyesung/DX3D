@@ -31,6 +31,7 @@ void CLandScape::init()
 
 	//vector<Ptr<CTexture>> vecTex = {};
 	//Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Grass01_N.TGA", L"texture\\tile\\T_Grass01_N.TGA");
+	//pTex->GenerateMip(8);
 	//vecTex.push_back(pTex);
 	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Cliff01_D.TGA", L"texture\\tile\\T_Cliff01_D.TGA");
 	//vecTex.push_back(pTex);

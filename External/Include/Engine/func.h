@@ -40,6 +40,8 @@ void DrawDebugSphere(const Matrix& _matWorld, Vec4 _vColor, float _fTime = 0.f, 
 
 Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat);
 
+int GetSizeofFormat(DXGI_FORMAT _eFormat);
+
 const char* ToString(RES_TYPE);
 const wchar_t* ToWSTring(RES_TYPE);
 
@@ -75,10 +77,6 @@ void LoadResRef(Ptr<T>& _Res, FILE* _File)
 		_Res = CResMgr::GetInst()->Load<T>(strKey, strRelativePath);
 	}
 }
-
-
-
-
 
 
 

@@ -21,6 +21,8 @@ public:
 public:
     virtual void finaltick() override;
     virtual void render() override;
+    virtual void render(UINT _iSubset) override;
+
 
     CLONE(CDecal);
 public:

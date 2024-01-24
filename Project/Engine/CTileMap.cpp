@@ -30,6 +30,7 @@ void CTileMap::finaltick()
 
 void CTileMap::render()
 {
+	
 	if (nullptr == GetMesh() || nullptr == GetMaterial(0))
 		return;
 
@@ -46,6 +47,11 @@ void CTileMap::render()
 
 	// ·»´õ
 	GetMesh()->render(0);
+}
+
+void CTileMap::render(UINT _iSubset)
+{
+	render();
 }
 
 void CTileMap::UpdateData()

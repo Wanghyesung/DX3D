@@ -22,6 +22,10 @@ private:
     map<wstring, Ptr<CRes>> m_arrRes[(UINT)RES_TYPE::END];
     bool                    m_Changed;
 
+    vector<D3D11_INPUT_ELEMENT_DESC> m_vecLayoutInfo;
+    UINT m_iLayoutOffset_0;
+    UINT m_iLayoutOffset_1;
+
 public:
     void init();
     void tick();
@@ -32,8 +36,9 @@ private:
     void CreateDefaultGraphicsShader();
     void CreateDefaultComputeShader();
     void CreateDefaultMaterial();
-
-
+    
+    //layout¼ÂÆÃ
+    void AddInputLayout(DXGI_FORMAT _eFormat, const char* _strSemanticName, UINT _iSlotNum, UINT _iSemanticIdx);
 
 public:
     const map<wstring, Ptr<CRes>>& GetResources(RES_TYPE _Type) { return m_arrRes[(UINT)_Type]; }
@@ -43,6 +48,8 @@ public:
         , DXGI_FORMAT _pixelformat, UINT _BindFlag, D3D11_USAGE _Usage = D3D11_USAGE_DEFAULT);
 
     Ptr<CTexture> CreateTexture(const wstring& _strKey, ComPtr<ID3D11Texture2D> _Tex2D);
+
+    const vector<D3D11_INPUT_ELEMENT_DESC>& GetInputLayoutInfo() { return m_vecLayoutInfo; }
 
     vector<Ptr<CMeshData>> LoadFBX(const wstring& _strPath);
 

@@ -14,10 +14,12 @@ CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	, m_bFrustumCheck(true)
 	, m_bDynamicShadow(false)
 {
+
 }
 
 CRenderComponent::~CRenderComponent()
 {
+
 }
 
 void CRenderComponent::render_shadowmap()
@@ -107,6 +109,16 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _idx)
 	}
 
 	return m_vecMtrls[_idx].pCurMtrl;
+}
+
+ULONG64 CRenderComponent::GetInstID(UINT _iMtrlIdx)
+{
+	if (m_pMesh == NULL || m_vecMtrls[_iMtrlIdx].pCurMtrl == NULL)
+		return 0;
+
+	//인스턴싱을 위한 메쉬 아이디
+	uInstID id{ (UINT)m_pMesh->GetID(), (WORD)m_vecMtrls[_iMtrlIdx].pCurMtrl->GetID(), (WORD)_iMtrlIdx };
+	return id.llID;
 }
 
 

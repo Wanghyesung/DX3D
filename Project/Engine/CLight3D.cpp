@@ -106,8 +106,8 @@ void CLight3D::SetLightType(LIGHT_TYPE _type)
 
 		m_pCamObj->Camera()->SetFar(100000.f);
 		m_pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
-		m_pCamObj->Camera()->SetOrthoWidth(4000.f);
-		m_pCamObj->Camera()->SetOrthoHeight(4000.f);
+		m_pCamObj->Camera()->SetOrthoWidth(8000.f);
+		m_pCamObj->Camera()->SetOrthoHeight(8000.f);
 	}
 
 	else if (LIGHT_TYPE::POINT == (LIGHT_TYPE)m_LightInfo.LightType)

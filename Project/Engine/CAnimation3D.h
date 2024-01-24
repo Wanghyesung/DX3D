@@ -34,6 +34,14 @@ public:
 
 	void Reset();
 
+public:
+	//void SetStartFrame();
+	void SetFrame(int _iStartFrame);
+
+	int GetCurFrame() { return m_iCurFrame; }
+	int GetEndFrame() { return m_iEndFrame; }
+	int GetStartFrame() { return m_iStartFrame; }
+
 	CLONE(CAnimation3D);
 public:
 	CAnimation3D();

@@ -12,6 +12,7 @@
 #include <Engine\CWalkState.h>
 #include <Engine\CRollState.h>
 #include <Engine\CAttackState.h>
+#include <Engine\CRunState.h>
 CPlayerScript::CPlayerScript()
 	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_fSpeed(100.f)
@@ -160,7 +161,7 @@ void CPlayerScript::Initialize()
 		}
 	}
 	//SpawnGameObject(pAritorias, Vec3(0.f, 0.f, 100.f), L"Default");
-	Transform()->SetRelativeScale(2.f, 2.f, 2.f);
+	//Transform()->SetRelativeScale(2.f, 2.f, 2.f);
 	Transform()->SetRelativeRot(-XM_PI / 2.f, 0.f, 0.f);
 
 	m_pFSM = new CFSM();
@@ -173,6 +174,10 @@ void CPlayerScript::Initialize()
 	CWalkState* pWalk = new CWalkState();
 	pWalk->SetName(L"Walk_");
 	m_pFSM->AddState(STATE_TYPE::WALK, pWalk);
+
+	CRunState* pRun = new CRunState();
+	pRun->SetName(L"Run_");
+	m_pFSM->AddState(STATE_TYPE::RUN, pRun);
 
 	CRollState* pRoll = new CRollState;
 	pRoll->SetName(L"Roll_");
