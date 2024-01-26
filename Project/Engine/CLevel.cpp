@@ -23,6 +23,10 @@ CLevel::~CLevel()
 }
 
 
+void CLevel::init()
+{
+}
+
 void CLevel::begin()
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
@@ -45,6 +49,14 @@ void CLevel::finaltick()
 	{
 		m_arrLayer[i]->finaltick();
 	}
+}
+
+void CLevel::enter()
+{
+}
+
+void CLevel::exit()
+{
 }
 
 CLayer* CLevel::FindLayerByName(const wstring& _strName)

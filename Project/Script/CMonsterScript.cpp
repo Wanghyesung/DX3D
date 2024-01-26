@@ -1,21 +1,28 @@
 #include "pch.h"
 #include "CMonsterScript.h"
 
+#include <Engine\CRenderMgr.h>
+#include <Engine\CRigidbody.h>
+#include <Engine\CMonsterFSM.h>
+
+#include <Engine\CMonsterMove.h>
 
 CMonsterScript::CMonsterScript()
-	: CScript((UINT)SCRIPT_TYPE::MONSTERSCRIPT)
+	: CScript((UINT)SCRIPT_TYPE::MONSTERSCRIPT),
+	m_pFSM(nullptr)
 {
-
+	
 }
 
 CMonsterScript::~CMonsterScript()
 {
-
+	if (m_pFSM != nullptr)
+		delete m_pFSM;
 }
 
 void CMonsterScript::tick()
 {
-
+	m_pFSM->final_tick();
 }
 
 void CMonsterScript::BeginOverlap(CCollider2D* _Other)
@@ -59,6 +66,14 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 
 	Transform()->SetRelativeScale(2.f, 2.f, 2.f);
 	Transform()->SetRelativeRot(-XM_PI / 2.f, 0.f, 0.f);
+
+	m_pFSM = new CMonsterFSM();
+	m_pFSM->SetOwner(pMonster);
+
+	//m_pFSM->SetState(MONSTER_STATE_TYPE::RUN);
+	//
+	//ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::RUN);
+	//(m_pFSM, STATE_TYPE::IDLE);
 }
 
 void CMonsterScript::AddAnimFrame(const wstring& _strAnimName, int _iStart, int _iEnd)

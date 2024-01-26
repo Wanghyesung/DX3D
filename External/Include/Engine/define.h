@@ -248,7 +248,8 @@ enum class EVENT_TYPE
 
 	DELETE_RESOURCE,	// wParam : RES_TYPE, lParam : Resource Adress
 
-	CHANAGE_STATE,   //wParam : FSM , lParam : state_name
+	CHANAGE_STATE,   //wParam : FSM , lParam : state type
+	CHANAGE_MONSTER_STATE, //wParam : FSM , lParam : state type
 
 	LEVEL_CHANGE,
 };

@@ -12,9 +12,14 @@ private:
     LEVEL_STATE     m_State;
 
 public:
-    void begin();
-    void tick();
-    void finaltick(); 
+    virtual void init();
+
+    virtual void begin();
+    virtual void tick();
+    virtual void finaltick();
+    
+    virtual void enter();
+    virtual void exit();
 
 public:
     CLayer* FindLayerByName(const wstring& _strName);

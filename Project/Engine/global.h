@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <unordered_map>
+#include <queue>
 
 using std::vector;
 using std::list;
@@ -14,6 +15,7 @@ using std::wstring;
 using std::string;
 using std::unordered_map;
 using std::pair;
+using std::priority_queue;
 
 #include <typeinfo>
 #include <assert.h>

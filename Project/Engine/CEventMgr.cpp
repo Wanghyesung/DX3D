@@ -7,7 +7,7 @@
 #include "CResMgr.h"
 #include "CRenderMgr.h"
 #include "CFSM.h"
-
+#include "CMonsterFSM.h"
 CEventMgr::CEventMgr()
 {
 
@@ -106,6 +106,12 @@ void CEventMgr::tick()
 		{
 			CFSM* pFSM = (CFSM*)m_vecEvent[i].wParam;
 			STATE_TYPE eType = (STATE_TYPE)m_vecEvent[i].lParam;
+			pFSM->ChanageState(eType);
+		}
+		case EVENT_TYPE::CHANAGE_MONSTER_STATE:
+		{
+			CMonsterFSM* pFSM = (CMonsterFSM*)m_vecEvent[i].wParam;
+			MONSTER_STATE_TYPE eType = (MONSTER_STATE_TYPE)m_vecEvent[i].lParam;
 			pFSM->ChanageState(eType);
 		}
 		}

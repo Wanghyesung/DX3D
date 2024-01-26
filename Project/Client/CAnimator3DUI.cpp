@@ -20,6 +20,7 @@ int CAnimator3DUI::render_update()
 {
    if (FALSE == ComponentUI::render_update())
        return FALSE;
+
    //
    CAnimator3D* pAnim = GetTarget()->Animator3D();
    //
@@ -30,27 +31,65 @@ int CAnimator3DUI::render_update()
    if (bOn)
    {
        bStop = !bStop;
-       pAnim->Stop(bStop);
+       //자식들 애니메이션도 모두 종료
+       const vector<CGameObject*>& vecAnim = pAnim->GetOwner()->GetParent()->GetChild();
+       for (int i = 0; i < vecAnim.size(); ++i)
+       {
+           vecAnim[i]->Animator3D()->Stop(bStop);
+       }
    }
    
+   ImGui::Text("Reset");
+   ImGui::SameLine();
+   bOn = ImGui::SmallButton("Reset");
+   if (bOn)
+   {
+       const vector<CGameObject*>& vecAnim = pAnim->GetOwner()->GetParent()->GetChild();
+       for (int i = 0; i < vecAnim.size(); ++i)
+       {
+           vecAnim[i]->Animator3D()->Reset();
+       }
+   }
+   ImGui::NewLine();
+
+
     const wstring& strName = pAnim->GetCurAnim()->GetName();
     string name = string(strName.begin(), strName.end());
     string finalname = "Cur Animation : " + name;
     ImGui::Text(finalname.c_str());
-    ImGui::SameLine();
+    //ImGui::SameLine();
 
-    int inum = 0;
+    //int inum = 0;
     int iCurFrame = pAnim->GetCurAnim()->GetCurFrame();
+    int iTemFrame = iCurFrame;
     ImGui::Text("Cur Frame : ");
     ImGui::SameLine();
-    ImGui::DragInt("##Frame", &inum);
-    if (bStop && iCurFrame != inum)
+    ImGui::DragInt("##Frame", &iCurFrame);
+    if (bStop && iCurFrame != iTemFrame)
     {
-        pAnim->SetCurFrame(inum);
+        const vector<CGameObject*>& vecAnim = pAnim->GetOwner()->GetParent()->GetChild();
+        for (int i = 0; i < vecAnim.size(); ++i)
+        {
+            vecAnim[i]->Animator3D()->SetCurFrame(iCurFrame);
+        }
     }
 
-    
+    ImGui::NewLine();
 
+    int iCurAnimIdx = pAnim->GetCurAnimIdx();
+    int iTemIdx = iCurAnimIdx;
+    ImGui::Text("CurAnimIdx : ");
+    ImGui::SameLine();
+    ImGui::DragInt("##Idx", &iCurAnimIdx);
+
+    if(iCurAnimIdx != iTemIdx)
+    {
+        const vector<CGameObject*>& vecAnim = pAnim->GetOwner()->GetParent()->GetChild();
+        for (int i = 0; i < vecAnim.size(); ++i)
+        {
+            vecAnim[i]->Animator3D()->SetCurIdx(iCurAnimIdx);
+        }
+    }
 
     return TRUE;
 }

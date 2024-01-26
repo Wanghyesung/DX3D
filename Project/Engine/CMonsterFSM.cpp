@@ -2,6 +2,24 @@
 #include "CMonsterFSM.h"
 
 #include "CMonsterState.h"
+
+CMonsterFSM::CMonsterFSM()
+{
+
+}
+
+CMonsterFSM::~CMonsterFSM()
+{
+	map<MONSTER_STATE_TYPE, CMonsterState*>::iterator iter =
+		m_mapState.begin();
+
+	for (; iter != m_mapState.end(); ++iter)
+	{
+		delete iter->second;
+		iter->second = nullptr;
+	}
+}
+
 void CMonsterFSM::final_tick()
 {
 	if (!m_pCurState)
@@ -71,19 +89,4 @@ void CMonsterFSM::AddAttack(tAttackInfo _tAttackInfo)
 	//pAttackState->AddAttack(_tAttackInfo);
 }
 
-CMonsterFSM::CMonsterFSM()
-{
 
-}
-
-CMonsterFSM::~CMonsterFSM()
-{
-	map<MONSTER_STATE_TYPE, CMonsterState*>::iterator iter =
-		m_mapState.begin();
-
-	for (; iter != m_mapState.end(); ++iter)
-	{
-		delete iter->second;
-		iter->second = nullptr;
-	}
-}

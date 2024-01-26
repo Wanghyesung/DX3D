@@ -144,13 +144,15 @@ void CreateTestLevel()
 	pAritorias->SetName(L"Aritorias");
 	pAritorias->AddComponent(new CTransform());
 	pAritorias->AddComponent(new CRigidbody());
-	CPlayerScript* pScript = new CPlayerScript();
+	pAritorias->AddComponent(new CCollider3D());
+	pAritorias->Collider3D()->SetOffsetScale(Vec3(120.f, 150.f, 120.f));
+	pAritorias->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 125.f));
+
+	CPlayerScript* pScript = new CPlayerScript(); 
 	pAritorias->AddComponent(pScript);
 	pScript->Initialize(); //fbx load, FSM , components
 	SpawnGameObject(pAritorias, Vec3(300.f, 0.f, 100.f), (int)LAYER_TYPE::Player);
 	
-	
-
 
 	//CGameObject* pMonster = new CGameObject;
 	//pMonster->SetName(L"Taurus_Demon");
@@ -165,10 +167,15 @@ void CreateTestLevel()
 	pMonster->SetName(L"Balder_Knight");
 	pMonster->AddComponent(new CTransform());
 	pMonster->AddComponent(new CRigidbody());
+	pMonster->AddComponent(new CCollider3D());
+	pMonster->Collider3D()->SetOffsetScale(Vec3(200.f, 135.f, 340.f));
+	pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
+
+	pMonster->Collider3D()->SetAbsolute(true);
 	CMonsterScript* pMonsterScript = new CMonsterScript();
 	pMonster->AddComponent(pMonsterScript);
 	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
-	SpawnGameObject(pMonster, Vec3(2400.f, 0.f, 2400.f), (int)LAYER_TYPE::Monster);
+	SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
 	
 	//CTerrainScript* pTerrainScript = new CTerrainScript();
 	//pStage->AddComponent(pTerrainScript);
@@ -240,7 +247,7 @@ void CreateTestLevel()
 	pLandform->Collider3D()->SetOffsetPos(Vec3(0.f, 222.f, 0.f));
 	//pLandform->Transform()->SetRelativeRot(Vec3(-XM_PI/2.f, 0.f, 0.f));
 
-	SpawnGameObject(pLandform, Vec3(9000.f, 0.f, 9000.f), (int)LAYER_TYPE::landform);
+	SpawnGameObject(pLandform, Vec3(2000.f, 0.f, 2000.f), (int)LAYER_TYPE::landform);
 
 	//pObject = new CGameObject;
 	//pObject->SetName(L"Decal");

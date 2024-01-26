@@ -22,6 +22,7 @@ private:
 	float m_fRatio;
 
 	//bool  m_bRepeat;
+	UINT m_iAnimIdx;
 
 	CAnimator3D* m_pOwner;
 public:
@@ -41,6 +42,9 @@ public:
 	int GetCurFrame() { return m_iCurFrame; }
 	int GetEndFrame() { return m_iEndFrame; }
 	int GetStartFrame() { return m_iStartFrame; }
+
+	void SetAnimIdx(UINT _iIdx) { m_iAnimIdx = _iIdx; }
+	UINT GetAnimIdx() { return m_iAnimIdx; }
 
 	CLONE(CAnimation3D);
 public:

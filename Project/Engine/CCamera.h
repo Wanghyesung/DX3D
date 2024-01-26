@@ -87,7 +87,7 @@ public:
 
 
     //현재 카메라의 핼렬로 transform상수버퍼 초기화
-    void InitMatrix();
+    void UpdateMatrix();
 public:
     //재질에 참조하는 쉐이더에 따라서 (쉐이더 도메인 (투명, 반투명, 후처리) )
     //쉐이더 도메인에 따라서 렌더링 순서 분류
@@ -123,7 +123,7 @@ private:
 
     void CalcViewMat();
     void CalcProjMat();
-    void UpdateMatrix();
+   
 
     virtual void SaveToLevelFile(FILE* _File) override;
     virtual void LoadFromLevelFile(FILE* _File) override;

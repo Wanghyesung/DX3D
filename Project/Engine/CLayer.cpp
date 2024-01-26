@@ -3,7 +3,6 @@
 
 #include "CGameObject.h"
 
-
 CLayer::CLayer()
 {
 }

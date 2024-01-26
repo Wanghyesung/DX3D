@@ -48,6 +48,7 @@ private:
 
     CAnimation3D* m_pCurAnimation;
     UINT          m_iCurAnim;
+    UINT          m_AnimCount;//전체 애니메이션
 
     vector<float>				m_vecClipUpdateTime;
     vector<Matrix>				m_vecFinalBoneMat; // 텍스쳐에 전달할 최종 행렬정보
@@ -61,11 +62,12 @@ private:
     int							m_iNextFrameIdx; // 클립의 다음 프레임
     float						m_fRatio;	// 프레임 사이 비율
 
-    CStructuredBuffer* m_pBoneFinalMatBuffer;  // 특정 프레임의 최종 행렬
+    CStructuredBuffer*          m_pBoneFinalMatBuffer;  // 특정 프레임의 최종 행렬
     bool				        m_bFinalMatUpdate; // 최종행렬 연산 수행여부
 
     bool                        m_bStop;
     bool                        m_bRepeat;
+
 public:
     virtual void finaltick() override;
     void UpdateData();
@@ -97,8 +99,11 @@ public:
     void Play(const std::wstring& _strName, bool _bRepeat);
     void Stop(bool _bStop) { m_bStop = _bStop; }
     bool IsStop() { return m_bStop; }
+    
+    void Reset();
 
     CAnimation3D* GetCurAnim() { return m_pCurAnimation; }
+    void SetCurIdx(int _iIdx);
     //animation event
     std::function<void()>& StartEvent(const std::wstring _strKey);
     std::function<void()>& CompleteEvent(const std::wstring _strKey);

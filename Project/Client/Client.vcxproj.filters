@@ -116,6 +116,9 @@
     <Filter Include="UI\InspectorUI\ComponentUI\11. Animator3DUI">
       <UniqueIdentifier>{af92c27c-ac85-4c01-a706-d9206b1e51f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Level">
+      <UniqueIdentifier>{24b09736-865e-4173-a894-4fc77134fca6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -229,7 +232,6 @@
     <ClInclude Include="ParamUI.h">
       <Filter>UI\Module\ParamUI</Filter>
     </ClInclude>
-    <ClInclude Include="TestLevel.h" />
     <ClInclude Include="MenuUI.h">
       <Filter>UI\MenuUI</Filter>
     </ClInclude>
@@ -247,6 +249,12 @@
     </ClInclude>
     <ClInclude Include="CAnimator3DUI.h">
       <Filter>UI\InspectorUI\ComponentUI\11. Animator3DUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TestLevel.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartLevel.h">
+      <Filter>Level</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -369,7 +377,6 @@
     <ClCompile Include="ParamUI.cpp">
       <Filter>UI\Module\ParamUI</Filter>
     </ClCompile>
-    <ClCompile Include="TestLevel.cpp" />
     <ClCompile Include="MenuUI.cpp">
       <Filter>UI\MenuUI</Filter>
     </ClCompile>
@@ -387,6 +394,12 @@
     </ClCompile>
     <ClCompile Include="CAnimator3DUI.cpp">
       <Filter>UI\InspectorUI\ComponentUI\11. Animator3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="TestLevel.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartLevel.cpp">
+      <Filter>Level</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

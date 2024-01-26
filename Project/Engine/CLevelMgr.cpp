@@ -44,13 +44,35 @@ void CLevelMgr::FindObjectByName(const wstring& _strName, vector<CGameObject*>& 
 	m_pCurLevel->FindObjectByName(_strName, _vec);
 }
 
-void CLevelMgr::ChangeLevel(CLevel* _NextLevel)
+CLevel* CLevelMgr::FindLevel(const wstring& _strName)
 {
-	if (nullptr != m_pCurLevel)
-	{
-		delete m_pCurLevel;
-		m_pCurLevel = nullptr;
-	}
+	map<wstring, CLevel*>::iterator iter =
+		m_mapLevel.find(_strName);
 
-	m_pCurLevel = _NextLevel;
+	if(iter == m_mapLevel.end())
+		return nullptr;
+
+	return iter->second;
+}
+
+void CLevelMgr::ChangeLevel(CLevel* _pLevel)
+{
+	CLevel* pNextLevel = FindLevel(_pLevel->GetName());
+
+	m_pCurLevel->exit();
+
+	//if (nullptr != m_pCurLevel)
+	//{
+	//	delete m_pCurLevel;
+	//	m_pCurLevel = nullptr;
+	//}
+
+	m_pCurLevel = pNextLevel;
+
+	m_pCurLevel->enter();
+}
+
+void CLevelMgr::AddLevel(CLevel* _pLevel)
+{
+	m_mapLevel.insert(make_pair(_pLevel->GetName(), _pLevel));
 }

@@ -11,13 +11,16 @@ class CLevelMgr :
 private:
     CLevel*     m_pCurLevel;
 
+    map<wstring, CLevel*> m_mapLevel;
 public:
     CLevel* GetCurLevel() { return m_pCurLevel; }
     CGameObject* FindObjectByName(const wstring& _strName);
     void FindObjectByName(const wstring& _strName, vector<CGameObject*>& _Out);
 
-    void ChangeLevel(CLevel* _NextLevel);
+    CLevel* FindLevel(const wstring& _strName);
+    void ChangeLevel(CLevel* _pLevel);
 
+    void AddLevel(CLevel* _pLevel);
 public:
     void init();
     void tick();

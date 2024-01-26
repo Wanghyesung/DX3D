@@ -206,10 +206,6 @@ void CCamera::SetCameraIndex(int _idx)
 	CRenderMgr::GetInst()->RegisterCamera(this, m_iCamIdx);
 }
 
-void CCamera::InitMatrix()
-{
-
-}
 
 void CCamera::SortObject()
 {
@@ -476,6 +472,7 @@ void CCamera::render_deferred()
 			continue;
 		}
 
+		//인스턴싱 (같은 메쉬, 재질 .. 한번에 렌더링)
 		CGameObject* pObj = pair.second[0].pObj;
 		Ptr<CMesh> pMesh = pObj->GetRenderComponent()->GetMesh();
 		Ptr<CMaterial> pMtrl = pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx);

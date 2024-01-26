@@ -28,6 +28,8 @@ CAnimator3D::CAnimator3D()
 	, m_iFrameIdx(0)
 	, m_iNextFrameIdx(0)
 	, m_fRatio(0.f)
+	, m_iCurAnim(0)
+	, m_AnimCount(0)
 	, CComponent(COMPONENT_TYPE::ANIMATOR3D)
 {
 	m_pBoneFinalMatBuffer = new CStructuredBuffer;
@@ -87,8 +89,9 @@ void CAnimator3D::finaltick()
 
 		m_pCurAnimation->Reset();
 	}
-	m_pCurAnimation->final_tick();
 
+	m_pCurAnimation->final_tick();
+	m_iCurAnim = m_pCurAnimation->m_iAnimIdx;
 
 	m_iFrameIdx = m_pCurAnimation->m_iCurFrame;
 	m_iNextFrameIdx = m_pCurAnimation->m_iNextFrame;
@@ -149,6 +152,7 @@ void CAnimator3D::CreateAnimationF(const wstring& _strAnimName, int _iStartFrame
 	pAnim = new CAnimation3D;
 	Events* tEvent = {};
 	m_mapAnimEvent.insert(make_pair(_strAnimName, tEvent));
+	pAnim->SetName(_strAnimName);
 
 	//pAnim->m_bRepeat = _bRepeat;
 
@@ -160,6 +164,8 @@ void CAnimator3D::CreateAnimationF(const wstring& _strAnimName, int _iStartFrame
 	pAnim->m_fCurTime = float(_iStartFrame) / float(m_iFrameCount);
 	pAnim->m_fEndTime = float(_iLastFrame) / float(m_iFrameCount);
 	pAnim->m_pOwner = this;
+
+	pAnim->m_iAnimIdx = ++m_AnimCount;
 
 	m_mapAnim.insert(make_pair(_strAnimName, pAnim));
 }
@@ -182,6 +188,8 @@ void CAnimator3D::CreateAnimationT(const wstring& _strAnimName, float _fStartTim
 	pAnim->m_iCurFrame = (int)(_fStartTime * m_iFrameCount);
 	pAnim->m_iEndFrame = (int)(_fLastTime * m_iFrameCount);
 	pAnim->m_pOwner = this;
+
+	pAnim->m_iAnimIdx = ++m_AnimCount;
 
 	m_mapAnim.insert(make_pair(_strAnimName, pAnim));
 }
@@ -310,6 +318,28 @@ Events* CAnimator3D::FindEvents(const std::wstring& _strName)
 	return iter->second;
 }
 
+
+void CAnimator3D::Reset()
+{
+	m_pCurAnimation->Reset();
+}
+
+void CAnimator3D::SetCurIdx(int _iIdx)
+{
+	if (_iIdx > m_mapAnim.size())
+		_iIdx = m_mapAnim.size() - 1;
+
+	map<wstring, CAnimation3D*>::iterator iter =
+		m_mapAnim.begin();
+
+	for (iter; iter != m_mapAnim.end(); ++iter)
+	{
+		if (iter->second->GetAnimIdx() == _iIdx)
+		{
+			Play(iter->second->GetName(), true);
+		}
+	}
+}
 
 std::function<void()>& CAnimator3D::StartEvent(const std::wstring _strKey)
 {

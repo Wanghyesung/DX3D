@@ -1,10 +1,13 @@
 #pragma once
 #include <Engine\CScript.h>
 
+class CMonsterFSM;
+
 class CMonsterScript :
     public CScript
 {
 private:
+    CMonsterFSM* m_pFSM;
 
 public:
     virtual void tick() override;
