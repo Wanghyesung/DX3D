@@ -1,7 +1,6 @@
 #pragma once
 #include "CSingleton.h"
-
-class CLevel;
+#include "CLevel.h"
 class CGameObject;
 
 class CLevelMgr :

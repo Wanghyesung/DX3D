@@ -2,6 +2,8 @@
 #include "CMonsterState.h"
 #include "CGameObject.h"
 #include "CAnimator3D.h"
+#include "CMonsterFSM.h"
+
 CMonsterState::CMonsterState() :
 	m_eType(MONSTER_STATE_TYPE::END),
 	m_pFSM(nullptr)
@@ -26,7 +28,7 @@ void CMonsterState::Chanage_Anim(const wstring& _strName, bool _bRepeat)
 
 CGameObject* CMonsterState::GetOwner()
 {
-	return GetOwner();
+	return m_pFSM->GetOwner();
 }
 
 

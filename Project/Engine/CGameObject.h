@@ -21,7 +21,7 @@ class CDecal;
 class CSkyBox;
 class CLandScape;
 class CMotionBlur;
-
+class CNavMesh;
 #define GET_COMPONENT(Type, TYPE) C##Type* Type() const { return (C##Type*)m_arrCom[(UINT)COMPONENT_TYPE::TYPE]; }
 
 
@@ -83,6 +83,7 @@ public:
     GET_COMPONENT(SkyBox, SKYBOX);
     GET_COMPONENT(Decal, DECAL);
     GET_COMPONENT(LandScape, LANDSCAPE);
+    GET_COMPONENT(NavMesh, NAVMESH);
 
     CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
 

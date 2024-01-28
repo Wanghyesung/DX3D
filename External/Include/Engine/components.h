@@ -14,6 +14,7 @@
 #include "CDecal.h"
 #include "CMotionBlur.h"
 #include "CLandScape.h"
+#include "CNavMesh.h"
 
 #include "CMeshRender.h"
 #include "CTileMap.h"

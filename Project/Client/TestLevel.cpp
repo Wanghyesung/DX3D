@@ -24,7 +24,6 @@
 #include <Engine\CCollisionMgr.h>
 #include <Engine\CSetColorShader.h>
 
-
 void CreateTestLevel()
 {
 	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Default);
@@ -168,6 +167,7 @@ void CreateTestLevel()
 	pMonster->AddComponent(new CTransform());
 	pMonster->AddComponent(new CRigidbody());
 	pMonster->AddComponent(new CCollider3D());
+	pMonster->AddComponent(new CNavMesh);
 	pMonster->Collider3D()->SetOffsetScale(Vec3(200.f, 135.f, 340.f));
 	pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
 
@@ -232,7 +232,6 @@ void CreateTestLevel()
 	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
 
 	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);
-
 	
 	CGameObject* pLandform = new CGameObject;
 	pLandform->SetName(L"Landform");
@@ -303,5 +302,5 @@ void CreateTestLevel()
 	//SpawnGameObject(pObject, Vec3(0.f, 0.f, 100.f), L"Default");
 
 
-
+	//CNavMeshMgr::GetInst()->Init_Map();
 }

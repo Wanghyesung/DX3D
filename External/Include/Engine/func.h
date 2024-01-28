@@ -1,4 +1,5 @@
 #pragma once
+#include "define.h"
 
 template <typename T, UINT _Size>
 void DeleteArray(T* (&Arr)[_Size])

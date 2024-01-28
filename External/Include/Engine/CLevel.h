@@ -39,6 +39,7 @@ private:
     void clear();
 
     CLONE(CLevel);
+
 public:
     CLevel();
     ~CLevel();

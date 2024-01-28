@@ -62,6 +62,7 @@ enum class COMPONENT_TYPE
 	LIGHT2D,		// 2차원 광원
 	LIGHT3D,		// 3차원 광원
 	RIGIDBODY,		// 힘을받는 강체
+	NAVMESH,		// 네비게이션
 	CAMERA,			// Camera
 
 	// render

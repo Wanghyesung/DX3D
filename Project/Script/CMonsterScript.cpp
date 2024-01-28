@@ -70,10 +70,13 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 	m_pFSM = new CMonsterFSM();
 	m_pFSM->SetOwner(pMonster);
 
-	//m_pFSM->SetState(MONSTER_STATE_TYPE::RUN);
-	//
-	//ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::RUN);
-	//(m_pFSM, STATE_TYPE::IDLE);
+	CMonsterMove* pMove = new CMonsterMove();
+	m_pFSM->AddState(MONSTER_STATE_TYPE::RUN, pMove);
+
+	m_pFSM->SetState(MONSTER_STATE_TYPE::RUN);
+	
+	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::RUN);
+	(m_pFSM, STATE_TYPE::IDLE);
 }
 
 void CMonsterScript::AddAnimFrame(const wstring& _strAnimName, int _iStart, int _iEnd)

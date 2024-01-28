@@ -211,11 +211,12 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CMeshData.h" />
     <ClInclude Include="CMeshRender.h" />
     <ClInclude Include="CMonsterFSM.h" />
+    <ClInclude Include="CMonsterIdle.h" />
     <ClInclude Include="CMonsterMove.h" />
     <ClInclude Include="CMonsterState.h" />
     <ClInclude Include="CMotionBlur.h" />
     <ClInclude Include="CMRT.h" />
-    <ClInclude Include="CNavMeshMgr.h" />
+    <ClInclude Include="CNavMesh.h" />
     <ClInclude Include="components.h" />
     <ClInclude Include="CParticleSystem.h" />
     <ClInclude Include="CParticleUpdateShader.h" />
@@ -298,11 +299,12 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CMeshData.cpp" />
     <ClCompile Include="CMeshRender.cpp" />
     <ClCompile Include="CMonsterFSM.cpp" />
+    <ClCompile Include="CMonsterIdle.cpp" />
     <ClCompile Include="CMonsterMove.cpp" />
     <ClCompile Include="CMonsterState.cpp" />
     <ClCompile Include="CMotionBlur.cpp" />
     <ClCompile Include="CMRT.cpp" />
-    <ClCompile Include="CNavMeshMgr.cpp" />
+    <ClCompile Include="CNavMesh.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />
     <ClCompile Include="CParticleUpdateShader.cpp" />
     <ClCompile Include="CPathMgr.cpp" />

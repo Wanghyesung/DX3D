@@ -235,14 +235,17 @@
     <ClInclude Include="CMonsterMove.h">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClInclude>
-    <ClInclude Include="CNavMeshMgr.h">
-      <Filter>Source\03. Manager\11.NavMeshMgr</Filter>
-    </ClInclude>
     <ClInclude Include="CCopyBoneShader.h">
       <Filter>Source\08. ShaderCode\Compute</Filter>
     </ClInclude>
     <ClInclude Include="CInstancingBuffer.h">
       <Filter>Source\07. Resource\InstancingBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="CNavMesh.h">
+      <Filter>Source\06. Component\11. NavMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonsterIdle.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -474,14 +477,17 @@
     <ClCompile Include="CMonsterMove.cpp">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClCompile>
-    <ClCompile Include="CNavMeshMgr.cpp">
-      <Filter>Source\03. Manager\11.NavMeshMgr</Filter>
-    </ClCompile>
     <ClCompile Include="CCopyBoneShader.cpp">
       <Filter>Source\08. ShaderCode\Compute</Filter>
     </ClCompile>
     <ClCompile Include="CInstancingBuffer.cpp">
       <Filter>Source\07. Resource\InstancingBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavMesh.cpp">
+      <Filter>Source\06. Component\11. NavMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterIdle.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -698,11 +704,11 @@
     <Filter Include="Source\10. FSM\MonsterFSM">
       <UniqueIdentifier>{3fd5ef4a-bcf2-464f-9e9c-4d30c1ace57f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\03. Manager\11.NavMeshMgr">
-      <UniqueIdentifier>{1b3b64cf-cab7-498d-b29f-6c99ab899f90}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\07. Resource\InstancingBuffer">
       <UniqueIdentifier>{332cf7af-72c1-4b45-be00-c992d986e442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\06. Component\11. NavMesh">
+      <UniqueIdentifier>{ec4a9248-204a-4e7e-b6c5-dde9240fafdf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

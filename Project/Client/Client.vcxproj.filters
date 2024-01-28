@@ -253,9 +253,6 @@
     <ClInclude Include="TestLevel.h">
       <Filter>Level</Filter>
     </ClInclude>
-    <ClInclude Include="CStartLevel.h">
-      <Filter>Level</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -396,9 +393,6 @@
       <Filter>UI\InspectorUI\ComponentUI\11. Animator3DUI</Filter>
     </ClCompile>
     <ClCompile Include="TestLevel.cpp">
-      <Filter>Level</Filter>
-    </ClCompile>
-    <ClCompile Include="CStartLevel.cpp">
       <Filter>Level</Filter>
     </ClCompile>
   </ItemGroup>

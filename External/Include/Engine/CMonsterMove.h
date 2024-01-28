@@ -1,8 +1,8 @@
 #pragma once
-#include "CState.h"
+#include "CMonsterState.h"
 
 class CGameObject;
-class CMonsterMove : public CState
+class CMonsterMove : public CMonsterState
 {
 private:
 	CGameObject* m_pTarget;
