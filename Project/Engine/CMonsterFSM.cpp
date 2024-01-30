@@ -12,7 +12,7 @@ CMonsterFSM::~CMonsterFSM()
 {
 	map<MONSTER_STATE_TYPE, CMonsterState*>::iterator iter =
 		m_mapState.begin();
-
+	
 	for (; iter != m_mapState.end(); ++iter)
 	{
 		delete iter->second;

@@ -7,10 +7,16 @@ class CMonsterMove : public CMonsterState
 private:
 	CGameObject* m_pTarget;
 
+	float m_fCheckLen;
+
+	bool m_bActive;
 public:
 	virtual void final_tick()override;
 	virtual void Enter()override;
 	virtual void Exit()override;
+
+private:
+	void check_len();
 
 public:
 	CMonsterMove();

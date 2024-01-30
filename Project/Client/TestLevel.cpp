@@ -168,7 +168,7 @@ void CreateTestLevel()
 	pMonster->AddComponent(new CRigidbody());
 	pMonster->AddComponent(new CCollider3D());
 	pMonster->AddComponent(new CNavMesh);
-	pMonster->Collider3D()->SetOffsetScale(Vec3(200.f, 135.f, 340.f));
+	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
 	pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
 
 	pMonster->Collider3D()->SetAbsolute(true);
