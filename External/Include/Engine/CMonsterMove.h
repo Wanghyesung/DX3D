@@ -18,6 +18,9 @@ public:
 private:
 	void check_len();
 
+	void rotate();
+	void move();
+
 public:
 	CMonsterMove();
 	virtual ~CMonsterMove();

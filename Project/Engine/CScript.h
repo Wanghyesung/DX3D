@@ -46,6 +46,7 @@ public:
 
 public:   
     virtual void finaltick() final {};
+    virtual void begin() {};
     virtual void BeginOverlap(CCollider2D* _Other) {}
     virtual void OnOverlap(CCollider2D* _Other) {}
     virtual void EndOverlap(CCollider2D* _Other) {}

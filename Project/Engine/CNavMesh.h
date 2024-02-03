@@ -26,6 +26,8 @@ private:
 	//∞• πÊ«‚
 	Vec3 m_vSearchDir;
 
+	bool m_bActive;
+
 private:
 	//void init_target(int _ID);
 	void astar(pair<int, int> _tStart, pair<int, int> _tGoal);
@@ -38,6 +40,8 @@ private:
 public:
 	virtual void begin()override;
 	virtual void finaltick() override;
+
+	void SetActive(bool _bActive) { m_bActive = _bActive; }
 
 	void Initialize();
 

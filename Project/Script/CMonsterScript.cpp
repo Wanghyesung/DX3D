@@ -6,6 +6,9 @@
 #include <Engine\CMonsterFSM.h>
 
 #include <Engine\CMonsterMove.h>
+#include <Engine\CAnimator3D.h>
+
+
 
 CMonsterScript::CMonsterScript()
 	: CScript((UINT)SCRIPT_TYPE::MONSTERSCRIPT),
@@ -28,6 +31,24 @@ void CMonsterScript::tick()
 void CMonsterScript::BeginOverlap(CCollider2D* _Other)
 {
 	
+}
+
+void CMonsterScript::begin()
+{
+	/*CAnimation3D* pAnim = GetOwner()->Animator3D()->FindAnimation(L"Idle");
+
+	if (pAnim == nullptr)
+		return;
+
+	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::IDLE);*/
+
+	CMonsterState* pState = m_pFSM->FindState(MONSTER_STATE_TYPE::IDLE);
+	if (pState == nullptr)
+		assert(nullptr);
+
+	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
+
+	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::IDLE);
 }
 
 void CMonsterScript::Initialize(const wstring& _strFbxName)
@@ -69,14 +90,6 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 
 	m_pFSM = new CMonsterFSM();
 	m_pFSM->SetOwner(pMonster);
-
-	CMonsterMove* pMove = new CMonsterMove();
-	m_pFSM->AddState(MONSTER_STATE_TYPE::RUN, pMove);
-
-	m_pFSM->SetState(MONSTER_STATE_TYPE::RUN);
-	
-	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::RUN);
-	(m_pFSM, STATE_TYPE::IDLE);
 }
 
 void CMonsterScript::AddAnimFrame(const wstring& _strAnimName, int _iStart, int _iEnd)
@@ -89,3 +102,19 @@ void CMonsterScript::AddAnimFrame(const wstring& _strAnimName, int _iStart, int 
 	}
 }
 
+void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType,CMonsterState* _pState,
+									 const wstring& _strAnimName, int _iStartFrame, int _iEndFrame)
+{
+	if (!m_pFSM)
+		assert(nullptr);
+
+	m_pFSM->AddState(_eType, _pState);
+	_pState->SetName(_strAnimName);
+
+	const vector<CGameObject*>& vecGameObj = GetOwner()->GetChild();
+	UINT iSize = vecGameObj.size();
+	for (UINT i = 0; i < iSize; ++i)
+	{
+		vecGameObj[i]->Animator3D()->CreateAnimationF(_strAnimName, _iStartFrame, _iEndFrame);
+	}
+}

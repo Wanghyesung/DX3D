@@ -26,6 +26,7 @@ public:
 	void AddState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState);
 	void SetState(MONSTER_STATE_TYPE _eType);
 
+
 	void SetDir(const wstring& _strDir) { m_strDir = _strDir; }
 	const wstring& GetDir() { return m_strDir; }
 

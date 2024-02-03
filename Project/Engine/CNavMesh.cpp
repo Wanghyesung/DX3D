@@ -28,7 +28,8 @@ CNavMesh::CNavMesh() :
 	CComponent(COMPONENT_TYPE::NAVMESH),
 	m_fCurTime(0.f),
 	m_fTraceTime(0.2f),
-	m_vSearchDir(Vec3::Zero)
+	m_vSearchDir(Vec3::Zero),
+	m_bActive(false)
 {
 
 }
@@ -45,6 +46,9 @@ void CNavMesh::begin()
 
 void CNavMesh::finaltick()
 {
+	if (!m_bActive)
+		return;
+
 	m_fCurTime += DT;
 
 	if (m_fCurTime >= m_fTraceTime)
@@ -67,8 +71,8 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 
 	vector<tNode> vecWay;							//내가 간 길
 
-	int DX[8] = { 1, 1,-1, -1, 0 ,1, 0, -1, };				// 방향 좌표 ↘↗↙↖↑→↓← = 시계방향으로
-	int DZ[8] = { 1,-1, 1, -1, -1 ,0, 1,  0 , };
+	int DX[8] = { 1, 1,-1, -1, 0 ,1, 0, -1};				// 방향 좌표 ↘↗↙↖↑→↓← = 시계방향으로
+	int DZ[8] = { 1,-1, 1, -1, -1 ,0, 1,  0};
 
 	// 시작지점 초기화
 	tStartNode.x = _tStart.second; // x축이 second
@@ -166,7 +170,8 @@ void CNavMesh::init_map()
 	float fTem =vMonsterScale.z;
 	vMonsterScale.z = vMonsterScale.y;
 	vMonsterScale.y = fTem;
-	Vec3 vDivideSize = m_vLandScapeLen / vMonsterScale; // 120 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
+	Vec3 vDivideSize = m_vLandScapeLen / vMonsterScale; // 150 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
+	//120개
 	m_iDivideX = vDivideSize.x; //전체 지형을 나눌 수
 	m_iDivideZ = vDivideSize.z;
 

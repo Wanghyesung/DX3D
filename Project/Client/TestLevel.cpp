@@ -11,6 +11,9 @@
 #include <Engine\CWalkState.h>
 #include <Engine\CRunState.h>
 
+#include <Engine\CMonsterIdle.h>
+#include <Engine\CMonsterMove.h>
+
 #include <Engine\CResMgr.h>
 #include <Engine\CCollisionMgr.h>
 
@@ -162,25 +165,16 @@ void CreateTestLevel()
 	//pMonsterScript->Initialize(L"Taurus_Demon_Fianl"); //fbx load, FSM , components
 	//SpawnGameObject(pMonster, Vec3(400.f, 0.f, 400.f), L"Default");
 
-	CGameObject* pMonster = new CGameObject;
-	pMonster->SetName(L"Balder_Knight");
-	pMonster->AddComponent(new CTransform());
-	pMonster->AddComponent(new CRigidbody());
-	pMonster->AddComponent(new CCollider3D());
-	pMonster->AddComponent(new CNavMesh);
-	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
-	pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
-
-	pMonster->Collider3D()->SetAbsolute(true);
-	CMonsterScript* pMonsterScript = new CMonsterScript();
-	pMonster->AddComponent(pMonsterScript);
-	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
-	SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
+	CreateMonster();
 	
-	//CTerrainScript* pTerrainScript = new CTerrainScript();
-	//pStage->AddComponent(pTerrainScript);
-	//pTerrainScript->Initialize(L"test"); //fbx load, FSM , components
-	//SpawnGameObject(pStage, Vec3(200.f, 0.f, 200.f), (int)LAYER_TYPE::Terrain);
+	
+	
+	//CGameObject* pStage = new CGameObject();
+	//pStage->AddComponent(new CTransform());
+	//CTerrainScript* pTerrainScript2 = new CTerrainScript();
+	//pStage->AddComponent(pTerrainScript2);
+	//pTerrainScript2->Initialize(L"Stage Road1");
+	//SpawnGameObject(pStage, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Default);
 
 	// Main Camera Object »ý¼º
 	CGameObject* pMainCam = new CGameObject;
@@ -303,4 +297,39 @@ void CreateTestLevel()
 
 
 	//CNavMeshMgr::GetInst()->Init_Map();
+}
+
+void CreateMonster()
+{
+	CGameObject* pMonster = new CGameObject;
+	pMonster->SetName(L"Balder_Knight");
+	pMonster->AddComponent(new CTransform());
+	pMonster->AddComponent(new CRigidbody());
+	pMonster->AddComponent(new CCollider3D());
+	pMonster->AddComponent(new CNavMesh);
+	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
+	pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
+
+	pMonster->Collider3D()->SetAbsolute(true);
+	CMonsterScript* pMonsterScript = new CMonsterScript();
+	pMonster->AddComponent(pMonsterScript);
+
+	//pMonsterScript->AddAnimFrame(L"Idle", 0, 95);
+	//pMonsterScript->AddAnimFrame(L"Walk", 96, 140);
+	//pMonsterScript->AddAnimFrame(L"Walk_Back", 141, 186);
+	//pMonsterScript->AddAnimFrame(L"Run", 270, 304);
+	//pMonsterScript->AddAnimFrame(L"Down", 482, 602);
+	//pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
+	//pMonsterScript->AddAnimFrame(L"Attack1", 849, 949);
+	//pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
+
+	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+
+	CMonsterIdle* pIdle = new CMonsterIdle();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
+
+	CMonsterMove* pMove = new CMonsterMove();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::RUN,  pMove, L"Walk", 96, 140);
+
+	SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
 }

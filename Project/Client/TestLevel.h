@@ -2,3 +2,4 @@
 
 
 void CreateTestLevel();
+void CreateMonster();
