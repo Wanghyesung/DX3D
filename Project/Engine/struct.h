@@ -334,13 +334,15 @@ struct tGlobal
 
 extern tGlobal GlobalData;
 
-
+//공격 정보
 struct tAttackInfo
 {
 	int iAttackNum;
 
 	//공격할때 움직임
 	float fForce;
+	float fRotate;
+	float fMoveTime; //움직임 시간
 
 	//공격판정 시작프레임
 	int iStartFrame;
@@ -348,13 +350,23 @@ struct tAttackInfo
 
 	//공격 히트박스
 	Vec3 vAttackScale;
-	Vec3 vAttackPos;
+	Vec3 vAttackOffsetPos;//내 위치를 중심으로 얼마나 떨어져서 나타낼지
 	Vec3 vAttackRot;
 
 	//상대적일지
 };
 
+//공격 데미지 정보
+struct tAttack
+{
+	float fDamage;
 
+	float fAttRcnt;//맞으면 날라갈 양 X
+	float fAttUpperRcnt; //맞으면 띄어질 양 Y
+
+	bool bDown; //맞으면 넘어지는지
+	//float fAttRigidityTime; //경직 시간
+};
 
 
 

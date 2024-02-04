@@ -12,6 +12,9 @@ private:
 
 	CMonsterState* m_pCurState;
 	wstring m_strDir;
+
+	vector<tAttackInfo> m_vecAttackInfo;
+
 public:
 	void final_tick();
 
@@ -30,8 +33,9 @@ public:
 	void SetDir(const wstring& _strDir) { m_strDir = _strDir; }
 	const wstring& GetDir() { return m_strDir; }
 
-
-	void AddAttack(tAttackInfo _tAttackInfo);
+	void AddMonsterAttack(const tAttackInfo& _tAttackInfo);
+	
+	const tAttackInfo& GetAttackInfo(UINT _iNum);
 
 	CLONE_DISABLE(CMonsterFSM);
 public:

@@ -3,6 +3,26 @@
 #include "CGameObject.h"
 #include "CAnimator3D.h"
 
+CFSM::CFSM() :
+    m_pOwner(nullptr),
+    m_mapState{},
+    m_pCurState(nullptr),
+    m_strDir(L"Front")
+{
+}
+
+CFSM::~CFSM()
+{
+    map<STATE_TYPE, CState*>::iterator iter =
+        m_mapState.begin();
+
+    for (; iter != m_mapState.end(); ++iter)
+    {
+        delete iter->second;
+        iter->second = nullptr;
+    }
+}
+
 void CFSM::final_tick()
 {
     if (!m_pCurState)
@@ -66,30 +86,12 @@ void CFSM::SetState(STATE_TYPE _eType)
     m_pCurState = pState;
 }
 
-void CFSM::AddAttack(tAttackInfo _tAttackInfo)
+void CFSM::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj)
 {
     CAttackState* pAttackState = dynamic_cast<CAttackState*>(FindState(STATE_TYPE::ATTACK));
 
-    pAttackState->AddAttack(_tAttackInfo);
+    pAttackState->AddAttack(_tAttackInfo, _pAttackObj);
 }
 
-CFSM::CFSM() :
-    m_pOwner(nullptr),
-    m_mapState{},
-    m_pCurState(nullptr),
-    m_strDir(L"Front")
-{
-}
 
-CFSM::~CFSM()
-{
-    map<STATE_TYPE, CState*>::iterator iter =
-        m_mapState.begin();
-
-    for (; iter != m_mapState.end(); ++iter)
-    {
-        delete iter->second;
-        iter->second = nullptr;
-    }
-}
 

@@ -38,7 +38,7 @@ void CRollState::Enter()
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 15.f;
+	float fSpeed = 5.f;
 	Vec3 vForce = Vec3::Zero;
 
 	wstring strDir = GetFSM()->GetDir();

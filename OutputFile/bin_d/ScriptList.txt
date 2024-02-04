@@ -1,3 +1,4 @@
+CAttackScript
 CCameraMoveScript
 CGravityScript
 CMissileScript

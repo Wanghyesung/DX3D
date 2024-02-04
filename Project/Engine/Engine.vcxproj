@@ -210,6 +210,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CMeshData.h" />
     <ClInclude Include="CMeshRender.h" />
+    <ClInclude Include="CMonsterAttack.h" />
     <ClInclude Include="CMonsterFSM.h" />
     <ClInclude Include="CMonsterIdle.h" />
     <ClInclude Include="CMonsterMove.h" />
@@ -298,6 +299,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CMeshData.cpp" />
     <ClCompile Include="CMeshRender.cpp" />
+    <ClCompile Include="CMonsterAttack.cpp" />
     <ClCompile Include="CMonsterFSM.cpp" />
     <ClCompile Include="CMonsterIdle.cpp" />
     <ClCompile Include="CMonsterMove.cpp" />

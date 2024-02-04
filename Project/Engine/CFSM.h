@@ -29,7 +29,7 @@ public:
 	const wstring& GetDir() { return m_strDir; }
 
 
-	void AddAttack(tAttackInfo _tAttackInfo);
+	void AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj);
 
 	CLONE_DISABLE(CFSM);
 public:

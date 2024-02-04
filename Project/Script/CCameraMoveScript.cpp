@@ -115,12 +115,12 @@ void CCameraMoveScript::move_target()
 	vRot.x = XM_PI / 10.f;
 	vRot.y = vTargetRot.y;
 	//vTargetFoword *= -1;
-	float fMaxDistance = 1000.f;
+	float fMaxDistance = 500.f;
 	vTargetFoword *= fMaxDistance;
 
 	Vec3 vTargetPos = m_pTarget->Transform()->GetRelativePos();
 	Vec3 vFinalPos = vTargetPos + vTargetFoword;
-	vFinalPos.y += 500.f;
+	vFinalPos.y += 400.f;
 
 	Transform()->SetRelativeRot(vRot);
 	//GlobalData.CameraRot = vRot;

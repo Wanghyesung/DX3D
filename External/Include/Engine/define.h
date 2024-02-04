@@ -29,6 +29,7 @@ enum class LAYER_TYPE
 	LandScape, //전체 땅
 	landform, //지형지물
 	Terrain, //지형
+	Attack,
 	Light,
 	Camera,
 	UI = 31,
@@ -244,7 +245,7 @@ enum class EVENT_TYPE
 {
 	CREATE_OBJECT,	// wParam : GameObject, lParam : Layer Index
 	DELETE_OBJECT,  // wParam : GameObject
-
+	ERASE_OBJECT,   // wParam : GameObject, lParam : Layer Index
 	ADD_CHILD,
 
 	DELETE_RESOURCE,	// wParam : RES_TYPE, lParam : Resource Adress

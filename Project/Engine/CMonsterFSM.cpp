@@ -3,6 +3,7 @@
 
 #include "CMonsterState.h"
 
+
 CMonsterFSM::CMonsterFSM()
 {
 
@@ -81,12 +82,22 @@ void CMonsterFSM::SetState(MONSTER_STATE_TYPE _eType)
 	m_pCurState = pState;
 }
 
-
-void CMonsterFSM::AddAttack(tAttackInfo _tAttackInfo)
+void CMonsterFSM::AddMonsterAttack(const tAttackInfo& _tAttackInfo)
 {
-	//CAttackState* pAttackState = dynamic_cast<CAttackState*>(FindState(STATE_TYPE::ATTACK));
-	//
-	//pAttackState->AddAttack(_tAttackInfo);
+	if (_tAttackInfo.iAttackNum > m_vecAttackInfo.size())
+	{
+		m_vecAttackInfo.resize(_tAttackInfo.iAttackNum + 1);
+	}
+
+	m_vecAttackInfo[_tAttackInfo.iAttackNum] = _tAttackInfo;
+}
+
+const tAttackInfo& CMonsterFSM::GetAttackInfo(UINT _iNum)
+{
+	if (m_vecAttackInfo.size() < _iNum)
+		assert(nullptr);
+
+	return m_vecAttackInfo[_iNum];
 }
 
 

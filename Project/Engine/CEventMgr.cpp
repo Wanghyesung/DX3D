@@ -55,6 +55,18 @@ void CEventMgr::tick()
 		}
 		break;
 
+		case EVENT_TYPE::ERASE_OBJECT:
+		{
+			CGameObject* EraseObject = (CGameObject*)m_vecEvent[i].wParam;
+			int iLayerIdx = (int)m_vecEvent[i].lParam;
+
+			if (false == EraseObject->m_bDead)
+			{
+				CLevelMgr::GetInst()->EraseObject(iLayerIdx, EraseObject);
+			}
+		}
+		break;
+
 		case EVENT_TYPE::ADD_CHILD:
 			// wParam : ParentObject, lParam : ChildObject
 		{

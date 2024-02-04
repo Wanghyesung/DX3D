@@ -23,7 +23,11 @@ public:
 public:
     void AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState,
                          const wstring& _strAnimName, int _iStartFrame, int _iEndFrame);
-  
+    void AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState, const wstring& _strAnimName);
+
+    void AddMonsterAttack(int _iAttackNum, float _fForce, float _fRotate, float _fTime, int _iStartFrame, int _iEndFrame,
+                          Vec3 _vAttackScale, Vec3 _vAttackPos, Vec3 _vAttackRot);
+
 public:
     CMonsterScript();
     ~CMonsterScript();

@@ -39,6 +39,7 @@ public:
 
     friend class CLevel;
     friend class CGameObject;
+    friend class CLevelMgr;
     friend class CEventMgr;
 };
 

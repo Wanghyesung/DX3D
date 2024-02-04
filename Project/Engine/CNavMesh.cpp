@@ -79,23 +79,19 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 	tStartNode.z = _tStart.first; //  z축이 first
 	tStartNode.iCurCos = 0; //현재 비용은 0
 
-	//여기서 10은 1 : 1 : √2를 계산할때 쉽게 나타내기 위해서 10을 곱해서 표현한 것입니다
-	//상하좌우 움직임 비용은 10 대각선 비용은 14
-	//내 시작 노드에서 목표까지의 최종 값을 계산합니다 (x축으로 얼마나 먼지 z축으로 얼마나 먼지)
 	tStartNode.iGoalCos = (abs(_tGoal.second - tStartNode.x) + abs(_tGoal.first - tStartNode.z)) * 10;
 	tStartNode.pParentNode = make_pair(-1, -1);				// 시작 노드의 부모 노드는 -1,-1
 	queueWay.push(tStartNode);
-	//m_vecClose[tStartNode.z][tStartNode.x] = true;				// 내가 간 지점(다시 못 오게)
-
+	
 	while (!queueWay.empty()) //내 
 	{
 		int x = queueWay.top().x;						// 우선순위 큐에서 top 정보 추출
 		int z = queueWay.top().z;
 		int cost = queueWay.top().iCurCos;
 		vecWay.push_back(queueWay.top());
-		m_vecMap[z][x] = 8; //제가 간 길을 기록해두기 위해서 8로 설정(내가 간 길 , 현재 이번 노드)
+		m_vecMap[z][x] = 8; 
 		queueWay.pop();
-		if (x == _tGoal.second && z == _tGoal.first) break;	// 도착 지점이 나오면 끝
+		if (x == _tGoal.second && z == _tGoal.first) break;	
 
 		tNode tAddNode; //주변탐색에 쓰일 노드
 		for (int i = 0; i < 8; i++)
@@ -112,8 +108,8 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 					tAddNode.z = nextZ;
 					tAddNode.iCurCos = i >= 4 ? cost + 10 : cost + 14;// 상하좌우면 10, 대각선이면 14(√200)
 					tAddNode.iGoalCos = (abs(_tGoal.second - tAddNode.x) + abs(_tGoal.first - tAddNode.z)) * 10;
-					tAddNode.pParentNode = make_pair(z, x);	// 기존 top노드를 부모 노드로 설정
-					//m_vecClose[nextZ][nextX] = true;		// 내가 간 길은 true해서 다시 못오게
+					tAddNode.pParentNode = make_pair(z, x);	
+
 					m_vecMap[nextZ][nextX] = 9;		// 탐색한 주변 노드 = (아직 가지 않았으니깐 9로 표시)
 					queueWay.push(tAddNode);				// 우선순위 큐에 삽입	
 				}

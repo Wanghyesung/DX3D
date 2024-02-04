@@ -49,6 +49,20 @@ void DestroyObject(CGameObject* _DeletObject)
 	CEventMgr::GetInst()->AddEvent(evn);
 }
 
+void EraseObject(CGameObject* _EraseObject, int _LayerIdx)
+{
+	if (_EraseObject->IsDead())
+		return;
+
+	tEvent evn = {};
+
+	evn.Type = EVENT_TYPE::ERASE_OBJECT;
+	evn.wParam = (DWORD_PTR)_EraseObject;
+	evn.lParam = _LayerIdx;
+
+	CEventMgr::GetInst()->AddEvent(evn);
+}
+
 //게임 오브젝트의 원본 포인터 
 bool IsValidObj(CGameObject*& _Target)
 {

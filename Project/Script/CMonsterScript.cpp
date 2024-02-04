@@ -118,3 +118,31 @@ void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType,CMonsterState* _p
 		vecGameObj[i]->Animator3D()->CreateAnimationF(_strAnimName, _iStartFrame, _iEndFrame);
 	}
 }
+
+void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState, const wstring& _strAnimName)
+{
+	if (!m_pFSM)
+		assert(nullptr);
+
+	m_pFSM->AddState(_eType, _pState);
+	_pState->SetName(_strAnimName);
+}
+
+void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRotate, float _fTime, int _iStartFrame, int _iEndFrame,
+									Vec3 _vAttackScale, Vec3 _vAttackPos, Vec3 _vAttackRot)
+{
+	tAttackInfo tAttackInfo = {};
+	tAttackInfo.iAttackNum = _iAttackNum;
+	tAttackInfo.fForce = _fForce;
+	tAttackInfo.fRotate = _fRotate;
+	tAttackInfo.fMoveTime = _fTime;
+
+	tAttackInfo.iStartFrame = _iStartFrame;
+	tAttackInfo.iEndFrame = _iEndFrame;
+
+	tAttackInfo.vAttackScale = _vAttackScale;
+	tAttackInfo.vAttackOffsetPos = _vAttackPos;
+	tAttackInfo.vAttackRot = _vAttackRot;
+
+	m_pFSM->AddMonsterAttack(tAttackInfo);
+}

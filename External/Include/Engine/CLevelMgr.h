@@ -14,7 +14,9 @@ private:
 public:
     CLevel* GetCurLevel() { return m_pCurLevel; }
     CGameObject* FindObjectByName(const wstring& _strName);
+
     void FindObjectByName(const wstring& _strName, vector<CGameObject*>& _Out);
+    void EraseObject(int _iLayer, CGameObject* _pGameObj);
 
     CLevel* FindLevel(const wstring& _strName);
     void ChangeLevel(CLevel* _pLevel);

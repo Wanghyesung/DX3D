@@ -20,6 +20,9 @@ void SpawnGameObject(CGameObject* _NewObject, Vec3 _vWorldPos, const wstring& _L
 // 오브젝트 삭제
 void DestroyObject(CGameObject* _DeletObject);
 
+// 오브젝트 씬에서 제거
+void EraseObject(CGameObject* _EraseObject, int _LayerIdx);
+
 bool IsValidObj(CGameObject*& _Target);
 
 // State Chanage

@@ -50,6 +50,21 @@ void CLevelMgr::FindObjectByName(const wstring& _strName, vector<CGameObject*>& 
 	m_pCurLevel->FindObjectByName(_strName, _vec);
 }
 
+void CLevelMgr::EraseObject(int _iLayer, CGameObject* _pGameObj)
+{
+	vector<CGameObject*>& vecObj = m_pCurLevel->GetLayer(_iLayer)->m_vecParentObj;
+
+	vector<CGameObject*>::iterator iter = vecObj.begin();
+	for (iter; iter != vecObj.end(); ++iter)
+	{
+		if (*iter == _pGameObj)
+		{
+			vecObj.erase(iter);
+			return;
+		}
+	}
+}
+
 CLevel* CLevelMgr::FindLevel(const wstring& _strName)
 {
 	map<wstring, CLevel*>::iterator iter =

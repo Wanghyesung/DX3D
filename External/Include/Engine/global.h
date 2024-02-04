@@ -16,6 +16,7 @@ using std::string;
 using std::unordered_map;
 using std::pair;
 using std::priority_queue;
+using std::queue;
 
 #include <typeinfo>
 #include <assert.h>
@@ -59,8 +60,6 @@ typedef Vector4 Vec4;
 #else
 #pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
 #endif
-
-// PhysX 
 
 
 #include "define.h"

@@ -56,7 +56,10 @@ void CRigidbody::finaltick()
 	if (m_bGround)
 	{
 		if (m_bAccumulate)
+		{
 			m_vVelocity += (m_vAccelation * DT);
+			m_vVelocity.y = 0.f;
+		}
 		else
 			m_vVelocity = (m_vAccelation * DT);
 

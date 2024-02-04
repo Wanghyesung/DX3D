@@ -13,6 +13,7 @@
 
 #include <Engine\CMonsterIdle.h>
 #include <Engine\CMonsterMove.h>
+#include <Engine\CMonsterAttack.h>
 
 #include <Engine\CResMgr.h>
 #include <Engine\CCollisionMgr.h>
@@ -319,8 +320,8 @@ void CreateMonster()
 	//pMonsterScript->AddAnimFrame(L"Walk_Back", 141, 186);
 	//pMonsterScript->AddAnimFrame(L"Run", 270, 304);
 	//pMonsterScript->AddAnimFrame(L"Down", 482, 602);
-	//pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
-	//pMonsterScript->AddAnimFrame(L"Attack1", 849, 949);
+	pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
+	pMonsterScript->AddAnimFrame(L"Attack1", 849, 949);
 	//pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
 
 	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
@@ -330,6 +331,11 @@ void CreateMonster()
 
 	CMonsterMove* pMove = new CMonsterMove();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::RUN,  pMove, L"Walk", 96, 140);
+
+	CMonsterAttack* pAttack = new CMonsterAttack();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
+
+	//pMonsterScript->AddMonsterAttack(0,0.f,0.f,)
 
 	SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
 }

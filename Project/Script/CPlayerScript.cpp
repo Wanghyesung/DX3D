@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CPlayerScript.h"
+#include "CAttackScript.h"
 
 #include <Engine\CMeshRender.h>
 #include <Engine\CMaterial.h>
@@ -47,55 +48,6 @@ void CPlayerScript::tick()
 	}
 
 	m_pFSM->final_tick();
-	//Vec3 vCurPos = Transform()->GetRelativePos();
-
-	//Vec3 vFoward = Transform()->GetRelativeDir(DIR_TYPE::FRONT);
-	//Vec3 vUp = Transform()->GetRelativeDir(DIR_TYPE::UP);
-	//Vec3 vRight = Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
-	//
-	//Vec3 vForce = Vec3::Zero;
-	//if (KEY_PRESSED(KEY::LSHIFT))
-	//{
-	//	m_fSpeed = 1600.f;
-	//}
-	//else
-	//{
-	//	m_fSpeed = 800.f;
-	//}
-	//
-	//if (KEY_PRESSED(KEY::W))
-	//{
-	//	vFoward *= m_fSpeed;
-	//	
-	//	vForce += vFoward;
-	//}
-	//
-	//else if (KEY_PRESSED(KEY::S))
-	//{
-	//	
-	//	vFoward *= m_fSpeed;
-	//	
-	//	vForce -= vFoward;
-	//
-	//}
-	//
-	//if (KEY_PRESSED(KEY::A))
-	//{
-	//	vRight *= m_fSpeed;
-	//	
-	//	vForce -= vRight;
-	//
-	//}
-	//
-	//else if (KEY_PRESSED(KEY::D))
-	//{
-	//	vRight *= m_fSpeed;
-	//	
-	//	vForce += vRight;
-	//}
-	//
-	//Rigidbody()->AddForce(vForce);
-	//Transform()->SetRelativePos(vCurPos);
 }
 
 void CPlayerScript::SetFSM(CFSM* _pFSM)
@@ -209,44 +161,51 @@ void CPlayerScript::set_attack()
 	//Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
 
 	tAttackInfo attack0 = {};
-	attack0.fForce = 10.f;
 	attack0.iAttackNum = 0;
-	pAttack->AddAttack(attack0);
+	attack0.fForce = 5.f;
+	attack0.fMoveTime = 0.6f;
+	attack0.iStartFrame = 528;
+	attack0.iEndFrame = 530;
+	attack0.vAttackScale = Vec3(150.f, 150.f, 150.f);
+	attack0.vAttackOffsetPos = Vec3(0.f, 0.f, 80.f);
+	CGameObject* pAttackObj = new CGameObject();
+	pAttackObj->AddComponent(new CAttackScript);
+	m_pFSM->AddAttack(attack0, pAttackObj);
 
-	tAttackInfo attack1 = {};
-	attack1.fForce = 10.f;
-	attack1.iAttackNum = 1;
-	pAttack->AddAttack(attack1);
-
-	tAttackInfo attack2 = {};
-	attack2.iAttackNum = 2;
-	attack2.fForce = 10.f;
-	pAttack->AddAttack(attack2);
-
-	tAttackInfo attack3 = {};
-	attack3.fForce = 10.f;
-	attack3.iAttackNum = 3;
-	pAttack->AddAttack(attack3);
-
-	tAttackInfo attack4 = {};
-	attack4.fForce = 10.f;
-	attack4.iAttackNum = 4;
-	pAttack->AddAttack(attack4);
-
-	tAttackInfo attack5 = {};
-	attack5.fForce = 10.f;
-	attack5.iAttackNum = 5;
-	pAttack->AddAttack(attack5);
-
-	tAttackInfo attack6 = {};
-	attack6.fForce = 10.f;
-	attack6.iAttackNum = 6;
-	pAttack->AddAttack(attack6);
-
-	tAttackInfo attack7 = {};
-	attack7.fForce = 10.f;
-	attack7.iAttackNum = 7;
-	pAttack->AddAttack(attack7);
+	//tAttackInfo attack1 = {};
+	//attack1.fForce = 10.f;
+	//attack1.iAttackNum = 1;
+	//pAttack->AddAttack(attack1);
+	//
+	//tAttackInfo attack2 = {};
+	//attack2.iAttackNum = 2;
+	//attack2.fForce = 10.f;
+	//pAttack->AddAttack(attack2);
+	//
+	//tAttackInfo attack3 = {};
+	//attack3.fForce = 10.f;
+	//attack3.iAttackNum = 3;
+	//pAttack->AddAttack(attack3);
+	//
+	//tAttackInfo attack4 = {};
+	//attack4.fForce = 10.f;
+	//attack4.iAttackNum = 4;
+	//pAttack->AddAttack(attack4);
+	//
+	//tAttackInfo attack5 = {};
+	//attack5.fForce = 10.f;
+	//attack5.iAttackNum = 5;
+	//pAttack->AddAttack(attack5);
+	//
+	//tAttackInfo attack6 = {};
+	//attack6.fForce = 10.f;
+	//attack6.iAttackNum = 6;
+	//pAttack->AddAttack(attack6);
+	//
+	//tAttackInfo attack7 = {};
+	//attack7.fForce = 10.f;
+	//attack7.iAttackNum = 7;
+	//pAttack->AddAttack(attack7);
 }
 
 void CPlayerScript::rotate()

@@ -247,6 +247,9 @@
     <ClInclude Include="CMonsterIdle.h">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClInclude>
+    <ClInclude Include="CMonsterAttack.h">
+      <Filter>Source\10. FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -488,6 +491,9 @@
     </ClCompile>
     <ClCompile Include="CMonsterIdle.cpp">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterAttack.cpp">
+      <Filter>Source\10. FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
