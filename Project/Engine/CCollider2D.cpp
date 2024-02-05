@@ -55,36 +55,36 @@ void CCollider2D::finaltick()
 
 void CCollider2D::BeginOverlap(CCollider2D* _Other)
 {
-	m_iCollisionCount += 1;
-
-	// Script 호출
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(_Other);
-	}
+	//m_iCollisionCount += 1;
+	//
+	//// Script 호출
+	//const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	//for (size_t i = 0; i < vecScript.size(); ++i)
+	//{
+	//	vecScript[i]->BeginOverlap(_Other);
+	//}
 }
 
 void CCollider2D::OnOverlap(CCollider2D* _Other)
 {
 	// Script 호출
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->OnOverlap(_Other);
-	}
+	//const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	//for (size_t i = 0; i < vecScript.size(); ++i)
+	//{
+	//	vecScript[i]->OnOverlap(_Other);
+	//}
 }
 
 void CCollider2D::EndOverlap(CCollider2D* _Other)
 {
-	m_iCollisionCount -= 1;
-
-	// Script 호출
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(_Other);
-	}
+	//m_iCollisionCount -= 1;
+	//
+	//// Script 호출
+	//const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	//for (size_t i = 0; i < vecScript.size(); ++i)
+	//{
+	//	vecScript[i]->EndOverlap(_Other);
+	//}
 }
 
 void CCollider2D::SaveToLevelFile(FILE* _File)

@@ -28,10 +28,18 @@ void CMonsterScript::tick()
 	m_pFSM->final_tick();
 }
 
-void CMonsterScript::BeginOverlap(CCollider2D* _Other)
+void CMonsterScript::BeginOverlap(CCollider3D* _Other)
 {
-	
 }
+
+void CMonsterScript::OnOverlap(CCollider3D* _Other)
+{
+}
+
+void CMonsterScript::EndOverlap(CCollider3D* _Other)
+{
+}
+
 
 void CMonsterScript::begin()
 {
@@ -129,7 +137,7 @@ void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _
 }
 
 void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRotate, float _fTime, int _iStartFrame, int _iEndFrame,
-									Vec3 _vAttackScale, Vec3 _vAttackPos, Vec3 _vAttackRot)
+									Vec3 _vAttackScale, float _fOffsetPos, Vec3 _vAttackRot)
 {
 	tAttackInfo tAttackInfo = {};
 	tAttackInfo.iAttackNum = _iAttackNum;
@@ -141,7 +149,7 @@ void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRo
 	tAttackInfo.iEndFrame = _iEndFrame;
 
 	tAttackInfo.vAttackScale = _vAttackScale;
-	tAttackInfo.vAttackOffsetPos = _vAttackPos;
+	tAttackInfo.fOffsetPos = _fOffsetPos;
 	tAttackInfo.vAttackRot = _vAttackRot;
 
 	m_pFSM->AddMonsterAttack(tAttackInfo);

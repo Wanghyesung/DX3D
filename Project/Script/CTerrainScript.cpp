@@ -18,7 +18,15 @@ void CTerrainScript::tick()
 {
 }
 
-void CTerrainScript::BeginOverlap(CCollider2D* _Other)
+void CTerrainScript::BeginOverlap(CCollider3D* _Other)
+{
+}
+
+void CTerrainScript::OnOverlap(CCollider3D* _Other)
+{
+}
+
+void CTerrainScript::EndOverlap(CCollider3D* _Other)
 {
 }
 

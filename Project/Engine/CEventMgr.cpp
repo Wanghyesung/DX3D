@@ -24,6 +24,7 @@ void CEventMgr::tick()
 	m_LevelChanged = false;
 
 	GC_Clear();
+	EC_Clear();
 
 	for (size_t i = 0; i < m_vecEvent.size(); ++i)
 	{
@@ -34,7 +35,10 @@ void CEventMgr::tick()
 		{
 			CGameObject* NewObject = (CGameObject*)m_vecEvent[i].wParam;
 			int iLayerIdx = (int)m_vecEvent[i].lParam;
+			NewObject->m_bDead = false;
+
 			CLevelMgr::GetInst()->GetCurLevel()->AddGameObject(NewObject, iLayerIdx, false);
+
 			if (CLevelMgr::GetInst()->GetCurLevel()->GetState() == LEVEL_STATE::PLAY)
 			{
 				NewObject->begin();
@@ -62,7 +66,9 @@ void CEventMgr::tick()
 
 			if (false == EraseObject->m_bDead)
 			{
-				CLevelMgr::GetInst()->EraseObject(iLayerIdx, EraseObject);
+				//충돌 해지시키기 위해서 이번프레임만 살림
+				EraseObject->m_bDead = true;
+				m_vecEC.push_back(make_pair(iLayerIdx, EraseObject));
 			}
 		}
 		break;
@@ -150,4 +156,19 @@ void CEventMgr::GC_Clear()
 		}
 	}
 	m_vecGC.clear();
+}
+
+void CEventMgr::EC_Clear()
+{
+	for (size_t i = 0; i < m_vecEC.size(); ++i)
+	{
+		if (nullptr != m_vecEC[i].second)
+		{
+			CLevelMgr::GetInst()->EraseObject(m_vecEC[i].first, m_vecEC[i].second);
+
+			//outliner에서 확인하고 tool에서 목록 갱신
+			m_LevelChanged = true;
+		}
+	}
+	m_vecEC.clear();
 }

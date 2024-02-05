@@ -334,6 +334,20 @@ struct tGlobal
 
 extern tGlobal GlobalData;
 
+
+//공격 데미지, 판정 ..
+//공격 데미지 정보
+struct tAttack
+{
+	float fDamage;
+
+	float fAttRcnt;//맞으면 날라갈 양 X
+	float fAttUpperRcnt; //맞으면 띄어질 양 Y
+
+	bool bDown; //맞으면 넘어지는지
+	//float fAttRigidityTime; //경직 시간
+};
+
 //공격 정보
 struct tAttackInfo
 {
@@ -349,24 +363,13 @@ struct tAttackInfo
 	int iEndFrame;
 
 	//공격 히트박스
+	float fOffsetPos;//캐릭터 앞벡터 중심으로 얼마나 떨어져서 나타낼지
 	Vec3 vAttackScale;
-	Vec3 vAttackOffsetPos;//내 위치를 중심으로 얼마나 떨어져서 나타낼지
 	Vec3 vAttackRot;
 
-	//상대적일지
+	tAttack tAttackValue;
 };
 
-//공격 데미지 정보
-struct tAttack
-{
-	float fDamage;
-
-	float fAttRcnt;//맞으면 날라갈 양 X
-	float fAttUpperRcnt; //맞으면 띄어질 양 Y
-
-	bool bDown; //맞으면 넘어지는지
-	//float fAttRigidityTime; //경직 시간
-};
 
 
 

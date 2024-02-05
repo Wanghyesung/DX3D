@@ -24,6 +24,8 @@ public:
     void SetCollider2DType(COLLIDER3D_TYPE _Type) { m_Shape = _Type; }
 
     const Matrix& GetColliderWorldMat() { return m_matCollider3D; }
+    const Vec3& GetWorldPos();
+
     Vec3 GetOffsetPos() { return m_vOffsetPos; }
     Vec3 GetOffsetScale() { return m_vOffsetScale; }
     bool GetIsAbsolute() { return m_bAbsolute; }

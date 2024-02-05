@@ -21,6 +21,8 @@ public:
 
 	bool IsGround() { return m_bGround; }
 
+	void SetFricoeff(bool _bFricoeff) { m_bFricoeff = _bFricoeff; }
+
 	void SetVelocity(Vector3 _vVelocity) { m_vVelocity = _vVelocity; }
 	void AddVelocity(Vector3 _vVelocity) { m_vVelocity += _vVelocity; }
 	Vector3 GetVelocity() { return m_vVelocity; }
@@ -29,6 +31,10 @@ public:
 	void AddForce(Vector3 _vForce) { m_vForce = _vForce; }
 
 	void SetAcumulate(bool _bAcc) { m_bAccumulate = _bAcc; }
+
+private:
+	void friction_force();
+
 private:
 	Vec3 m_vMaxVelocity;
 	Vec3 m_vVelocity;
@@ -39,6 +45,9 @@ private:
 
 	bool m_bAccumulate;//힘들 누적해서 받을지
 	bool m_bGround;
+	
+	float m_fFricCoeff;//마찰력 적용
+	bool m_bFricoeff;
 
 	float m_fMass;
 

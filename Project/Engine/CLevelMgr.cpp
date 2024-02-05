@@ -17,12 +17,6 @@ CLevelMgr::~CLevelMgr()
 
 void CLevelMgr::init()
 {
-	/*CStartLevel* pStartLevel = new CStartLevel();
-	pStartLevel->init();
-	pStartLevel->ChangeState(LEVEL_STATE::STOP);
-	m_mapLevel.insert(make_pair(pStartLevel->GetName(), pStartLevel));
-	m_pCurLevel = pStartLevel;
-	m_pCurLevel->enter();*/
 	m_pCurLevel = new CLevel;
 	m_pCurLevel->ChangeState(LEVEL_STATE::STOP);
 }

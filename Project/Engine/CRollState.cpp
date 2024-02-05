@@ -26,6 +26,7 @@ void CRollState::final_tick()
 void CRollState::Exit()
 {
 	GetOwner()->Rigidbody()->SetAcumulate(false);
+	GetOwner()->Rigidbody()->SetFricoeff(false);
 }
 
 void CRollState::Enter()
@@ -35,10 +36,13 @@ void CRollState::Enter()
 	wstring strFinalAnim = GetName() + GetFSM()->GetDir();
 	Chanage_Anim(strFinalAnim, false);
 
+	pObj->Rigidbody()->SetFricoeff(true);
+	pObj->Rigidbody()->SetAcumulate(true);
+
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 5.f;
+	float fSpeed = 10.f;
 	Vec3 vForce = Vec3::Zero;
 
 	wstring strDir = GetFSM()->GetDir();
@@ -71,7 +75,6 @@ void CRollState::Enter()
 
 	vForce.y = 0.f;
 	pObj->Rigidbody()->SetVelocity(vForce);
-	pObj->Rigidbody()->SetAcumulate(true);
 }
 
 

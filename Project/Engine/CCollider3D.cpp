@@ -2,6 +2,7 @@
 #include "CCollider3D.h"
 
 #include "CTransform.h"
+#include "CScript.h"
 CCollider3D::CCollider3D() :
 	CComponent(COMPONENT_TYPE::COLLIDER3D)
 	, m_Shape(COLLIDER3D_TYPE::CUBE)
@@ -50,19 +51,40 @@ void CCollider3D::finaltick()
 		DrawDebugCircle(m_matCollider3D, vColor, 0.f);
 }
 
+const Vec3& CCollider3D::GetWorldPos()
+{
+	//위치 행렬만
+	 return Vec3(m_matCollider3D._41, m_matCollider3D._42, m_matCollider3D._43);
+}
+
 void CCollider3D::BeginOverlap(CCollider3D* _Other)
 {
-	int a = 10;
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	
+	for (int i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->BeginOverlap(_Other);
+	}
 }
 
 void CCollider3D::OnOverlap(CCollider3D* _Other)
 {
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 
+	for (int i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->OnOverlap(_Other);
+	}
 }
 
 void CCollider3D::EndOverlap(CCollider3D* _Other)
 {
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 
+	for (int i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->EndOverlap(_Other);
+	}
 }
 
 void CCollider3D::SaveToLevelFile(FILE* _File)

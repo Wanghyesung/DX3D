@@ -115,10 +115,11 @@ void CAttackState::check_event()
 		m_pCurGameObj = m_vecAttackObj[m_tCurAttack.iAttackNum].front();
 		m_vecAttackObj[m_tCurAttack.iAttackNum].pop();
 
-		//중심은 물체의 충돌체 위치를 중심으로 잡음
-		Matrix matWorld = GetOwner()->Collider3D()->GetColliderWorldMat();
-		Vec3 vPos = Vec3(matWorld._41, matWorld._42, matWorld._43);
-		vPos += m_tCurAttack.vAttackOffsetPos;
+		//중심은 물체의 충돌체 위치를 중심으로 잡음 
+		Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
+		Vec3 vDir = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+		Vec3 vOffsetPos = -vDir * m_tCurAttack.fOffsetPos;
+		vPos += vOffsetPos;
 
 		//rotate는 collider에서 처리를 하지않음
 		Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();

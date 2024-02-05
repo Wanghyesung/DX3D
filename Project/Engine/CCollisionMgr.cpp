@@ -144,19 +144,6 @@ bool CCollisionMgr::CollisionBtwCollider(CCollider3D* _pLeft, CCollider3D* _pRig
 	// |    |
 	// 3 -- 2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	Vec3 arrLocal[8] =
 	{
 		//¾Õ¸é

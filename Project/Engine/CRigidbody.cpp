@@ -10,7 +10,9 @@ CRigidbody::CRigidbody() :
 	m_vMaxVelocity(Vec3(500.f, 500.f, 500.f)),
 	m_vGravity(Vec3(0.f, -9.6f, 0.f)),
 	m_bGround(true),
-	m_bAccumulate(false)
+	m_bAccumulate(false),
+	m_bFricoeff(false),
+	m_fFricCoeff(10.f)
 {
 
 }
@@ -70,6 +72,11 @@ void CRigidbody::finaltick()
 		float dot = m_vVelocity.Dot(vGravity);
 		m_vVelocity += vGravity * dot;
 
+		if (m_bFricoeff)
+		{
+			friction_force();
+		}
+
 		vPos += m_vVelocity;
 	}
 
@@ -93,4 +100,21 @@ void CRigidbody::finaltick()
 
 	m_vAccelation = Vec3::Zero;
 	m_vForce = Vec3::Zero;
+}
+
+void CRigidbody::friction_force()
+{
+	Vec3 vNor = -m_vVelocity;
+	vNor.Normalize();
+
+	Vec3 vFric = vNor * m_fFricCoeff * DT; //¸¶Âû·Â Àû¿ë
+	vFric.y = 0.f;
+	if (m_vVelocity.Length() <= vFric.Length())
+	{
+		m_vVelocity = Vec3(0.f, 0.f, 0.f);
+	}
+	else
+	{
+		m_vVelocity += vFric;
+	}
 }

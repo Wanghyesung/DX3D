@@ -30,7 +30,7 @@
 
 void CreateTestLevel()
 {
-	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Default);
+	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Attack, (UINT)LAYER_TYPE::Monster);
 	//return;
 
 	// 컴퓨트 쉐이더 테스트
@@ -147,9 +147,11 @@ void CreateTestLevel()
 	pAritorias->SetName(L"Aritorias");
 	pAritorias->AddComponent(new CTransform());
 	pAritorias->AddComponent(new CRigidbody());
-	pAritorias->AddComponent(new CCollider3D());
-	pAritorias->Collider3D()->SetOffsetScale(Vec3(120.f, 150.f, 120.f));
-	pAritorias->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 125.f));
+	CCollider3D* pCollider = new CCollider3D();
+	pCollider->SetAbsolute(true);
+	pCollider->SetOffsetScale(Vec3(120.f, 150.f, 120.f));
+	pCollider->SetOffsetPos(Vec3(0.f, 0.f, 125.f));
+	pAritorias->AddComponent(pCollider);
 
 	CPlayerScript* pScript = new CPlayerScript(); 
 	pAritorias->AddComponent(pScript);

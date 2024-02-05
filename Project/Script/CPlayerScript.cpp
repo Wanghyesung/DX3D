@@ -50,6 +50,8 @@ void CPlayerScript::tick()
 	m_pFSM->final_tick();
 }
 
+
+
 void CPlayerScript::SetFSM(CFSM* _pFSM)
 {
 	m_pFSM = _pFSM;
@@ -166,10 +168,14 @@ void CPlayerScript::set_attack()
 	attack0.fMoveTime = 0.6f;
 	attack0.iStartFrame = 528;
 	attack0.iEndFrame = 530;
+	attack0.fOffsetPos = 60.f;
 	attack0.vAttackScale = Vec3(150.f, 150.f, 150.f);
-	attack0.vAttackOffsetPos = Vec3(0.f, 0.f, 80.f);
+	attack0.tAttackValue.fAttRcnt = 5.f;
+
+	CAttackScript* pAttackScript = new CAttackScript();
+	pAttackScript->SetAttackValue(attack0.tAttackValue);
 	CGameObject* pAttackObj = new CGameObject();
-	pAttackObj->AddComponent(new CAttackScript);
+	pAttackObj->AddComponent(pAttackScript);
 	m_pFSM->AddAttack(attack0, pAttackObj);
 
 	//tAttackInfo attack1 = {};
@@ -225,14 +231,17 @@ void CPlayerScript::rotate()
 
 }
 
-
-
-void CPlayerScript::BeginOverlap(CCollider2D* _Other)
+void CPlayerScript::BeginOverlap(CCollider3D* _Other)
 {
-
 }
 
+void CPlayerScript::OnOverlap(CCollider3D* _Other)
+{
+}
 
+void CPlayerScript::EndOverlap(CCollider3D* _Other)
+{
+}
 
 
 

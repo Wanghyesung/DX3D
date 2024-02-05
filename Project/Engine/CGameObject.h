@@ -39,6 +39,7 @@ private:
 
     int                     m_iLayerIdx;
     bool                    m_bDead;
+
     float                   m_LifeTime;
     float                   m_CurLifeTime;
     bool                    m_bLifeSpan;

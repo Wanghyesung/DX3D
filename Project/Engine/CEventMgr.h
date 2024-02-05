@@ -8,8 +8,9 @@ class CEventMgr :
 {
     SINGLE(CEventMgr);
 private:
-    vector<tEvent>          m_vecEvent;
-    vector<CGameObject*>    m_vecGC;
+    vector<tEvent>                  m_vecEvent;
+    vector<CGameObject*>            m_vecGC;//삭제 오브젝트
+    vector<pair<int, CGameObject*>> m_vecEC;//씬에서만 제거
 
     bool                    m_LevelChanged;
 
@@ -19,7 +20,7 @@ public:
 
 private:
     void GC_Clear();
-
+    void EC_Clear();
 public:
     void tick();
 };
