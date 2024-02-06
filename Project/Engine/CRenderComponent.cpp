@@ -72,6 +72,9 @@ void CRenderComponent::SetMaterial(Ptr<CMaterial> _Mtrl, UINT _idx)
 
 Ptr<CMaterial> CRenderComponent::GetMaterial(UINT _idx)
 {
+	if (m_vecMtrls.size() <= 0)
+		return nullptr;
+
 	if (nullptr == m_vecMtrls[_idx].pCurMtrl)
 	{
 		m_vecMtrls[_idx].pCurMtrl = m_vecMtrls[_idx].pSharedMtrl;
@@ -117,6 +120,7 @@ ULONG64 CRenderComponent::GetInstID(UINT _iMtrlIdx)
 		return 0;
 
 	//인스턴싱을 위한 메쉬 아이디
+	//재질의 아이디와 메쉬의 아이디로 구분함
 	uInstID id{ (UINT)m_pMesh->GetID(), (WORD)m_vecMtrls[_iMtrlIdx].pCurMtrl->GetID(), (WORD)_iMtrlIdx };
 	return id.llID;
 }

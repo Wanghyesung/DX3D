@@ -14,6 +14,7 @@
 #include <Engine\CMonsterIdle.h>
 #include <Engine\CMonsterMove.h>
 #include <Engine\CMonsterAttack.h>
+#include <Engine\CMonsterHit.h>
 
 #include <Engine\CResMgr.h>
 #include <Engine\CCollisionMgr.h>
@@ -156,6 +157,10 @@ void CreateTestLevel()
 	CPlayerScript* pScript = new CPlayerScript(); 
 	pAritorias->AddComponent(pScript);
 	pScript->Initialize(); //fbx load, FSM , components
+
+	//pAritorias->AddComponent(new CMotionBlur());
+	//pAritorias->MotionBlur()->Initialize();
+
 	SpawnGameObject(pAritorias, Vec3(300.f, 0.f, 100.f), (int)LAYER_TYPE::Player);
 	
 
@@ -321,6 +326,7 @@ void CreateMonster()
 	//pMonsterScript->AddAnimFrame(L"Walk", 96, 140);
 	//pMonsterScript->AddAnimFrame(L"Walk_Back", 141, 186);
 	//pMonsterScript->AddAnimFrame(L"Run", 270, 304);
+    //pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
 	//pMonsterScript->AddAnimFrame(L"Down", 482, 602);
 	pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
 	pMonsterScript->AddAnimFrame(L"Attack1", 849, 949);
@@ -337,6 +343,8 @@ void CreateMonster()
 	CMonsterAttack* pAttack = new CMonsterAttack();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
 
+	CMonsterHit* pHit = new CMonsterHit();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 431, 481);
 	//pMonsterScript->AddMonsterAttack(0,0.f,0.f,)
 
 	SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);

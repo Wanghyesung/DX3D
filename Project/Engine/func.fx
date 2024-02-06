@@ -178,6 +178,7 @@ void GaussianSample(in Texture2D _NoiseTex, float2 _vResolution, float _Nomalize
 matrix GetBoneMat(int _iBoneIdx, int _iRowIdx)
 {
     //열(row) = 0
+    //같은 물체에서 몇번째로 그릴지 _iRowIdx 
     return g_arrBoneMat[(g_iBoneCount * _iRowIdx) + _iBoneIdx];
 }
 

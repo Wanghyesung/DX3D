@@ -57,9 +57,10 @@ enum class COMPONENT_TYPE
 	COLLIDER2D,		// 2차원 충돌
 	COLLIDER3D,		// 3차원 충돌
 
-	MOTIONBLUR,		// 흔들림 효과 이전 프레임 위치 정보 저장
 	ANIMATOR2D,		// Sprite Animation
 	ANIMATOR3D,		// Bone Sknning Animation
+	MOTIONBLUR,		// 흔들림 효과 이전 프레임 위치 정보 저장
+
 	LIGHT2D,		// 2차원 광원
 	LIGHT3D,		// 3차원 광원
 	RIGIDBODY,		// 힘을받는 강체
@@ -275,6 +276,7 @@ enum class MONSTER_STATE_TYPE
 	ROLL,
 	ATTACK,
 	JUMP,
+	HIT,
 	END,
 };
 

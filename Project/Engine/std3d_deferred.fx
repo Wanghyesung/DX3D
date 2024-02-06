@@ -33,6 +33,8 @@ struct VTX_IN_INST
     float4 vIndices : BLENDINDICES;
 
     // Per Instance Data
+    //같은 재질이여도 물체의 위치가 다르기 때문에 vertexbuffer
+    //tInstancingData로 전달
     row_major matrix matWorld : WORLD;
     row_major matrix matWV : WV;
     row_major matrix matWVP : WVP;

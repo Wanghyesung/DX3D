@@ -18,9 +18,6 @@
     <ClInclude Include="CMissileScript.h">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="CMonsterScript.h">
-      <Filter>Script</Filter>
-    </ClInclude>
     <ClInclude Include="CPlayerScript.h">
       <Filter>Script</Filter>
     </ClInclude>
@@ -45,15 +42,15 @@
     <ClInclude Include="CAttackScript.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="CMonsterScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCameraMoveScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CMissileScript.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="CMonsterScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerScript.cpp">
@@ -78,6 +75,9 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CAttackScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>

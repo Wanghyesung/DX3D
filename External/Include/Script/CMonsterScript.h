@@ -10,6 +10,8 @@ class CMonsterScript :
 private:
     CMonsterFSM* m_pFSM;
 
+    tMonsterInfo m_tMonsterInfo;
+    tHitInfo m_tHitInfo;
 public:
     virtual void tick() override;
     virtual void BeginOverlap(CCollider3D* _Other)override;
@@ -32,6 +34,8 @@ public:
     void AddMonsterAttack(int _iAttackNum, float _fForce, float _fRotate, float _fTime, int _iStartFrame, int _iEndFrame,
                           Vec3 _vAttackScale, float _fOffsetPos, Vec3 _vAttackRot);
 
+    void SetMonsterInfo(const tMonsterInfo& _tInfo) { m_tMonsterInfo = _tInfo; }
+    void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
 public:
     CMonsterScript();
     ~CMonsterScript();

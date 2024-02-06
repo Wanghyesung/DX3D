@@ -11,7 +11,8 @@
 CMonsterMove::CMonsterMove():
 	m_fCheckLen(2000.f),
 	m_pTarget(nullptr),
-	m_bActive(false)
+	m_bActive(false),
+	m_fStopLen(100.f)
 {
 	
 }
@@ -48,6 +49,7 @@ void CMonsterMove::Enter()
 void CMonsterMove::Exit()
 {
 	GetOwner()->NavMesh()->SetActive(false);
+	m_bActive = false;
 }
 
 void CMonsterMove::check_len()
@@ -55,12 +57,9 @@ void CMonsterMove::check_len()
 	if (m_pTarget == nullptr)
 		return;
 
-	Matrix matTargetWorld = m_pTarget->Collider3D()->GetColliderWorldMat();
-	Vec3 vTargetPos = Vec3(matTargetWorld._41, matTargetWorld._42, matTargetWorld._43);
+	Vec3 vTargetPos = m_pTarget->Collider3D()->GetWorldPos();
 
-	Matrix matWorld = GetOwner()->Collider3D()->GetColliderWorldMat();
-	Vec3 vPos = Vec3(matWorld._41, matWorld._42, matWorld._43);
-
+	Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
 
 	float fLen = (vTargetPos - vPos).Length();
 
@@ -69,6 +68,8 @@ void CMonsterMove::check_len()
 	else
 		m_bActive = false;
 
+	if (fLen <= m_fStopLen)
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
 	//여기서 공격
 	
 }
@@ -76,8 +77,6 @@ void CMonsterMove::check_len()
 void CMonsterMove::rotate()
 {
 	Vec3 vDir = GetOwner()->NavMesh()->GetTargetPath();
-	if (vDir == Vec3::Zero)
-		return;
 
 	//z <--> y fbx축 
 	Vec3 vFoward = Vec3(0.f, 0.f, -1.f);

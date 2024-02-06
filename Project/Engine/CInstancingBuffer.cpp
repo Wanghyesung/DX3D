@@ -63,6 +63,7 @@ void CInstancingBuffer::SetData()
 	UINT iBoneCount = m_vecBoneMat[0]->GetElementCount();
 	m_pCopyShader->SetBoneCount(iBoneCount);
 
+	//물체다의 본 정보를 인스턴싱
 	for (UINT i = 0; i < (UINT)m_vecBoneMat.size(); ++i)
 	{
 		m_pCopyShader->SetRowIndex(i);

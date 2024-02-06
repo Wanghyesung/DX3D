@@ -98,6 +98,7 @@ void CCollisionMgr::CollisionBtwObject(CGameObject* _LeftObject, CGameObject* _R
 		{
 			_LeftObject->Collider3D()->EndOverlap(_RightObject->Collider3D());
 			_RightObject->Collider3D()->EndOverlap(_LeftObject->Collider3D());
+			iter->second = false;
 		}
 		else if (iter->second)
 		{

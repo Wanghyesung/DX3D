@@ -58,7 +58,7 @@ float4 PS_MiddleMergeShader(VS_OUT _in) : SV_Target
     float4 vBackColor;
     for (int i = 0; i < SAMPLE_COUNT; ++i)
     {
-        float2 sampleTexCoord = vScreenUV + (velocity.xy * float(i) * 0.06f);
+        float2 sampleTexCoord = vScreenUV + (velocity.xy * float(i) * 0.04f);
         vBackColor = ColorTargetTex.Sample(g_sam_0, sampleTexCoord.xy);
         
         vColor += vBackColor;

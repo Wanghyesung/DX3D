@@ -1,6 +1,16 @@
 #include "pch.h"
 #include "CJumpState.h"
 
+CJumpState::CJumpState()
+{
+
+}
+
+CJumpState::~CJumpState()
+{
+
+}
+
 void CJumpState::final_tick()
 {
 
@@ -16,12 +26,3 @@ void CJumpState::Exit()
 
 }
 
-CJumpState::CJumpState()
-{
-
-}
-
-CJumpState::~CJumpState()
-{
-
-}

@@ -237,7 +237,8 @@ struct tMTAnimClip
 
 // ===========
 // Instancing
-// ===========
+// ===========\
+//물체 구분해서 모아두는 용
 union uInstID
 {
 	struct
@@ -370,6 +371,20 @@ struct tAttackInfo
 	tAttack tAttackValue;
 };
 
+struct tMonsterInfo
+{
+	float fHP;
+	float fSpeed;
+};
+
+struct tHitInfo
+{
+	//맞으면 날라갈 양
+	float fHitRcnt;
+	
+	//넘어질지
+	bool bDown;
+};
 
 
 

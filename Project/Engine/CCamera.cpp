@@ -290,6 +290,7 @@ void CCamera::SortObject()
 						if (0 == uID.llID)
 							continue;
 
+						//처음 들어온 인스턴싱 아이디
 						map<ULONG64, vector<tInstObj>>::iterator iter = pMap->find(uID.llID);
 						if (iter == pMap->end())
 						{
@@ -312,6 +313,9 @@ void CCamera::SortObject()
 						break;
 					case SHADER_DOMAIN::DOMAIN_UI:
 						m_vecUI.push_back(vecObject[j]);
+						break;
+					case SHADER_DOMAIN::DOMAIN_BLUR:
+						m_vecBlur.push_back(vecObject[j]);
 						break;
 					}
 				}
@@ -473,6 +477,7 @@ void CCamera::render_deferred()
 		}
 
 		//인스턴싱 (같은 메쉬, 재질 .. 한번에 렌더링)
+		//오브젝트가 전부 같은 메쉬 재질을 가지고있기때문에 0번에 접근
 		CGameObject* pObj = pair.second[0].pObj;
 		Ptr<CMesh> pMesh = pObj->GetRenderComponent()->GetMesh();
 		Ptr<CMaterial> pMtrl = pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx);
@@ -484,10 +489,12 @@ void CCamera::render_deferred()
 		bool bHasAnim3D = false;
 		for (UINT i = 0; i < pair.second.size(); ++i)
 		{
+			//물체마다의 위치는 다르기 때문에 행렬 업데이트
 			tInstData.matWorld = pair.second[i].pObj->Transform()->GetWorldMat();
 			tInstData.matWV = tInstData.matWorld * m_matView;
 			tInstData.matWVP = tInstData.matWV * m_matProj;
 
+			//애니메이션이 있다면 rowidx를 늘려서 구분해주기
 			if (pair.second[i].pObj->Animator3D())
 			{
 				pair.second[i].pObj->Animator3D()->UpdateData();

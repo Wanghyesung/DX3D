@@ -9,7 +9,7 @@ private:
 
 	//Å½»ö ¹üÀ§
 	float m_fCheckLen;
-
+	float m_fStopLen;
 public:
 	virtual void final_tick()override;
 	virtual void Enter()override;
@@ -19,7 +19,6 @@ public:
 
 private:
 	void check_player();
-
 public:
 	CMonsterIdle();
 	virtual ~CMonsterIdle();

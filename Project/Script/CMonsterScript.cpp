@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CMonsterScript.h"
+#include "CAttackScript.h"
 
 #include <Engine\CRenderMgr.h>
 #include <Engine\CRigidbody.h>
@@ -7,7 +8,7 @@
 
 #include <Engine\CMonsterMove.h>
 #include <Engine\CAnimator3D.h>
-
+#include <Engine\CMonsterHit.h>
 
 
 CMonsterScript::CMonsterScript()
@@ -30,26 +31,35 @@ void CMonsterScript::tick()
 
 void CMonsterScript::BeginOverlap(CCollider3D* _Other)
 {
+
 }
 
 void CMonsterScript::OnOverlap(CCollider3D* _Other)
 {
+	CGameObject* pObj = _Other->GetOwner();
+
+	CAttackScript* pAttack = pObj->GetScript<CAttackScript>();
+	if (pAttack)
+	{
+		bool bOn = pAttack->IsAttackOn(GetOwner()->GetID());
+		if (bOn)
+		{
+			CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
+			pHit->SetHitInfo(m_tHitInfo);
+
+			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+		}
+	}
 }
 
 void CMonsterScript::EndOverlap(CCollider3D* _Other)
 {
+
 }
 
 
 void CMonsterScript::begin()
 {
-	/*CAnimation3D* pAnim = GetOwner()->Animator3D()->FindAnimation(L"Idle");
-
-	if (pAnim == nullptr)
-		return;
-
-	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::IDLE);*/
-
 	CMonsterState* pState = m_pFSM->FindState(MONSTER_STATE_TYPE::IDLE);
 	if (pState == nullptr)
 		assert(nullptr);

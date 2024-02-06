@@ -8,8 +8,12 @@ private:
 	CGameObject* m_pTarget;
 
 	float m_fCheckLen;
+	float m_fStopLen;
+
 
 	bool m_bActive;
+
+
 public:
 	virtual void final_tick()override;
 	virtual void Enter()override;

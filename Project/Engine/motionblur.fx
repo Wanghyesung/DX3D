@@ -3,6 +3,7 @@
 
 #include "value.fx"
 #include "struct.fx"
+#include "func.fx"
 
 struct VS_MOTIONBLUR_IN
 {
@@ -13,6 +14,11 @@ struct VS_MOTIONBLUR_IN
     float2 vUV : TEXCOORD;
     
     float3 vNormal : NORMAL;
+    
+      //»À °¡ÁßÄ¡
+    float4 vWeights : BLENDWEIGHT;
+    //»À ÀÎµ¦½º
+    float4 vIndices : BLENDINDICES;
 };
 
 struct VS_MOTIONBLUR_OUT
@@ -53,9 +59,13 @@ VS_MOTIONBLUR_OUT VS_Motion_Blur(VS_MOTIONBLUR_IN _in)
     
     output.vUV = _in.vUV;
     output.vNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV));
+   
+    if (g_iAnim)
+    {
+        AnimationSkinning(_in.vPos, _in.vWeights, _in.vIndices, 0);
+    }
     output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
     
-   
     float4 vNewPos = output.vPosition;
     float4 vPrevPos = mul(float4(_in.vPos, 1.f), g_matPrevWorld);
     vPrevPos = mul(vPrevPos, g_matPrevView);

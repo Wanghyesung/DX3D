@@ -1,6 +1,15 @@
 #pragma once
 #include <Engine\CScript.h>
 
+struct tCheckInfo
+{
+    int ID;
+    float fAttackTime;
+    float fCurTime;
+
+    bool bAttackOn;
+};
+
 class CAttackScript :
     public CScript
 {
@@ -9,17 +18,14 @@ private:
 
     CGameObject* m_pSpawnOwner;//객체를 소환한 오브젝트
 
-    int m_iAttackCount; //공격 가능 횟수
-    float m_fAttackTime; //다음 공격 가능 시간
-
     //내 범위에 들어온 몬스터들
-    vector<UINT> m_vecAbleAttack;
-    vector<float> m_vecTime;
-
+    vector< tCheckInfo> m_vecCheck;
+  
 private:
-    void add_monster(UINT _ID);
+    void add_monster(int _ID);
+    void erase_monster(int _ID);
 
-    UINT find_monster(UINT _ID);
+    tCheckInfo& find_monster(int _ID);
 public:
     virtual void tick() override;
     virtual void begin()override;
@@ -29,8 +35,10 @@ public:
     virtual void EndOverlap(CCollider3D* _Other)override; 
 
     void SetSpawnOwner(CGameObject* _pGameObj) { m_pSpawnOwner = _pGameObj; }
-
     void SetAttackValue(const tAttack& _tAttack) { m_tAttack = _tAttack; }
+    const tAttack& GetAttackValue() { return m_tAttack; }
+
+    bool IsAttackOn(int _ID);
 private:
     CLONE(CAttackScript);
 

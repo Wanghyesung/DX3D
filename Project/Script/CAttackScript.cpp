@@ -1,5 +1,9 @@
+#include "CAttackScript.h"
 #include "pch.h"
 #include "CAttackScript.h"
+#include "CMonsterScript.h"
+
+#include <Engine\CTimeMgr.h>
 #include <Engine\CAttackState.h>
 
 CAttackScript::CAttackScript() :
@@ -12,44 +16,115 @@ CAttackScript::~CAttackScript()
 
 }
 
-void CAttackScript::add_monster(UINT _ID)
+void CAttackScript::add_monster(int _ID)
 {
+	vector< tCheckInfo>::iterator iter = m_vecCheck.begin();
+	for (iter; iter != m_vecCheck.end(); ++iter)
+	{
+		if (iter->ID == _ID)
+			return;
+	}
+
 	//첫 공격
-	m_vecAbleAttack[_ID] = 1;
+	tCheckInfo tInfo = {};
+	tInfo.ID = _ID;
+	tInfo.fAttackTime = 0.5f;
+	tInfo.fCurTime = 0.f;
+	tInfo.bAttackOn = true;
+
+	m_vecCheck.push_back(tInfo);
 }
 
-UINT CAttackScript::find_monster(UINT _ID)
+void CAttackScript::erase_monster(int _ID)
 {
-	if (m_vecAbleAttack.size() < _ID)
+	vector< tCheckInfo>::iterator iter = m_vecCheck.begin();
+	for (iter; iter != m_vecCheck.end(); ++iter)
 	{
-		m_vecAbleAttack.resize(_ID + 1);
+		if (iter->ID == _ID)
+		{
+			m_vecCheck.erase(iter);
+			return;
+		}
 	}
-	return m_vecAbleAttack[_ID]; 
-	//0 없음 1있음
+}
+
+tCheckInfo& CAttackScript::find_monster(int _ID)
+{
+	vector< tCheckInfo>::iterator iter = m_vecCheck.begin();
+	for (iter; iter != m_vecCheck.end(); ++iter)
+	{
+		if (iter->ID == _ID)
+			return *iter;
+	}
+	tCheckInfo tNULL = {};
+
+	return tNULL;
 }
 
 void CAttackScript::tick()
 {
+	vector< tCheckInfo>::iterator iter = m_vecCheck.begin();
+
+	for (iter; iter != m_vecCheck.end(); ++iter)
+	{
+		if (iter->bAttackOn)
+			continue;
+
+		iter->fCurTime += DT;
+		if (iter->fCurTime >= iter->fAttackTime)
+		{
+			iter->bAttackOn = true;
+			iter->fCurTime = 0.f;
+		}
+	}	
 
 }
 
 void CAttackScript::begin()
 {
-	m_vecAbleAttack.clear();
+	m_vecCheck.clear();
 }
 
 void CAttackScript::BeginOverlap(CCollider3D* _Other)
 {
-	int a = 10;
-	//find_monster()
+	CMonsterScript* pMonsterScript = _Other->GetOwner()->GetScript<CMonsterScript>();
+	if (pMonsterScript)
+	{
+		add_monster(_Other->GetOwner()->GetID());
+
+		tHitInfo tHit = {};
+		tHit.bDown = m_tAttack.bDown;
+		tHit.fHitRcnt = m_tAttack.fAttRcnt;
+
+		pMonsterScript->SetHitInfo(tHit);
+	}
 }
 
 void CAttackScript::OnOverlap(CCollider3D* _Other)
-{
-
+{	
+	
 }
 
 void CAttackScript::EndOverlap(CCollider3D* _Other)
 {
-	int a = 10;
+	CMonsterScript* pMonsterScript = _Other->GetOwner()->GetScript<CMonsterScript>();
+	if (pMonsterScript)
+	{
+		erase_monster(_Other->GetOwner()->GetID());
+	}
+}
+
+bool CAttackScript::IsAttackOn(int _ID)
+{
+	tCheckInfo& tInfo = find_monster(_ID);
+	if(tInfo.ID == -1)
+		return false;
+
+	if (tInfo.bAttackOn)
+	{
+		tInfo.bAttackOn = false;
+		return true;
+	}
+
+	return false;
 }
