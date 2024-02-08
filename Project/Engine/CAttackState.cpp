@@ -70,15 +70,10 @@ void CAttackState::Enter()
 {
 	std::random_device rDiv;
 	std::mt19937 en(rDiv());
-	std::uniform_int_distribution<int> num(0, 7);
+	std::uniform_int_distribution<int> num(0, 1);
 	int iNum = (int)num(en);
-	iNum = 0;
 	m_tCurAttack = m_vecAttack[iNum];
 	m_strAttackNum = std::to_wstring(iNum);
-
-	//юс╫ц
-	if (iNum == 4)
-		m_strAttackNum = L"0";
 
 	GetOwner()->Rigidbody()->SetAcumulate(true);
 
@@ -135,7 +130,7 @@ void CAttackState::check_event()
 
 		EraseObject(m_pCurGameObj, (int)LAYER_TYPE::Attack);
 
-		add_objpull(m_iCurAttack, m_pCurGameObj);
+		add_objpull(m_tCurAttack.iAttackNum, m_pCurGameObj);
 		m_pCurGameObj = nullptr;
 	}
 }

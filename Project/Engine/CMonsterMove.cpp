@@ -24,14 +24,23 @@ CMonsterMove::~CMonsterMove()
 
 void CMonsterMove::final_tick()
 {
-	check_len();
-
-	if (!m_bActive)
+	if (m_pTarget == nullptr)
 		return;
 
-	rotate();
+	if (check_len())
+	{
+		lookat_player();
+	}
 
-	move();
+	else
+	{
+		if (!m_bActive)
+			return;
+
+		rotate();
+
+		move();
+	}
 }
 
 void CMonsterMove::Enter()
@@ -52,11 +61,8 @@ void CMonsterMove::Exit()
 	m_bActive = false;
 }
 
-void CMonsterMove::check_len()
+bool CMonsterMove::check_len()
 {
-	if (m_pTarget == nullptr)
-		return;
-
 	Vec3 vTargetPos = m_pTarget->Collider3D()->GetWorldPos();
 
 	Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
@@ -69,9 +75,13 @@ void CMonsterMove::check_len()
 		m_bActive = false;
 
 	if (fLen <= m_fStopLen)
+	{
+		//여기서 플레어 방향까지 회전
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
-	//여기서 공격
-	
+		return true;
+	}
+
+	return false;
 }
 
 void CMonsterMove::rotate()
@@ -104,7 +114,7 @@ void CMonsterMove::rotate()
 
 	float fDiff = fabs(vFinalRot.y - vRot.y);
 	//각도가 크게 변경되었을 때
-	if (fDiff >= XM_PI)
+	if (fDiff >= XM_PI/2.f)
 		GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 	else
 		GetOwner()->Transform()->SetRelativeRot(vLerpRot);
@@ -116,6 +126,34 @@ void CMonsterMove::move()
 	vForward *= -1;
 	vForward.y = 0.f;
 	GetOwner()->Rigidbody()->AddForce(vForward * 400.f);
+}
+
+void CMonsterMove::lookat_player()
+{
+	Vec3 vTargetPos = m_pTarget->Collider3D()->GetWorldPos();
+	Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
+
+	Vec3 vDir = (vTargetPos - vPos).Normalize();
+
+	Vec3 vFoward = Vec3(0.f, 0.f, -1.f);
+
+	float fRadian;
+	float fCos = vDir.Dot(vFoward);
+
+	//외적 이용 오른쪽 왼쪽 판별
+	Vec3 vCross = vFoward.Cross(vDir);
+
+	if (vCross.y >= 0)
+	{
+		fRadian = XM_PI + acos(fCos);
+	}
+	else
+	{
+		fRadian = XM_PI - acos(fCos);
+	}
+
+	Vec3 vFinalRot = Vec3(-XM_PI / 2.f, fRadian, 0.f);
+	GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 }
 
 

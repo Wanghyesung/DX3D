@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CMonsterScript.h"
+#include "CMonsterAttackScript.h"
 #include "CAttackScript.h"
 
 #include <Engine\CRenderMgr.h>
@@ -9,7 +10,8 @@
 #include <Engine\CMonsterMove.h>
 #include <Engine\CAnimator3D.h>
 #include <Engine\CMonsterHit.h>
-
+#include <Engine\CTransform.h>
+#include <Engine\CCollider3D.h>
 
 CMonsterScript::CMonsterScript()
 	: CScript((UINT)SCRIPT_TYPE::MONSTERSCRIPT),
@@ -47,7 +49,14 @@ void CMonsterScript::OnOverlap(CCollider3D* _Other)
 			CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
 			pHit->SetHitInfo(m_tHitInfo);
 
-			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+			if (m_tHitInfo.bDown)
+			{
+				int a = 10;
+			}
+			else
+			{
+				ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+			}
 		}
 	}
 }
@@ -162,5 +171,14 @@ void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRo
 	tAttackInfo.fOffsetPos = _fOffsetPos;
 	tAttackInfo.vAttackRot = _vAttackRot;
 
-	m_pFSM->AddMonsterAttack(tAttackInfo);
+	//고정 데미지
+	tAttackInfo.tAttackValue.bDown = false;
+	tAttackInfo.tAttackValue.fAttRcnt = 5.f;
+	tAttackInfo.tAttackValue.fDamage = 5.f;
+
+	CGameObject* pAttackObj = new CGameObject();
+	CMonsterAttackScript* pAttack = new CMonsterAttackScript();
+	pAttack->SetAttackValue(tAttackInfo.tAttackValue);
+	pAttackObj->AddComponent(pAttack);
+	m_pFSM->AddMonsterAttack(tAttackInfo, pAttackObj);
 }

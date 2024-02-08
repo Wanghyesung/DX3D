@@ -32,6 +32,8 @@
 void CreateTestLevel()
 {
 	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Attack, (UINT)LAYER_TYPE::Monster);
+	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::MonsterAttack, (UINT)LAYER_TYPE::Player);
+
 	//return;
 
 	// 컴퓨트 쉐이더 테스트
@@ -181,7 +183,7 @@ void CreateTestLevel()
 	//pStage->AddComponent(new CTransform());
 	//CTerrainScript* pTerrainScript2 = new CTerrainScript();
 	//pStage->AddComponent(pTerrainScript2);
-	//pTerrainScript2->Initialize(L"Stage Road1");
+	//pTerrainScript2->Initialize(L"Stage2");
 	//SpawnGameObject(pStage, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Default);
 
 	// Main Camera Object 생성
@@ -322,17 +324,17 @@ void CreateMonster()
 	CMonsterScript* pMonsterScript = new CMonsterScript();
 	pMonster->AddComponent(pMonsterScript);
 
+	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+
 	//pMonsterScript->AddAnimFrame(L"Idle", 0, 95);
 	//pMonsterScript->AddAnimFrame(L"Walk", 96, 140);
 	//pMonsterScript->AddAnimFrame(L"Walk_Back", 141, 186);
 	//pMonsterScript->AddAnimFrame(L"Run", 270, 304);
-    //pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
-	//pMonsterScript->AddAnimFrame(L"Down", 482, 602);
+    pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
+	pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
 	pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
-	pMonsterScript->AddAnimFrame(L"Attack1", 849, 949);
+	pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
 	//pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
-
-	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
 
 	CMonsterIdle* pIdle = new CMonsterIdle();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
@@ -344,8 +346,10 @@ void CreateMonster()
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
 
 	CMonsterHit* pHit = new CMonsterHit();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 431, 481);
-	//pMonsterScript->AddMonsterAttack(0,0.f,0.f,)
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
+
+	pMonsterScript->AddMonsterAttack(0, 5.f, 0.f, 0.6f, 629, 631, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
+	pMonsterScript->AddMonsterAttack(1, 5.f, 0.f, 0.6f, 882, 885, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
 
 	SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
 }

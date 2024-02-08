@@ -2,6 +2,7 @@ CAttackScript
 CCameraMoveScript
 CGravityScript
 CMissileScript
+CMonsterAttackScript
 CMonsterScript
 CPlayerScript
 CTerrainScript

@@ -34,7 +34,14 @@ void CMonsterHit::Exit()
 
 void CMonsterHit::Enter()
 {
-	Chanage_Anim(GetName(),false);
+	if (m_tHitInfo.bDown)
+	{
+		Chanage_Anim(GetName()+ L"Down", false);
+	}
+	else
+	{
+		Chanage_Anim(GetName(), false);
+	}
 
 	CRigidbody* pRigidbody = GetOwner()->Rigidbody();
 	pRigidbody->SetAcumulate(true);

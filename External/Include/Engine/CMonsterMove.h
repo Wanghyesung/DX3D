@@ -20,11 +20,12 @@ public:
 	virtual void Exit()override;
 
 private:
-	void check_len();
+	bool check_len();
 
 	void rotate();
 	void move();
 
+	void lookat_player();
 public:
 	CMonsterMove();
 	virtual ~CMonsterMove();

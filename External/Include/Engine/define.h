@@ -30,6 +30,7 @@ enum class LAYER_TYPE
 	landform, //지형지물
 	Terrain, //지형
 	Attack,
+	MonsterAttack,
 	Light,
 	Camera,
 	UI = 31,
@@ -265,6 +266,7 @@ enum class STATE_TYPE
 	ROLL,
 	ATTACK,
 	JUMP,
+	HIT,
 	END,
 };
 

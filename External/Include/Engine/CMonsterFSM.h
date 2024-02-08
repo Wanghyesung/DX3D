@@ -33,9 +33,7 @@ public:
 	void SetDir(const wstring& _strDir) { m_strDir = _strDir; }
 	const wstring& GetDir() { return m_strDir; }
 
-	void AddMonsterAttack(const tAttackInfo& _tAttackInfo);
-	
-	const tAttackInfo& GetAttackInfo(UINT _iNum);
+	void AddMonsterAttack(const tAttackInfo& _tAttackInfo, CGameObject* _pAttckObj);
 
 	CLONE_DISABLE(CMonsterFSM);
 public:

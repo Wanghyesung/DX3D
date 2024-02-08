@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "CPlayerScript.h"
 #include "CAttackScript.h"
+#include "CMonsterAttackScript.h"
 
+#include <Engine\CGameObject.h>
 #include <Engine\CMeshRender.h>
 #include <Engine\CMaterial.h>
 
@@ -14,6 +16,7 @@
 #include <Engine\CRollState.h>
 #include <Engine\CAttackState.h>
 #include <Engine\CRunState.h>
+
 CPlayerScript::CPlayerScript()
 	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_fSpeed(100.f)
@@ -100,9 +103,9 @@ void CPlayerScript::Initialize()
 			pObj->Animator3D()->CreateAnimationF(L"Roll_Left", 419, 458);
 			pObj->Animator3D()->CreateAnimationF(L"Roll_Right", 460, 499);
 			pObj->Animator3D()->CreateAnimationF(L"Attack0", 501, 599);
-			pObj->Animator3D()->CreateAnimationF(L"Attack1", 601, 690);
+			pObj->Animator3D()->CreateAnimationF(L"Attack__1", 601, 690);
 			pObj->Animator3D()->CreateAnimationF(L"Attack2", 693, 792);
-			pObj->Animator3D()->CreateAnimationF(L"Attack3", 794, 879);
+			pObj->Animator3D()->CreateAnimationF(L"Attack1", 794, 879);
 			//pObj->Animator3D()->CreateAnimationF(L"Attack4", 882, 981);
 			pObj->Animator3D()->CreateAnimationF(L"Attack5", 982, 1097);
 			pObj->Animator3D()->CreateAnimationF(L"Jump", 1099, 1212);
@@ -178,6 +181,23 @@ void CPlayerScript::set_attack()
 	pAttackObj->AddComponent(pAttackScript);
 	m_pFSM->AddAttack(attack0, pAttackObj);
 
+	tAttackInfo attack1 = {};
+	attack1.iAttackNum = 1;
+	attack1.fForce = 20.f;
+	attack1.fMoveTime = 0.6f;
+	attack1.iStartFrame = 831;
+	attack1.iEndFrame = 835;
+	attack1.fOffsetPos = 60.f;
+	attack1.vAttackScale = Vec3(300.f, 300.f, 300.f);
+	attack1.tAttackValue.fAttRcnt = 5.f;
+	attack1.tAttackValue.bDown = true;
+
+	pAttackScript = new CAttackScript();
+	pAttackScript->SetAttackValue(attack1.tAttackValue);
+	pAttackObj = new CGameObject();
+	pAttackObj->AddComponent(pAttackScript);
+	m_pFSM->AddAttack(attack1, pAttackObj);
+
 	//tAttackInfo attack1 = {};
 	//attack1.fForce = 10.f;
 	//attack1.iAttackNum = 1;
@@ -233,14 +253,30 @@ void CPlayerScript::rotate()
 
 void CPlayerScript::BeginOverlap(CCollider3D* _Other)
 {
+	//플레이어가 먼저 들어옴
+	//CMonsterAttackScript* pAttack = _Other->GetOwner()->GetScript<CMonsterAttackScript>();
+	//if (pAttack)
+	//{
+	//	bool bOn = pAttack->IsAttackOn();
+	//	if (bOn)
+	//	{
+	//		tAttack tAttack = pAttack->GetAttackValue();
+	//		//CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
+	//		//pHit->SetHitInfo(m_tHitInfo);
+	//
+	//		ChanageState(m_pFSM, STATE_TYPE::HIT);
+	//	}
+	//}
 }
 
 void CPlayerScript::OnOverlap(CCollider3D* _Other)
 {
+
 }
 
 void CPlayerScript::EndOverlap(CCollider3D* _Other)
 {
+
 }
 
 

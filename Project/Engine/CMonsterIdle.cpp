@@ -49,7 +49,11 @@ void CMonsterIdle::check_player()
 	if (fLen <= m_fCheckLen && m_fStopLen <= fLen)
 	{
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::RUN);
-		return;
+	}
+
+	else if (m_fStopLen > fLen)
+	{
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);
 	}
 
 }

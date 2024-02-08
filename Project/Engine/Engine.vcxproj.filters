@@ -187,30 +187,6 @@
     <ClInclude Include="CRaycastShader.h">
       <Filter>Source\08. ShaderCode\Compute\LandScape\Raycast</Filter>
     </ClInclude>
-    <ClInclude Include="CFSM.h">
-      <Filter>Source\10. FSM</Filter>
-    </ClInclude>
-    <ClInclude Include="CState.h">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClInclude>
-    <ClInclude Include="CIdleState.h">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClInclude>
-    <ClInclude Include="CWalkState.h">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClInclude>
-    <ClInclude Include="CAttackState.h">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClInclude>
-    <ClInclude Include="CRollState.h">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClInclude>
-    <ClInclude Include="CJumpState.h">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClInclude>
-    <ClInclude Include="CRunState.h">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClInclude>
     <ClInclude Include="CRigidbody.h">
       <Filter>Source\06. Component\8. Rigidbody</Filter>
     </ClInclude>
@@ -226,15 +202,6 @@
     <ClInclude Include="CWeightMapShader.h">
       <Filter>Source\08. ShaderCode\Compute\LandScape\WeightMap</Filter>
     </ClInclude>
-    <ClInclude Include="CMonsterFSM.h">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
-    </ClInclude>
-    <ClInclude Include="CMonsterState.h">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
-    </ClInclude>
-    <ClInclude Include="CMonsterMove.h">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
-    </ClInclude>
     <ClInclude Include="CCopyBoneShader.h">
       <Filter>Source\08. ShaderCode\Compute</Filter>
     </ClInclude>
@@ -244,14 +211,50 @@
     <ClInclude Include="CNavMesh.h">
       <Filter>Source\06. Component\11. NavMesh</Filter>
     </ClInclude>
-    <ClInclude Include="CMonsterIdle.h">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    <ClInclude Include="CAttackState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClInclude>
-    <ClInclude Include="CMonsterAttack.h">
-      <Filter>Source\10. FSM</Filter>
+    <ClInclude Include="CIdleState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CJumpState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CRollState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CRunState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CWalkState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CFSM.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonsterFSM.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClInclude>
     <ClInclude Include="CMonsterHit.h">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonsterIdle.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonsterMove.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonsterState.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonsterAttack.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerHit.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -432,30 +435,6 @@
     <ClCompile Include="CRaycastShader.cpp">
       <Filter>Source\08. ShaderCode\Compute\LandScape\Raycast</Filter>
     </ClCompile>
-    <ClCompile Include="CFSM.cpp">
-      <Filter>Source\10. FSM</Filter>
-    </ClCompile>
-    <ClCompile Include="CState.cpp">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClCompile>
-    <ClCompile Include="CIdleState.cpp">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClCompile>
-    <ClCompile Include="CWalkState.cpp">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClCompile>
-    <ClCompile Include="CAttackState.cpp">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClCompile>
-    <ClCompile Include="CRollState.cpp">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClCompile>
-    <ClCompile Include="CJumpState.cpp">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClCompile>
-    <ClCompile Include="CRunState.cpp">
-      <Filter>Source\10. FSM\State</Filter>
-    </ClCompile>
     <ClCompile Include="CRigidbody.cpp">
       <Filter>Source\06. Component\8. Rigidbody</Filter>
     </ClCompile>
@@ -474,15 +453,6 @@
     <ClCompile Include="CWeightMapShader.cpp">
       <Filter>Source\08. ShaderCode\Compute\LandScape\WeightMap</Filter>
     </ClCompile>
-    <ClCompile Include="CMonsterFSM.cpp">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
-    </ClCompile>
-    <ClCompile Include="CMonsterState.cpp">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
-    </ClCompile>
-    <ClCompile Include="CMonsterMove.cpp">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
-    </ClCompile>
     <ClCompile Include="CCopyBoneShader.cpp">
       <Filter>Source\08. ShaderCode\Compute</Filter>
     </ClCompile>
@@ -492,14 +462,50 @@
     <ClCompile Include="CNavMesh.cpp">
       <Filter>Source\06. Component\11. NavMesh</Filter>
     </ClCompile>
-    <ClCompile Include="CMonsterIdle.cpp">
-      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    <ClCompile Include="CAttackState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClCompile>
-    <ClCompile Include="CMonsterAttack.cpp">
-      <Filter>Source\10. FSM</Filter>
+    <ClCompile Include="CIdleState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CJumpState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CRollState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CRunState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CWalkState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CFSM.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterFSM.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClCompile>
     <ClCompile Include="CMonsterHit.cpp">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterIdle.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterMove.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterState.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterAttack.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerHit.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -692,12 +698,6 @@
     <Filter Include="Source\08. ShaderCode\Compute\LandScape\Raycast">
       <UniqueIdentifier>{88a3e341-b185-4da9-b432-13b2881a13d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\10. FSM">
-      <UniqueIdentifier>{1f98cc9a-14ba-4c72-9830-ed7efa5297f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\10. FSM\State">
-      <UniqueIdentifier>{65866b1c-2b27-4a52-8f4e-4b2b717e4358}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\06. Component\8. Rigidbody">
       <UniqueIdentifier>{167a5aac-ff62-4d6b-b8f3-831ff40087c5}</UniqueIdentifier>
     </Filter>
@@ -713,14 +713,20 @@
     <Filter Include="Source\08. ShaderCode\Compute\LandScape\WeightMap">
       <UniqueIdentifier>{7a844757-0c4f-4b15-a5ea-0edf6a3333ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\10. FSM\MonsterFSM">
-      <UniqueIdentifier>{3fd5ef4a-bcf2-464f-9e9c-4d30c1ace57f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\07. Resource\InstancingBuffer">
       <UniqueIdentifier>{332cf7af-72c1-4b45-be00-c992d986e442}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\06. Component\11. NavMesh">
       <UniqueIdentifier>{ec4a9248-204a-4e7e-b6c5-dde9240fafdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\10. FSM">
+      <UniqueIdentifier>{86397da0-1d06-4a8d-a55d-d64724d7a4e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\10. FSM\PlayerFSM">
+      <UniqueIdentifier>{38853b9d-7b82-4f2d-809c-0282509b4fa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\10. FSM\MonsterFSM">
+      <UniqueIdentifier>{09a33cf3-128c-4b86-9d0e-8673732a5826}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -147,14 +147,28 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 	int iVtxCnt = _pFbxMesh->GetControlPointsCount();
 	Container.Resize(iVtxCnt);
 
+	
 	FbxVector4* pFbxPos = _pFbxMesh->GetControlPoints();
 
+	//리소스 문제있을때만 풀어서
+	//FbxVector4 vTemPos = pFbxPos->mData;
+	//Vec3 vCenter = Vec3(vTemPos.mData[0], vTemPos.mData[2], vTemPos.mData[1]);
+	//Vec3 vZero = Vec3::Zero;
+	//
+	//static Vec3 vLen;
+	//if (vLen == Vec3::Zero)
+	//{
+	//	vLen = vZero - vCenter;
+	//}
 	
+	//비율로 따져야하나
 	for (int i = 0; i < iVtxCnt; ++i)
 	{
 		Container.vecPos[i].x = (float)pFbxPos[i].mData[0];
 		Container.vecPos[i].y = (float)pFbxPos[i].mData[2];
 		Container.vecPos[i].z = (float)pFbxPos[i].mData[1];
+
+		//Container.vecPos[i] += vLen;	
 	}
 
 	// 폴리곤 개수

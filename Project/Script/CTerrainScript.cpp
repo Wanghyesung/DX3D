@@ -33,7 +33,7 @@ void CTerrainScript::EndOverlap(CCollider3D* _Other)
 void CTerrainScript::Initialize(const wstring& _strFbxName)
 {
 	CGameObject* pTerrain = GetOwner();
-	
+	pTerrain->SetName(_strFbxName);
 
 	vector<Ptr<CMeshData>> vecMeshData = {};
 	CGameObject* pObj = nullptr;

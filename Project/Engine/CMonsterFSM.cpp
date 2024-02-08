@@ -2,8 +2,10 @@
 #include "CMonsterFSM.h"
 
 #include "CMonsterState.h"
+#include "CMonsterAttack.h"
 
-
+#include "CTransform.h"
+#include "CCollider3D.h"
 CMonsterFSM::CMonsterFSM()
 {
 
@@ -82,22 +84,12 @@ void CMonsterFSM::SetState(MONSTER_STATE_TYPE _eType)
 	m_pCurState = pState;
 }
 
-void CMonsterFSM::AddMonsterAttack(const tAttackInfo& _tAttackInfo)
+void CMonsterFSM::AddMonsterAttack(const tAttackInfo& _tAttackInfo , CGameObject* _pAttckObj)
 {
-	if (_tAttackInfo.iAttackNum > m_vecAttackInfo.size())
-	{
-		m_vecAttackInfo.resize(_tAttackInfo.iAttackNum + 1);
-	}
+	CMonsterState* pState = FindState(MONSTER_STATE_TYPE::ATTACK);
+	CMonsterAttack* pAttack = dynamic_cast<CMonsterAttack*>(pState);
 
-	m_vecAttackInfo[_tAttackInfo.iAttackNum] = _tAttackInfo;
-}
-
-const tAttackInfo& CMonsterFSM::GetAttackInfo(UINT _iNum)
-{
-	if (m_vecAttackInfo.size() < _iNum)
-		assert(nullptr);
-
-	return m_vecAttackInfo[_iNum];
+	pAttack->AddAttack(_tAttackInfo, _pAttckObj);
 }
 
 
