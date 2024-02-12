@@ -151,6 +151,7 @@ void CNavMesh::init_map()
 	if (vecLand.size() == 0)
 		return;
 	//일단 가장 처음 지형만 탐색
+	//지형 가장 
 	CLandScape* pScape = vecLand[0]->LandScape();
 	Matrix matScape = pScape->GetOwner()->Collider3D()->GetColliderWorldMat();
 	Vec3 vScapePos = Vec3(matScape._41, matScape._42, matScape._43); //9000, 9000

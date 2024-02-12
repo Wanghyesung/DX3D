@@ -101,6 +101,34 @@ void ChanageMonsterState(CMonsterFSM* _pFSM, MONSTER_STATE_TYPE _eNextType)
 	CEventMgr::GetInst()->AddEvent(evn);
 }
 
+CGameObject* InitializeFBX(const wstring& _strFbxName)
+{
+	CGameObject* pGameObj = new CGameObject();
+	pGameObj->SetName(_strFbxName);
+
+	vector<Ptr<CMeshData>> vecMeshData = {};
+	CGameObject* pObj = nullptr;
+
+	//Artorias4.fbx
+	vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\" + _strFbxName + L".fbx");
+
+	for (int i = 0; i < pVecMeshData.size(); ++i)
+	{
+		wstring strNum = std::to_wstring(i);
+
+
+		Ptr<CMeshData> pMeshData = pVecMeshData[i];
+		if (pMeshData != nullptr)
+		{
+			pObj = pMeshData->Instantiate();
+			pObj->SetName(_strFbxName + strNum);
+			pGameObj->AddChild(pObj);
+		}
+	}
+
+	return pGameObj;
+}
+
 void DrawDebugRect(Vec3 _vWorldPos, Vec2 _vWorldScale, Vec4 _vColor,
 	Vec3 _vRotation, float _fTime, bool DepthTest)
 {

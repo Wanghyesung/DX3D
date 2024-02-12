@@ -31,6 +31,7 @@ void ChanageState(CFSM* _pFSM, STATE_TYPE _eNextType);
 
 class CMonsterFSM;
 void ChanageMonsterState(CMonsterFSM* _pFSM, MONSTER_STATE_TYPE _eNextType);
+CGameObject* InitializeFBX(const wstring& _strFbxName);
 
 // DrawDebugShape
 void DrawDebugRect(Vec3 _vWorldPos, Vec2 _vWorldScale, Vec4 _vColor, Vec3 _vRotation, float _fTime = 0.f, bool DepthTest = false);

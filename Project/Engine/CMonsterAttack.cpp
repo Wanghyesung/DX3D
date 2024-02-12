@@ -64,7 +64,6 @@ void CMonsterAttack::Enter()
 	std::uniform_int_distribution<int> num(0, 1);
 	UINT iAttackNum = (UINT)num(en);
 
-	iAttackNum = 0;
 	m_tCurAttack = m_vecAttack[iAttackNum];
 
 	wstring strName = GetName() + std::to_wstring(iAttackNum);

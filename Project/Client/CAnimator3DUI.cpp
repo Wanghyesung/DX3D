@@ -52,6 +52,8 @@ int CAnimator3DUI::render_update()
    }
    ImGui::NewLine();
 
+   if (!pAnim->GetCurAnim())
+       return TRUE;
 
     const wstring& strName = pAnim->GetCurAnim()->GetName();
     string name = string(strName.begin(), strName.end());

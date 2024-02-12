@@ -29,6 +29,7 @@
 #include <Engine\CCollisionMgr.h>
 #include <Engine\CSetColorShader.h>
 
+
 void CreateTestLevel()
 {
 	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Attack, (UINT)LAYER_TYPE::Monster);
@@ -150,6 +151,9 @@ void CreateTestLevel()
 	pAritorias->SetName(L"Aritorias");
 	pAritorias->AddComponent(new CTransform());
 	pAritorias->AddComponent(new CRigidbody());
+	//CPxRigidbody* pRigi = new CPxRigidbody();
+	//pRigi->init();
+	//pAritorias->AddComponent(pRigi);
 	CCollider3D* pCollider = new CCollider3D();
 	pCollider->SetAbsolute(true);
 	pCollider->SetOffsetScale(Vec3(120.f, 150.f, 120.f));
@@ -177,14 +181,6 @@ void CreateTestLevel()
 
 	CreateMonster();
 	
-	
-	
-	//CGameObject* pStage = new CGameObject();
-	//pStage->AddComponent(new CTransform());
-	//CTerrainScript* pTerrainScript2 = new CTerrainScript();
-	//pStage->AddComponent(pTerrainScript2);
-	//pTerrainScript2->Initialize(L"Stage2");
-	//SpawnGameObject(pStage, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Default);
 
 	// Main Camera Object 생성
 	CGameObject* pMainCam = new CGameObject;
@@ -216,41 +212,8 @@ void CreateTestLevel()
 
 	SpawnGameObject(pUICam, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Camera);
 
-
-	// LandScape Object
-	CGameObject* pLandScape = new CGameObject;
-
-	pLandScape->SetName(L"LandScape");
-
-	pLandScape->AddComponent(new CTransform);
-	pLandScape->AddComponent(new CCollider3D());
-	pLandScape->Collider3D()->SetAbsolute(true);
-	pLandScape->Collider3D()->SetOffsetPos(Vec3(9000.f, 0.f, 9000.f));
-	pLandScape->Collider3D()->SetOffsetScale(Vec3(18000.f, 0.f, 18000.f));
-	pLandScape->AddComponent(new CLandScape);
-
-	pLandScape->Transform()->SetRelativeScale(Vec3(1000.f, 3000.f, 1000.f));
-
-	pLandScape->LandScape()->SetFace(18, 18);
-	pLandScape->LandScape()->SetFrustumCheck(false);
-	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
-
-	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);
+	CreateLandScape();
 	
-	CGameObject* pLandform = new CGameObject;
-	pLandform->SetName(L"Landform");
-	pLandform->AddComponent(new CTransform);
-	pLandform->AddComponent(new CCollider3D);
-	CTerrainScript* pTerrainScript = new CTerrainScript();
-	pLandform->AddComponent(pTerrainScript);
-	pTerrainScript->Initialize(L"Plain_CastleTower_Ruin_01");
-	pLandform->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
-
-	pLandform->Collider3D()->SetOffsetScale(Vec3(332.f, 442.f, 355.f));
-	pLandform->Collider3D()->SetOffsetPos(Vec3(0.f, 222.f, 0.f));
-	//pLandform->Transform()->SetRelativeRot(Vec3(-XM_PI/2.f, 0.f, 0.f));
-
-	SpawnGameObject(pLandform, Vec3(2000.f, 0.f, 2000.f), (int)LAYER_TYPE::landform);
 
 	//pObject = new CGameObject;
 	//pObject->SetName(L"Decal");
@@ -311,45 +274,116 @@ void CreateTestLevel()
 
 void CreateMonster()
 {
-	CGameObject* pMonster = new CGameObject;
-	pMonster->SetName(L"Balder_Knight");
-	pMonster->AddComponent(new CTransform());
-	pMonster->AddComponent(new CRigidbody());
-	pMonster->AddComponent(new CCollider3D());
-	pMonster->AddComponent(new CNavMesh);
-	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
-	pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
+	//CGameObject* pMonster = new CGameObject;
+	//pMonster->SetName(L"Balder_Knight");
+	//pMonster->AddComponent(new CTransform());
+	//pMonster->AddComponent(new CRigidbody());
+	//pMonster->AddComponent(new CCollider3D());
+	//pMonster->AddComponent(new CNavMesh);
+	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
+	//pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
+	//
+	//pMonster->Collider3D()->SetAbsolute(true);
+	//CMonsterScript* pMonsterScript = new CMonsterScript();
+	//pMonster->AddComponent(pMonsterScript);
+	//
+	//pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+	//
+	////pMonsterScript->AddAnimFrame(L"Idle", 0, 95);
+	////pMonsterScript->AddAnimFrame(L"Walk", 96, 140);
+	////pMonsterScript->AddAnimFrame(L"Walk_Back", 141, 186);
+	////pMonsterScript->AddAnimFrame(L"Run", 270, 304);
+    //pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
+	//pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
+	//pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
+	//pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
+	////pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
+	//
+	//CMonsterIdle* pIdle = new CMonsterIdle();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
+	//
+	//CMonsterMove* pMove = new CMonsterMove();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::RUN,  pMove, L"Walk", 96, 140);
+	//
+	//CMonsterAttack* pAttack = new CMonsterAttack();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
+	//
+	//CMonsterHit* pHit = new CMonsterHit();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
+	//
+	//pMonsterScript->AddMonsterAttack(0, 5.f, 0.f, 0.6f, 629, 631, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
+	//pMonsterScript->AddMonsterAttack(1, 5.f, 0.f, 0.6f, 882, 885, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
+	//
+	//SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
 
-	pMonster->Collider3D()->SetAbsolute(true);
+
+	CGameObject* pBoss = new CGameObject();
+	pBoss->SetName(L"Taurus_Demon_Fianl");
+	pBoss->AddComponent(new CTransform());
+	pBoss->AddComponent(new CRigidbody());
+	pBoss->AddComponent(new CCollider3D());
+	pBoss->AddComponent(new CNavMesh);
+
+	pBoss->Collider3D()->SetAbsolute(true);
 	CMonsterScript* pMonsterScript = new CMonsterScript();
-	pMonster->AddComponent(pMonsterScript);
+	pBoss->AddComponent(pMonsterScript);
 
-	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+	pMonsterScript->Initialize(L"Taurus_Demon_Fianl");
+	SpawnGameObject(pBoss, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
 
-	//pMonsterScript->AddAnimFrame(L"Idle", 0, 95);
-	//pMonsterScript->AddAnimFrame(L"Walk", 96, 140);
-	//pMonsterScript->AddAnimFrame(L"Walk_Back", 141, 186);
-	//pMonsterScript->AddAnimFrame(L"Run", 270, 304);
-    pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
-	pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
-	pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
-	pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
-	//pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
+	//보스 무기
+	//CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
+	//pWeapon->SetName(L"TaurusDemon_Axe");
+	//pWeapon->AddComponent(new CTransform());
+	//pWeapon->AddComponent(new CCollider3D());
+	//
+	//SpawnGameObject(pWeapon, Vec3(3200.f, 0.f, 3200.f), (int)LAYER_TYPE::Monster);
 
-	CMonsterIdle* pIdle = new CMonsterIdle();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
+}
 
-	CMonsterMove* pMove = new CMonsterMove();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::RUN,  pMove, L"Walk", 96, 140);
+void CreateLandScape()
+{
+	// LandScape Object
+	CGameObject* pLandScape = new CGameObject;
 
-	CMonsterAttack* pAttack = new CMonsterAttack();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
+	pLandScape->SetName(L"LandScape");
 
-	CMonsterHit* pHit = new CMonsterHit();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
+	pLandScape->AddComponent(new CTransform);
+	pLandScape->AddComponent(new CCollider3D());
+	pLandScape->Collider3D()->SetAbsolute(true);
+	pLandScape->Collider3D()->SetOffsetPos(Vec3(9000.f, 0.f, 9000.f));
+	pLandScape->Collider3D()->SetOffsetScale(Vec3(18000.f, 0.f, 18000.f));
+	pLandScape->AddComponent(new CLandScape);
 
-	pMonsterScript->AddMonsterAttack(0, 5.f, 0.f, 0.6f, 629, 631, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
-	pMonsterScript->AddMonsterAttack(1, 5.f, 0.f, 0.6f, 882, 885, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
+	pLandScape->Transform()->SetRelativeScale(Vec3(1000.f, 3000.f, 1000.f));
 
-	SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
+	pLandScape->LandScape()->SetFace(18, 18);
+	pLandScape->LandScape()->SetFrustumCheck(false);
+	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
+
+	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);
+
+	//GameObject* pLandform = new CGameObject;
+	//Landform->AddComponent(new CTransform);
+	//Landform->AddComponent(new CCollider3D);
+	//TerrainScript* pTerrainScript = new CTerrainScript();
+	//Landform->AddComponent(pTerrainScript);
+	//TerrainScript->Initialize(L"IronGolem_Stage");
+	//Landform->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
+
+	//pLandform->Collider3D()->SetOffsetScale(Vec3(3317.f, 399.f, 1.f));
+	//pLandform->Collider3D()->SetOffsetPos(Vec3(-1217.f, -275.f, 64.f));
+	//pLandform->Transform()->SetRelativeRot(Vec3(-XM_PI/2.f, 0.f, 0.f));
+	//SpawnGameObject(pLandform, Vec3(2000.f, 0.f, 2000.f), (int)LAYER_TYPE::landform);
+
+	
+
+
+	//CGameObject* pStage = new CGameObject();
+	//pStage->AddComponent(new CTransform());
+	//CTerrainScript* pTerrainScript2 = new CTerrainScript();
+	//pStage->AddComponent(pTerrainScript2);
+	//pTerrainScript2->Initialize(L"Stage2");
+	//SpawnGameObject(pStage, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Default);
+
 }

@@ -22,6 +22,8 @@ class CSkyBox;
 class CLandScape;
 class CMotionBlur;
 class CNavMesh;
+class CPxRigidbody;
+
 #define GET_COMPONENT(Type, TYPE) C##Type* Type() const { return (C##Type*)m_arrCom[(UINT)COMPONENT_TYPE::TYPE]; }
 
 
@@ -72,6 +74,7 @@ public:
     GET_COMPONENT(MeshRender, MESHRENDER);
     GET_COMPONENT(ParticleSystem, PARTICLESYSTEM);
     GET_COMPONENT(Rigidbody, RIGIDBODY);
+    GET_COMPONENT(PxRigidbody, PXRIGIDBODY);
     GET_COMPONENT(MotionBlur, MOTIONBLUR);
     GET_COMPONENT(Camera, CAMERA);
     GET_COMPONENT(Collider2D, COLLIDER2D);
@@ -85,6 +88,7 @@ public:
     GET_COMPONENT(Decal, DECAL);
     GET_COMPONENT(LandScape, LANDSCAPE);
     GET_COMPONENT(NavMesh, NAVMESH);
+ 
 
     CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
 

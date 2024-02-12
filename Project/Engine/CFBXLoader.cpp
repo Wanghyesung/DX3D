@@ -106,7 +106,7 @@ void CFBXLoader::LoadMeshDataFromNode(FbxNode* _pNode)
 	// 노드의 메쉬정보 읽기
 	FbxNodeAttribute* pAttr = _pNode->GetNodeAttribute();
 
-
+	//FbxNodeAttribute::e
 	if (pAttr && FbxNodeAttribute::eMesh == pAttr->GetAttributeType())
 	{
 		FbxAMatrix matGlobal = _pNode->EvaluateGlobalTransform();
@@ -160,8 +160,7 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 	//{
 	//	vLen = vZero - vCenter;
 	//}
-	
-	//비율로 따져야하나
+
 	for (int i = 0; i < iVtxCnt; ++i)
 	{
 		Container.vecPos[i].x = (float)pFbxPos[i].mData[0];
