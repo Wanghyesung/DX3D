@@ -139,15 +139,21 @@ void CStructuredBuffer::SetData(void* _pSrc, UINT _iSize)
 	CONTEXT->CopyResource(m_SB.Get(), m_SB_CPU_Write.Get());
 }
 
-void CStructuredBuffer::GetData(void* _pDst)
+void CStructuredBuffer::GetData(void* _pDst, UINT _iSize)
 {
 	// Main Buffer -> CPU ReadBuffer
 	CONTEXT->CopyResource(m_SB_CPU_Read.Get(), m_SB.Get());
 
+	UINT iSize = _iSize;
+	if (0 == iSize)
+	{
+		iSize = GetBufferSize();
+	}
+
 	// CPU ReadBuffer -> CPU
 	D3D11_MAPPED_SUBRESOURCE tSub = {};
 	CONTEXT->Map(m_SB_CPU_Read.Get(), 0, D3D11_MAP::D3D11_MAP_READ, 0, &tSub);	
-	memcpy(_pDst, tSub.pData, GetBufferSize());
+	memcpy(_pDst, tSub.pData, iSize);
 	CONTEXT->Unmap(m_SB_CPU_Read.Get(), 0);
 }
 

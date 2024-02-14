@@ -58,6 +58,7 @@ enum class COMPONENT_TYPE
 	COLLIDER2D,		// 2차원 충돌
 	COLLIDER3D,		// 3차원 충돌
 
+	EQUIP,			// 물체 위치를 행렬을 반환
 	ANIMATOR2D,		// Sprite Animation
 	ANIMATOR3D,		// Bone Sknning Animation
 	MOTIONBLUR,		// 흔들림 효과 이전 프레임 위치 정보 저장

@@ -27,8 +27,9 @@ struct cmp {//우선순위 큐 비교 함수
 CNavMesh::CNavMesh() :
 	CComponent(COMPONENT_TYPE::NAVMESH),
 	m_fCurTime(0.f),
-	m_fTraceTime(0.2f),
+	m_fTraceTime(0.15f),
 	m_vSearchDir(Vec3::Zero),
+	m_vOwnerScale(Vec3::Zero),
 	m_bActive(false)
 {
 
@@ -146,16 +147,15 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 void CNavMesh::init_map()
 {
 	const vector<CGameObject*>& vecLand =
-		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::LandScape)->GetObjects();
+		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::LandScape)->GetParentObject();
 
 	if (vecLand.size() == 0)
 		return;
 	//일단 가장 처음 지형만 탐색
 	//지형 가장 
-	CLandScape* pScape = vecLand[0]->LandScape();
-	Matrix matScape = pScape->GetOwner()->Collider3D()->GetColliderWorldMat();
-	Vec3 vScapePos = Vec3(matScape._41, matScape._42, matScape._43); //9000, 9000
-	Vec3 vScale = pScape->GetOwner()->Collider3D()->GetOffsetScale(); // 18000 18000
+	CGameObject* pScape = vecLand[0];
+	Vec3 vScapePos = pScape->Collider3D()->GetWorldPos(); //9000, 9000
+	Vec3 vScale = pScape->Collider3D()->GetOffsetScale(); // 18000 18000
 	vScale /= 2.f;
 
 	Vec3 vRightTop = vScapePos + vScale;
@@ -163,14 +163,15 @@ void CNavMesh::init_map()
 	m_vLandScapeLen = vRightTop - vLeftDown;
 	//Vec3 vCapeLen 
 	//충돌체 x, z크기의 2차원 배열
-	Vec3 vMonsterScale = GetOwner()->Collider3D()->GetOffsetScale();
-	float fTem =vMonsterScale.z;
-	vMonsterScale.z = vMonsterScale.y;
-	vMonsterScale.y = fTem;
-	Vec3 vDivideSize = m_vLandScapeLen / vMonsterScale; // 150 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
+	m_vOwnerScale = GetOwner()->Collider3D()->GetOffsetScale();
+	float fTem = m_vOwnerScale.z;
+	m_vOwnerScale.z = m_vOwnerScale.y;
+	m_vOwnerScale.y = fTem;
+
+	Vec3 vDivideSize = m_vLandScapeLen / m_vOwnerScale; // 150 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
 	//120개
-	m_iDivideX = vDivideSize.x; //전체 지형을 나눌 수
-	m_iDivideZ = vDivideSize.z;
+	m_iDivideX =  vDivideSize.x; //전체 지형을 나눌 수
+	m_iDivideZ =  vDivideSize.z;
 
 	m_vecClose = vector<vector<int>>(m_iDivideZ, vector<int>(m_iDivideX));
 
@@ -211,8 +212,8 @@ void CNavMesh::init_closemap()
 
 				//맵에서의 비율을 잡기
 				Vec3 vRatio = {}; 
-				vRatio.x = vPos.x / m_iDivideX;
-				vRatio.z = vPos.z / m_iDivideZ;
+				vRatio.x = vPos.x / m_vOwnerScale.x;
+				vRatio.z = vPos.z / m_vOwnerScale.z;
 
 				//Vec3 vAbsRatio = Vec3(abs(vRatio.x), abs(vRatio.y), abs(vRatio.z));
 
@@ -234,31 +235,31 @@ void CNavMesh::tracking_player()
 	m_vecMap = vector<vector<int>>(m_iDivideZ, vector<int>(m_iDivideX));
 
 	const vector<CGameObject*>& vecPlayer =
-		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Player)->GetObjects();
+		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Player)->GetParentObject();
 
-	CGameObject* pPlayer = vecPlayer[0]->GetParent();
+	CGameObject* pPlayer = vecPlayer[0];
 	if (pPlayer->IsDead())
 		return;
 
-	Matrix matPlayerPos = pPlayer->Collider3D()->GetColliderWorldMat();
+	
 	//플레이어 현재 몬스터 위치 비율로 잡아서 맵에 넣기
-	Vec3 vPlayerPos = Vec3(matPlayerPos._41, matPlayerPos._42, matPlayerPos._43);
+	Vec3 vPlayerPos = pPlayer->Collider3D()->GetWorldPos();
 
 	Vec3 vRatio = {};
-	vRatio.x = vPlayerPos.x / m_iDivideX;
-	vRatio.z = vPlayerPos.z / m_iDivideZ;
+
+	vRatio.x = vPlayerPos.x / m_vOwnerScale.x;
+	vRatio.z = vPlayerPos.z / m_vOwnerScale.y;
 
 	//m_vecMap[(int)vRatio.x][(int)vRatio.z] = 5;//목적지는 5
 	Vec3 vGoalPos = Vec3((int)vRatio.x, 0.f, (int)vRatio.z);
 	// --몬스터
 
 	CGameObject* pMonster = GetOwner();
-	Matrix matStartPos = pMonster->Collider3D()->GetColliderWorldMat();
-	Vec3 vMonsterPos = Vec3(matStartPos._41, matStartPos._42, matStartPos._43);
+	Vec3 vMonsterPos = pMonster->Collider3D()->GetWorldPos();
 
 	//vRatio = vMonsterPos / m_iDivideX;
-	vRatio.x = vMonsterPos.x / m_iDivideX;
-	vRatio.z = vMonsterPos.z / m_iDivideZ;
+	vRatio.x = vMonsterPos.x / m_vOwnerScale.x;
+	vRatio.z = vMonsterPos.z / m_vOwnerScale.y;
 	//m_vecMap[(int)vRatio.x][(int)vRatio.z] = 6;//시작 위치는 6	
 	Vec3 vStartPos = Vec3((int)vRatio.x, 0.f, (int)vRatio.z);
 

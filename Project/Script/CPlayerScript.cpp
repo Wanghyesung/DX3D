@@ -117,6 +117,7 @@ void CPlayerScript::Initialize()
 			//pObj->Animator3D()->StartEvent() = std::bind(std::bind(&SkillLuck::create_luck, this)
 		}
 	}
+	
 	//SpawnGameObject(pAritorias, Vec3(0.f, 0.f, 100.f), L"Default");
 	//Transform()->SetRelativeScale(2.f, 2.f, 2.f);
 	Transform()->SetRelativeRot(-XM_PI / 2.f, 0.f, 0.f);
@@ -146,16 +147,6 @@ void CPlayerScript::Initialize()
 	ChanageState(m_pFSM, STATE_TYPE::IDLE);
 }
 
-void CPlayerScript::Shoot()
-{
-	// 미사일 프리팹 참조
-	Ptr<CPrefab> pMissilePrefab = CResMgr::GetInst()->FindRes<CPrefab>(L"MissilePrefab");
-	Vec3 vMissilePos = Transform()->GetRelativePos() + Vec3(0.f, 0.5f, 0.f) * Transform()->GetRelativeScale();
-	CGameObject* pCloneMissile = pMissilePrefab->Instantiate();
-
-	// 레벨에 추가
-	SpawnGameObject(pCloneMissile, vMissilePos, L"PlayerProjectile");
-}
 
 void CPlayerScript::set_attack()
 {

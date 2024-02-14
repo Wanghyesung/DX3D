@@ -49,6 +49,7 @@ private:
     CAnimation3D* m_pCurAnimation;
     UINT          m_iCurAnim;
     UINT          m_AnimCount;//전체 애니메이션
+    UINT          m_iBoneCount; 
 
     vector<float>				m_vecClipUpdateTime;
     vector<Matrix>				m_vecFinalBoneMat; // 텍스쳐에 전달할 최종 행렬정보
@@ -86,6 +87,8 @@ public:
     CStructuredBuffer* GetFinalBoneMat() { return m_pBoneFinalMatBuffer; }
     UINT GetBoneCount() { return (UINT)m_pVecBones->size(); }
     void ClearData();
+
+    bool IsFinalMatUpdate(){return m_bFinalMatUpdate;}
 
     //animation에서 할당
     void SetNextFrame(int _iNextFrame) { m_iNextFrameIdx = _iNextFrame; }

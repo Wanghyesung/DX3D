@@ -48,15 +48,8 @@ void CMonsterScript::OnOverlap(CCollider3D* _Other)
 		{
 			CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
 			pHit->SetHitInfo(m_tHitInfo);
-
-			if (m_tHitInfo.bDown)
-			{
-				int a = 10;
-			}
-			else
-			{
-				ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
-			}
+			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+			
 		}
 	}
 }
@@ -84,7 +77,7 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 	// ============
 	// FBX Loading
 	// ============	
-
+	
 	vector<Ptr<CMeshData>> vecMeshData = {};
 	CGameObject* pObj = nullptr;
 

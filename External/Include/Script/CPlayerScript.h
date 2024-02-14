@@ -24,7 +24,6 @@ public:
     void SetFSM(CFSM* _pFSM);
     void Initialize();
 private:
-    void Shoot();
 
     void set_attack();
     void rotate();

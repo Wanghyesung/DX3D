@@ -23,6 +23,7 @@ class CLandScape;
 class CMotionBlur;
 class CNavMesh;
 class CPxRigidbody;
+class CEquip;
 
 #define GET_COMPONENT(Type, TYPE) C##Type* Type() const { return (C##Type*)m_arrCom[(UINT)COMPONENT_TYPE::TYPE]; }
 
@@ -88,7 +89,8 @@ public:
     GET_COMPONENT(Decal, DECAL);
     GET_COMPONENT(LandScape, LANDSCAPE);
     GET_COMPONENT(NavMesh, NAVMESH);
- 
+    GET_COMPONENT(Equip, EQUIP);
+
 
     CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
 

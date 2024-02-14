@@ -42,7 +42,6 @@ void CRigidbody::finaltick()
 
 	if (fLen != 0.f)
 	{
-		//f = ma
 		// a = f/m
 		m_vForce.Normalize();
 		float fAcc = fLen / m_fMass;

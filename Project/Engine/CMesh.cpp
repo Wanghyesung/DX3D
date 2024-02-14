@@ -111,6 +111,7 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, UINT _iContainNum)
 	if (!container->bAnimation)
 		return pMesh;
 
+	
 	//프레임마다 뼈의 위치값 저장
 	vector<tBone*>& vecBone = _loader.GetBones();
 	UINT iFrameCount = 0;

@@ -195,6 +195,7 @@ void Skinning(inout float3 _vPos, inout float3 _vTangent, inout float3 _vBinorma
         if (0.f == _vWeight[i])
             continue;
 
+        //
         matrix matBone = GetBoneMat((int) _vIndices[i], _iRowIdx);
 
         info.vPos += (mul(float4(_vPos, 1.f), matBone) * _vWeight[i]).xyz;
@@ -240,6 +241,7 @@ int IntersectsLay(float3 _vertices[3], float3 _vStart, float3 _vDir, out float3 
     //vDir 직선의 방향(벡터)
     
     //내적 : (d)
+    // pN d p1 +d(점과 평면의 단거리) = 0
     //평면의 방정식 : pN d (p0 - p1) = 0
     //pn 평면에 수직인방향벡터
     //p0 평면상의 임의 한 점

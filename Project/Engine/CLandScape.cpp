@@ -163,7 +163,7 @@ void CLandScape::Raycasting()
 
 	// 지형과 카메라 Ray 의 교점을 구함
 	tRaycastOut out = { Vec2(0.f, 0.f), 0x7fffffff, 0 };
-	m_pCrossBuffer->SetData(&out, 1);
+	m_pCrossBuffer->SetData(&out);
 
 	m_pCSRaycast->SetHeightMap(m_HeightMap);
 	m_pCSRaycast->SetFaceCount(m_iFaceX, m_iFaceZ);
@@ -172,6 +172,6 @@ void CLandScape::Raycasting()
 
 	m_pCSRaycast->Execute();
 
-	/*m_pCrossBuffer->GetData(&out);
-	int a = 0;*/
+	//m_pCrossBuffer->GetData(&out);
+	//int a = 0;
 }

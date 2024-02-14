@@ -189,6 +189,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="CEntity.h" />
+    <ClInclude Include="CEquip.h" />
     <ClInclude Include="CEventMgr.h" />
     <ClInclude Include="CFBXLoader.h" />
     <ClInclude Include="CFontMgr.h" />
@@ -281,6 +282,7 @@ call EngineCopy.bat</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="CEntity.cpp" />
+    <ClCompile Include="CEquip.cpp" />
     <ClCompile Include="CEventMgr.cpp" />
     <ClCompile Include="CFBXLoader.cpp" />
     <ClCompile Include="CFontMgr.cpp" />

@@ -3,7 +3,9 @@
 
 #include "CAttackScript.h"
 #include "CCameraMoveScript.h"
+#include "CEquipScript.h"
 #include "CGravityScript.h"
+#include "CLandFormScript.h"
 #include "CMissileScript.h"
 #include "CMonsterAttackScript.h"
 #include "CMonsterScript.h"
@@ -15,7 +17,9 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 {
 	_vec.push_back(L"CAttackScript");
 	_vec.push_back(L"CCameraMoveScript");
+	_vec.push_back(L"CEquipScript");
 	_vec.push_back(L"CGravityScript");
+	_vec.push_back(L"CLandFormScript");
 	_vec.push_back(L"CMissileScript");
 	_vec.push_back(L"CMonsterAttackScript");
 	_vec.push_back(L"CMonsterScript");
@@ -30,8 +34,12 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CAttackScript;
 	if (L"CCameraMoveScript" == _strScriptName)
 		return new CCameraMoveScript;
+	if (L"CEquipScript" == _strScriptName)
+		return new CEquipScript;
 	if (L"CGravityScript" == _strScriptName)
 		return new CGravityScript;
+	if (L"CLandFormScript" == _strScriptName)
+		return new CLandFormScript;
 	if (L"CMissileScript" == _strScriptName)
 		return new CMissileScript;
 	if (L"CMonsterAttackScript" == _strScriptName)
@@ -57,8 +65,14 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 	case (UINT)SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return new CCameraMoveScript;
 		break;
+	case (UINT)SCRIPT_TYPE::EQUIPSCRIPT:
+		return new CEquipScript;
+		break;
 	case (UINT)SCRIPT_TYPE::GRAVITYSCRIPT:
 		return new CGravityScript;
+		break;
+	case (UINT)SCRIPT_TYPE::LANDFORMSCRIPT:
+		return new CLandFormScript;
 		break;
 	case (UINT)SCRIPT_TYPE::MISSILESCRIPT:
 		return new CMissileScript;
@@ -94,8 +108,16 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		return L"CCameraMoveScript";
 		break;
 
+	case SCRIPT_TYPE::EQUIPSCRIPT:
+		return L"CEquipScript";
+		break;
+
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
 		return L"CGravityScript";
+		break;
+
+	case SCRIPT_TYPE::LANDFORMSCRIPT:
+		return L"CLandFormScript";
 		break;
 
 	case SCRIPT_TYPE::MISSILESCRIPT:

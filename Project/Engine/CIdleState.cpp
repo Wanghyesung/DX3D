@@ -7,32 +7,31 @@
 
 void CIdleState::final_tick()
 {
+	if (KEY_PRESSED(KEY::A))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::WALK);
+		GetFSM()->SetDir(L"Left");
+	}
+	else if (KEY_PRESSED(KEY::S))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::WALK);
+		GetFSM()->SetDir(L"Back");
+	}
+	else if (KEY_PRESSED(KEY::W))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::WALK);
+		GetFSM()->SetDir(L"Front");
+	}
+	else if (KEY_PRESSED(KEY::D))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::WALK);
+		GetFSM()->SetDir(L"Right");
+	}
 
-	//if (KEY_PRESSED(KEY::A))
-	//{
-	//	ChanageState(GetFSM(), STATE_TYPE::WALK);
-	//	GetFSM()->SetDir(L"Left");
-	//}
-	//else if (KEY_PRESSED(KEY::S))
-	//{
-	//	ChanageState(GetFSM(), STATE_TYPE::WALK);
-	//	GetFSM()->SetDir(L"Back");
-	//}
-	//else if (KEY_PRESSED(KEY::W))
-	//{
-	//	ChanageState(GetFSM(), STATE_TYPE::WALK);
-	//	GetFSM()->SetDir(L"Front");
-	//}
-	//else if (KEY_PRESSED(KEY::D))
-	//{
-	//	ChanageState(GetFSM(), STATE_TYPE::WALK);
-	//	GetFSM()->SetDir(L"Right");
-	//}
-	//
-	//if (KEY_TAP(KEY::LBTN))
-	//{
-	//	ChanageState(GetFSM(), STATE_TYPE::ATTACK);
-	//}
+	if (KEY_TAP(KEY::LBTN))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::ATTACK);
+	}
 }
 
 void CIdleState::Enter()

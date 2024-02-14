@@ -207,8 +207,10 @@ struct tFrameTrans
 };
 
 StructuredBuffer<tFrameTrans> g_arrFrameTrans : register(t16);
+//T자로 되어있는 정점을 다시 원점으로 보내고 (원점에서 얼마나 떨어져있는지) 그 원점에 가중치 값을 곱해서 최종행렬을 나타냄
 StructuredBuffer<matrix> g_arrOffset : register(t17);
 RWStructuredBuffer<matrix> g_arrFinelMat : register(u0);
+
 
 // ===========================
 // Animation3D Compute Shader

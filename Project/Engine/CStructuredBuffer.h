@@ -25,7 +25,7 @@ private:
 public:
     void Create(UINT _iElementSize, UINT _iElementCount, SB_TYPE _Type, bool _bUseSysAccess, void* _pSysMem = nullptr);
     void SetData(void* _pSrc, UINT _iSize = 0);
-    void GetData(void* _pDst);
+    void GetData(void* _pDst, UINT _iSize = 0);
 
     // PIPELINE_STAGE
     void UpdateData(UINT _iRegisterNum, UINT _iPipeLineStage);

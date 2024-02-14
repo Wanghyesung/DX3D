@@ -168,6 +168,8 @@ void CAnimator3D::CreateAnimationF(const wstring& _strAnimName, int _iStartFrame
 	pAnim->m_iAnimIdx = ++m_AnimCount;
 
 	m_mapAnim.insert(make_pair(_strAnimName, pAnim));
+
+	m_pCurAnimation = pAnim;
 }
 
 void CAnimator3D::CreateAnimationT(const wstring& _strAnimName, float _fStartTime, float _fLastTime)
@@ -235,14 +237,19 @@ void CAnimator3D::UpdateData()
 		pUpdateShader->SetOffsetMatBuffer(pMesh->GetBoneOffsetBuffer());
 		pUpdateShader->SetOutputBuffer(m_pBoneFinalMatBuffer);
 
-		UINT iBoneCount = (UINT)m_pVecBones->size();
-		pUpdateShader->SetBoneCount(iBoneCount);
+		m_iBoneCount = (UINT)m_pVecBones->size();
+		pUpdateShader->SetBoneCount(m_iBoneCount);
 		pUpdateShader->SetFrameIndex(m_iFrameIdx);
 		pUpdateShader->SetNextFrameIdx(m_iNextFrameIdx);
 		pUpdateShader->SetFrameRatio(m_fRatio);
 
 		// 업데이트 쉐이더 실행
 		pUpdateShader->Execute();
+
+
+		//m_vecFinalBoneMat.resize(m_iBoneCount);
+		//m_pBoneFinalMatBuffer->GetData(m_vecFinalBoneMat.data());
+		
 
 		m_bFinalMatUpdate = true;
 	}
@@ -272,10 +279,12 @@ void CAnimator3D::ClearData()
 void CAnimator3D::check_mesh(Ptr<CMesh> _pMesh)
 {
 	UINT iBoneCount = _pMesh->GetBoneCount();
+	
 	if (m_pBoneFinalMatBuffer->GetElementCount() != iBoneCount)
 	{
-		m_pBoneFinalMatBuffer->Create(sizeof(Matrix), iBoneCount, SB_TYPE::READ_WRITE, false, nullptr);
+		m_pBoneFinalMatBuffer->Create(sizeof(Matrix), iBoneCount, SB_TYPE::READ_WRITE, true, nullptr);
 	}
+
 }
 
 void CAnimator3D::Play(const std::wstring& _strName, bool _bRepeat)

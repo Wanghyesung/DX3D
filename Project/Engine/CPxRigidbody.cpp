@@ -27,8 +27,6 @@ void CPxRigidbody::finaltick()
     PxVec3 vFoce = PxVec3(m_vForce.x, m_vForce.y, m_vForce.z);
     PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
-    //진짜 개답답하네
-    
     //누적해서 들어갈지
     if(m_bAccumulate)
         tick_force(PxVec3(0.f, 0.f, 0.1f));

@@ -19,10 +19,12 @@ private:
 	vector<vector<int>> m_vecMap;
 	vector<vector<int>> m_vecClose;//닫힌 곳
 
+	Vec3 m_vOwnerScale; //몬스터 크기만큼 맵 나누기
 	Vec3 m_vLandScapeLen;//내 맵 전체 길이
-	int  m_iDivideX; //맵을 나눌 수
+	int  m_iDivideX; //맵 전체 수
 	int  m_iDivideZ;
 
+	
 	//갈 방향
 	Vec3 m_vSearchDir;
 

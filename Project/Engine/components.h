@@ -16,10 +16,12 @@
 #include "CLandScape.h"
 #include "CNavMesh.h"
 #include "CPxRigidbody.h"
+#include "CEquip.h"
 
 #include "CMeshRender.h"
 #include "CTileMap.h"
 #include "CParticleSystem.h"
+
 
 //#include "CCollider3D.h"
 //#include "CAnimator3D.h"

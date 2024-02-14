@@ -126,6 +126,7 @@ private:
 	void LoadSkeleton(FbxNode* _pNode);
 	void LoadSkeleton_Re(FbxNode* _pNode, int _iDepth, int _iIdx, int _iParentIdx);
 	void LoadAnimationClip();
+	void LoadNurbs(FbxNode* _pNode);
 	void Triangulate(FbxNode* _pNode);
 
 	void LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer);

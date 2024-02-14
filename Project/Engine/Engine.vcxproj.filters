@@ -262,6 +262,9 @@
     <ClInclude Include="CPxRigidbody.h">
       <Filter>Source\06. Component\8. Rigidbody</Filter>
     </ClInclude>
+    <ClInclude Include="CEquip.h">
+      <Filter>Source\06. Component\Equip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -519,6 +522,9 @@
     <ClCompile Include="CPxRigidbody.cpp">
       <Filter>Source\06. Component\8. Rigidbody</Filter>
     </ClCompile>
+    <ClCompile Include="CEquip.cpp">
+      <Filter>Source\06. Component\Equip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -745,6 +751,9 @@
     </Filter>
     <Filter Include="Source\03. Manager\11.PhysxMgr">
       <UniqueIdentifier>{92ccc860-2fb7-4fa0-8cac-27fdf17035f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\06. Component\Equip">
+      <UniqueIdentifier>{c7468004-149d-4c5e-a329-d8c985ab8833}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

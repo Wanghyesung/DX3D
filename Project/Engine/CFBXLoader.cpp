@@ -80,9 +80,13 @@ void CFBXLoader::LoadFbx(const wstring& _strPath)
 	// Bone 정보 읽기
 	LoadSkeleton(m_pScene->GetRootNode());
 
+	//임시
+	//LoadNurbs(m_pScene->GetRootNode());
+
 	// Animation 이름정보 
 	m_pScene->FillAnimStackNameArray(m_arrAnimName);
-
+	
+	
 	// Animation Clip 정보
 	LoadAnimationClip();
 
@@ -106,7 +110,6 @@ void CFBXLoader::LoadMeshDataFromNode(FbxNode* _pNode)
 	// 노드의 메쉬정보 읽기
 	FbxNodeAttribute* pAttr = _pNode->GetNodeAttribute();
 
-	//FbxNodeAttribute::e
 	if (pAttr && FbxNodeAttribute::eMesh == pAttr->GetAttributeType())
 	{
 		FbxAMatrix matGlobal = _pNode->EvaluateGlobalTransform();
@@ -547,7 +550,7 @@ void CFBXLoader::LoadSkeleton(FbxNode* _pNode)
 void CFBXLoader::LoadSkeleton_Re(FbxNode* _pNode, int _iDepth, int _iIdx, int _iParentIdx)
 {
 	FbxNodeAttribute* pAttr = _pNode->GetNodeAttribute();
-
+	
 	if (pAttr && pAttr->GetAttributeType() == FbxNodeAttribute::eSkeleton)
 	{
 		tBone* pBone = new tBone;
@@ -596,9 +599,20 @@ void CFBXLoader::LoadAnimationClip()
 		pAnimClip->eMode = m_pScene->GetGlobalSettings().GetTimeMode();
 		pAnimClip->llTimeLength = pAnimClip->tEndTime.GetFrameCount(pAnimClip->eMode) - pAnimClip->tStartTime.GetFrameCount(pAnimClip->eMode);
 
-
-
 		m_vecAnimClip.push_back(pAnimClip);
+	}
+}
+
+void CFBXLoader::LoadNurbs(FbxNode* _pNode)
+{
+	FbxNurbs* pNub = _pNode->GetNurbs();
+	if (pNub)
+		int a = 10;
+
+	int iChildCnt = _pNode->GetChildCount();
+	for (int i = 0; i < iChildCnt; ++i)
+	{
+		LoadNurbs(_pNode->GetChild(i));
 	}
 }
 

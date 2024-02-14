@@ -48,6 +48,12 @@
     <ClInclude Include="CMonsterAttackScript.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="CLandFormScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="CEquipScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCameraMoveScript.cpp">
@@ -84,6 +90,12 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CMonsterAttackScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="CLandFormScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="CEquipScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
