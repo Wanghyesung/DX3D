@@ -105,7 +105,7 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 		}
 	}
 
-	Transform()->SetRelativeScale(2.f, 2.f, 2.f);
+	//Transform()->SetRelativeScale(2.f, 2.f, 2.f);
 	Transform()->SetRelativeRot(-XM_PI / 2.f, 0.f, 0.f);
 
 	m_pFSM = new CMonsterFSM();

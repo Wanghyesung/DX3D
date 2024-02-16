@@ -119,6 +119,9 @@
     <Filter Include="Level">
       <UniqueIdentifier>{24b09736-865e-4173-a894-4fc77134fca6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\InspectorUI\ComponentUI\12.Equip">
+      <UniqueIdentifier>{a9c8781a-3997-4576-acef-841e992beec4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -252,6 +255,9 @@
     </ClInclude>
     <ClInclude Include="TestLevel.h">
       <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipUI.h">
+      <Filter>UI\InspectorUI\ComponentUI\12.Equip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -394,6 +400,9 @@
     </ClCompile>
     <ClCompile Include="TestLevel.cpp">
       <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipUI.cpp">
+      <Filter>UI\InspectorUI\ComponentUI\12.Equip</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

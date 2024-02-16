@@ -15,7 +15,7 @@ CTransform::CTransform()
 	, m_vUp(Vec3(0.f, 1.f, 0.f))
 	, m_vFoward(Vec3(0.f, 0.f, 1.f))
 	, m_vRight(Vec3(1.f, 0.f, 0.f))
-
+	, m_bDependent(false)
 {
 	SetName(L"Transform");
 }
@@ -53,6 +53,9 @@ Vec3 CTransform::GetDynamicUp()
 
 void CTransform::finaltick()
 {
+	if (m_bDependent)
+		return;
+
 	//이전프레임 월드행렬 저장
 	m_matPrevWorld = m_matWorld;
 

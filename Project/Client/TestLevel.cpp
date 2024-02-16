@@ -322,10 +322,24 @@ void CreateMonster()
 
 	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
 	pWeapon->AddComponent(new CTransform());
-	pWeapon->AddComponent(new CCollider3D());
-	pWeapon->Transform()->SetRelativeScale(Vec3(2.7f,2.7f,2.7f));
-	SpawnGameObject(pWeapon, Vec3(100.f, 0.f, 100.f), (int)LAYER_TYPE::Default);
+	pWeapon->AddComponent(new CEquip());
+	//pWeapon->AddComponent(new CMeshRender());
+	pWeapon->Transform()->SetRelativeScale(Vec3(3.1f,3.1f,3.1f));
+	
 
+	
+	float fRadian = XM_PI / 180.f;
+	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
+	;
+	pWeapon->Transform()->SetAbsolute(true);
+	//-90 270 -9
+
+	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
+	//-330 -50 360 
+	
+
+	// -90, 280 , 100
+	// -15.f, 162.f, 173.f
 	CGameObject* pBoss = new CGameObject();
 	pBoss->SetName(L"Taurus_Demon_Fianl");
 	pBoss->AddComponent(new CTransform());
@@ -337,12 +351,10 @@ void CreateMonster()
 	CMonsterScript* pMonsterScript = new CMonsterScript();
 	pBoss->AddComponent(pMonsterScript);
 	pMonsterScript->Initialize(L"Taurus_Demon_Fianl");
-	CEquipScript* pEquipScript = new CEquipScript();
-	pEquipScript->SetTarget(pWeapon);
-	pBoss->GetChild().at(1)->AddComponent(pEquipScript);
 	
-
-	SpawnGameObject(pBoss, Vec3(100.f, 0.f, 100.f), (int)LAYER_TYPE::Monster);
+	CGameObject* pHand = pBoss->GetChild().at(1);
+	pWeapon->Equip()->SetChar(pHand);
+	SpawnGameObject(pBoss, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Monster);
 	
 	CMonsterIdle* pIdle = new CMonsterIdle();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 651, 792);

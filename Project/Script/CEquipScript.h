@@ -10,6 +10,7 @@ private:
     Matrix m_matFinalBone;
 
     UINT m_iIndex;
+
 private:
     bool check_matrix();
 
@@ -18,7 +19,7 @@ public:
 
 public:
     virtual void tick() override;
-
+    virtual void begin()override;
 private:
     CLONE(CEquipScript);
 public:

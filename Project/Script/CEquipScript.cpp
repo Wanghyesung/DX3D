@@ -7,7 +7,8 @@
 
 CEquipScript::CEquipScript() :
 	CScript(SCRIPT_TYPE::EQUIPSCRIPT),
-	m_pTarget(nullptr)
+	m_pTarget(nullptr),
+	m_iIndex(38)
 {
 	AddScriptParam(SCRIPT_PARAM::INT, &m_iIndex, "Bone_Index");
 }
@@ -21,37 +22,56 @@ void CEquipScript::tick()
 	if (!check_matrix())
 		return;
 
-	Vec3 VecPos = GetOwner()->GetParent()->Transform()->GetRelativePos();
 	
-	XMVECTOR S,R,T; 
-	XMMatrixDecompose(&S, &R, &T, m_matFinalBone);
- 	Vec3 vRot = Vec3(R.m128_f32[0], R.m128_f32[2], R.m128_f32[2]);
-	Vec3 vFinalPos = XMVector3Transform(VecPos, m_matFinalBone);
+	Matrix matOwnerWorld = GetOwner()->GetParent()->Transform()->GetWorldMat();//몬스터
+	Matrix matTargetWorld = m_pTarget->Transform()->GetWorldMat();//무기
+	//Matrix matTargetScaleInv = XMMatrixInverse(nullptr, m_pTarget->Transform()->GetWorldScaleMat());
+	//matTargetWorld *= matTargetScaleInv;
+	
+	matTargetWorld *= matOwnerWorld;
+	m_matFinalBone *= matTargetWorld;
+	
 
-	m_pTarget->Transform()->SetRelativePos(vFinalPos);
-	m_pTarget->Transform()->SetRelativeRot(vRot);
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_matFinalBone);
+
+	const vector<CGameObject*>& vecChild  = m_pTarget->GetChild();
+	for (int i = 0 ; i<vecChild.size(); ++i )
+	{
+		vecChild[i]->Transform()->SetRelativePos(T);
+	}
+	//m_pTarget->Transform()->SetRelativePos(T);
+	//m_pTarget->Transform()->SetRelativeRot(R);
+	//m_pTarget->Transform()->SetRelativeScale(S);
+
+}
+
+void CEquipScript::begin()
+{
+	if (!m_pTarget)
+		return;
+
+	//-90 280 100 rot
+	// -15 162 173
 }
 
 bool CEquipScript::check_matrix()
 {
 	CAnimator3D* pAnim = GetOwner()->Animator3D();
 
-	bool bOn = pAnim->IsFinalMatUpdate();
-	if (bOn)
-	{
-		UINT iBoneCount = pAnim->GetBoneCount();
-		m_vecFinalBone.resize(iBoneCount);
 
-		pAnim->GetFinalBoneMat()->GetData(m_vecFinalBone.data());
+	UINT iBoneCount = pAnim->GetBoneCount();
+	m_vecFinalBone.resize(iBoneCount);
 
-		
-		m_matFinalBone = m_vecFinalBone[m_iIndex];
-		m_matFinalBone = XMMatrixTranspose(m_matFinalBone);
-		
-		return true;
-	}
+	pAnim->GetFinalBoneMat()->GetData(m_vecFinalBone.data());
 
-	return false;
+	
+	m_matFinalBone = m_vecFinalBone[m_iIndex];
+	m_matFinalBone.m[3][3] = 1;
+
+	m_matFinalBone = XMMatrixTranspose(m_matFinalBone);
+	
+	return true;
 }
 
 

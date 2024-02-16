@@ -12,6 +12,7 @@ private:
 
 
     bool    m_bAbsolute;    // 상대 이동, 크기를 절대값으로 지정    
+    bool    m_bDependent;   // finaltick 호출을 안함
 
     Vec3    m_vRelativeDir[3];
     Vec3    m_vWorldDir[3];
@@ -48,6 +49,7 @@ public:
 
     // 상대 이동, 크기를 절대값으로 지정  
     void SetAbsolute(bool _Set) { m_bAbsolute = _Set; }
+    void SetDependent(bool _Set) { m_bDependent = _Set; }
 
     Vec3 GetRelativePos() const { return m_vRelativePos; }
     Vec3 GetPrveRelativePos() const { return m_vPrevRelativePos; }
