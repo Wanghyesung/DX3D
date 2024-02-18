@@ -10,7 +10,7 @@ CPxRigidbody::CPxRigidbody():
     m_bFricoeff(false),
     m_fFricCoeff(10.f)
 {
-   
+    m_eForceMode = PxForceMode::eACCELERATION;
 }
 
 CPxRigidbody::~CPxRigidbody()
@@ -22,44 +22,38 @@ CPxRigidbody::~CPxRigidbody()
 
 void CPxRigidbody::finaltick()
 {
-    CTransform* pTrasnform = GetOwner()->Transform();
+	CTransform* pTrasnform = GetOwner()->Transform();
 
-    PxVec3 vFoce = PxVec3(m_vForce.x, m_vForce.y, m_vForce.z);
-    PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
+	PxVec3 vFoce = PxVec3(m_vForce.x, m_vForce.y, m_vForce.z);
+	PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
     //누적해서 들어갈지
-    if(m_bAccumulate)
-        tick_force(PxVec3(0.f, 0.f, 0.1f));
+   // if(m_bAccumulate)
+    tick_force(vFoce);
    
-    else
-        tick_velocity(PxVec3(0.f, 0.f, 1.f));
-   
-    PxTransform transform = m_pRigidbody->getGlobalPose();
-    //m_pRigidbody->setGlobalPose(transform);
-   
-    Vec3 vAddPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
-    Vec3 vPos = pTrasnform->GetRelativePos();
-    vPos += vAddPos;
-   
-    CPhysxMgr::GetInst()->GetScene()->simulate(DT);
-    CPhysxMgr::GetInst()->GetScene()->fetchResults(true);
+    //else
+    tick_velocity(Vvel);
+  
 
+    PxTransform transform = m_pRigidbody->getGlobalPose();
+  
+    Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
     pTrasnform->SetRelativePos(vPos);
     
-
     m_vForce = Vec3::Zero;
+    m_vVelocity = Vec3::Zero;
 }
 
-void CPxRigidbody::init()
+void CPxRigidbody::init(const Vector3& _vPos, const Vector3& _vScale)
 {
-    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic();
-    m_pPxMaterial = CPhysxMgr::GetInst()->GetPxMaterial();
-
+    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic(_vPos, _vScale);
+   
     m_pRigidbody->setMass(1.f);  
 }
 
 void CPxRigidbody::SetMass(float _fMass)
 {
+    m_fMass = _fMass;
     m_pRigidbody->setMass(_fMass);
 }
 
@@ -82,8 +76,7 @@ void CPxRigidbody::friction_force()
 
 void CPxRigidbody::tick_force(const PxVec3& _vFoce)
 {
-    m_pRigidbody->addForce(_vFoce, PxForceMode::eACCELERATION);
-   
+    m_pRigidbody->addForce(_vFoce, m_eForceMode);
 }
 
 void CPxRigidbody::tick_velocity(const PxVec3& _vVel)

@@ -5,6 +5,7 @@ class CTestScript :
     public CScript
 {
 private:
+    vector<CGameObject*> m_vecCollider;
 
 public:
     virtual void begin() override;

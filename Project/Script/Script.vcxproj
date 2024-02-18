@@ -173,8 +173,8 @@ call CodeGen.exe</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CAttackScript.h" />
+    <ClInclude Include="CBossStageScript.h" />
     <ClInclude Include="CCameraMoveScript.h" />
-    <ClInclude Include="CEquipScript.h" />
     <ClInclude Include="CGravityScript.h" />
     <ClInclude Include="CLandFormScript.h" />
     <ClInclude Include="CMissileScript.h" />
@@ -189,8 +189,8 @@ call CodeGen.exe</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CAttackScript.cpp" />
+    <ClCompile Include="CBossStageScript.cpp" />
     <ClCompile Include="CCameraMoveScript.cpp" />
-    <ClCompile Include="CEquipScript.cpp" />
     <ClCompile Include="CGravityScript.cpp" />
     <ClCompile Include="CLandFormScript.cpp" />
     <ClCompile Include="CMissileScript.cpp" />

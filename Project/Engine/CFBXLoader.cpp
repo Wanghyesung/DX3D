@@ -252,6 +252,8 @@ void CFBXLoader::LoadMaterial(FbxSurfaceMaterial* _pMtrlSur)
 	m_vecContainer.back().vecMtrl.push_back(tMtrlInfo);
 }
 
+
+
 void CFBXLoader::GetTangent(FbxMesh* _pMesh
 	, tContainer* _pContainer
 	, int _iIdx		 /*해당 정점의 인덱스*/
@@ -408,6 +410,22 @@ wstring CFBXLoader::GetMtrlTextureName(FbxSurfaceMaterial* _pSurface, const char
 	return wstring(strName.begin(), strName.end());
 }
 
+bool CFBXLoader::Check_Tex(const wstring& _strPath)
+{
+	path path_content = CPathMgr::GetInst()->GetContentPath();
+	path path_fbx = path_content.wstring() + L"fbx\\";
+
+	wstring strPath = path_fbx.wstring();
+	//fbx파일 안에 있는지 확인
+	for (int i = 0; i < strPath.size(); ++i)
+	{
+		if (_strPath[i] != strPath[i])
+			return false;
+	}
+
+	return true;
+}
+
 void CFBXLoader::LoadTexture()
 {
 	path path_content = CPathMgr::GetInst()->GetContentPath();
@@ -439,8 +457,12 @@ void CFBXLoader::LoadTexture()
 				if (vecPath[k].filename().empty())
 					continue;
 
+				if (!Check_Tex(vecPath[k]))
+					continue;
+
 				//생성된 텍스쳐가 있는 파일 위치(fbx파일 안)
 				path_origin = vecPath[k];
+
 				//파일 텍스쳐 이름
 				path_filename = vecPath[k].filename();
 

@@ -265,6 +265,15 @@
     <ClInclude Include="CEquip.h">
       <Filter>Source\06. Component\Equip</Filter>
     </ClInclude>
+    <ClInclude Include="CMonsterJump.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CDemonIdle.h">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CDemonHold.h">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -525,6 +534,15 @@
     <ClCompile Include="CEquip.cpp">
       <Filter>Source\06. Component\Equip</Filter>
     </ClCompile>
+    <ClCompile Include="CMonsterJump.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CDemonIdle.cpp">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CDemonHold.cpp">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -754,6 +772,9 @@
     </Filter>
     <Filter Include="Source\06. Component\Equip">
       <UniqueIdentifier>{c7468004-149d-4c5e-a329-d8c985ab8833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\10. FSM\MonsterFSM\DemonFSM">
+      <UniqueIdentifier>{2d662cae-cb89-4bc4-9a25-8d49ab15b7f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

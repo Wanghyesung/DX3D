@@ -39,8 +39,8 @@ void CTimeMgr::tick()
 	// tick 간격 시간
 	m_fDeltaTime = (float)(m_llCurCount.QuadPart - m_llPrevCount.QuadPart) / (float)m_llFrequency.QuadPart;
 
-	if (m_fDeltaTime >= (1.f / 60.f))
-		m_fDeltaTime = 1.f / 60.f;
+	//if (m_fDeltaTime >= (1.f / 60.f))
+	//	m_fDeltaTime = 1.f / 60.f;
 
 	// 누적 시간
 	m_fTime += m_fDeltaTime;

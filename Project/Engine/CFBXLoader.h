@@ -111,6 +111,8 @@ private:
 	void LoadMesh(FbxMesh* _pFbxMesh);
 	void LoadMaterial(FbxSurfaceMaterial* _pMtrlSur);
 
+	bool Check_Tex(const wstring& _strPath);
+
 	void GetTangent(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
 	void GetBinormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
 	void GetNormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);

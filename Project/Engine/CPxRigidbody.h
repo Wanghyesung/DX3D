@@ -12,6 +12,7 @@ private:
 	PxRigidDynamic* m_pRigidbody;
 	PxMaterial* m_pPxMaterial;
 	
+	PxForceMode::Enum m_eForceMode;
 	Vec3 m_vVelocity;
 	Vec3 m_vForce;
 
@@ -23,6 +24,7 @@ private:
 
 	bool m_bFricoeff;
 
+	float m_fMass;
 public:
 	void SetMass(float _fMass);
 	void SetGround(bool _bGround);
@@ -37,18 +39,19 @@ public:
 	void SetMaxVelocity(float _fMaxVelocity);
 
 	void AddForce(Vector3 _vForce) { m_vForce += _vForce; }
-
 	void SetAcumulate(bool _bAcc) { m_bAccumulate = _bAcc; }
-
+	
+	void SetForceMode(PxForceMode::Enum _eMode) { m_eForceMode = _eMode; }
 private:
 	void friction_force();
 
 	void tick_force(const PxVec3& _vFoce);
 	void tick_velocity(const PxVec3& _vVel);
 public:
+
 	virtual void finaltick()override;
 	
-	void init();
+	void init(const Vector3& _vPos, const Vector3& _vScale);
 
 	CLONE(CPxRigidbody);
 

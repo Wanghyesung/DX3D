@@ -29,8 +29,8 @@ void CMonsterIdle::Enter()
 {
 	Chanage_Anim(GetName());
 
-	//m_pTarget = 
-	//	CLevelMgr::GetInst()->GetCurLevel()->GetLayer((UINT)LAYER_TYPE::Player)->GetParentObject().at(0);
+	m_pTarget = 
+		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((UINT)LAYER_TYPE::Player)->GetParentObject().at(0);
 }
 
 void CMonsterIdle::Exit()

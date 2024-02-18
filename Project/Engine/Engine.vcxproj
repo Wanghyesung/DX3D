@@ -186,6 +186,8 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CConstBuffer.h" />
     <ClInclude Include="CCopyBoneShader.h" />
     <ClInclude Include="CDecal.h" />
+    <ClInclude Include="CDemonHold.h" />
+    <ClInclude Include="CDemonIdle.h" />
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="CEntity.h" />
@@ -216,6 +218,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CMonsterFSM.h" />
     <ClInclude Include="CMonsterHit.h" />
     <ClInclude Include="CMonsterIdle.h" />
+    <ClInclude Include="CMonsterJump.h" />
     <ClInclude Include="CMonsterMove.h" />
     <ClInclude Include="CMonsterState.h" />
     <ClInclude Include="CMotionBlur.h" />
@@ -276,6 +279,8 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CConstBuffer.cpp" />
     <ClCompile Include="CCopyBoneShader.cpp" />
     <ClCompile Include="CDecal.cpp" />
+    <ClCompile Include="CDemonHold.cpp" />
+    <ClCompile Include="CDemonIdle.cpp" />
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CEngine.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -310,6 +315,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CMonsterFSM.cpp" />
     <ClCompile Include="CMonsterHit.cpp" />
     <ClCompile Include="CMonsterIdle.cpp" />
+    <ClCompile Include="CMonsterJump.cpp" />
     <ClCompile Include="CMonsterMove.cpp" />
     <ClCompile Include="CMonsterState.cpp" />
     <ClCompile Include="CMotionBlur.cpp" />

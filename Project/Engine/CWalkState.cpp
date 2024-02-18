@@ -4,11 +4,12 @@
 #include "CGameObject.h"
 #include "CTransform.h"
 #include "CRigidbody.h"
+#include "CPxRigidbody.h"
 #include "CFSM.h"
 void CWalkState::final_tick()
 {
 	CGameObject* pObj = GetOwner();
-	CRigidbody* pRigidbody = pObj->Rigidbody();
+	CPxRigidbody* pRigidbody = pObj->PxRigidbody();
 
 	//z <--> y fbxÃà 
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
@@ -84,7 +85,7 @@ void CWalkState::final_tick()
 		Enter();
 	}
 
-	pRigidbody->AddForce(vForce);
+	pRigidbody->AddVelocity(vForce);
 }
 
 void CWalkState::Enter()

@@ -6,27 +6,28 @@
 #include "CRigidbody.h"
 #include "CTransform.h"
 #include "CKeyMgr.h"
-
+#include "CPxRigidbody.h"
 void CRollState::final_tick()
 {
 	CGameObject* pObj = GetOwner();
 
 	//자식 애니메이션으로
 	CGameObject* pChildObj = pObj->GetChild().at(0);
-	bool bComplete = pChildObj->Animator3D()->GetCurAnim()->IsComplete();
+	CAnimation3D* pCurAnim = pChildObj->Animator3D()->GetCurAnim();
+	bool bComplete = pCurAnim->IsComplete();
+	
 
 	if (bComplete)
 	{
 		ChanageState(GetFSM(), STATE_TYPE::IDLE);
 		return;
 	}
-
+	pObj->PxRigidbody()->SetVelocity(m_vFoce);
 }
 
 void CRollState::Exit()
-{
-	GetOwner()->Rigidbody()->SetAcumulate(false);
-	GetOwner()->Rigidbody()->SetFricoeff(false);
+{	
+	m_vFoce = Vec3::Zero;
 }
 
 void CRollState::Enter()
@@ -36,13 +37,11 @@ void CRollState::Enter()
 	wstring strFinalAnim = GetName() + GetFSM()->GetDir();
 	Chanage_Anim(strFinalAnim, false);
 
-	pObj->Rigidbody()->SetFricoeff(true);
-	pObj->Rigidbody()->SetAcumulate(true);
 
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 10.f;
+	float fSpeed = 300.f;
 	Vec3 vForce = Vec3::Zero;
 
 	wstring strDir = GetFSM()->GetDir();
@@ -74,11 +73,12 @@ void CRollState::Enter()
 	}
 
 	vForce.y = 0.f;
-	pObj->Rigidbody()->SetVelocity(vForce);
+	m_vFoce = vForce;
 }
 
 
-CRollState::CRollState()
+CRollState::CRollState():
+	m_vFoce(Vec3::Zero)
 {
 
 }

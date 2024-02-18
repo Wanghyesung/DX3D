@@ -1,4 +1,5 @@
 CAttackScript
+CBossStageScript
 CCameraMoveScript
 CEquipScript
 CGravityScript

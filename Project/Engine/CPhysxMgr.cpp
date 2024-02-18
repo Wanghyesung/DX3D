@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CPhysxMgr.h"
-
+#include "CTimeMgr.h"
 CPhysxMgr::CPhysxMgr()
     : m_pDispatcher(nullptr)
     , m_pFoundation(nullptr)
@@ -37,16 +37,33 @@ void CPhysxMgr::init()
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     m_pScene = m_pPhysics->createScene(sceneDesc);
     m_pScene->setGravity(PxVec3(0.0f, -9.8f, 0.0f));//중력
+
+
+   // PxShape* shape = m_pPhysics->createShape(PxSphereGeometry(1.0f), myMaterial, true);
+   // myActor.attachShape(*shape);
+   // shape->release();
+
     
 }
 void CPhysxMgr::tick()
 {
-
+    m_pScene->simulate(DT);
+    m_pScene->fetchResults(true);
 }
 
-PxRigidDynamic* CPhysxMgr::GetRigidDynamic()
+PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale)
 {
-    PxRigidDynamic*  m_pRigidbody = m_pPhysics->createRigidDynamic(PxTransform(PxVec3(0.f, 0.f, 0.f)));
+    PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
+    PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
+
+
+    PxMaterial* material = GetPxMaterial();
+    PxBoxGeometry geometry(vScale); // 상자 크기
+
+    PxTransform pose(vPos);
+    PxRigidDynamic* m_pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f);
+
+    //PxRigidDynamic*  m_pRigidbody = m_pPhysics->createRigidDynamic(PxTransform(PxVec3(0.f, 0.f, 0.f)));
     m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
      
     m_pScene->addActor(*m_pRigidbody);
@@ -57,7 +74,7 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic()
 PxMaterial* CPhysxMgr::GetPxMaterial()
 {
     PxMaterial* pMaterial =
-        m_pPhysics->createMaterial(0.5f, 0.5f, 0.6f); // 충돌체 마찰력,Dynamic마찰력, 탄성력
+        m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f); // 충돌체 마찰력,Dynamic마찰력, 탄성력
 
     return pMaterial;
 }

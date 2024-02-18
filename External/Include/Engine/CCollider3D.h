@@ -7,6 +7,8 @@ class CCollider3D : public CComponent
 private:
     Vec3            m_vOffsetPos;
     Vec3            m_vOffsetScale;
+    Vec3            m_vOffsetRot;
+
     bool            m_bAbsolute;
     COLLIDER3D_TYPE m_Shape;
     Matrix          m_matCollider3D;    // Collider 의 월드행렬
@@ -20,6 +22,8 @@ public:
 public:
     void SetOffsetPos(Vec3 _vOffsetPos) { m_vOffsetPos = Vec3(_vOffsetPos.x, _vOffsetPos.y, _vOffsetPos.z); }
     void SetOffsetScale(Vec3 _vOffsetScale) { m_vOffsetScale = Vec3(_vOffsetScale.x, _vOffsetScale.y, _vOffsetScale.z); }
+    void SetOffsetRot(Vec3 _vRot) { m_vOffsetRot = _vRot; }
+
     void SetAbsolute(bool _bSet) { m_bAbsolute = _bSet; }
     void SetCollider2DType(COLLIDER3D_TYPE _Type) { m_Shape = _Type; }
 
@@ -28,6 +32,8 @@ public:
 
     Vec3 GetOffsetPos() { return m_vOffsetPos; }
     Vec3 GetOffsetScale() { return m_vOffsetScale; }
+    Vec3 GetOffsetRot() { return m_vOffsetRot; }
+
     bool GetIsAbsolute() { return m_bAbsolute; }
 public:
 

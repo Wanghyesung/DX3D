@@ -111,6 +111,9 @@ void CMonsterAttack::check_event()
 	CGameObject* pChildObj = GetOwner()->GetChild().at(0);
 	int iCurFrame = pChildObj->Animator3D()->GetCurAnim()->GetCurFrame();
 
+	if (m_vecAttackObj.size() == 0)
+		return;
+
 	if (m_iAttackCount == 0 && m_tCurAttack.iStartFrame <= iCurFrame)
 	{
 		m_iAttackCount = 1;

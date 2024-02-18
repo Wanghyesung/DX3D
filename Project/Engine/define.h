@@ -28,6 +28,7 @@ enum class LAYER_TYPE
 	Monster,
 	LandScape, //전체 땅
 	landform, //지형지물
+	Obstacle, //장애물
 	Terrain, //지형
 	Attack,
 	MonsterAttack,

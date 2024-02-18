@@ -10,6 +10,7 @@ CCollider3D::CCollider3D() :
 	, m_iCollisionCount(0)
 	, m_matCollider3D(Matrix::Identity)
 	, m_vOffsetScale(Vec3::One)
+	, m_vOffsetRot(Vec3::Zero)
 {
 	SetName(L"Collider3D");
 }
@@ -24,7 +25,14 @@ void CCollider3D::finaltick()
 	// 충돌 회수가 음수인 경우
 	assert(0 <= m_iCollisionCount);
 
+	//회전
+	Matrix matRot = XMMatrixIdentity();
+	matRot = XMMatrixRotationX(m_vOffsetRot.x);
+	matRot *= XMMatrixRotationY(m_vOffsetRot.y);
+	matRot *= XMMatrixRotationZ(m_vOffsetRot.z);
+
 	m_matCollider3D = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
+	m_matCollider3D *= matRot;
 	m_matCollider3D *= XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, m_vOffsetPos.z);
 
 	const Matrix& matWorld = Transform()->GetWorldMat();

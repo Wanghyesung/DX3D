@@ -41,6 +41,6 @@ public:
 	void tick();
 
 	PxScene* GetScene() { return m_pScene; }
-	PxRigidDynamic* GetRigidDynamic();
+	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale);
 	PxMaterial* GetPxMaterial();
 };

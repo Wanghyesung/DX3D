@@ -9,6 +9,7 @@
 #include "CTimeMgr.h"
 #include "CTransform.h"
 #include "CCollider3D.h"
+#include "CPxRigidbody.h"
 
 CAttackState::CAttackState() :
 	m_strAttackNum(L"0"),
@@ -75,7 +76,7 @@ void CAttackState::Enter()
 	m_tCurAttack = m_vecAttack[iNum];
 	m_strAttackNum = std::to_wstring(iNum);
 
-	GetOwner()->Rigidbody()->SetAcumulate(true);
+	//GetOwner()->PxRigidbody()->SetAcumulate(true);
 
 	wstring strFinalAnim = GetName() + m_strAttackNum;
 	Chanage_Anim(strFinalAnim, false);
@@ -85,16 +86,16 @@ void CAttackState::add_force()
 {
 	m_fCurMoveTime += DT;
 
-	if (m_fCurMoveTime >= m_tCurAttack.fMoveTime)
-	{
-		GetOwner()->Rigidbody()->SetAcumulate(false);
-	}
-	else
-	{
-		Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
-		vFront.y = 0.f;
-		GetOwner()->Rigidbody()->AddForce(vFront * -m_tCurAttack.fForce);
-	}
+	//if (m_fCurMoveTime >= m_tCurAttack.fMoveTime)
+	//{
+	//	GetOwner()->PxRigidbody()->SetAcumulate(false);
+	//}
+	//else
+	//{
+	Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+	vFront.y = 0.f;
+	GetOwner()->PxRigidbody()->SetVelocity(vFront * -m_tCurAttack.fForce);
+	//}
 }
 
 

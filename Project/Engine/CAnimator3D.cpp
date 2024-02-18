@@ -23,7 +23,7 @@ CAnimator3D::CAnimator3D()
 	, m_iFrameCount(30)
 	, m_pBoneFinalMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
-	, m_bStop(true)
+	, m_bStop(false)
 	, m_bRepeat(true)
 	, m_iFrameIdx(0)
 	, m_iNextFrameIdx(0)
@@ -169,7 +169,8 @@ void CAnimator3D::CreateAnimationF(const wstring& _strAnimName, int _iStartFrame
 
 	m_mapAnim.insert(make_pair(_strAnimName, pAnim));
 
-	m_pCurAnimation = pAnim;
+	if(!m_pCurAnimation)
+		m_pCurAnimation = pAnim;
 }
 
 void CAnimator3D::CreateAnimationT(const wstring& _strAnimName, float _fStartTime, float _fLastTime)

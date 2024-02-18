@@ -4,11 +4,12 @@
 #include "CGameObject.h"
 #include "CTransform.h"
 #include "CRigidbody.h"
+#include "CPxRigidbody.h"
 #include "CFSM.h"
 void CRunState::final_tick()
 {
 	CGameObject* pObj = GetOwner();
-	CRigidbody* pRigidbody = pObj->Rigidbody();
+	CPxRigidbody* pRigidbody = pObj->PxRigidbody();
 
 	//z <--> y fbxÃà 
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
@@ -48,7 +49,7 @@ void CRunState::final_tick()
 	//vNewForce.y = vForce.z;
 	//vNewForce.z = vForce.y;
 
-	pRigidbody->AddForce(vForce);
+	pRigidbody->AddVelocity(vForce);
 }
 
 void CRunState::Enter()

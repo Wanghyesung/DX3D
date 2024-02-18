@@ -208,6 +208,7 @@ struct tFrameTrans
 
 StructuredBuffer<tFrameTrans> g_arrFrameTrans : register(t16);
 //T자로 되어있는 정점을 다시 원점으로 보내고 (원점에서 얼마나 떨어져있는지) 그 원점에 가중치 값을 곱해서 최종행렬을 나타냄
+//안그럼 T자에서 원점에 떨어져있는 위치만큼 이상한 곳으로 날라감 (그만큼 빼고 가중치를 곱해야함)
 StructuredBuffer<matrix> g_arrOffset : register(t17);
 RWStructuredBuffer<matrix> g_arrFinelMat : register(u0);
 
