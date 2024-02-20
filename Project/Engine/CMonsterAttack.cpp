@@ -7,6 +7,7 @@
 #include "CTransform.h"
 #include "CTimeMgr.h"
 #include "CRigidbody.h"
+#include "CPxRigidbody.h"
 CMonsterAttack::CMonsterAttack()
 {
 
@@ -51,7 +52,7 @@ void CMonsterAttack::final_tick()
 
 void CMonsterAttack::Exit()
 {
-	GetOwner()->Rigidbody()->SetAcumulate(false);
+	//GetOwner()->Rigidbody()->SetAcumulate(false);
 	m_fCurMoveTime = 0.f;
 	m_iAttackCount = 0;
 }
@@ -69,7 +70,7 @@ void CMonsterAttack::Enter()
 	wstring strName = GetName() + std::to_wstring(iAttackNum);
 	Chanage_Anim(strName, false);
 
-	GetOwner()->Rigidbody()->SetAcumulate(true);
+	//GetOwner()->PxRigidbody()->SetAcumulate(true);
 }
 
 void CMonsterAttack::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj)
@@ -95,14 +96,12 @@ void CMonsterAttack::add_force()
 	m_fCurMoveTime += DT;
 
 	if (m_fCurMoveTime >= m_tCurAttack.fMoveTime)
-	{
-		GetOwner()->Rigidbody()->SetAcumulate(false);
-	}
+		return;
 	else
 	{
 		Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
 		vFront.y = 0.f;
-		GetOwner()->Rigidbody()->AddForce(vFront * -m_tCurAttack.fForce);
+		GetOwner()->PxRigidbody()->AddVelocity(vFront * -m_tCurAttack.fForce);
 	}
 }
 

@@ -182,15 +182,14 @@ void CNavMesh::init_map()
 void CNavMesh::init_closemap()
 {
 	const vector<CGameObject*>& vecLandform =
-		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::landform)->GetObjects();
+		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Obstacle)->GetObjects();
 
 	for (int i = 0; i < vecLandform.size(); ++i)
 	{
 		if (!vecLandform[i]->Collider3D())
 			continue;
 
-		Matrix matForm = vecLandform[i]->Collider3D()->GetColliderWorldMat();
-		Vec3 vformPos = Vec3(matForm._41, matForm._42, matForm._43);
+		Vec3 vformPos = vecLandform[i]->Collider3D()->GetWorldPos();
 
 		//크기
 		Vec3 vformScale = vecLandform[i]->Collider3D()->GetOffsetScale();
@@ -200,12 +199,15 @@ void CNavMesh::init_closemap()
 						 vformPos.z - vformScale.z, vformPos.z + vformScale.z };
 
 		//칸당 갈수있는 길이
-		float fOffsetX = m_iDivideX;
-		float fOffsetZ = m_iDivideZ;
+		float fOffsetX = m_iDivideX /3.f;
+		float fOffsetZ = m_iDivideZ /3.f;
 
-		for (float i = fPos[2] - vformScale.z; i <= fPos[3] + vformScale.z; i += fOffsetZ)//z
+		float fCorrectionZ = vformScale.z / 3.f;
+		float fCorrectionX = vformScale.x / 3.f;
+
+		for (float i = fPos[2] + fCorrectionZ; i <= fPos[3] - fCorrectionZ; i += fOffsetZ)//z
 		{
-			for (float j = fPos[0] - vformScale.x; j <= fPos[1] + vformScale.x; j += fOffsetX) //x
+			for (float j = fPos[0] + fCorrectionX; j <= fPos[1] - fCorrectionX; j += fOffsetX) //x
 			{
 				//현재 검사하는 위치
 				Vec3 vPos = Vec3{ j, 0.f, i };
@@ -248,7 +250,7 @@ void CNavMesh::tracking_player()
 	Vec3 vRatio = {};
 
 	vRatio.x = vPlayerPos.x / m_vOwnerScale.x;
-	vRatio.z = vPlayerPos.z / m_vOwnerScale.y;
+	vRatio.z = vPlayerPos.z / m_vOwnerScale.z;
 
 	//m_vecMap[(int)vRatio.x][(int)vRatio.z] = 5;//목적지는 5
 	Vec3 vGoalPos = Vec3((int)vRatio.x, 0.f, (int)vRatio.z);
@@ -259,7 +261,7 @@ void CNavMesh::tracking_player()
 
 	//vRatio = vMonsterPos / m_iDivideX;
 	vRatio.x = vMonsterPos.x / m_vOwnerScale.x;
-	vRatio.z = vMonsterPos.z / m_vOwnerScale.y;
+	vRatio.z = vMonsterPos.z / m_vOwnerScale.z;
 	//m_vecMap[(int)vRatio.x][(int)vRatio.z] = 6;//시작 위치는 6	
 	Vec3 vStartPos = Vec3((int)vRatio.x, 0.f, (int)vRatio.z);
 

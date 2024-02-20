@@ -31,17 +31,17 @@ void CPxRigidbody::finaltick()
 	PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
     //누적해서 들어갈지
-   // if(m_bAccumulate)
-    tick_force(vFoce);
+   if(m_bAccumulate)
+        tick_force(vFoce);
    
-    //else
-    tick_velocity(Vvel);
+   else
+        tick_velocity(Vvel);
 
-    PxTransform transform = m_pRigidbody->getGlobalPose();
-
-    Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
-    pTrasnform->SetRelativePos(vPos);
-    
+   PxTransform transform = m_pRigidbody->getGlobalPose();
+   
+   Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
+   pTrasnform->SetRelativePos(vPos);
+   
     m_vForce = Vec3::Zero;
     m_vVelocity = Vec3::Zero;
 }

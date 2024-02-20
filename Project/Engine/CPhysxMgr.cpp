@@ -15,6 +15,9 @@ CPhysxMgr::~CPhysxMgr()
     m_pDispatcher->release();
     m_pPhysics->release();
     m_pFoundation->release();
+
+    if(m_pCollisionCallback)
+        delete m_pCollisionCallback;
 }
 
 
@@ -30,22 +33,30 @@ void CPhysxMgr::init()
         assert(nullptr);
 
 
+   
+
     PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
-    //sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // 중력 세팅
+    sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // 중력 세팅
 
     m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = m_pDispatcher;
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+   
+    //sceneDesc.broadPhaseType = PxBroadPhaseType::eMBP;//Multi Box Pruning
+    //sceneDesc.solverType = PxDynamicsSolverType::eTGS;
+    
     m_pScene = m_pPhysics->createScene(sceneDesc);
-    m_pScene->setGravity(PxVec3(0.0f, -9.8f, 0.0f));//중력
+
+    m_pCollisionCallback = new CPxEvent();
+    m_pScene->setSimulationEventCallback(m_pCollisionCallback);
+
+    //m_pScene->setGravity(PxVec3(0.0f, -980.f, 0.0f));//중력
     m_pScene->setFlag(PxSceneFlag::eENABLE_CCD, true); // CCD 활성화
 
-    CPxEvent collisionCallback;
-    m_pScene->setSimulationEventCallback(&collisionCallback);
 }
 void CPhysxMgr::tick()
 {
-    m_pScene->simulate(DT);
+    m_pScene->simulate(1.f/60.f);
     m_pScene->fetchResults(true);
 }
 
@@ -61,26 +72,38 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, eCollisionG
     PxTransform pose(vPos);
     PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f);
 
+    //m_pPhysics->createShape(geometry,*material)
+    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
-     
-    PxShape* shape = nullptr;
-    pRigidbody->getShapes(&shape, 1);
+    pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+  
+    //PxShape* shape = nullptr;
+    pRigidbody->getShapes(&pShape, 1);
+    pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_SPECULATIVE_CCD, false); // CCD 설정
+
+   
+    PxFilterData  filterData;
+    filterData.word0 = _eGroups;
+    filterData.word1 = _eOtherGroups;
+
+  
+    // 충돌 그룹 및 충돌 마스크 설정
+    pShape->setSimulationFilterData(filterData); // 충돌 그룹 설정
+    pShape->setQueryFilterData(filterData); // 충돌 마스크 설정
+
+    //pRigidbody->getActorFlags().setAll(PxActorFlag::eVISUALIZATION); // 시각화 플래그 설정
+    pRigidbody->setContactReportThreshold(0.01f);
+
     m_pScene->addActor(*pRigidbody);
 
-    pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_SPECULATIVE_CCD, true); // CCD 설정
-
-    // 충돌 그룹 및 충돌 마스크 설정
-    shape->setSimulationFilterData(PxFilterData(_eGroups, _eOtherGroups, 0, 0)); // 충돌 그룹 설정
-    shape->setQueryFilterData(PxFilterData(_eGroups, _eOtherGroups, 0, 0)); // 충돌 마스크 설정
-
-
     return pRigidbody;
+
 }
 
 PxMaterial* CPhysxMgr::GetPxMaterial()
 {
     PxMaterial* pMaterial =
-        m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f); // 충돌체 마찰력,Dynamic마찰력, 탄성력
+        m_pPhysics->createMaterial(0.f, 0.f, 0.f); // 충돌체 마찰력,Dynamic마찰력, 탄성력
 
     return pMaterial;
 }
@@ -88,6 +111,8 @@ PxMaterial* CPhysxMgr::GetPxMaterial()
 void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle,
     eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups)
 {
+    //m_mapObjSize.insert(make_pair());
+
     PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
     PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
 
@@ -97,32 +122,89 @@ void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, fl
     //초기화할 위치
     PxTransform pose(vPos);
     //PxRigidStatic* pRigidStatic = createRigidStatic(, pose, geometry, *material, 1.0f);
-    // 
-    // 회전 각도 설정 (45도를 라디안으로 변환)
-    float angle = XMConvertToRadians(45.0f);
+   
+    //회전
+    if (_vAxis != Vec3::Zero)
+    {
+        // 회전 각도 설정 (45도를 라디안으로 변환)
+        float angle = XMConvertToRadians(_fAngle);
 
-    PxVec3 axis(_vAxis.x, _vAxis.y, _vAxis.z); // 회전할 축
+        PxVec3 axis(_vAxis.x, _vAxis.y, _vAxis.z); // 회전할 축
 
-    // 쿼터니언으로 회전을 나타내는 부분
-    PxQuat rotation(angle, axis);
+        // 쿼터니언으로 회전을 나타내는 부분
+        PxQuat rotation(angle, axis);
 
-    // 기존의 쿼터니언을 새로운 회전으로 업데이트
-    pose.q = rotation * pose.q;
+        // 기존의 쿼터니언을 새로운 회전으로 업데이트
+        pose.q = rotation * pose.q;
+    }
 
     PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f);
-  
+   
+    //m_pPhysics->createShape(geometry,*material)
+    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
-        
-    PxShape* shape = nullptr;
-    pRigidbody->getShapes(&shape, 1);
-    m_pScene->addActor(*pRigidbody);
-
+    pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+   
+    //PxShape* shape = nullptr;
+    pRigidbody->getShapes(&pShape, 1);
+  
     pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_SPECULATIVE_CCD, true); // CCD 설정
 
+    PxFilterData  filterData;
+    filterData.word0 = _eGroups;
+    filterData.word1 = _eOtherGroups;
+
+
     // 충돌 그룹 및 충돌 마스크 설정
-    shape->setSimulationFilterData(PxFilterData(_eGroups, _eOtherGroups, 0, 0)); // 충돌 그룹 설정
-    shape->setQueryFilterData(PxFilterData(_eGroups, _eOtherGroups, 0, 0)); // 충돌 마스크 설정
+    pShape->setSimulationFilterData(filterData); // 충돌 그룹 설정
+    pShape->setQueryFilterData(filterData); // 충돌 마스크 설정
+    //pRigidbody->getActorFlags().setAll(PxActorFlag::eVISUALIZATION); // 시각화 플래그 설정
 
     pRigidbody->setContactReportThreshold(0.01f); 
+    
+    m_pScene->addActor(*pRigidbody);
+
+}
+
+void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle)
+{
+    PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
+    PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
+
+    PxMaterial* material = GetPxMaterial();
+    PxBoxGeometry geometry(vScale / 2.f); // 상자 크기
+
+    //초기화할 위치
+    PxTransform pose(vPos);
+    //PxRigidStatic* pRigidStatic = createRigidStatic(, pose, geometry, *material, 1.0f);
+
+    //회전
+    if (_vAxis != Vec3::Zero)
+    {
+        // 회전 각도 설정 (45도를 라디안으로 변환)
+        float angle = XMConvertToRadians(_fAngle);
+
+        PxVec3 axis(_vAxis.x, _vAxis.y, _vAxis.z); // 회전할 축
+
+        // 쿼터니언으로 회전을 나타내는 부분
+        PxQuat rotation(angle, axis);
+
+        // 기존의 쿼터니언을 새로운 회전으로 업데이트
+        pose.q = rotation * pose.q;
+    }
+
+    PxRigidStatic* pRigidbody = m_pPhysics->createRigidStatic(pose);
+      
+    //m_pPhysics->createShape(geometry,*material)
+    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
+    pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
+    pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+    pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+
+    //PxShape* shape = nullptr;
+    pRigidbody->getShapes(&pShape, 1);
+
+    m_pScene->addActor(*pRigidbody);
+
 }
 

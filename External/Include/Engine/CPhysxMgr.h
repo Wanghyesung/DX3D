@@ -17,6 +17,7 @@
 
 using namespace physx;
 
+class CPxEvent;
 class CPhysxMgr
 	: public CSingleton<CPhysxMgr>
 {
@@ -34,7 +35,9 @@ private:
 
 	// CPU 리소스를 효율적으로 공유할 수 있도록 하기 위해 구현
 	PxDefaultCpuDispatcher* m_pDispatcher;
+	CPxEvent* m_pCollisionCallback;
 
+	map<UINT, Vec3> m_mapObjSize;
 	//PxMaterial* m_pMaterial;
 
 public:
@@ -47,4 +50,6 @@ public:
 
 	void AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle,
 		eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups);
+
+	void AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle);
 };

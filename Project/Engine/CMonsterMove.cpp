@@ -3,6 +3,7 @@
 #include "CNavMesh.h"
 #include "CTransform.h"
 #include "CRigidbody.h"
+#include "CPxRigidbody.h"
 #include "CTimeMgr.h"
 #include "CLevelMgr.h"
 #include "CLayer.h"
@@ -12,7 +13,7 @@ CMonsterMove::CMonsterMove():
 	m_fCheckLen(2000.f),
 	m_pTarget(nullptr),
 	m_bActive(false),
-	m_fStopLen(100.f)
+	m_fStopLen(200.f)
 {
 	
 }
@@ -74,7 +75,7 @@ bool CMonsterMove::check_len()
 	else
 		m_bActive = false;
 
-	if (fLen <= m_fStopLen)
+	if (fLen <= m_fStopLen || !m_bActive)
 	{
 		//여기서 플레어 방향까지 회전
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
@@ -125,7 +126,7 @@ void CMonsterMove::move()
 	Vec3 vForward = GetOwner()->Transform()->GetDynamicUp();
 	vForward *= -1;
 	vForward.y = 0.f;
-	GetOwner()->Rigidbody()->AddForce(vForward * 400.f);
+	GetOwner()->PxRigidbody()->AddVelocity(vForward * 400.f);
 }
 
 void CMonsterMove::lookat_player()

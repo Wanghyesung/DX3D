@@ -7,7 +7,7 @@
 
 CMonsterIdle::CMonsterIdle() :
 	m_fCheckLen(1000.f),
-	m_fStopLen(110.f)
+	m_fStopLen(200.f)
 {
 
 }
@@ -48,7 +48,7 @@ void CMonsterIdle::check_player()
 
 	if (fLen <= m_fCheckLen && m_fStopLen <= fLen)
 	{
-		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::RUN);
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
 	}
 
 	else if (m_fStopLen > fLen)

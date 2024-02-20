@@ -42,7 +42,7 @@ enum class LAYER_TYPE
 enum eCollisionGroups
 {
 	GROUP_PLAYER = 1 << 0,
-	GROUP_ENEMY = 1 << 1,
+	GROUP_MONSTER = 1 << 1,
 	GROUP_TERRAIN = 1 << 2,
 	GROUP_OBSTACLE = 1 << 3,
 };
@@ -63,7 +63,7 @@ enum class LEVEL_TYPE
 
 enum class COMPONENT_TYPE
 {
-	// update	
+	//update 순서
 
 	TRANSFORM,		// 위치, 크기, 회전
 
@@ -77,7 +77,7 @@ enum class COMPONENT_TYPE
 	LIGHT2D,		// 2차원 광원
 	LIGHT3D,		// 3차원 광원
 	RIGIDBODY,		// 힘을받는 강체
-	PXRIGIDBODY,	// 피직스 강체
+	PXRIGIDBODY,	// 피직스 강체	
 
 	NAVMESH,		// 네비게이션
 	CAMERA,			// Camera

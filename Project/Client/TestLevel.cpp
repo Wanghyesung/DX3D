@@ -157,12 +157,13 @@ void CreateTestLevel()
 	CGameObject* pAritorias = new CGameObject;
 	pAritorias->SetName(L"Aritorias");
 	pAritorias->AddComponent(new CTransform());
-	//pAritorias->AddComponent(new CRigidbody());
+	
 	CPxRigidbody* pRigi = new CPxRigidbody();
-	pRigi->init(Vec3(1000.f, 0.f, 100.f), Vec3(115.f, 115.f, 115.f),
+	pRigi->init(Vec3(1000.f, 0.f, 200.f), Vec3(115.f, 115.f, 115.f),
 		eCollisionGroups::GROUP_PLAYER, eCollisionGroups::GROUP_OBSTACLE);
-
+	//pRigi->SetGround(false);
 	pAritorias->AddComponent(pRigi);
+
 	CCollider3D* pCollider = new CCollider3D();
 	pCollider->SetAbsolute(true);
 	pCollider->SetOffsetScale(Vec3(115.f, 115.f, 115.f));
@@ -176,7 +177,7 @@ void CreateTestLevel()
 	//pAritorias->AddComponent(new CMotionBlur());
 	//pAritorias->MotionBlur()->Initialize();
 	
-	SpawnGameObject(pAritorias, Vec3(1000.f, 0.f, 100.f), (int)LAYER_TYPE::Player);
+	SpawnGameObject(pAritorias, Vec3(1000.f, 0.f, 200.f), (int)LAYER_TYPE::Player);
 	
 
 	CreateMonster();
@@ -277,22 +278,21 @@ void CreateMonster()
 	//CGameObject* pMonster = new CGameObject;
 	//pMonster->SetName(L"Balder_Knight");
 	//pMonster->AddComponent(new CTransform());
-	//pMonster->AddComponent(new CRigidbody());
 	//pMonster->AddComponent(new CCollider3D());
 	//pMonster->AddComponent(new CNavMesh);
-	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
-	//pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
+	//CPxRigidbody* pRigi = new CPxRigidbody();
+	//pRigi->init(Vec3(2000.f, 0.f, 2000.f), Vec3(150.f, 340.f, 150.f),
+	//	eCollisionGroups::GROUP_MONSTER, eCollisionGroups::GROUP_OBSTACLE);
+	//pMonster->AddComponent(pRigi);
 	//
+	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
+	//pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f/*170.f*/));
 	//pMonster->Collider3D()->SetAbsolute(true);
+	//
 	//CMonsterScript* pMonsterScript = new CMonsterScript();
 	//pMonster->AddComponent(pMonsterScript);
-	//
 	//pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
 	//
-	////pMonsterScript->AddAnimFrame(L"Idle", 0, 95);
-	////pMonsterScript->AddAnimFrame(L"Walk", 96, 140);
-	////pMonsterScript->AddAnimFrame(L"Walk_Back", 141, 186);
-	////pMonsterScript->AddAnimFrame(L"Run", 270, 304);
     //pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
 	//pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
 	//pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
@@ -303,7 +303,7 @@ void CreateMonster()
 	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
 	//
 	//CMonsterMove* pMove = new CMonsterMove();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::RUN,  pMove, L"Walk", 96, 140);
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK,  pMove, L"Walk", 96, 140);
 	//
 	//CMonsterAttack* pAttack = new CMonsterAttack();
 	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
@@ -314,24 +314,25 @@ void CreateMonster()
 	//pMonsterScript->AddMonsterAttack(0, 5.f, 0.f, 0.6f, 629, 631, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
 	//pMonsterScript->AddMonsterAttack(1, 5.f, 0.f, 0.6f, 882, 885, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
 	//
-	//SpawnGameObject(pMonster, Vec3(3000.f, 0.f, 3000.f), (int)LAYER_TYPE::Monster);
+	//pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
+	//SpawnGameObject(pMonster, Vec3(2000.f, 0.f, 2000.f), (int)LAYER_TYPE::Monster);
 	//300
 
-	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
-	pWeapon->AddComponent(new CTransform());
-	pWeapon->AddComponent(new CEquip());
-	//pWeapon->AddComponent(new CMeshRender());
-	pWeapon->Transform()->SetRelativeScale(Vec3(3.1f,3.1f,3.1f));
-	
-
-	
-	float fRadian = XM_PI / 180.f;
-	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
-	;
-	pWeapon->Transform()->SetAbsolute(true);
-	//-90 270 -9
-
-	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
+	//CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
+	//pWeapon->AddComponent(new CTransform());
+	//pWeapon->AddComponent(new CEquip());
+	////pWeapon->AddComponent(new CMeshRender());
+	//pWeapon->Transform()->SetRelativeScale(Vec3(3.1f,3.1f,3.1f));
+	//
+	//
+	//
+	//float fRadian = XM_PI / 180.f;
+	//pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
+	//;
+	//pWeapon->Transform()->SetAbsolute(true);
+	////-90 270 -9
+	//
+	//SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
 	//-330 -50 360 
 	
 
@@ -413,6 +414,8 @@ void CreateLandScape()
 	pLandScape->LandScape()->SetFrustumCheck(false);
 	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
 	
+	//CPhysxMgr::GetInst()->AddActorStatic(Vec3(9000.f, 1, 9000.f), Vec3(18000.f, 1.f, 18000.f), Vec3::Zero, 0.f);
+
 	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);
 
 	
@@ -467,14 +470,14 @@ void CreateLandScape()
 	pPlain->AddComponent(new CTransform);
 	pPlain->AddComponent(new CCollider3D);
 	
-	pPlain->Collider3D()->SetOffsetScale(Vec3(300.f, 1.f, 300.f));
+	pPlain->Collider3D()->SetOffsetScale(Vec3(300.f, 350.f, 300.f));
 	pPlain->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
-	pPlain->Collider3D()->SetOffsetRot(Vec3(XM_PI/4.f, 0.f, 0.f));
+	//pPlain->Collider3D()->SetOffsetRot(Vec3(XM_PI/4.f, 0.f, 0.f));
 
-	CPhysxMgr::GetInst()->AddActor(Vec3(1000.f, 0, 306.f), Vec3(300.f, 1.f, 300.f), Vec3::Right, XM_PI / 4.f,
+	CPhysxMgr::GetInst()->AddActor(Vec3(1000.f, 0, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero ,0.f,
 		eCollisionGroups::GROUP_OBSTACLE, eCollisionGroups::GROUP_PLAYER);
 
-	SpawnGameObject(pPlain, Vec3(1000.f, 0, 306.f), (int)LAYER_TYPE::Obstacle);
+	SpawnGameObject(pPlain, Vec3(1000.f, 0, 1000.f), (int)LAYER_TYPE::Obstacle);
 	// 0 200 0
 	//300 350 300
 

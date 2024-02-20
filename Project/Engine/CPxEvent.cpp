@@ -27,7 +27,19 @@ void CPxEvent::onSleep(PxActor** actors, PxU32 count)
 
 void CPxEvent::onTrigger(PxTriggerPair* pairs, PxU32 count)
 {
-    int a = 10;
+    for (PxU32 i = 0; i < count; i++)
+    {
+        // ignore pairs when shapes have been deleted
+        if (pairs[i].flags & (PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER |
+            PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
+            continue;
+
+        //if ((pairs[i].otherShape->getActor() == mSubmarineActor) &&
+        //    (&pairs[i].triggerShape->getActor() == gTreasureActor))
+        //{
+        //    gTreasureFound = true;
+        //}
+    }
 }
 
 void CPxEvent::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
