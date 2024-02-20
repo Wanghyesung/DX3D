@@ -3,6 +3,8 @@
 
 #include "CTransform.h"
 #include "CScript.h"
+#include "CPxRigidbody.h"
+
 CCollider3D::CCollider3D() :
 	CComponent(COMPONENT_TYPE::COLLIDER3D)
 	, m_Shape(COLLIDER3D_TYPE::CUBE)
@@ -25,28 +27,46 @@ void CCollider3D::finaltick()
 	// 충돌 회수가 음수인 경우
 	assert(0 <= m_iCollisionCount);
 
-	//회전
-	Matrix matRot = XMMatrixIdentity();
-	matRot = XMMatrixRotationX(m_vOffsetRot.x);
-	matRot *= XMMatrixRotationY(m_vOffsetRot.y);
-	matRot *= XMMatrixRotationZ(m_vOffsetRot.z);
-
-	m_matCollider3D = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
-	m_matCollider3D *= matRot;
-	m_matCollider3D *= XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, m_vOffsetPos.z);
-
-	const Matrix& matWorld = Transform()->GetWorldMat();
-
-	if (m_bAbsolute)
+	CGameObject* pGameObj = GetOwner();
+	if (pGameObj->PxRigidbody())
 	{
-		Matrix matParentScaleInv = XMMatrixInverse(nullptr, Transform()->GetWorldScaleMat());
-		m_matCollider3D = m_matCollider3D * matParentScaleInv * matWorld;
+		//크기
+		Matrix matScale = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
+		//회전
+		Matrix matRot = pGameObj->Transform()->GetRotateMat();
+		//위치
+		Matrix matPos = pGameObj->PxRigidbody()->GetPosMatrix();
+
+		Matrix tem = XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, m_vOffsetPos.z);
+
+		m_matCollider3D = matScale * matRot * matPos;
 	}
 	else
 	{
-		// 충돌체 월드 * 오브젝트 월드
-		m_matCollider3D *= matWorld;
+		//회전
+		Matrix matRot = XMMatrixIdentity();
+		matRot = XMMatrixRotationX(m_vOffsetRot.x);
+		matRot *= XMMatrixRotationY(m_vOffsetRot.y);
+		matRot *= XMMatrixRotationZ(m_vOffsetRot.z);
+
+		m_matCollider3D = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
+		m_matCollider3D *= matRot;
+		m_matCollider3D *= XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, m_vOffsetPos.z);
+
+		const Matrix& matWorld = Transform()->GetWorldMat();
+
+		if (m_bAbsolute)
+		{
+			Matrix matParentScaleInv = XMMatrixInverse(nullptr, Transform()->GetWorldScaleMat());
+			m_matCollider3D = m_matCollider3D * matParentScaleInv * matWorld;
+		}
+		else
+		{
+			// 충돌체 월드 * 오브젝트 월드
+			m_matCollider3D *= matWorld;
+		}
 	}
+
 
 	// DebugShape 요청
 	Vec4 vColor = Vec4(0.f, 1.f, 0.f, 1.f);

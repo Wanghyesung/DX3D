@@ -14,6 +14,7 @@
 #pragma comment(lib, "Physx/release/PhysXExtensions_static_64")
 #endif
 
+
 using namespace physx;
 
 class CPhysxMgr
@@ -41,6 +42,9 @@ public:
 	void tick();
 
 	PxScene* GetScene() { return m_pScene; }
-	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale);
+	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups);
 	PxMaterial* GetPxMaterial();
+
+	void AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle,
+		eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups);
 };

@@ -86,16 +86,12 @@ void CAttackState::add_force()
 {
 	m_fCurMoveTime += DT;
 
-	//if (m_fCurMoveTime >= m_tCurAttack.fMoveTime)
-	//{
-	//	GetOwner()->PxRigidbody()->SetAcumulate(false);
-	//}
-	//else
-	//{
+	if (m_fCurMoveTime >= m_tCurAttack.fMoveTime)
+		return;
+
 	Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	vFront.y = 0.f;
 	GetOwner()->PxRigidbody()->SetVelocity(vFront * -m_tCurAttack.fForce);
-	//}
 }
 
 

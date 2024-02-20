@@ -6,9 +6,7 @@
 CPxRigidbody::CPxRigidbody():
 	CComponent(COMPONENT_TYPE::PXRIGIDBODY),
     m_bGround(true),
-    m_bAccumulate(false),
-    m_bFricoeff(false),
-    m_fFricCoeff(10.f)
+    m_bAccumulate(false)
 {
     m_eForceMode = PxForceMode::eACCELERATION;
 }
@@ -24,6 +22,11 @@ void CPxRigidbody::finaltick()
 {
 	CTransform* pTrasnform = GetOwner()->Transform();
 
+    if (m_bDecrease)
+    {
+        m_vVelocity -=m_vDecVel;
+    }
+
 	PxVec3 vFoce = PxVec3(m_vForce.x, m_vForce.y, m_vForce.z);
 	PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
@@ -33,10 +36,9 @@ void CPxRigidbody::finaltick()
    
     //else
     tick_velocity(Vvel);
-  
 
     PxTransform transform = m_pRigidbody->getGlobalPose();
-  
+
     Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
     pTrasnform->SetRelativePos(vPos);
     
@@ -44,9 +46,9 @@ void CPxRigidbody::finaltick()
     m_vVelocity = Vec3::Zero;
 }
 
-void CPxRigidbody::init(const Vector3& _vPos, const Vector3& _vScale)
+void CPxRigidbody::init(const Vector3& _vPos, const Vector3& _vScale, eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups)
 {
-    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic(_vPos, _vScale);
+    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic(_vPos, _vScale, _eGroups, _eOtherGroups);
    
     m_pRigidbody->setMass(1.f);  
 }
@@ -67,6 +69,27 @@ void CPxRigidbody::SetGround(bool _bGround)
 void CPxRigidbody::SetMaxVelocity(float _fMaxVelocity)
 {
     m_pRigidbody->setMaxLinearVelocity(_fMaxVelocity);
+}
+
+const Matrix& CPxRigidbody::GetPosMatrix()
+{
+    PxTransform transform = m_pRigidbody->getGlobalPose(); // actor는 PxRigidActor* 포인터입니다.
+
+    Matrix mat = XMMatrixTranslation(transform.p.x, transform.p.y, transform.p.z);
+
+    return mat;
+}
+
+const Matrix& CPxRigidbody::GetRotMatrix()
+{
+    PxTransform rotation = m_pRigidbody->getGlobalPose(); // actor는 PxRigidActor* 포인터입니다.
+    //회전
+    Matrix matRot = XMMatrixIdentity();
+    matRot = XMMatrixRotationX(rotation.q.x);
+    matRot *= XMMatrixRotationY(rotation.q.y);
+    matRot *= XMMatrixRotationZ(rotation.q.z);
+
+    return matRot;
 }
 
 void CPxRigidbody::friction_force()

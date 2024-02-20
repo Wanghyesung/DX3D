@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -231,6 +231,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CPhysxMgr.h" />
     <ClInclude Include="CPlayerHit.h" />
     <ClInclude Include="CPrefab.h" />
+    <ClInclude Include="CPxEvent.h" />
     <ClInclude Include="CPxRigidbody.h" />
     <ClInclude Include="CRaycastShader.h" />
     <ClInclude Include="CRenderComponent.h" />
@@ -327,6 +328,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CPhysxMgr.cpp" />
     <ClCompile Include="CPlayerHit.cpp" />
     <ClCompile Include="CPrefab.cpp" />
+    <ClCompile Include="CPxEvent.cpp" />
     <ClCompile Include="CPxRigidbody.cpp" />
     <ClCompile Include="CRaycastShader.cpp" />
     <ClCompile Include="CRenderComponent.cpp" />

@@ -19,6 +19,7 @@
 
 #include <Engine\CResMgr.h>
 #include <Engine\CCollisionMgr.h>
+#include <Engine\CPhysxMgr.h>
 
 #include <Script\CPlayerScript.h>
 #include <Script\CMonsterScript.h>
@@ -122,6 +123,7 @@ void CreateTestLevel()
 	pLightObj->Light3D()->SetLightAmbient(Vec3(0.3f, 0.3f, 0.3f));
 
 	SpawnGameObject(pLightObj, Vec3(-2000, 2000.f, -2000.f), 0);
+
 	//pLightObj->SetName(L"Point Light 2");
 	//
 	//pLightObj->AddComponent(new CTransform);
@@ -157,12 +159,13 @@ void CreateTestLevel()
 	pAritorias->AddComponent(new CTransform());
 	//pAritorias->AddComponent(new CRigidbody());
 	CPxRigidbody* pRigi = new CPxRigidbody();
-	pRigi->init(Vec3(1000.f, 0.f, 100.f), Vector3::One);
+	pRigi->init(Vec3(1000.f, 0.f, 100.f), Vec3(115.f, 115.f, 115.f),
+		eCollisionGroups::GROUP_PLAYER, eCollisionGroups::GROUP_OBSTACLE);
 
 	pAritorias->AddComponent(pRigi);
 	CCollider3D* pCollider = new CCollider3D();
 	pCollider->SetAbsolute(true);
-	pCollider->SetOffsetScale(Vec3(115.f, 115.f, 50.f));
+	pCollider->SetOffsetScale(Vec3(115.f, 115.f, 115.f));
 	pCollider->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
 	pAritorias->AddComponent(pCollider);
 	
@@ -175,15 +178,6 @@ void CreateTestLevel()
 	
 	SpawnGameObject(pAritorias, Vec3(1000.f, 0.f, 100.f), (int)LAYER_TYPE::Player);
 	
-
-	//CGameObject* pMonster = new CGameObject;
-	//pMonster->SetName(L"Taurus_Demon");
-	//pMonster->AddComponent(new CTransform());
-	//pMonster->AddComponent(new CRigidbody());
-	//CMonsterScript* pMonsterScript = new CMonsterScript();
-	//pMonster->AddComponent(pMonsterScript);
-	//pMonsterScript->Initialize(L"Taurus_Demon_Fianl"); //fbx load, FSM , components
-	//SpawnGameObject(pMonster, Vec3(400.f, 0.f, 400.f), L"Default");
 
 	CreateMonster();
 	
@@ -467,4 +461,21 @@ void CreateLandScape()
 
 	SpawnGameObject(pLandform, Vec3(3000.f, 3573.f, 3000.f), (int)LAYER_TYPE::Obstacle);
 	//3000, 3573 , 3000
+
+
+	CGameObject* pPlain = InitializeFBX(L"Plain_CastleTower_Ruin_01");
+	pPlain->AddComponent(new CTransform);
+	pPlain->AddComponent(new CCollider3D);
+	
+	pPlain->Collider3D()->SetOffsetScale(Vec3(300.f, 1.f, 300.f));
+	pPlain->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+	pPlain->Collider3D()->SetOffsetRot(Vec3(XM_PI/4.f, 0.f, 0.f));
+
+	CPhysxMgr::GetInst()->AddActor(Vec3(1000.f, 0, 306.f), Vec3(300.f, 1.f, 300.f), Vec3::Right, XM_PI / 4.f,
+		eCollisionGroups::GROUP_OBSTACLE, eCollisionGroups::GROUP_PLAYER);
+
+	SpawnGameObject(pPlain, Vec3(1000.f, 0, 306.f), (int)LAYER_TYPE::Obstacle);
+	// 0 200 0
+	//300 350 300
+
 }

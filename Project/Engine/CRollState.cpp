@@ -7,6 +7,7 @@
 #include "CTransform.h"
 #include "CKeyMgr.h"
 #include "CPxRigidbody.h"
+#include "CTimeMgr.h"
 void CRollState::final_tick()
 {
 	CGameObject* pObj = GetOwner();
@@ -16,23 +17,32 @@ void CRollState::final_tick()
 	CAnimation3D* pCurAnim = pChildObj->Animator3D()->GetCurAnim();
 	bool bComplete = pCurAnim->IsComplete();
 	
-
 	if (bComplete)
 	{
 		ChanageState(GetFSM(), STATE_TYPE::IDLE);
 		return;
 	}
+
+	m_fDecLen *=  (3 * DT);
+
 	pObj->PxRigidbody()->SetVelocity(m_vFoce);
+	pObj->PxRigidbody()->SetDecrease(m_vFoce * m_fDecLen);
+
+	
 }
 
 void CRollState::Exit()
 {	
 	m_vFoce = Vec3::Zero;
+	GetOwner()->PxRigidbody()->SetDecrease(false);
+
 }
 
 void CRollState::Enter()
 {
 	CGameObject* pObj = GetOwner();
+
+	pObj->PxRigidbody()->SetDecrease(true);
 
 	wstring strFinalAnim = GetName() + GetFSM()->GetDir();
 	Chanage_Anim(strFinalAnim, false);
@@ -78,7 +88,8 @@ void CRollState::Enter()
 
 
 CRollState::CRollState():
-	m_vFoce(Vec3::Zero)
+	m_vFoce(Vec3::Zero),
+	m_fDecLen(100.f)
 {
 
 }

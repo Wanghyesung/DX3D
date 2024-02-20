@@ -158,7 +158,7 @@ void CPlayerScript::set_attack()
 
 	tAttackInfo attack0 = {};
 	attack0.iAttackNum = 0;
-	attack0.fForce = 5.f;
+	attack0.fForce = 100.f;
 	attack0.fMoveTime = 0.6f;
 	attack0.iStartFrame = 528;
 	attack0.iEndFrame = 530;
@@ -174,7 +174,7 @@ void CPlayerScript::set_attack()
 
 	tAttackInfo attack1 = {};
 	attack1.iAttackNum = 1;
-	attack1.fForce = 20.f;
+	attack1.fForce = 200.f;
 	attack1.fMoveTime = 0.6f;
 	attack1.iStartFrame = 831;
 	attack1.iEndFrame = 835;

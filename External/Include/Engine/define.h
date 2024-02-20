@@ -38,6 +38,16 @@ enum class LAYER_TYPE
 	End = 32,
 };
 
+// physx 충돌 그룹 정의
+enum eCollisionGroups
+{
+	GROUP_PLAYER = 1 << 0,
+	GROUP_ENEMY = 1 << 1,
+	GROUP_TERRAIN = 1 << 2,
+	GROUP_OBSTACLE = 1 << 3,
+};
+
+
 enum class CAMERA_TYPE
 {
 	MAIN,
@@ -53,21 +63,22 @@ enum class LEVEL_TYPE
 
 enum class COMPONENT_TYPE
 {
-	// update
+	// update	
 
 	TRANSFORM,		// 위치, 크기, 회전
-	COLLIDER2D,		// 2차원 충돌
-	COLLIDER3D,		// 3차원 충돌
 
 	EQUIP,			// 물체 위치를 행렬을 반환
 	ANIMATOR2D,		// Sprite Animation
 	ANIMATOR3D,		// Bone Sknning Animation
 	MOTIONBLUR,		// 흔들림 효과 이전 프레임 위치 정보 저장
+	COLLIDER2D,		// 2차원 충돌
+	COLLIDER3D,		// 3차원 충돌
 
 	LIGHT2D,		// 2차원 광원
 	LIGHT3D,		// 3차원 광원
 	RIGIDBODY,		// 힘을받는 강체
 	PXRIGIDBODY,	// 피직스 강체
+
 	NAVMESH,		// 네비게이션
 	CAMERA,			// Camera
 

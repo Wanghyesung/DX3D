@@ -27,11 +27,6 @@ void CBossStageScript::OnOverlap(CCollider3D* _Other)
 
 	if (pScript)
 	{
-		Vec3 vPlayerPos = pObj->Collider3D()->GetWorldPos();
-		Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
-
-		Vec3 vDiff = vPlayerPos - vPos;
-
 		int a = 10;
 	}
 }

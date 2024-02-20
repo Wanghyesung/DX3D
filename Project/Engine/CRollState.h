@@ -5,6 +5,7 @@ class CRollState : public CState
 {
 private:
 	Vec3 m_vFoce;
+	float m_fDecLen;//속도 감소
 
 	int m_iStopFrame;
 
