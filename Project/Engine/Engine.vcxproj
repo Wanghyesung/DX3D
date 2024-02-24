@@ -202,6 +202,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CHeightMapShader.h" />
     <ClInclude Include="CIdleState.h" />
     <ClInclude Include="CInstancingBuffer.h" />
+    <ClInclude Include="CJumpEnd.h" />
     <ClInclude Include="CJumpState.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CLandScape.h" />
@@ -299,6 +300,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CHeightMapShader.cpp" />
     <ClCompile Include="CIdleState.cpp" />
     <ClCompile Include="CInstancingBuffer.cpp" />
+    <ClCompile Include="CJumpEnd.cpp" />
     <ClCompile Include="CJumpState.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CLandScape.cpp" />

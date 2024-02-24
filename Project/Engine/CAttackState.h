@@ -24,6 +24,7 @@ private:
 	void check_event();
 
 	void add_objpull(UINT _iAttackNum, CGameObject* _pAttackObj);
+
 public:
 	virtual void final_tick();
 	virtual void Exit();

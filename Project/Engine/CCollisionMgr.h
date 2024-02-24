@@ -37,7 +37,7 @@ public:
 
 public:
 	void tick();
-
+	
 private:
 	void CollisionBtwLayer(CLayer* _LeftLayer, CLayer* _RightLayer);
 	void CollisionBtwObject(CGameObject* _LeftObject, CGameObject* _RightObject);

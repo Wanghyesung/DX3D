@@ -80,6 +80,7 @@ public:
 
     void CreateAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame);
     void CreateAnimationT(const wstring& _strAnimName, float _fStartTime, float _fLastTime);
+    void AddAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame);
 
     CAnimation3D* FindAnimation(const wstring& _strName);
     void SetCurAnimation(const wstring& _strName);

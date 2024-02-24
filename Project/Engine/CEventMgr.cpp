@@ -126,6 +126,8 @@ void CEventMgr::tick()
 			STATE_TYPE eType = (STATE_TYPE)m_vecEvent[i].lParam;
 			pFSM->ChanageState(eType);
 		}
+
+		break;
 		case EVENT_TYPE::CHANAGE_MONSTER_STATE:
 		{
 			CMonsterFSM* pFSM = (CMonsterFSM*)m_vecEvent[i].wParam;

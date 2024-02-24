@@ -11,6 +11,7 @@ CMonsterJump::CMonsterJump():
 
 CMonsterJump::~CMonsterJump()
 {
+
 }
 
 

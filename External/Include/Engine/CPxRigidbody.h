@@ -5,6 +5,8 @@
 
 using namespace physx;
 
+//실제 움직임은 physx에서 하고 렌더링 위치는 transform
+
 class CPxRigidbody : public CComponent
 {
 private:
@@ -13,17 +15,24 @@ private:
 	PxMaterial* m_pPxMaterial;
 	
 	PxForceMode::Enum m_eForceMode;
+
 	Vec3 m_vVelocity;
 	Vec3 m_vDecVel; //속도 감소
 	Vec3 m_vForce;
 
 	Vec3 m_vPxScale;
+	
+	PxVec3 m_vTransformOffset;//실제 충돌에 영향을 주는 PXTransform과 그릴 위치를 나타내는 transform으로 구분
+
 
 	float m_fMaxVelocity;
 	bool m_bAccumulate;//힘들 누적해서 받을지
 	bool m_bGround; //땅인지;
 
+	bool m_bBlockTransform; //transform이동 못하게
+
 	bool m_bDecrease; //속도 감소
+	
 
 	float m_fMass;
 
@@ -32,15 +41,15 @@ public:
 	void SetGround(bool _bGround);
 	bool IsGround() { return m_bGround; }
 
-	void SetVelocity(Vector3 _vVelocity) { m_vVelocity = _vVelocity; }
-	void AddVelocity(Vector3 _vVelocity) { m_vVelocity += _vVelocity; }
+	void SetVelocity(Vec3 _vVelocity) { m_vVelocity = _vVelocity; }
+	void AddVelocity(Vec3 _vVelocity) { m_vVelocity += _vVelocity; }
 
 	void SetDecVel(Vec3 _vDecVel) { m_vDecVel = _vDecVel; }
 
-	Vector3 GetVelocity() { return m_vVelocity; }
+	Vec3 GetVelocity() { return m_vVelocity; }
 	void SetMaxVelocity(float _fMaxVelocity);
 
-	void AddForce(Vector3 _vForce) { m_vForce += _vForce; }
+	void AddForce(Vec3 _vForce) { m_vForce += _vForce; }
 
 	void SetDecrease(bool _bDecrease) { m_bDecrease = _bDecrease; }
 	void SetAccumulate(bool _bAccumulate) { m_bAccumulate = _bAccumulate; }
@@ -48,7 +57,19 @@ public:
 	const Matrix& GetPosMatrix();
 	const Matrix& GetRotMatrix();
 
+	const Vec3& GetPxPosition();
+	const Vec3& GetPxRotate();
+
+	void SetOffsetPosition(const Vec3& _vOffsetPos);
+
+	void AddPxPosition(Vec3 _vPos);
+
 	void SetForceMode(PxForceMode::Enum _eMode) { m_eForceMode = _eMode; }
+
+	void SetPxTransform(const Vec3& _vPos);
+	void SetPxRotate(const PxQuat& _pQuat);
+	void BlockTransform(bool _bBlock) { m_bBlockTransform = _bBlock; }
+
 private:
 	void friction_force();
 
@@ -58,7 +79,7 @@ public:
 
 	virtual void finaltick()override;
 	
-	void init(const Vector3& _vPos, const Vector3& _vScale, eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups);
+	void init(const Vector3& _vPos, const Vector3& _vScale, CGameObject* _pCollEventObj);
 
 	CLONE(CPxRigidbody);
 

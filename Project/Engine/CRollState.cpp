@@ -42,11 +42,10 @@ void CRollState::Enter()
 {
 	CGameObject* pObj = GetOwner();
 
-	pObj->PxRigidbody()->SetDecrease(true);
-
 	wstring strFinalAnim = GetName() + GetFSM()->GetDir();
 	Chanage_Anim(strFinalAnim, false);
 
+	pObj->PxRigidbody()->SetDecrease(true);
 
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);

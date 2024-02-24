@@ -20,7 +20,7 @@ public:
     virtual void finaltick() override;
 
 public:
-    void SetOffsetPos(Vec3 _vOffsetPos) { m_vOffsetPos = Vec3(_vOffsetPos.x, _vOffsetPos.y, _vOffsetPos.z); }
+    void SetOffsetPos(Vec3 _vOffsetPos);
     void SetOffsetScale(Vec3 _vOffsetScale) { m_vOffsetScale = Vec3(_vOffsetScale.x, _vOffsetScale.y, _vOffsetScale.z); }
     void SetOffsetRot(Vec3 _vRot) { m_vOffsetRot = _vRot; }
 

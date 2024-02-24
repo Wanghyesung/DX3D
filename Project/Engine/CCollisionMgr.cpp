@@ -38,6 +38,7 @@ void CCollisionMgr::tick()
 	}
 }
 
+
 void CCollisionMgr::CollisionBtwLayer(CLayer* _Left, CLayer* _Right)
 {
 	const vector<CGameObject*>& vecLeft = _Left->GetObjects();
@@ -90,6 +91,7 @@ void CCollisionMgr::CollisionBtwObject(CGameObject* _LeftObject, CGameObject* _R
 		bDead = true;
 	}
 
+	//pxrigidbody에서 내 오브젝트들 아이디 주고 충돌했는지 반환값을 가져옴 true면 이벤트 호출
 	// 두 충돌체가 지금 충돌 중인지 확인
 	if (CollisionBtwCollider(_LeftObject->Collider3D(), _RightObject->Collider3D()))
 	{

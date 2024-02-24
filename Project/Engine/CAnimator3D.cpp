@@ -79,15 +79,20 @@ void CAnimator3D::finaltick()
 	if (m_bStop)
 		return;
 
-	if (m_pCurAnimation->IsComplete() && m_bRepeat)
+	if (m_pCurAnimation->IsComplete())
 	{
-		Events* pEvents =
-			FindEvents(m_pCurAnimation->GetKey());
+		if (m_bRepeat)
+		{
+			Events* pEvents =
+				FindEvents(m_pCurAnimation->GetKey());
 
-		if (pEvents)
-			pEvents->tCompleteEvent();
+			if (pEvents)
+				pEvents->tCompleteEvent();
 
-		m_pCurAnimation->Reset();
+			m_pCurAnimation->Reset();
+		}
+		else
+			return;
 	}
 
 	m_pCurAnimation->final_tick();
@@ -195,6 +200,11 @@ void CAnimator3D::CreateAnimationT(const wstring& _strAnimName, float _fStartTim
 	pAnim->m_iAnimIdx = ++m_AnimCount;
 
 	m_mapAnim.insert(make_pair(_strAnimName, pAnim));
+}
+
+void CAnimator3D::AddAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame)
+{
+	
 }
 
 void CAnimator3D::SetCurFrame(int _iCurFame)

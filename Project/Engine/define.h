@@ -39,13 +39,13 @@ enum class LAYER_TYPE
 };
 
 // physx 충돌 그룹 정의
-enum eCollisionGroups
-{
-	GROUP_PLAYER = 1 << 0,
-	GROUP_MONSTER = 1 << 1,
-	GROUP_TERRAIN = 1 << 2,
-	GROUP_OBSTACLE = 1 << 3,
-};
+//enum eCollisionGroups
+//{
+//	GROUP_PLAYER = 1 << 0,
+//	GROUP_MONSTER = 1 << 1,
+//	GROUP_TERRAIN = 1 << 2,
+//	GROUP_OBSTACLE = 1 << 3,
+//};
 
 
 enum class CAMERA_TYPE
@@ -280,6 +280,8 @@ enum class STATE_TYPE
 	ROLL,
 	ATTACK,
 	JUMP,
+	JUMPEND,
+	JUMPATTACK,
 	HIT,
 	END,
 };

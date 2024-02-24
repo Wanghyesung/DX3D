@@ -17,6 +17,13 @@
 
 using namespace physx;
 
+struct PxCollisionEvent
+{
+	CGameObject* pEventObj;
+	UINT eLayerBit; // 0 << 1 
+};
+
+
 class CPxEvent;
 class CPhysxMgr
 	: public CSingleton<CPhysxMgr>
@@ -37,19 +44,35 @@ private:
 	PxDefaultCpuDispatcher* m_pDispatcher;
 	CPxEvent* m_pCollisionCallback;
 
-	map<UINT, Vec3> m_mapObjSize;
+	UINT	m_matrix[MAX_LAYER];
+	map<string, PxCollisionEvent> m_mapEventObj;//충돌됐을 때 이벤트 호출
 	//PxMaterial* m_pMaterial;
+
+	
 
 public:
 	void init();
 	void tick();
+	
+	
 
 	PxScene* GetScene() { return m_pScene; }
-	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups);
+	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, CGameObject* _pCollEventObj);
 	PxMaterial* GetPxMaterial();
+	CPxEvent* GetEvent() { return m_pCollisionCallback; }
 
-	void AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle,
-		eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups);
-
+	void AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, CGameObject* _pCollEventObj);
 	void AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle);
+
+
+	//collision
+	void AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj);
+	PxCollisionEvent FIndEventObj(string _strActorName);
+	void Clear()
+	{
+		memset(m_matrix, 0, sizeof(UINT) * MAX_LAYER);
+	}
+	void LayerCheck(UINT _left, UINT _right); // UINT(LAYER_TYPE) 
+	void CollisionCheck(string _left, string _right);
+
 };

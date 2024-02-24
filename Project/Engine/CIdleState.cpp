@@ -28,6 +28,11 @@ void CIdleState::final_tick()
 		GetFSM()->SetDir(L"Right");
 	}
 
+	else if (KEY_TAP(KEY::LSHIFT))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::JUMP);
+	}
+
 	if (KEY_TAP(KEY::LBTN))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::ATTACK);

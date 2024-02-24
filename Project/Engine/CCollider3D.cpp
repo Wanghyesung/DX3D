@@ -34,12 +34,15 @@ void CCollider3D::finaltick()
 		Matrix matScale = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
 
 		//회전
-		Matrix matRot = pGameObj->Transform()->GetRotateMat();
+		Matrix matRot = pGameObj->PxRigidbody()->GetRotMatrix();
+	
 		//위치
-		Matrix matPos = pGameObj->PxRigidbody()->GetPosMatrix();
-
+		Vec3 vPxPos = pGameObj->PxRigidbody()->GetPxPosition();
+	
+		Matrix matPos = XMMatrixTranslation(vPxPos.x, vPxPos.y, vPxPos.z);
 		m_matCollider3D = matScale * matRot * matPos;
 	}
+
 	else
 	{
 		//회전
@@ -76,6 +79,11 @@ void CCollider3D::finaltick()
 		DrawDebugCube(m_matCollider3D, vColor, 0.f, true);
 	else
 		DrawDebugCircle(m_matCollider3D, vColor, 0.f);
+}
+
+void CCollider3D::SetOffsetPos(Vec3 _vOffsetPos)
+{
+	m_vOffsetPos = Vec3(_vOffsetPos.x, _vOffsetPos.y, _vOffsetPos.z);
 }
 
 const Vec3& CCollider3D::GetWorldPos()

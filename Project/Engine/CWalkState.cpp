@@ -55,6 +55,11 @@ void CWalkState::final_tick()
 		strDir = L"Back";
 	}
 
+	else if (KEY_TAP(KEY::LSHIFT))
+	{
+		ChanageState(GetFSM(), STATE_TYPE::JUMP);
+	}
+
 	if (KEY_TAP(KEY::SPACE))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::ROLL);

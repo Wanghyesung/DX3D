@@ -259,6 +259,9 @@
     <ClInclude Include="EquipUI.h">
       <Filter>UI\InspectorUI\ComponentUI\12.Equip</Filter>
     </ClInclude>
+    <ClInclude Include="PxRigidbodyUI.h">
+      <Filter>UI\InspectorUI\ComponentUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -403,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="EquipUI.cpp">
       <Filter>UI\InspectorUI\ComponentUI\12.Equip</Filter>
+    </ClCompile>
+    <ClCompile Include="PxRigidbodyUI.cpp">
+      <Filter>UI\InspectorUI\ComponentUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

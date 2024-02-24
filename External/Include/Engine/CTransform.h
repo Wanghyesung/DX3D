@@ -10,7 +10,6 @@ private:
     Vec3    m_vRelativeScale;
     Vec3    m_vRelativeRot;
 
-
     bool    m_bAbsolute;    // 상대 이동, 크기를 절대값으로 지정    
     bool    m_bDependent;   // finaltick 호출을 안함
 
@@ -22,8 +21,6 @@ private:
     Matrix  m_matWorld; // 크기, 회전, 이동 정보를 합쳐놓음
     Matrix  m_matWorldInv;
     Matrix  m_matPrevWorld; //이전프레임 월드 행렬
-
-
 
     Vec3 m_vUp;
     Vec3 m_vFoward;

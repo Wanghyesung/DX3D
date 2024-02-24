@@ -28,8 +28,23 @@ public:
 	void SetDir(const wstring& _strDir) { m_strDir = _strDir; }
 	const wstring& GetDir() { return m_strDir; }
 
-
 	void AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj);
+	
+	template <typename T>
+	T* GetState()
+	{
+		map<STATE_TYPE, CState*>::iterator iter =
+			m_mapState.begin();
+
+		for (iter; iter != m_mapState.end(); ++iter)
+		{
+			T* pState = dynamic_cast<T*>(iter->second);
+			if (pState != nullptr)
+				return pState;
+		}
+
+		return nullptr;
+	}
 
 	CLONE_DISABLE(CFSM);
 public:

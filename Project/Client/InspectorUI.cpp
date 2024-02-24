@@ -17,6 +17,7 @@
 #include "Light2DUI.h"
 #include "CAnimator3DUI.h"
 #include "EquipUI.h"
+#include "PxRigidbodyUI.h"
 
 #include "MeshDataUI.h"
 #include "TextureUI.h"
@@ -81,6 +82,10 @@ InspectorUI::InspectorUI()
 	m_arrComUI[(UINT)COMPONENT_TYPE::EQUIP] = new EquipUI;
 	m_arrComUI[(UINT)COMPONENT_TYPE::EQUIP]->SetSize(0.f, 150.f);
 	AddChildUI(m_arrComUI[(UINT)COMPONENT_TYPE::EQUIP]);
+
+	m_arrComUI[(UINT)COMPONENT_TYPE::PXRIGIDBODY] = new PxRigidbodyUI;
+	m_arrComUI[(UINT)COMPONENT_TYPE::PXRIGIDBODY]->SetSize(0.f, 150.f);
+	AddChildUI(m_arrComUI[(UINT)COMPONENT_TYPE::PXRIGIDBODY]);
 
 	// ResUI
 	m_arrResUI[(UINT)RES_TYPE::MESHDATA] = new MeshDataUI;

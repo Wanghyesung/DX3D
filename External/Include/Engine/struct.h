@@ -234,6 +234,8 @@ struct tMTAnimClip
 	FbxTime::EMode	eMode; //30프레임
 };
 
+//physx 오브젝트 구분
+
 
 // ===========
 // Instancing

@@ -16,7 +16,9 @@
 #include <Engine\CRollState.h>
 #include <Engine\CAttackState.h>
 #include <Engine\CRunState.h>
-
+#include <Engine\CJumpState.h>
+#include <Engine\CJumpEnd.h>
+#include <Engine\CPxRigidbody.h>
 CPlayerScript::CPlayerScript()
 	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_fSpeed(100.f)
@@ -25,6 +27,7 @@ CPlayerScript::CPlayerScript()
 {
 	AddScriptParam(SCRIPT_PARAM::FLOAT, &m_fSpeed, "Player Speed");
 	AddScriptParam(SCRIPT_PARAM::INT, &m_iActive, "Player Active");
+	
 }
 
 CPlayerScript::~CPlayerScript()
@@ -108,7 +111,11 @@ void CPlayerScript::Initialize()
 			pObj->Animator3D()->CreateAnimationF(L"Attack1", 794, 879);
 			//pObj->Animator3D()->CreateAnimationF(L"Attack4", 882, 981);
 			pObj->Animator3D()->CreateAnimationF(L"Attack5", 982, 1097);
-			pObj->Animator3D()->CreateAnimationF(L"Jump", 1099, 1212);
+
+			pObj->Animator3D()->CreateAnimationF(L"Jump", 1098, 1141);
+			pObj->Animator3D()->CreateAnimationF(L"Jump_Attack", 954, 981); //1135
+			pObj->Animator3D()->CreateAnimationF(L"Jump_End", 1142, 1212);
+
 			pObj->Animator3D()->CreateAnimationF(L"Attack6", 1214, 1287);
 			pObj->Animator3D()->CreateAnimationF(L"Attack7", 1290, 1363);
 			pObj->Animator3D()->CreateAnimationF(L"Dead", 1465, 1685);
@@ -140,6 +147,14 @@ void CPlayerScript::Initialize()
 	CRollState* pRoll = new CRollState;
 	pRoll->SetName(L"Roll_");
 	m_pFSM->AddState(STATE_TYPE::ROLL, pRoll);
+
+	CJumpState* pJump = new CJumpState;
+	pJump->SetName(L"Jump");
+	m_pFSM->AddState(STATE_TYPE::JUMP, pJump);
+
+	CJumpEnd* pJumpEnd = new CJumpEnd;
+	pJumpEnd->SetName(L"Jump_End");
+	m_pFSM->AddState(STATE_TYPE::JUMPEND , pJumpEnd);
 
 	set_attack();
 
@@ -240,6 +255,12 @@ void CPlayerScript::rotate()
 
 	Transform()->SetRelativeRot(vNewRot);
 
+	PxQuat xRotation(-XM_PI /2.f, PxVec3(1.0f, 0.0f, 0.0f));
+	PxQuat yRotation(vNewRot.y , PxVec3(0.0f, 1.0f, 0.0f));
+
+	PxQuat newRotation = yRotation * xRotation;
+	
+	GetOwner()->PxRigidbody()->SetPxRotate(newRotation);
 }
 
 void CPlayerScript::BeginOverlap(CCollider3D* _Other)

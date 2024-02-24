@@ -38,8 +38,6 @@ void CEquip::finaltick()
 	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
 	Matrix matCharWorld = m_pChar->GetParent()->Transform()->GetWorldMat(); //캐릭터 월드
 
-	Matrix matBoneInv = XMMatrixInverse(nullptr, m_matFinalBone);
-
 	Matrix matWeapon = matCharSclaeInv * matWeaponWorld * m_matFinalBone * matCharWorld;
 
 	const vector<CGameObject*> vecChild = GetOwner()->GetChild();

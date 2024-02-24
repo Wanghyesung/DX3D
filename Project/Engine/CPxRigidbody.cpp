@@ -3,10 +3,12 @@
 #include "CPhysxMgr.h"
 #include "CTransform.h"
 #include "CTimeMgr.h"
+#include "CCollider3D.h"
 CPxRigidbody::CPxRigidbody():
 	CComponent(COMPONENT_TYPE::PXRIGIDBODY),
     m_bGround(true),
-    m_bAccumulate(false)
+    m_bAccumulate(false),
+    m_vTransformOffset(0.f,0.f,0.f)
 {
     m_eForceMode = PxForceMode::eACCELERATION;
 }
@@ -31,25 +33,33 @@ void CPxRigidbody::finaltick()
 	PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
     //누적해서 들어갈지
-   if(m_bAccumulate)
-        tick_force(vFoce);
+   //if(!m_bGround)
+    tick_force(vFoce);
    
-   else
-        tick_velocity(Vvel);
+   //else
+    tick_velocity(Vvel);
 
-   PxTransform transform = m_pRigidbody->getGlobalPose();
-   
-   Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
-   pTrasnform->SetRelativePos(vPos);
+   if (!m_bBlockTransform)
+   {
+       //collider offset으로
+       PxTransform transform = m_pRigidbody->getGlobalPose();
+       //m_pRigidbody->setGlobalPose(transform);
+
+       Vec3 vOffsetPos = GetOwner()->Collider3D()->GetOffsetPos();
+      
+       Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
+       pTrasnform->SetRelativePos(vPos + vOffsetPos);
+   }
    
     m_vForce = Vec3::Zero;
     m_vVelocity = Vec3::Zero;
 }
 
-void CPxRigidbody::init(const Vector3& _vPos, const Vector3& _vScale, eCollisionGroups _eGroups, eCollisionGroups _eOtherGroups)
+void CPxRigidbody::init(const Vector3& _vPos, const Vector3& _vScale, CGameObject* _pCollEventObj)
 {
-    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic(_vPos, _vScale, _eGroups, _eOtherGroups);
+    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic(_vPos, _vScale, _pCollEventObj);
    
+    //이벤트
     m_pRigidbody->setMass(1.f);  
 }
 
@@ -63,7 +73,7 @@ void CPxRigidbody::SetGround(bool _bGround)
 {
     m_bGround = _bGround; 
 
-    m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !_bGround);
+    m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, _bGround);
 }
 
 void CPxRigidbody::SetMaxVelocity(float _fMaxVelocity)
@@ -82,14 +92,73 @@ const Matrix& CPxRigidbody::GetPosMatrix()
 
 const Matrix& CPxRigidbody::GetRotMatrix()
 {
-    PxTransform rotation = m_pRigidbody->getGlobalPose(); // actor는 PxRigidActor* 포인터입니다.
-    //회전
-    Matrix matRot = XMMatrixIdentity();
-    matRot = XMMatrixRotationX(rotation.q.x);
-    matRot *= XMMatrixRotationY(rotation.q.y);
-    matRot *= XMMatrixRotationZ(rotation.q.z);
+    PxTransform rotation = m_pRigidbody->getGlobalPose(); 
+    PxMat33 rotationMatrix(rotation.q);
 
-    return matRot;
+    Matrix matFinal = {};
+    matFinal._11 = rotationMatrix.column0.x; matFinal._21 = rotationMatrix.column1.x; matFinal._31 = rotationMatrix.column2.x;
+    matFinal._12 = rotationMatrix.column0.y; matFinal._22 = rotationMatrix.column1.y; matFinal._32 = rotationMatrix.column2.y;
+    matFinal._13 = rotationMatrix.column0.z; matFinal._23 = rotationMatrix.column1.z; matFinal._33 = rotationMatrix.column2.z;
+    matFinal._14 = 0.0f;                     matFinal._24 = 0.0f;                     matFinal._34 = 0.0f;
+    
+    matFinal._44 = 1.0f;
+ 
+    return matFinal;
+}
+
+const Vec3& CPxRigidbody::GetPxPosition()
+{
+   PxVec3 vPos = m_pRigidbody->getGlobalPose().p;
+
+   return Vec3(vPos.x, vPos.y, vPos.z);
+}
+
+const Vec3& CPxRigidbody::GetPxRotate()
+{
+    PxQuat vRot = m_pRigidbody->getGlobalPose().q;
+   
+    return Vec3(vRot.x, vRot.y, vRot.z);
+}
+
+void CPxRigidbody::SetOffsetPosition(const Vec3& _vOffsetPos)
+{
+    PxVec3 vPos = PxVec3(_vOffsetPos.x, _vOffsetPos.y, _vOffsetPos.z);
+
+    m_vTransformOffset = vPos;
+}
+
+void CPxRigidbody::AddPxPosition(Vec3 _vPos)
+{
+    PxVec3 vOffsetPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
+
+    PxTransform transform = m_pRigidbody->getGlobalPose();
+    transform.p += vOffsetPos;
+
+    m_pRigidbody->setGlobalPose(transform);
+}
+
+void CPxRigidbody::SetPxTransform(const Vec3& _vPos)
+{
+    PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
+  
+    PxTransform transform = m_pRigidbody->getGlobalPose();
+    transform.p = vPos;
+
+    m_pRigidbody->setGlobalPose(transform);
+}
+
+void CPxRigidbody::SetPxRotate(const PxQuat& _pQuat)
+{
+    PxTransform transform = m_pRigidbody->getGlobalPose();
+
+    PxQuat rotation = transform.q;
+
+    //rotation = rotation * _pQuatY;
+    //rotation = rotation * _pQuatX;
+  
+    rotation = _pQuat;
+    transform.q = rotation;
+    m_pRigidbody->setGlobalPose(transform);
 }
 
 void CPxRigidbody::friction_force()
