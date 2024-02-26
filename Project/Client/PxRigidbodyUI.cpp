@@ -33,13 +33,14 @@ int PxRigidbodyUI::render_update()
 
 	GetTarget()->PxRigidbody()->SetPxTransform(vPos);
 
-	PxQuat xRotation(vRotation.x, PxVec3(1.0f, 0.0f, 0.0f));
-	PxQuat yRotation(vRotation.y, PxVec3(0.0f, 1.0f, 0.0f));
-	PxQuat zRotation(vRotation.z, PxVec3(0.0f, 0.0f, 1.0f));
-	
-	xRotation *= yRotation;
-	xRotation *= zRotation;
-	GetTarget()->PxRigidbody()->SetPxRotate(xRotation);
+	//PxQuat xRotation(vRotation.x, PxVec3(1.0f, 0.0f, 0.0f));
+	//PxQuat yRotation(vRotation.y, PxVec3(0.0f, 1.0f, 0.0f));
+	//PxQuat zRotation(vRotation.z, PxVec3(0.0f, 0.0f, 1.0f));
+	//
+	//xRotation *= yRotation;
+	//xRotation *= zRotation;
+	//
+	//GetTarget()->PxRigidbody()->SetPxRotate(xRotation);
 	//
 }
 

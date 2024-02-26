@@ -79,7 +79,7 @@ public:
 
 	virtual void finaltick()override;
 	
-	void init(const Vector3& _vPos, const Vector3& _vScale, CGameObject* _pCollEventObj);
+	void init(const Vector3& _vPos, const Vector3& _vScale, int _iLayer, CGameObject* _pCollEventObj = nullptr);
 
 	CLONE(CPxRigidbody);
 

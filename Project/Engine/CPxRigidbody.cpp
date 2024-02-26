@@ -55,9 +55,9 @@ void CPxRigidbody::finaltick()
     m_vVelocity = Vec3::Zero;
 }
 
-void CPxRigidbody::init(const Vector3& _vPos, const Vector3& _vScale, CGameObject* _pCollEventObj)
+void CPxRigidbody::init(const Vector3& _vPos, const Vector3& _vScale, int _iLayer, CGameObject* _pCollEventObj)
 {
-    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic(_vPos, _vScale, _pCollEventObj);
+    m_pRigidbody = CPhysxMgr::GetInst()->GetRigidDynamic(_vPos, _vScale, _iLayer, _pCollEventObj);
    
     //ÀÌº¥Æ®
     m_pRigidbody->setMass(1.f);  
@@ -152,11 +152,8 @@ void CPxRigidbody::SetPxRotate(const PxQuat& _pQuat)
     PxTransform transform = m_pRigidbody->getGlobalPose();
 
     PxQuat rotation = transform.q;
-
-    //rotation = rotation * _pQuatY;
-    //rotation = rotation * _pQuatX;
-  
     rotation = _pQuat;
+
     transform.q = rotation;
     m_pRigidbody->setGlobalPose(transform);
 }

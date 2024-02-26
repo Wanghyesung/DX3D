@@ -23,15 +23,12 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
             pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
         //이벤트 충돌
-        if (s0->getName() != NULL && s1->getName() != NULL)
+       
+        if (filterData0.word0 != 0 && filterData1.word0)
         {
-            string strName0 = s0->getName();
-            string strName1 = s1->getName();
-
-            CPhysxMgr::GetInst()->CollisionCheck(strName0, strName1);
+            //필터 데이터를 내 오브젝트 확인용 데이터로 사용
+            CPhysxMgr::GetInst()->CollisionCheck(filterData0.word0, filterData1.word0);
         }
-        
-        //둘다 NULL이 아니면 layercheck
 
         return PxFilterFlags();
     }
@@ -42,7 +39,7 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
         bool objectRemoved)	PX_OVERRIDE
     {
         
-        int a = 10;
+       
         //printf("pairLost\n");
     }
 
@@ -121,7 +118,7 @@ void CPhysxMgr::init()
 
     m_pScene = m_pPhysics->createScene(sceneDesc);
 
-    m_pScene->setGravity(PxVec3(0.0f, -980.f, 0.0f));//중력
+    m_pScene->setGravity(PxVec3(0.0f, -98.f, 0.0f));//중력
     m_pScene->setFlag(PxSceneFlag::eENABLE_CCD, false); // CCD 활성화
 
    
@@ -132,7 +129,8 @@ void CPhysxMgr::tick()
     m_pScene->fetchResults(true);
 }
 
-PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, CGameObject* _pCollEventObj)
+PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer,
+    CGameObject* _pCollEventObj)
 {
     PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
     PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
@@ -143,15 +141,11 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, CGameObject
 
     PxTransform pose(vPos);
     PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f);
-
-    //m_pPhysics->createShape(geometry,*material)
     PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
-    pShape->setName("0");
-
+   
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
     pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
-    //PxShape* shape = nullptr;
     pRigidbody->attachShape(*pShape);
     pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false); // CCD 설정
     
@@ -164,7 +158,7 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, CGameObject
 
     if (nullptr != _pCollEventObj)
     {
-        AddCollEventObj(pShape, _pCollEventObj);
+        AddCollEventObj(pShape, _pCollEventObj, _iLayer);
     }
 
     return pRigidbody;
@@ -179,10 +173,10 @@ PxMaterial* CPhysxMgr::GetPxMaterial()
     return pMaterial;
 }
 
-void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, CGameObject* _pCollEventObj)
+void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
+    CGameObject* _pCollEventObj)
 {
-    //m_mapObjSize.insert(make_pair());
-
+   
     PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
     PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
 
@@ -208,25 +202,13 @@ void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, fl
     }
 
     PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f); 
-
-   
     PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
-    //pShape->setName("0");
-
+  
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
     pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
     pRigidbody->attachShape(*pShape);
     pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false); // CCD 설정
-    pRigidbody->setName("0"); //충돌 이벤트를 할지
-
-    //PxFilterData  filterData;
-    //filterData.word0 = 1 << (int)_eLayer;
-    //filterData.word1 = 1 << (int)_eOtherLayer;
-
-
-    // 충돌 그룹 및 충돌 마스크 설정
-    //pShape->setSimulationFilterData(filterData); // 충돌 그룹 설정
-    //pShape->setQueryFilterData(filterData); // 충돌 마스크 설정
+    
    
     pRigidbody->setContactReportThreshold(0.01f);
 
@@ -234,11 +216,12 @@ void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, fl
 
     if (nullptr != _pCollEventObj)
     {
-        AddCollEventObj(pShape, _pCollEventObj);
+        AddCollEventObj(pShape, _pCollEventObj, _iLayer);
     }
 }
 
-void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle)
+void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
+    CGameObject* _pCollEventObj)
 {
     PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
     PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
@@ -267,40 +250,46 @@ void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAx
 
     PxRigidStatic* pRigidbody = m_pPhysics->createRigidStatic(pose);
 
-    //m_pPhysics->createShape(geometry,*material)
+   
     PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
     pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
    
-    //PxShape* shape = nullptr;
     //pRigidbody->getShapes(&pShape, 1);
     pRigidbody->attachShape(*pShape);
 
     m_pScene->addActor(*pRigidbody);
 
-}
-
-void CPhysxMgr::AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj)
-{
-    UINT ID = _pGameObj->GetID();
-    string strName = std::to_string(ID);
-
-    PxCollisionEvent tEvent = FIndEventObj(strName);
-    if (tEvent.pEventObj == nullptr)
+    if (nullptr != _pCollEventObj)
     {
-        _pShape->setName(strName.c_str()); //오브젝트 ID == actor name
-
-        int iLayerBit = _pGameObj->GetLayerIndex();
-        tEvent.eLayerBit = iLayerBit;
-        tEvent.pEventObj = _pGameObj;
-
-        m_mapEventObj.insert(make_pair(strName, tEvent));
+        AddCollEventObj(pShape, _pCollEventObj, _iLayer);
     }
 }
 
-PxCollisionEvent CPhysxMgr::FIndEventObj(string _strActorName)
+void CPhysxMgr::AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer)
 {
-    map<string, PxCollisionEvent>::iterator iter = m_mapEventObj.find(_strActorName);
+    UINT ID = _pGameObj->GetID();
+    
+    PxCollisionEvent tEvent = FIndEventObj(ID);
+
+    if (tEvent.pEventObj == nullptr)
+    {
+        PxFilterData  filterData;
+        filterData.word0 = ID; 
+
+       // 충돌 그룹 및 충돌 마스크 설정
+        _pShape->setSimulationFilterData(filterData); // 충돌 그룹 설정
+
+        tEvent.eLayerBit = _iLayer;
+        tEvent.pEventObj = _pGameObj;
+
+        m_mapEventObj.insert(make_pair(ID, tEvent));
+    }
+}
+
+PxCollisionEvent CPhysxMgr::FIndEventObj(UINT _iID)
+{
+    map<UINT, PxCollisionEvent>::iterator iter = m_mapEventObj.find(_iID);
     if (iter == m_mapEventObj.end())
     {
         return PxCollisionEvent();
@@ -326,10 +315,10 @@ void CPhysxMgr::LayerCheck(UINT _left, UINT _right)
 }
 
 
-void CPhysxMgr::CollisionCheck(string _left, string _right)
+void CPhysxMgr::CollisionCheck(UINT _ileft, UINT _iright)
 {
-    PxCollisionEvent pLeftEvent = FIndEventObj(_left);
-    PxCollisionEvent pRightEvent = FIndEventObj(_left);
+    PxCollisionEvent pLeftEvent = FIndEventObj(_ileft);
+    PxCollisionEvent pRightEvent = FIndEventObj(_iright);
 
     UINT iRow = pLeftEvent.eLayerBit;
     UINT iCol = pRightEvent.eLayerBit;

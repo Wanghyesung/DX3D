@@ -48,9 +48,6 @@
     <ClInclude Include="CMonsterAttackScript.h">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="CLandFormScript.h">
-      <Filter>Script</Filter>
-    </ClInclude>
     <ClInclude Include="CBossStageScript.h">
       <Filter>Script</Filter>
     </ClInclude>
@@ -93,9 +90,6 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CMonsterAttackScript.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="CLandFormScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CBossStageScript.cpp">

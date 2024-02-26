@@ -41,8 +41,8 @@ void CreateTestLevel()
 	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Attack, (UINT)LAYER_TYPE::Monster);
 	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::MonsterAttack, (UINT)LAYER_TYPE::Player);
 	//CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Obstacle);
-	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
-	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Obstacle);
+	//CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
+	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
 
 	//return;
 
@@ -162,7 +162,7 @@ void CreateTestLevel()
 	pAritorias->AddComponent(new CTransform());
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
-	pRigi->init(Vec3(1000.f, 120.f, 200.f), Vec3(115.f, 225.f, 115.f), pAritorias);
+	pRigi->init(Vec3(1000.f, 120.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
 	//pRigi->SetGround(false);
 	pAritorias->AddComponent(pRigi);
 
@@ -408,7 +408,7 @@ void CreateLandScape()
 	pLandScape->AddComponent(new CCollider3D());
 	pLandScape->Collider3D()->SetAbsolute(true);
 	pLandScape->Collider3D()->SetOffsetPos(Vec3(9000.f, 0.f, 9000.f));
-	pLandScape->Collider3D()->SetOffsetScale(Vec3(18000.f, 0.f, 18000.f));
+	pLandScape->Collider3D()->SetOffsetScale(Vec3(18000.f, 1.f, 18000.f));
 	pLandScape->AddComponent(new CLandScape);
 	pLandScape->AddComponent(new CLandScpaeScript);
 
@@ -418,7 +418,8 @@ void CreateLandScape()
 	pLandScape->LandScape()->SetFrustumCheck(false);
 	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
 	
-	//CPhysxMgr::GetInst()->AddActorStatic(Vec3(9000.f, 1, 9000.f), Vec3(18000.f, 1.f, 18000.f), Vec3::Zero, 0.f);
+	CPhysxMgr::GetInst()->AddActor(Vec3(9000.f, 0.f, 9000.f), Vec3(18000.f, 1.f, 18000.f), Vec3::Zero, 0.f,
+		(int)LAYER_TYPE::LandScape, pLandScape);
 
 	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);
 
@@ -473,12 +474,15 @@ void CreateLandScape()
 	CGameObject* pPlain = InitializeFBX(L"Plain_CastleTower_Ruin_01");
 	pPlain->AddComponent(new CTransform);
 	pPlain->AddComponent(new CCollider3D);
-	pPlain->AddComponent(new CLandScpaeScript);
+	//pPlain->AddComponent(new CLandScpaeScript);
 	pPlain->Collider3D()->SetOffsetScale(Vec3(300.f, 350.f, 300.f));
 	pPlain->Collider3D()->SetOffsetPos(Vec3(0.f, 180.f, 0.f));
 	//pPlain->Collider3D()->SetOffsetRot(Vec3(XM_PI/4.f, 0.f, 0.f));
 
-	CPhysxMgr::GetInst()->AddActor(Vec3(1000.f, 180, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero ,0.f, pPlain);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(1000.f, 180, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero, 0.f,
+		(int)LAYER_TYPE::Obstacle, pPlain);
+	//CPhysxMgr::GetInst()->AddActor(Vec3(1000.f, 180, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero ,0.f, 
+	//	(int)LAYER_TYPE::Obstacle, pPlain);
 
 	SpawnGameObject(pPlain, Vec3(1000.f, 0, 1000.f), (int)LAYER_TYPE::Obstacle);
 	// 0 200 0

@@ -37,7 +37,6 @@ void CEquip::finaltick()
 	Matrix matCharWorldScale = m_pChar->GetParent()->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
 	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
 	Matrix matCharWorld = m_pChar->GetParent()->Transform()->GetWorldMat(); //캐릭터 월드
-
 	Matrix matWeapon = matCharSclaeInv * matWeaponWorld * m_matFinalBone * matCharWorld;
 
 	const vector<CGameObject*> vecChild = GetOwner()->GetChild();
@@ -62,7 +61,6 @@ bool CEquip::check_matrix()
 		m_vecFinalBone.resize(iBoneCount);
 
 		pAnim->GetFinalBoneMat()->GetData(m_vecFinalBone.data());
-
 
 		m_matFinalBone = m_vecFinalBone[m_iIndex];
 		m_matFinalBone.m[3][3] = 1;

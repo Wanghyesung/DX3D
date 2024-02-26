@@ -5,7 +5,6 @@
 #include "CBossStageScript.h"
 #include "CCameraMoveScript.h"
 #include "CGravityScript.h"
-#include "CLandFormScript.h"
 #include "CLandScpaeScript.h"
 #include "CMissileScript.h"
 #include "CMonsterAttackScript.h"
@@ -41,8 +40,6 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CCameraMoveScript;
 	if (L"CGravityScript" == _strScriptName)
 		return new CGravityScript;
-	if (L"CLandFormScript" == _strScriptName)
-		return new CLandFormScript;
 	if (L"CLandScapeScript" == _strScriptName)
 		return new CLandScpaeScript;
 	if (L"CMissileScript" == _strScriptName)
@@ -75,9 +72,6 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 		break;
 	case (UINT)SCRIPT_TYPE::GRAVITYSCRIPT:
 		return new CGravityScript;
-		break;
-	case (UINT)SCRIPT_TYPE::LANDFORMSCRIPT:
-		return new CLandFormScript;
 		break;
 	case (UINT)SCRIPT_TYPE::LANDSCAPESCRIPT:
 		return new CLandScpaeScript;
