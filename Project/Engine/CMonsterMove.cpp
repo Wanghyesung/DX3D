@@ -112,14 +112,27 @@ void CMonsterMove::rotate()
 	Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();
 	Vec3 vFinalRot = Vec3(-XM_PI / 2.f, fRadian, 0.f);
 	Vec3 vLerpRot = Vec3::Lerp(vRot, vFinalRot, DT * 4.f);
+	Vec3 vPxRot = {};
 
 	float fDiff = fabs(vFinalRot.y - vRot.y);
 	//각도가 크게 변경되었을 때
-	if (fDiff >= XM_PI/2.f)
+	if (fDiff >= XM_PI / 2.f)
+	{
 		GetOwner()->Transform()->SetRelativeRot(vFinalRot);
+		vPxRot = vFinalRot;
+	}
+		
 	else
+	{
 		GetOwner()->Transform()->SetRelativeRot(vLerpRot);
+		vFinalRot = vLerpRot;
+	}
+		
+
+	PxQuat yRotation(vFinalRot.y, PxVec3(0.0f, 1.0f, 0.0f));
+	GetOwner()->PxRigidbody()->SetPxRotate(yRotation);
 }
+
 
 void CMonsterMove::move()
 {

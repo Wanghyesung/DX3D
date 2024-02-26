@@ -22,7 +22,7 @@ void CLandScpaeScript::BeginOverlap(CCollider3D* _Other)
 	CPlayerScript* pScript = pObj->GetScript<CPlayerScript>();
 	if (pScript)
 	{
-		int a = 10;
+		pObj->PxRigidbody()->SetGround(true);
 	}
 }
 

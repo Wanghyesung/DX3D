@@ -112,7 +112,7 @@ void CPlayerScript::Initialize()
 			//pObj->Animator3D()->CreateAnimationF(L"Attack4", 882, 981);
 			pObj->Animator3D()->CreateAnimationF(L"Attack5", 982, 1097);
 
-			pObj->Animator3D()->CreateAnimationF(L"Jump", 1098, 1141);
+			pObj->Animator3D()->CreateAnimationF(L"Jump", 923, 953);
 			pObj->Animator3D()->CreateAnimationF(L"Jump_Attack", 954, 981); //1135
 			pObj->Animator3D()->CreateAnimationF(L"Jump_End", 1142, 1212);
 

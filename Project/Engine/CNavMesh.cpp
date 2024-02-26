@@ -164,9 +164,9 @@ void CNavMesh::init_map()
 	//Vec3 vCapeLen 
 	//충돌체 x, z크기의 2차원 배열
 	m_vOwnerScale = GetOwner()->Collider3D()->GetOffsetScale();
-	float fTem = m_vOwnerScale.z;
-	m_vOwnerScale.z = m_vOwnerScale.y;
-	m_vOwnerScale.y = fTem;
+	//float fTem = m_vOwnerScale.z;
+	//m_vOwnerScale.z = m_vOwnerScale.y;
+	//m_vOwnerScale.y = fTem;
 
 	Vec3 vDivideSize = m_vLandScapeLen / m_vOwnerScale; // 150 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
 	//120개

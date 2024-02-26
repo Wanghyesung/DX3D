@@ -5,11 +5,11 @@
 #include "CKeyMgr.h"
 #include "CPxRigidbody.h"
 #include "CTransform.h"
-
+#include "CTimeMgr.h"
 
 CJumpState::CJumpState() :
-	m_iJumpFrame(1122),
-	m_vJumpVel(Vec3(0.f, 2800.f,0.f))
+	m_iJumpFrame(0),
+	m_vJumpVel(Vec3(0.f, 1000.f,0.f))
 {
 
 }
@@ -32,11 +32,8 @@ void CJumpState::final_tick()
 
 	UINT iFrame = pAnim->GetCurFrame();
 
-
-	if (iFrame >= m_iJumpFrame)
-	{
-		addForce(iFrame);
-	}
+	addForce(iFrame);
+	
 }
 
 void CJumpState::Enter()
@@ -46,10 +43,14 @@ void CJumpState::Enter()
 
 	//나중에 y축만 이동못하게 막는걸로 수정
 	GetOwner()->PxRigidbody()->BlockTransform(true);//px위치로만 이동
-	
+	GetOwner()->PxRigidbody()->SetGround(false);
+	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eIMPULSE);//폭발적으로 움직일 떄
 
+	
 	m_vMaxPos = GetOwner()->PxRigidbody()->GetPxPosition();
-	m_vMaxPos += Vec3(0.f, 250.f, 0.f);
+	m_vMaxPos += Vec3(0.f, 500.f, 0.f);
+
+	m_vJumpVel = Vec3(0.f, 1000.f, 0.f);
 }
 
 void CJumpState::Exit()
@@ -57,30 +58,32 @@ void CJumpState::Exit()
 	m_bAttack = false;
 
 	GetOwner()->PxRigidbody()->BlockTransform(false);
+	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eACCELERATION);
+
 }
 
 void CJumpState::addForce(UINT _iFrame)
 {
 	//위로
-	if (_iFrame <= 1134)
+	if (_iFrame <= 937)
 	{
 		if (check_pos())
-			GetOwner()->PxRigidbody()->AddVelocity(m_vJumpVel);
-
-		GetOwner()->PxRigidbody()->SetGround(false);
+			GetOwner()->PxRigidbody()->AddForce(m_vJumpVel);
 	}
 
 	//아래로
 	else
 	{
 		//체크
+		//땅에 도착하면
 		if (GetOwner()->PxRigidbody()->IsGround())
 		{
 			ChanageState(GetFSM(), STATE_TYPE::JUMPEND);
 			return;
 		}
-
-		GetOwner()->PxRigidbody()->AddVelocity(-m_vJumpVel / 1.5f);
+	
+		if(!check_pos())
+			GetOwner()->PxRigidbody()->AddForce(-m_vJumpVel * 3.2f);
 	}
 }
 

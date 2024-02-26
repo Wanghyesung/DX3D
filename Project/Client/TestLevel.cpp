@@ -162,8 +162,8 @@ void CreateTestLevel()
 	pAritorias->AddComponent(new CTransform());
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
-	pRigi->init(Vec3(1000.f, 120.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
-	//pRigi->SetGround(false);
+	pRigi->init(Vec3(1000.f, 820.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
+	
 	pAritorias->AddComponent(pRigi);
 
 	CCollider3D* pCollider = new CCollider3D();
@@ -179,7 +179,7 @@ void CreateTestLevel()
 	//pAritorias->AddComponent(new CMotionBlur());
 	//pAritorias->MotionBlur()->Initialize();
 	
-	SpawnGameObject(pAritorias, Vec3(1000.f, 0.f, 200.f), (int)LAYER_TYPE::Player);
+	SpawnGameObject(pAritorias, Vec3(1000.f, 700.f, 200.f), (int)LAYER_TYPE::Player);
 	
 
 	CreateMonster();
@@ -283,12 +283,12 @@ void CreateMonster()
 	//pMonster->AddComponent(new CCollider3D());
 	//pMonster->AddComponent(new CNavMesh);
 	//CPxRigidbody* pRigi = new CPxRigidbody();
-	//pRigi->init(Vec3(2000.f, 0.f, 2000.f), Vec3(150.f, 340.f, 150.f),
-	//	eCollisionGroups::GROUP_MONSTER, eCollisionGroups::GROUP_OBSTACLE);
+	//pRigi->init(Vec3(2000.f, 120.f, 2000.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
+	//
 	//pMonster->AddComponent(pRigi);
 	//
-	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
-	//pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f/*170.f*/));
+	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
+	//pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, -170.f, 0.f));
 	//pMonster->Collider3D()->SetAbsolute(true);
 	//
 	//CMonsterScript* pMonsterScript = new CMonsterScript();
@@ -317,7 +317,7 @@ void CreateMonster()
 	//pMonsterScript->AddMonsterAttack(1, 5.f, 0.f, 0.6f, 882, 885, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
 	//
 	//pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
-	//SpawnGameObject(pMonster, Vec3(2000.f, 0.f, 2000.f), (int)LAYER_TYPE::Monster);
+	//SpawnGameObject(pMonster, Vec3(2000.f, 120.f, 2000.f), (int)LAYER_TYPE::Monster);
 	//300
 
 	//CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
@@ -423,6 +423,7 @@ void CreateLandScape()
 
 	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);
 
+	
 	
 	//CGameObject* pLandform = InitializeFBX(L"IronGolem_Stage");
 	//pLandform->AddComponent(new CTransform);

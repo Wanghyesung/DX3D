@@ -43,8 +43,8 @@ public:
 
 	void SetVelocity(Vec3 _vVelocity) { m_vVelocity = _vVelocity; }
 	void AddVelocity(Vec3 _vVelocity) { m_vVelocity += _vVelocity; }
-
 	void SetDecVel(Vec3 _vDecVel) { m_vDecVel = _vDecVel; }
+	void ClearFoce();
 
 	Vec3 GetVelocity() { return m_vVelocity; }
 	void SetMaxVelocity(float _fMaxVelocity);
@@ -69,6 +69,7 @@ public:
 	void SetPxTransform(const Vec3& _vPos);
 	void SetPxRotate(const PxQuat& _pQuat);
 	void BlockTransform(bool _bBlock) { m_bBlockTransform = _bBlock; }
+
 
 private:
 	void friction_force();

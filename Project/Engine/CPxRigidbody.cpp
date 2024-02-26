@@ -33,11 +33,11 @@ void CPxRigidbody::finaltick()
 	PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
     //누적해서 들어갈지
-   //if(!m_bGround)
-    tick_force(vFoce);
+   if(!m_bGround)
+      tick_force(vFoce);
    
-   //else
-    tick_velocity(Vvel);
+   else
+      tick_velocity(Vvel);
 
    if (!m_bBlockTransform)
    {
@@ -75,6 +75,12 @@ void CPxRigidbody::SetGround(bool _bGround)
 
     m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, _bGround);
 }
+
+void CPxRigidbody::ClearFoce()
+{
+    m_pRigidbody->clearForce(m_eForceMode);
+}
+
 
 void CPxRigidbody::SetMaxVelocity(float _fMaxVelocity)
 {
