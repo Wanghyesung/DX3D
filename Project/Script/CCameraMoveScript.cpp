@@ -3,7 +3,7 @@
 
 #include <Engine\CTransform.h>
 #include <Engine\CCamera.h>
-
+#include <Engine\CPxRigidbody.h>
 
 
 CCameraMoveScript::CCameraMoveScript()
@@ -118,9 +118,9 @@ void CCameraMoveScript::move_target()
 	float fMaxDistance = 500.f;
 	vTargetFoword *= fMaxDistance;
 
-	Vec3 vTargetPos = m_pTarget->Transform()->GetRelativePos();
+	Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
 	Vec3 vFinalPos = vTargetPos + vTargetFoword;
-	vFinalPos.y += 400.f;
+	vFinalPos.y += 300.f;
 
 	Transform()->SetRelativeRot(vRot);
 	//GlobalData.CameraRot = vRot;

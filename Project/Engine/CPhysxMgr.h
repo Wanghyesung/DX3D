@@ -60,6 +60,7 @@ public:
 	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer, CGameObject* _pCollEventObj = nullptr);
 	PxMaterial* GetPxMaterial();
 	CPxEvent* GetEvent() { return m_pCollisionCallback; }
+	const PxVec3& GetGravity() { return m_pScene->getGravity(); }
 
 	void AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
 		CGameObject* _pCollEventObj = nullptr);

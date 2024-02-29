@@ -16,7 +16,7 @@ void CRunState::final_tick()
 	Vec3 vUp = pObj->Transform()->GetRelativeDir(DIR_TYPE::FRONT);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 300.f;
+	float fSpeed = 800.f;
 	Vec3 vForce = Vec3::Zero;
 
 	wstring strDir = {};

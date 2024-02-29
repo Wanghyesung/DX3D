@@ -56,6 +56,9 @@ void CFSM::ChanageState(STATE_TYPE _eType)
     if (pState == nullptr)
         return;
 
+    if (GetCurStateType() == _eType)
+        return;
+
     m_pCurState->Exit();
 
     m_pCurState = pState;

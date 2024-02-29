@@ -170,7 +170,7 @@ void CreateTestLevel()
 	pAritorias->AddComponent(pCollider);
 	pCollider->SetAbsolute(true);
 	pCollider->SetOffsetScale(Vec3(115.f, 115.f, 225.f));
-	pCollider->SetOffsetPos(Vec3(0.f, -120.f, 0.f));
+	pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
 	
 	CPlayerScript* pScript = new CPlayerScript(); 
 	pAritorias->AddComponent(pScript);
@@ -284,11 +284,10 @@ void CreateMonster()
 	//pMonster->AddComponent(new CNavMesh);
 	//CPxRigidbody* pRigi = new CPxRigidbody();
 	//pRigi->init(Vec3(2000.f, 120.f, 2000.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
-	//
+	//pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
 	//pMonster->AddComponent(pRigi);
 	//
 	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
-	//pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, -170.f, 0.f));
 	//pMonster->Collider3D()->SetAbsolute(true);
 	//
 	//CMonsterScript* pMonsterScript = new CMonsterScript();
@@ -447,28 +446,18 @@ void CreateLandScape()
 	//SpawnGameObject(pStage, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Default);
 
 
-	CGameObject* pLandform = InitializeFBX(L"Boss Stage");
-	pLandform->AddComponent(new CTransform);
-	pLandform->Transform()->SetRelativeRot(Vec3(-XM_PI / 2.f, XM_PI / 2.f, 0.f));
-	
+	CreateStage();
+
 	//1번 -3832 287 -3264
 	//1212 , 165, 1
 	//-1 -30 0
-	float fRadian = XM_PI / 180.f;
-	const vector<CGameObject*> vecChild = pLandform->GetChild();
-	vecChild[1]->AddComponent(new CCollider3D);
-	vecChild[1]->Collider3D()->SetOffsetPos(Vec3(-3832.f, 287.f, -3264.f));
-	vecChild[1]->Collider3D()->SetOffsetScale(Vec3(1212.f, 165.f, 1.f));
-	vecChild[1]->Collider3D()->SetOffsetRot(Vec3(1.f * fRadian, -30.f * fRadian, 0.f));
-	vecChild[1]->AddComponent(new CBossStageScript);
+
 
 	//vecChild[1]->Collider3D()->SetA
 	//for (int i = 0; i < vecChild.size(); ++i)
 	//{	
 	//	vecChild[i]->AddComponent(new CCollider3D);
 	//}
-
-	SpawnGameObject(pLandform, Vec3(3000.f, 3573.f, 3000.f), (int)LAYER_TYPE::Default);
 	//3000, 3573 , 3000
 
 
@@ -488,5 +477,32 @@ void CreateLandScape()
 	SpawnGameObject(pPlain, Vec3(1000.f, 0, 1000.f), (int)LAYER_TYPE::Obstacle);
 	// 0 200 0
 	//300 350 300
+
+}
+
+void CreateStage()
+{
+	CGameObject* pStage = InitializeFBX(L"Boss Stage");
+	pStage->AddComponent(new CTransform);
+	pStage->Transform()->SetRelativeRot(Vec3(-XM_PI / 2.f, XM_PI / 2.f, 0.f));
+	SpawnGameObject(pStage, Vec3(3000.f, 3573.f, 3000.f), (int)LAYER_TYPE::Default);
+
+
+	float fRadian = XM_PI / 180.f;
+	//px충돌체 위치
+	CGameObject* pPxColl_0 = new CGameObject();
+	pPxColl_0->SetName(L"Coll_0");
+	pPxColl_0->AddComponent(new CTransform());
+	CCollider3D* pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(230.f, 1.f, 1142.f));
+	pCollider->SetOffsetRot(Vec3(fRadian* 30.f, 0.f, 0.f));
+	pPxColl_0->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(2700.f, 290.f, 6874.f), Vec3(230.f, 1.f, 1142.f),
+		Vec3::Right, 30.f, (int)LAYER_TYPE::Default);
+	SpawnGameObject(pPxColl_0, Vec3(2700.f, 290.f, 6874.f), (int)LAYER_TYPE::Default);
+
+	//2700 300 6874
+	//230, 1 1142
+	//30 0 0
 
 }

@@ -118,7 +118,7 @@ void CPhysxMgr::init()
 
     m_pScene = m_pPhysics->createScene(sceneDesc);
 
-    m_pScene->setGravity(PxVec3(0.0f, -98.f, 0.0f));//중력
+    m_pScene->setGravity(PxVec3(0.0f, -981.f, 0.0f));//중력
     m_pScene->setFlag(PxSceneFlag::eENABLE_CCD, false); // CCD 활성화
 
    
@@ -137,6 +137,7 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
 
 
     PxMaterial* material = GetPxMaterial();
+
     PxBoxGeometry geometry(vScale / 2.f); // 상자 크기
 
     PxTransform pose(vPos);
@@ -167,8 +168,9 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
 
 PxMaterial* CPhysxMgr::GetPxMaterial()
 {
+
     PxMaterial* pMaterial =
-        m_pPhysics->createMaterial(0.f, 0.f, 0.f); // 충돌체 마찰력,Dynamic마찰력, 탄성력
+        m_pPhysics->createMaterial(0.f, 0.f, 0.f); // 정지 마찰력, 운동 마찰력, 탄성력
 
     return pMaterial;
 }
@@ -227,6 +229,7 @@ void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAx
     PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
 
     PxMaterial* material = GetPxMaterial();
+    //material->setStaticFriction(0.5f);
     PxBoxGeometry geometry(vScale / 2.f); // 상자 크기
 
     //초기화할 위치

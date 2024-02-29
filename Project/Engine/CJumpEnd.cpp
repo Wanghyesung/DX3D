@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CJumpEnd.h"
 #include "CAnimation3D.h"
-
+#include "CPxRigidbody.h"
 CJumpEnd::CJumpEnd()
 {
 }
@@ -37,7 +37,7 @@ void CJumpEnd::Enter()
 
 void CJumpEnd::Exit()
 {
-
+	//GetOwner()->PxRigidbody()->SetGround(false);
 }
 
 

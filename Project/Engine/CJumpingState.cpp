@@ -16,7 +16,7 @@ void CJumpingState::final_tick()
 {
 	if (GetOwner()->PxRigidbody()->IsGround())
 	{
-		ChanageState(GetFSM(), STATE_TYPE::JUMPING);
+		ChanageState(GetFSM(), STATE_TYPE::JUMPEND);
 	}
 }
 
@@ -27,6 +27,6 @@ void CJumpingState::Enter()
 
 void CJumpingState::Exit()
 {
-
+	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eACCELERATION); //기본 이동
 }
 

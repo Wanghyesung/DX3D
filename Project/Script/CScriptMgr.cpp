@@ -10,6 +10,7 @@
 #include "CMonsterAttackScript.h"
 #include "CMonsterScript.h"
 #include "CPlayerScript.h"
+#include "CStairsScript.h"
 #include "CTerrainScript.h"
 #include "CTestScript.h"
 
@@ -26,8 +27,10 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CMonsterAttackScript");
 	_vec.push_back(L"CMonsterScript");
 	_vec.push_back(L"CPlayerScript");
+	_vec.push_back(L"CStairsScript");
 	_vec.push_back(L"CTerrainScript");
 	_vec.push_back(L"CTestScript");
+	_vec.push_back(L"StairsScript");
 }
 
 CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
@@ -40,7 +43,7 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CCameraMoveScript;
 	if (L"CGravityScript" == _strScriptName)
 		return new CGravityScript;
-	if (L"CLandScapeScript" == _strScriptName)
+	if (L"CLandScpaeScript" == _strScriptName)
 		return new CLandScpaeScript;
 	if (L"CMissileScript" == _strScriptName)
 		return new CMissileScript;
@@ -50,6 +53,8 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CMonsterScript;
 	if (L"CPlayerScript" == _strScriptName)
 		return new CPlayerScript;
+	if (L"CStairsScript" == _strScriptName)
+		return new CStairsScript;
 	if (L"CTerrainScript" == _strScriptName)
 		return new CTerrainScript;
 	if (L"CTestScript" == _strScriptName)
@@ -87,6 +92,9 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 		break;
 	case (UINT)SCRIPT_TYPE::PLAYERSCRIPT:
 		return new CPlayerScript;
+		break;
+	case (UINT)SCRIPT_TYPE::STAIRSSCRIPT:
+		return new CStairsScript;
 		break;
 	case (UINT)SCRIPT_TYPE::TERRAINSCRIPT:
 		return new CTerrainScript;
@@ -127,7 +135,7 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		break;
 
 	case SCRIPT_TYPE::LANDSCAPESCRIPT:
-		return L"CLandScapeScript";
+		return L"CLandScpaeScript";
 		break;
 
 	case SCRIPT_TYPE::MISSILESCRIPT:
@@ -146,12 +154,20 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		return L"CPlayerScript";
 		break;
 
+	case SCRIPT_TYPE::STAIRSSCRIPT:
+		return L"CStairsScript";
+		break;
+
 	case SCRIPT_TYPE::TERRAINSCRIPT:
 		return L"CTerrainScript";
 		break;
 
 	case SCRIPT_TYPE::TESTSCRIPT:
 		return L"CTestScript";
+		break;
+
+	case SCRIPT_TYPE::TAIRSSCRIPT:
+		return L"StairsScript";
 		break;
 
 	}

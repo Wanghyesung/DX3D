@@ -42,7 +42,7 @@ void CEquip::finaltick()
 	const vector<CGameObject*> vecChild = GetOwner()->GetChild();
 	for (int i = 0; i < vecChild.size(); ++i)
 	{
-		vecChild[i]->Transform()->SetDependent(true);
+		vecChild[i]->Transform()->SetDependent(true);//final_tick에서 월드행렬 따로 만들지 않게
 		vecChild[i]->Transform()->SetWorldMat(matWeapon);
 	}
 }

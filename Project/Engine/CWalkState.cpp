@@ -16,11 +16,11 @@ void CWalkState::final_tick()
 	Vec3 vUp = pObj->Transform()->GetRelativeDir(DIR_TYPE::FRONT);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 2000.f;
+	float fSpeed = 1500.f;
 	Vec3 vForce = Vec3::Zero;
 
 	wstring strDir = {};
-
+	
 	if (KEY_PRESSED(KEY::D))
 	{
 		vRight *= fSpeed;
@@ -55,16 +55,17 @@ void CWalkState::final_tick()
 		strDir = L"Back";
 	}
 
-	else if (KEY_TAP(KEY::LSHIFT))
+	if (KEY_TAP(KEY::LSHIFT))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::JUMP);
 	}
 
-	if (KEY_TAP(KEY::SPACE))
+	else if (KEY_TAP(KEY::SPACE))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::ROLL);
 		return;
 	}
+
 	else if (KEY_PRESSED(KEY::SPACE))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::RUN);

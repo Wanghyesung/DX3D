@@ -65,7 +65,7 @@ enum class COMPONENT_TYPE
 {
 	//update 순서
 
-	TRANSFORM,		// 위치, 크기, 회전
+	
 
 	EQUIP,			// 물체 위치를 행렬을 반환
 	ANIMATOR2D,		// Sprite Animation
@@ -78,6 +78,9 @@ enum class COMPONENT_TYPE
 	LIGHT3D,		// 3차원 광원
 	RIGIDBODY,		// 힘을받는 강체
 	PXRIGIDBODY,	// 피직스 강체	
+
+	TRANSFORM,		// 위치, 크기, 회전
+	//TRANSFORM,		// 위치, 크기, 회전
 
 	NAVMESH,		// 네비게이션
 	CAMERA,			// Camera

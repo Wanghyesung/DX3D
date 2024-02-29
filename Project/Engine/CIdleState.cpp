@@ -4,9 +4,11 @@
 
 #include "CKeyMgr.h"
 #include "CFSM.h"
-
+#include "CPxRigidbody.h"
 void CIdleState::final_tick()
 {
+	ChanageState(GetFSM(), STATE_TYPE::JUMP);
+
 	if (KEY_PRESSED(KEY::A))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::WALK);
@@ -43,11 +45,13 @@ void CIdleState::Enter()
 {
 	//Idle
 	Chanage_Anim(GetName());
+
+	GetOwner()->PxRigidbody()->ChanageMaterial(10.f, 0.f);
 }
 
 void CIdleState::Exit()
 {
-
+	GetOwner()->PxRigidbody()->ChanageMaterial(0.f, 0.f);
 }
 
 CIdleState::CIdleState()

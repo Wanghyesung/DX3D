@@ -278,6 +278,9 @@
     <ClInclude Include="CJumpEnd.h">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClInclude>
+    <ClInclude Include="CJumpingState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -549,6 +552,9 @@
     </ClCompile>
     <ClCompile Include="CPxEvent.cpp" />
     <ClCompile Include="CJumpEnd.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CJumpingState.cpp">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClCompile>
   </ItemGroup>

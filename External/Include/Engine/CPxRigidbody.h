@@ -22,14 +22,14 @@ private:
 
 	Vec3 m_vPxScale;
 	
-	PxVec3 m_vTransformOffset;//실제 충돌에 영향을 주는 PXTransform과 그릴 위치를 나타내는 transform으로 구분
+	Vec3 m_vTransformOffset;//실제 충돌에 영향을 주는 PXTransform과 그릴 위치를 나타내는 transform으로 구분
 
 
 	float m_fMaxVelocity;
 	bool m_bAccumulate;//힘들 누적해서 받을지
 	bool m_bGround; //땅인지;
 
-	bool m_bBlockTransform; //transform이동 못하게
+	bool m_bBlockTransformY; //transform이동 못하게
 
 	bool m_bDecrease; //속도 감소
 	
@@ -40,6 +40,8 @@ public:
 	void SetMass(float _fMass);
 	void SetGround(bool _bGround);
 	bool IsGround() { return m_bGround; }
+
+	void ChanageMaterial(UINT _iStaticCoef, UINT _iDynamicCoef);
 
 	void SetVelocity(Vec3 _vVelocity) { m_vVelocity = _vVelocity; }
 	void AddVelocity(Vec3 _vVelocity) { m_vVelocity += _vVelocity; }
@@ -60,7 +62,8 @@ public:
 	const Vec3& GetPxPosition();
 	const Vec3& GetPxRotate();
 
-	void SetOffsetPosition(const Vec3& _vOffsetPos);
+	void SetOffsetPosition(const Vec3& _vOffsetPos) { m_vTransformOffset = _vOffsetPos; }
+	const Vec3& GetOffsetPosition() { return m_vTransformOffset; }
 
 	void AddPxPosition(Vec3 _vPos);
 
@@ -68,7 +71,7 @@ public:
 
 	void SetPxTransform(const Vec3& _vPos);
 	void SetPxRotate(const PxQuat& _pQuat);
-	void BlockTransform(bool _bBlock) { m_bBlockTransform = _bBlock; }
+	void BlockTransformY(bool _bBlockY) { m_bBlockTransformY = _bBlockY; }
 
 
 private:

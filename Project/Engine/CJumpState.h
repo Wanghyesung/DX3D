@@ -15,6 +15,7 @@ private:
 
 	bool m_bAttack;
 
+	int m_iBoneIdx;
 	//콜라이더는 offset로 올려버리고
 	//transform은 영향 안 받게
 public:
@@ -22,6 +23,7 @@ public:
 	void Enter()override;
 	void Exit()override;
 
+	void SetBoneIdx(int _iIdx) { m_iBoneIdx = _iIdx; }
 private:
 	void addForce(UINT _iFrame);
 

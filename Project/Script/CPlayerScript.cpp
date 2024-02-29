@@ -18,16 +18,18 @@
 #include <Engine\CRunState.h>
 #include <Engine\CJumpState.h>
 #include <Engine\CJumpEnd.h>
+#include <Engine\CJumpingState.h>
 #include <Engine\CPxRigidbody.h>
 CPlayerScript::CPlayerScript()
 	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_fSpeed(100.f)
 	, m_iActive(1)
 	, m_pFSM(nullptr)
+	, m_iBone(1)
 {
 	AddScriptParam(SCRIPT_PARAM::FLOAT, &m_fSpeed, "Player Speed");
 	AddScriptParam(SCRIPT_PARAM::INT, &m_iActive, "Player Active");
-	
+	AddScriptParam(SCRIPT_PARAM::INT, &m_iBone, "Player Bone");
 }
 
 CPlayerScript::~CPlayerScript()
@@ -54,6 +56,10 @@ void CPlayerScript::tick()
 	}
 
 	m_pFSM->final_tick();
+
+
+	CJumpState* CJump = m_pFSM->GetState<CJumpState>();
+	CJump->SetBoneIdx(m_iBone);
 }
 
 
@@ -155,6 +161,10 @@ void CPlayerScript::Initialize()
 	CJumpEnd* pJumpEnd = new CJumpEnd;
 	pJumpEnd->SetName(L"Jump_End");
 	m_pFSM->AddState(STATE_TYPE::JUMPEND , pJumpEnd);
+
+	CJumpingState* pJumping = new CJumpingState;
+	pJumping->SetName(L"Jump_Ing");
+	m_pFSM->AddState(STATE_TYPE::JUMPING, pJumping);
 
 	set_attack();
 

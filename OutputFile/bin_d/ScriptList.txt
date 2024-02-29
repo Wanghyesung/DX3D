@@ -9,5 +9,7 @@ CMissileScript
 CMonsterAttackScript
 CMonsterScript
 CPlayerScript
+CStairsScript
 CTerrainScript
 CTestScript
+StairsScript

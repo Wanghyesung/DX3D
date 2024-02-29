@@ -39,17 +39,15 @@ void CPxRigidbody::finaltick()
    else
       tick_velocity(Vvel);
 
-   if (!m_bBlockTransform)
-   {
-       //collider offsetÀ¸·Î
-       PxTransform transform = m_pRigidbody->getGlobalPose();
-       //m_pRigidbody->setGlobalPose(transform);
 
-       Vec3 vOffsetPos = GetOwner()->Collider3D()->GetOffsetPos();
-      
-       Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
-       pTrasnform->SetRelativePos(vPos + vOffsetPos);
-   }
+   
+   
+    
+    PxTransform transform = m_pRigidbody->getGlobalPose();
+    //m_pRigidbody->setGlobalPose(transform);
+    
+    Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
+    pTrasnform->SetRelativePos(vPos + m_vTransformOffset);
    
     m_vForce = Vec3::Zero;
     m_vVelocity = Vec3::Zero;
@@ -74,6 +72,18 @@ void CPxRigidbody::SetGround(bool _bGround)
     m_bGround = _bGround; 
 
     m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, _bGround);
+}
+
+void CPxRigidbody::ChanageMaterial(UINT _iStaticCoef, UINT _iDynamicCoef)
+{
+    PxShape* pShape;
+    m_pRigidbody->getShapes(&pShape, 1);
+
+    PxMaterial* pMaterial;
+    pShape->getMaterials(&pMaterial, 1);
+
+    pMaterial->setStaticFriction(_iStaticCoef);
+    pMaterial->setDynamicFriction(_iDynamicCoef);
 }
 
 void CPxRigidbody::ClearFoce()
@@ -126,12 +136,7 @@ const Vec3& CPxRigidbody::GetPxRotate()
     return Vec3(vRot.x, vRot.y, vRot.z);
 }
 
-void CPxRigidbody::SetOffsetPosition(const Vec3& _vOffsetPos)
-{
-    PxVec3 vPos = PxVec3(_vOffsetPos.x, _vOffsetPos.y, _vOffsetPos.z);
 
-    m_vTransformOffset = vPos;
-}
 
 void CPxRigidbody::AddPxPosition(Vec3 _vPos)
 {
@@ -176,7 +181,10 @@ void CPxRigidbody::tick_force(const PxVec3& _vFoce)
 
 void CPxRigidbody::tick_velocity(const PxVec3& _vVel)
 {
-    m_pRigidbody->setLinearVelocity(_vVel);
+    PxVec3 vGravity = CPhysxMgr::GetInst()->GetGravity();
+    PxVec3 vFinalVel = _vVel + vGravity;
+
+    m_pRigidbody->setLinearVelocity(vFinalVel);
 }
 
 void CPxRigidbody::SaveToLevelFile(FILE* _File)
