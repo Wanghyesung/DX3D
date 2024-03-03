@@ -12,6 +12,7 @@ private:
     CFSM*       m_pFSM;
 
     int         m_iBone;
+
 public:
     virtual void begin() override;
     virtual void tick() override;

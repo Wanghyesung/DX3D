@@ -3,11 +3,13 @@ CBossStageScript
 CCameraMoveScript
 CEquipScript
 CGravityScript
+CJumpAttackScript
 CLandFormScript
 CLandScpaeScript
 CMissileScript
 CMonsterAttackScript
 CMonsterScript
+CObjstacleScript
 CPlayerScript
 CStairsScript
 CTerrainScript

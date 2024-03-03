@@ -29,6 +29,8 @@ void CAnimation3D::final_tick()
 	// 다음 프레임 인덱스
 	if (m_iCurFrame >= m_iEndFrame)
 	{
+		m_iCurFrame = m_iEndFrame;
+
 		m_iNextFrame = m_iEndFrame;	// 끝이면 마지막 위치로
 	}
 	else

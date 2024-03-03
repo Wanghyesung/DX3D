@@ -20,12 +20,13 @@ private:
 
     //내 범위에 들어온 몬스터들
     vector< tCheckInfo> m_vecCheck;
-  
+
 private:
     void add_monster(int _ID);
     void erase_monster(int _ID);
 
     tCheckInfo& find_monster(int _ID);
+
 public:
     virtual void tick() override;
     virtual void begin()override;
@@ -44,6 +45,7 @@ private:
 
 public:
     CAttackScript();
+    CAttackScript(SCRIPT_TYPE _eType);
     ~CAttackScript();
 };
 

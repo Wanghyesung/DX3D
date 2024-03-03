@@ -170,6 +170,7 @@ void CNavMesh::init_map()
 
 	Vec3 vDivideSize = m_vLandScapeLen / m_vOwnerScale; // 150 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
 	//120개
+	//정교하게 할려면 나눌 사이즈는 삭제 전체 맵은 크게
 	m_iDivideX =  vDivideSize.x; //전체 지형을 나눌 수
 	m_iDivideZ =  vDivideSize.z;
 
@@ -205,6 +206,7 @@ void CNavMesh::init_closemap()
 		float fCorrectionZ = vformScale.z / 3.f;
 		float fCorrectionX = vformScale.x / 3.f;
 
+		//정교하게 할려면 foffset값을 작게
 		for (float i = fPos[2] + fCorrectionZ; i <= fPos[3] - fCorrectionZ; i += fOffsetZ)//z
 		{
 			for (float j = fPos[0] + fCorrectionX; j <= fPos[1] - fCorrectionX; j += fOffsetX) //x

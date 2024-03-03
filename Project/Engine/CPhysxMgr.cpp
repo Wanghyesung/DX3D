@@ -162,6 +162,9 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
         AddCollEventObj(pShape, _pCollEventObj, _iLayer);
     }
 
+    material->release();
+    pShape->release();
+
     return pRigidbody;
 
 }
@@ -220,6 +223,9 @@ void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, fl
     {
         AddCollEventObj(pShape, _pCollEventObj, _iLayer);
     }
+
+    material->release();
+    pShape->release();
 }
 
 void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
@@ -267,6 +273,9 @@ void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAx
     {
         AddCollEventObj(pShape, _pCollEventObj, _iLayer);
     }
+
+    material->release();
+    pShape->release();
 }
 
 void CPhysxMgr::AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer)

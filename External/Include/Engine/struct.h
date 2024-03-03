@@ -347,8 +347,13 @@ struct tAttack
 	float fAttRcnt;//맞으면 날라갈 양 X
 	float fAttUpperRcnt; //맞으면 띄어질 양 Y
 
+	float fAttackTime; //다음 공격까지 가능한 시간
+
 	bool bDown; //맞으면 넘어지는지
 	//float fAttRigidityTime; //경직 시간
+
+
+	int iMatCount; //공격 가능한 수
 };
 
 //공격 정보

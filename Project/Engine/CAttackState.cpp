@@ -11,6 +11,8 @@
 #include "CCollider3D.h"
 #include "CPxRigidbody.h"
 
+#define JUMP_ATTACK 10
+
 CAttackState::CAttackState() :
 	m_strAttackNum(L"0"),
 	m_vecAttack{},
@@ -75,10 +77,9 @@ void CAttackState::Enter()
 	int iNum = (int)num(en);
 	m_tCurAttack = m_vecAttack[iNum];
 	m_strAttackNum = std::to_wstring(iNum);
+	wstring strFinalAnim = GetName() + m_strAttackNum;
 
 	//GetOwner()->PxRigidbody()->SetAcumulate(true);
-
-	wstring strFinalAnim = GetName() + m_strAttackNum;
 	Chanage_Anim(strFinalAnim, false);
 }
 

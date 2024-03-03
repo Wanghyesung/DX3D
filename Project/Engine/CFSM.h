@@ -11,6 +11,8 @@ private:
 
 	CState* m_pCurState;
 	wstring m_strDir;
+
+	STATE_TYPE m_ePrevtateTypes;
 public:
 	void final_tick();
 
@@ -20,6 +22,7 @@ public:
 
 	CState* FindState(STATE_TYPE _eType);
 	STATE_TYPE GetCurStateType();
+	STATE_TYPE GetPrevStateType() { return m_ePrevtateTypes; }
 
 	void ChanageState(STATE_TYPE _eType);
 	void AddState(STATE_TYPE _eType, CState* _pState);

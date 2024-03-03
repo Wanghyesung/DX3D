@@ -11,6 +11,11 @@ CAttackScript::CAttackScript() :
 {
 }
 
+CAttackScript::CAttackScript(SCRIPT_TYPE _eType):
+	CScript((UINT)_eType)
+{
+}
+
 CAttackScript::~CAttackScript()
 {
 
@@ -28,9 +33,12 @@ void CAttackScript::add_monster(int _ID)
 	//Ã¹ °ø°Ý
 	tCheckInfo tInfo = {};
 	tInfo.ID = _ID;
-	tInfo.fAttackTime = 0.5f;
+	tInfo.fAttackTime = m_tAttack.fAttackTime;
 	tInfo.fCurTime = 0.f;
 	tInfo.bAttackOn = true;
+	
+	if (m_vecCheck.size() >= m_tAttack.iMatCount)
+		return;
 
 	m_vecCheck.push_back(tInfo);
 }

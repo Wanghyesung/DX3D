@@ -61,6 +61,8 @@ void CFSM::ChanageState(STATE_TYPE _eType)
 
     m_pCurState->Exit();
 
+    m_ePrevtateTypes = m_pCurState->GetType();
+
     m_pCurState = pState;
 
     m_pCurState->Enter();

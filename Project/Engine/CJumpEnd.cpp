@@ -2,6 +2,8 @@
 #include "CJumpEnd.h"
 #include "CAnimation3D.h"
 #include "CPxRigidbody.h"
+#include "CJumpState.h"
+#include "CFSM.h"
 CJumpEnd::CJumpEnd()
 {
 }
@@ -31,8 +33,16 @@ void CJumpEnd::Enter()
 {
 	CGameObject* pObj = GetOwner();
 
-	wstring strFinalAnim = GetName();
-	Chanage_Anim(strFinalAnim, false);
+	CJumpState* pJump = GetFSM()->GetState<CJumpState>();
+	if (pJump->IsAttack())
+	{
+		Chanage_Anim(L"Jump_Attack_End", false);
+	}
+	else
+	{
+		wstring strFinalAnim = GetName();
+		Chanage_Anim(strFinalAnim, false);
+	}
 }
 
 void CJumpEnd::Exit()

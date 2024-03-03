@@ -6,14 +6,16 @@
 #include "CPxRigidbody.h"
 #include "CTransform.h"
 #include "CTimeMgr.h"
+#include "CKeyMgr.h"
 #include "CCollider3D.h"
 CJumpState::CJumpState() :
-	m_iJumpFrame(0),
+	m_iJumpFrame(938),
 	m_iEndFrame(953),
 	m_vJumpVel(Vec3(0.f, 1000.f,0.f)),
-	m_iBoneIdx(0)
+	m_iBoneIdx(32),
+	m_vBeginOffsetPos(Vec3::Zero)
 {
-	//49
+	
 }
 
 CJumpState::~CJumpState()
@@ -23,11 +25,6 @@ CJumpState::~CJumpState()
 
 void CJumpState::final_tick()
 {
-	if (KEY_TAP(KEY::LBTN))
-	{
-		m_bAttack = true;
-	}
-
 	CGameObject* pChar = GetOwner();
 	CAnimator3D* pAnim = pChar->GetChild().at(0)->Animator3D();
 	vector<Matrix> matJumpBone = {};
@@ -44,23 +41,12 @@ void CJumpState::final_tick()
 	Matrix matFinal =  matCharSclaeInv * matJumBone * matCharWorld;
 
 	//1
-	float fDiff = matFinal._42 - matCharWorld._42;
+	float fDiff = matFinal._42 - matCharWorld._42 - m_vBeginOffsetPos.y;
 	GetOwner()->PxRigidbody()->SetOffsetPosition(Vec3(0.f, -fDiff , 0.f));
 
-	//Vec3 vPos = Vec3(matFinal._41, matFinal._42, matFinal._43);
-	//GetOwner()->PxRigidbody()->SetPxTransform(vPos);
-
-	//GetOwner()->Collider3D()->SetOffsetPos(Vec3(0.f, -fDiff, 0.f));
-	////73
-	//
+	
 	UINT iFrame = pAnim->GetCurAnim()->GetCurFrame();
-	////
-	//addForce(iFrame);
-
-	if (iFrame >= m_iEndFrame)
-	{
-		ChanageState(GetFSM(), STATE_TYPE::IDLE);
-	}
+	addForce(iFrame);
 	
 }
 
@@ -69,49 +55,58 @@ void CJumpState::Enter()
 	wstring strFinalAnim = GetName();
 	Chanage_Anim(strFinalAnim, false);
 
-	//나중에 y축만 이동못하게 막는걸로 수정
-	//GetOwner()->PxRigidbody()->BlockTransformY(true);//transformY 위치 이동 막기
+	GetOwner()->PxRigidbody()->ChanageMaterial(10.f, 0.f);
 	GetOwner()->PxRigidbody()->SetGround(false);
 	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eIMPULSE);//폭발적으로 움직일 떄
 
 	
 	m_vMaxPos = GetOwner()->PxRigidbody()->GetPxPosition();
-	m_vMaxPos += Vec3(0.f, 500.f, 0.f);
-
+	m_vMaxPos += Vec3(0.f, 800.f, 0.f);
 	m_vJumpVel = Vec3(0.f, 1000.f, 0.f);
+
+	m_vBeginOffsetPos = GetOwner()->PxRigidbody()->GetOffsetPosition();
+
+	m_bAttack = false;
 }
 
 void CJumpState::Exit()
 {
-	m_bAttack = false;
-
 	GetOwner()->PxRigidbody()->BlockTransformY(false);
+
+	GetOwner()->PxRigidbody()->SetOffsetPosition(m_vBeginOffsetPos);
 }
 
 void CJumpState::addForce(UINT _iFrame)
 {
+	if (_iFrame < 924)
+		return;
+
+	Vec3 vFinalVel = m_vJumpVel;
+	check_key(vFinalVel);
+
 	//위로
-	if (_iFrame <= 938)
+	if (_iFrame <= m_iJumpFrame)
 	{
 		if (check_pos())
-			GetOwner()->PxRigidbody()->AddForce(m_vJumpVel);
+			GetOwner()->PxRigidbody()->AddForce(vFinalVel);
 	}
 
 	//아래로
 	else
 	{
-		//체크
-		//땅에 도착하면
+		if (!check_pos())
+			GetOwner()->PxRigidbody()->AddForce(-vFinalVel * 2.8f);
+
 		if (_iFrame >= m_iEndFrame)
 		{
 			ChanageState(GetFSM(), STATE_TYPE::JUMPING);
 			return;
 		}
-	
-		if(!check_pos())
-			GetOwner()->PxRigidbody()->AddForce(-m_vJumpVel * 2.8f);
+
+		check_attack();
 	}
 }
+
 
 bool CJumpState::check_pos()
 {
@@ -126,6 +121,46 @@ bool CJumpState::check_pos()
 	}
 
 	return true;
+}
+
+void CJumpState::check_key(Vec3& _vFinalVel)
+{
+	CGameObject* pObj = GetOwner();
+	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
+	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
+
+	float fSpeed = 300.f;
+
+	if (KEY_PRESSED(KEY::D))
+	{
+		vRight *= fSpeed;
+		_vFinalVel += vRight;
+	}
+	else if (KEY_PRESSED(KEY::A))
+	{
+		vRight *= fSpeed;
+		_vFinalVel -= vRight;
+	}
+
+	if (KEY_PRESSED(KEY::W))
+	{
+		vFoward *= fSpeed;
+		_vFinalVel -= vFoward;
+
+	}
+	else if (KEY_PRESSED(KEY::S))
+	{
+		vFoward *= fSpeed;
+		_vFinalVel += vFoward;
+	}
+}
+
+void CJumpState::check_attack()
+{
+	if(!m_bAttack && KEY_TAP(KEY::LBTN))
+	{
+		m_bAttack = true;
+	}
 }
 
 

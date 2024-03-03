@@ -7,7 +7,7 @@
 #include "CPxRigidbody.h"
 void CIdleState::final_tick()
 {
-	ChanageState(GetFSM(), STATE_TYPE::JUMP);
+	//ChanageState(GetFSM(), STATE_TYPE::JUMP);
 
 	if (KEY_PRESSED(KEY::A))
 	{

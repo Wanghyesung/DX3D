@@ -29,6 +29,7 @@
 #include <Script\CEquipScript.h>
 #include <Script\CBossStageScript.h>
 #include <Script\CLandScpaeScript.h>
+#include <Script\CStairsScript.h>
 #include "CLevelSaveLoad.h"
 
 
@@ -43,20 +44,22 @@ void CreateTestLevel()
 	//CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Obstacle);
 	//CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
+	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Stairs);
+	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Obstacle);
 
 	//return;
 
 	// 컴퓨트 쉐이더 테스트
-	Ptr<CTexture> pTestTexture =
-		CResMgr::GetInst()->CreateTexture(L"ComputeTestTex"
-			, 200, 200, DXGI_FORMAT_R8G8B8A8_UNORM
-			, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS
-			, D3D11_USAGE_DEFAULT);
-
-	Ptr<CSetColorShader> pCS = (CSetColorShader*)CResMgr::GetInst()->FindRes<CComputeShader>(L"SetColorCS").Get();
-	pCS->SetTargetTexture(pTestTexture);
-	pCS->SetColor(Vec3(1.f, 0.f, 1.f));
-	pCS->Execute();
+	//Ptr<CTexture> pTestTexture =
+	//	CResMgr::GetInst()->CreateTexture(L"ComputeTestTex"
+	//		, 200, 200, DXGI_FORMAT_R8G8B8A8_UNORM
+	//		, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS
+	//		, D3D11_USAGE_DEFAULT);
+	//
+	//Ptr<CSetColorShader> pCS = (CSetColorShader*)CResMgr::GetInst()->FindRes<CComputeShader>(L"SetColorCS").Get();
+	//pCS->SetTargetTexture(pTestTexture);
+	//pCS->SetColor(Vec3(1.f, 0.f, 1.f));
+	//pCS->Execute();
 
 
 	//Ptr<CSound> pSound = CResMgr::GetInst()->FindRes<CSound>(L"sound\\BGM_Stage1.wav");
@@ -165,7 +168,7 @@ void CreateTestLevel()
 	pRigi->init(Vec3(1000.f, 820.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
 	
 	pAritorias->AddComponent(pRigi);
-
+	
 	CCollider3D* pCollider = new CCollider3D();
 	pAritorias->AddComponent(pCollider);
 	pCollider->SetAbsolute(true);
@@ -319,63 +322,65 @@ void CreateMonster()
 	//SpawnGameObject(pMonster, Vec3(2000.f, 120.f, 2000.f), (int)LAYER_TYPE::Monster);
 	//300
 
-	//CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
-	//pWeapon->AddComponent(new CTransform());
-	//pWeapon->AddComponent(new CEquip());
+	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
+	pWeapon->AddComponent(new CTransform());
+	pWeapon->AddComponent(new CEquip());
+	
+	pWeapon->Transform()->SetRelativeScale(Vec3(3.1f,3.1f,3.1f));
+	
+	float fRadian = XM_PI / 180.f;
+	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
+	;
+	pWeapon->Transform()->SetAbsolute(true);
+	//-90 270 -9
+	
+	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
+	//-330 -50 360 
+	
+	
+	// -90, 280 , 100
+	// -15.f, 162.f, 173.f
+	CGameObject* pBoss = new CGameObject();
+	pBoss->SetName(L"Taurus_Demon_Fianl");
+	pBoss->AddComponent(new CTransform());
+	pBoss->AddComponent(new CCollider3D());
+	pBoss->AddComponent(new CNavMesh);
+
+	CPxRigidbody* pRigi = new CPxRigidbody();
+	pRigi->init(Vec3(1500.f, 120.f, 1500.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pBoss);
+	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
+	pBoss->AddComponent(pRigi);
+
+	pBoss->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
+	pBoss->Collider3D()->SetAbsolute(true);
+	
+	CMonsterScript* pMonsterScript = new CMonsterScript();
+	pBoss->AddComponent(pMonsterScript);
+	pMonsterScript->Initialize(L"Taurus_Demon_Fianl");
+	
+	CGameObject* pHand = pBoss->GetChild().at(1);
+	pWeapon->Equip()->SetChar(pHand);
+	SpawnGameObject(pBoss, Vec3(1000.f, 0.f, 1000.f), (int)LAYER_TYPE::Monster);
+	
 	//
-	//pWeapon->Transform()->SetRelativeScale(Vec3(3.1f,3.1f,3.1f));
-	//
-	//
-	//
-	//float fRadian = XM_PI / 180.f;
-	//pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
-	//;
-	//pWeapon->Transform()->SetAbsolute(true);
-	////-90 270 -9
-	//
-	//SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
-	////-330 -50 360 
-	//
-	//
-	//// -90, 280 , 100
-	//// -15.f, 162.f, 173.f
-	//CGameObject* pBoss = new CGameObject();
-	//pBoss->SetName(L"Taurus_Demon_Fianl");
-	//pBoss->AddComponent(new CTransform());
-	//pBoss->AddComponent(new CRigidbody());
-	//pBoss->AddComponent(new CCollider3D());
-	//pBoss->AddComponent(new CNavMesh);
-	//pBoss->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 340.f));
-	//pBoss->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 170.f));
-	//pBoss->Collider3D()->SetAbsolute(true);
-	//
-	//CMonsterScript* pMonsterScript = new CMonsterScript();
-	//pBoss->AddComponent(pMonsterScript);
-	//pMonsterScript->Initialize(L"Taurus_Demon_Fianl");
-	//
-	//CGameObject* pHand = pBoss->GetChild().at(1);
-	//pWeapon->Equip()->SetChar(pHand);
-	//SpawnGameObject(pBoss, Vec3(1000.f, 0.f, 1000.f), (int)LAYER_TYPE::Monster);
-	//
-	////
-	//pMonsterScript->AddAnimFrame(L"Attack0", 651, 792);
-	//pMonsterScript->AddAnimFrame(L"Attack1", 977, 1114);
-	//pMonsterScript->AddAnimFrame(L"Attack2", 1115, 1266);
-	//pMonsterScript->AddAnimFrame(L"Attack3", 1267, 1427);
-	//
-	////pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
-	//
-	//CMonsterIdle* pIdle = new CMonsterIdle();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 119);
-	//
-	//CMonsterMove* pMove = new CMonsterMove();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::RUN, pMove, L"Walk", 121, 180);
-	//
-	//CMonsterAttack* pAttack = new CMonsterAttack();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
-	//
-	//CMonsterJump* pJump = new CMonsterJump();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 398, 478);
+	pMonsterScript->AddAnimFrame(L"Attack0", 651, 792);
+	pMonsterScript->AddAnimFrame(L"Attack1", 977, 1114);
+	pMonsterScript->AddAnimFrame(L"Attack2", 1115, 1266);
+	pMonsterScript->AddAnimFrame(L"Attack3", 1267, 1427);
+	
+	//pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
+	
+	CMonsterIdle* pIdle = new CMonsterIdle();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 119);
+	
+	CMonsterMove* pMove = new CMonsterMove();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 121, 180);
+	
+	CMonsterAttack* pAttack = new CMonsterAttack();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
+	
+	CMonsterJump* pJump = new CMonsterJump();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 398, 478);
 
 
 
@@ -493,13 +498,14 @@ void CreateStage()
 	CGameObject* pPxColl_0 = new CGameObject();
 	pPxColl_0->SetName(L"Coll_0");
 	pPxColl_0->AddComponent(new CTransform());
+	pPxColl_0->AddComponent(new CStairsScript);
 	CCollider3D* pCollider = new CCollider3D();
 	pCollider->SetOffsetScale(Vec3(230.f, 1.f, 1142.f));
 	pCollider->SetOffsetRot(Vec3(fRadian* 30.f, 0.f, 0.f));
 	pPxColl_0->AddComponent(pCollider);
 	CPhysxMgr::GetInst()->AddActorStatic(Vec3(2700.f, 290.f, 6874.f), Vec3(230.f, 1.f, 1142.f),
-		Vec3::Right, 30.f, (int)LAYER_TYPE::Default);
-	SpawnGameObject(pPxColl_0, Vec3(2700.f, 290.f, 6874.f), (int)LAYER_TYPE::Default);
+		Vec3::Right, 30.f, (int)LAYER_TYPE::Stairs, pPxColl_0);
+	SpawnGameObject(pPxColl_0, Vec3(2700.f, 290.f, 6874.f), (int)LAYER_TYPE::Stairs);
 
 	//2700 300 6874
 	//230, 1 1142

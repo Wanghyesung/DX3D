@@ -4,7 +4,7 @@
 #include "CAnimation3D.h"
 #include "CRigidbody.h"
 #include "CTransform.h"
-
+#include "CPxRigidbody.h"
 CMonsterHit::CMonsterHit():
 	m_tHitInfo{}
 {
@@ -24,12 +24,22 @@ void CMonsterHit::final_tick()
 
 	if (bCompplete)
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
+
+	else
+	{
+		CPxRigidbody* pRigidbody = GetOwner()->PxRigidbody();
+
+		Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+
+		Vec3 vDir = vFront * m_tHitInfo.fHitRcnt;
+
+		pRigidbody->SetVelocity(vDir);
+	}
 }
 
 void CMonsterHit::Exit()
 {
-	GetOwner()->Rigidbody()->SetAcumulate(false);
-	GetOwner()->Rigidbody()->SetFricoeff(false);
+	
 }
 
 void CMonsterHit::Enter()
@@ -42,14 +52,4 @@ void CMonsterHit::Enter()
 	{
 		Chanage_Anim(GetName(), false);
 	}
-
-	CRigidbody* pRigidbody = GetOwner()->Rigidbody();
-	pRigidbody->SetAcumulate(true);
-	pRigidbody->SetFricoeff(true);
-
-	Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
-
-	Vec3 vDir = vFront * m_tHitInfo.fHitRcnt;
-
-	pRigidbody->SetVelocity(vDir);
 }

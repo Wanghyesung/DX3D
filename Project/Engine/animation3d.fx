@@ -208,7 +208,7 @@ struct tFrameTrans
 
 StructuredBuffer<tFrameTrans> g_arrFrameTrans : register(t16);
 //T자로 되어있는 정점을 다시 원점으로 보내고 (원점에서 얼마나 떨어져있는지) 그 원점에 가중치 값을 곱해서 최종행렬을 나타냄
-//안그럼 T자에서 원점에 떨어져있는 위치만큼 이상한 곳으로 날라감 (그만큼 빼고 가중치를 곱해야함)
+//offset만큼 안뺴면 T자에서 원점에 떨어져있는 위치만큼 이상한 곳으로 날라감 (그만큼 빼고 가중치를 곱해야함)
 StructuredBuffer<matrix> g_arrOffset : register(t17);
 RWStructuredBuffer<matrix> g_arrFinelMat : register(u0);
 
@@ -243,6 +243,7 @@ void CS_Animation3D(int3 _iThreadIdx : SV_DispatchThreadID)
     // 최종 본행렬 연산    
     //MatrixAffineTransformation(g_arrFrameTrans[iFrameDataIndex].vScale, vQZero, g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iFrameDataIndex].vTranslate, matBone);
 
+    //원점에서 내 뼈의 위치 만큼 빼줌
     matrix matOffset = transpose(g_arrOffset[_iThreadIdx.x]);
 
     // 구조화버퍼에 결과값 저장

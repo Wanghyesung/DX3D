@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "CPlayerScript.h"
 #include "CAttackScript.h"
+#include "CJumpAttackScript.h"
 #include "CMonsterAttackScript.h"
+#include "CMonsterScript.h"
 
 #include <Engine\CGameObject.h>
 #include <Engine\CMeshRender.h>
@@ -20,6 +22,7 @@
 #include <Engine\CJumpEnd.h>
 #include <Engine\CJumpingState.h>
 #include <Engine\CPxRigidbody.h>
+
 CPlayerScript::CPlayerScript()
 	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_fSpeed(100.f)
@@ -57,9 +60,6 @@ void CPlayerScript::tick()
 
 	m_pFSM->final_tick();
 
-
-	CJumpState* CJump = m_pFSM->GetState<CJumpState>();
-	CJump->SetBoneIdx(m_iBone);
 }
 
 
@@ -118,8 +118,11 @@ void CPlayerScript::Initialize()
 			//pObj->Animator3D()->CreateAnimationF(L"Attack4", 882, 981);
 			pObj->Animator3D()->CreateAnimationF(L"Attack5", 982, 1097);
 
-			pObj->Animator3D()->CreateAnimationF(L"Jump", 923, 953);
-			pObj->Animator3D()->CreateAnimationF(L"Jump_Attack", 954, 981); //1135
+			pObj->Animator3D()->CreateAnimationF(L"Jump", 881, 953);
+			pObj->Animator3D()->CreateAnimationF(L"Jumping", 953, 953);
+			pObj->Animator3D()->CreateAnimationF(L"Jump_Attack", 954, 954);
+
+			pObj->Animator3D()->CreateAnimationF(L"Jump_Attack_End", 954, 981); //1135
 			pObj->Animator3D()->CreateAnimationF(L"Jump_End", 1142, 1212);
 
 			pObj->Animator3D()->CreateAnimationF(L"Attack6", 1214, 1287);
@@ -189,7 +192,9 @@ void CPlayerScript::set_attack()
 	attack0.iEndFrame = 530;
 	attack0.fOffsetPos = 60.f;
 	attack0.vAttackScale = Vec3(150.f, 150.f, 150.f);
-	attack0.tAttackValue.fAttRcnt = 5.f;
+	attack0.tAttackValue.iMatCount = 2;
+	attack0.tAttackValue.fAttackTime = 0.5f;
+	attack0.tAttackValue.fAttRcnt = 100.f;
 
 	CAttackScript* pAttackScript = new CAttackScript();
 	pAttackScript->SetAttackValue(attack0.tAttackValue);
@@ -205,7 +210,9 @@ void CPlayerScript::set_attack()
 	attack1.iEndFrame = 835;
 	attack1.fOffsetPos = 60.f;
 	attack1.vAttackScale = Vec3(300.f, 300.f, 300.f);
-	attack1.tAttackValue.fAttRcnt = 5.f;
+	attack1.tAttackValue.iMatCount = 5;
+	attack1.tAttackValue.fAttRcnt = 0.f;
+	attack1.tAttackValue.fAttackTime = 0.5f;
 	attack1.tAttackValue.bDown = true;
 
 	pAttackScript = new CAttackScript();
@@ -214,40 +221,25 @@ void CPlayerScript::set_attack()
 	pAttackObj->AddComponent(pAttackScript);
 	m_pFSM->AddAttack(attack1, pAttackObj);
 
-	//tAttackInfo attack1 = {};
-	//attack1.fForce = 10.f;
-	//attack1.iAttackNum = 1;
-	//pAttack->AddAttack(attack1);
-	//
-	//tAttackInfo attack2 = {};
-	//attack2.iAttackNum = 2;
-	//attack2.fForce = 10.f;
-	//pAttack->AddAttack(attack2);
-	//
-	//tAttackInfo attack3 = {};
-	//attack3.fForce = 10.f;
-	//attack3.iAttackNum = 3;
-	//pAttack->AddAttack(attack3);
-	//
-	//tAttackInfo attack4 = {};
-	//attack4.fForce = 10.f;
-	//attack4.iAttackNum = 4;
-	//pAttack->AddAttack(attack4);
-	//
-	//tAttackInfo attack5 = {};
-	//attack5.fForce = 10.f;
-	//attack5.iAttackNum = 5;
-	//pAttack->AddAttack(attack5);
-	//
-	//tAttackInfo attack6 = {};
-	//attack6.fForce = 10.f;
-	//attack6.iAttackNum = 6;
-	//pAttack->AddAttack(attack6);
-	//
-	//tAttackInfo attack7 = {};
-	//attack7.fForce = 10.f;
-	//attack7.iAttackNum = 7;
-	//pAttack->AddAttack(attack7);
+	tAttackInfo attackjump = {};
+	attackjump.iStartFrame = 954;
+	attackjump.iEndFrame = 960;
+	attackjump.vAttackScale = Vec3(150.f, 150.f, 150.f);
+	attackjump.tAttackValue.iMatCount = 1;
+	attackjump.tAttackValue.fAttackTime = 0.f;
+	attackjump.tAttackValue.bDown = true;
+	
+	CJumpAttackScript* pJumpAttack = new CJumpAttackScript();
+	pJumpAttack->SetAttackValue(attackjump.tAttackValue);
+	pAttackObj = new CGameObject();
+
+	CCollider3D* pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(200.f, 200.f, 200.f));
+	pAttackObj->AddComponent(pCollider);
+	pAttackObj->AddComponent(new CTransform);
+	pAttackObj->AddComponent(pJumpAttack);
+	CJumpingState* pJumpingState = m_pFSM->GetState<CJumpingState>();
+	pJumpingState->SetAttackObj(pAttackObj);
 }
 
 void CPlayerScript::rotate()
@@ -288,6 +280,13 @@ void CPlayerScript::BeginOverlap(CCollider3D* _Other)
 	//
 	//		ChanageState(m_pFSM, STATE_TYPE::HIT);
 	//	}
+	//}
+
+	//CMonsterScript* pMonster = _Other->GetOwner()->GetScript<CMonsterScript>();
+	//
+	//if (pMonster)
+	//{
+	//
 	//}
 }
 
