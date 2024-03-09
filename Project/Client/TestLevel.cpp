@@ -41,9 +41,9 @@ void CreateTestLevel()
 {
 	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Attack, (UINT)LAYER_TYPE::Monster);
 	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::MonsterAttack, (UINT)LAYER_TYPE::Player);
-	//CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Obstacle);
-	//CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
+
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
+	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Monster, (UINT)LAYER_TYPE::LandScape);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Stairs);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Obstacle);
 

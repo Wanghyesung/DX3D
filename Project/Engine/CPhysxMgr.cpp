@@ -21,6 +21,7 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
         }
         else
             pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+       
 
         return PxFilterFlags();
     }
@@ -50,26 +51,29 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
     // If we have a trigger, replicate the trigger codepath from PxDefaultSimulationFilterShader
     if (isTriggerPair)
     {
+        //* pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_PERSISTS 기존 코드
+
         //이벤트 트리거
-        pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_PERSISTS;// | PxPairFlag::eNOTIFY_TOUCH_LOST;
+        pairFlags = PxPairFlag::eTRIGGER_DEFAULT | 
+            PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eCONTACT_DEFAULT;// | PxPairFlag::eNOTIFY_TOUCH_LOST;
 
         if (CPhysxMgr::GetInst()->UseCCD())
             pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
         
-        
         return PxFilterFlag::eDEFAULT;
     }
+
     else
     {
         //기본 트리거
         // Otherwise use the default flags for regular pairs
-        pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+        //pairFlags = PxPairFlag::eCONTACT_DEFAULT; 기존 코드
+
+        pairFlags = PxPairFlag::eNOTIFY_TOUCH_LOST;// 뚫리게 할라면
 
         return PxFilterFlag::eDEFAULT;
     }
 }
-
-
 
 
 CPhysxMgr::CPhysxMgr()
@@ -120,10 +124,8 @@ void CPhysxMgr::init()
     sceneDesc.simulationEventCallback = m_pCollisionCallback;
    
      //PxFilterFlag::eCALLBACK;
-    //sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;//Multi Box Pruning
-    //sceneDesc.broadPhaseCallback = 
-    //sceneDesc.solverType = PxDynamicsSolverType::eTGS;
-
+    sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;//Multi Box Pruning
+  
     m_pScene = m_pPhysics->createScene(sceneDesc);
 
     m_pScene->setGravity(PxVec3(0.0f, -981.f, 0.0f));//중력
@@ -182,8 +184,7 @@ void CPhysxMgr::tick_collision()
 
 }
 
-PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer,
-    CGameObject* _pCollEventObj)
+PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer, CGameObject* _pCollEventObj)
 {
     PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
     PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
@@ -198,7 +199,6 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
 
     PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSIMULATION_SHAPE;
     PxShape* pShape = m_pPhysics->createShape(geometry, *material, true, shapeFlags);
-    
 
 
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
@@ -266,7 +266,7 @@ void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, fl
     PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f); 
     PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSIMULATION_SHAPE;
     PxShape* pShape = m_pPhysics->createShape(geometry, *material, true, shapeFlags);
-  
+
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
     //pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
     pRigidbody->attachShape(*pShape);
