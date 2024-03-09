@@ -62,6 +62,8 @@ private:
     int							m_iFrameIdx; // 클립의 현재 프레임
     int							m_iNextFrameIdx; // 클립의 다음 프레임
     float						m_fRatio;	// 프레임 사이 비율
+    float                       m_fAnimDT;
+    float                       m_fDivDT;
 
     CStructuredBuffer*          m_pBoneFinalMatBuffer;  // 특정 프레임의 최종 행렬
     bool				        m_bFinalMatUpdate; // 최종행렬 연산 수행여부
@@ -90,6 +92,9 @@ public:
     void ClearData();
 
     bool IsFinalMatUpdate(){return m_bFinalMatUpdate;}
+
+    float GetAnimDT() { return m_fAnimDT; }
+    void  SetAnimDivDT(float _fDiv) { m_fDivDT = _fDiv; }
 
     //animation에서 할당
     void SetNextFrame(int _iNextFrame) { m_iNextFrameIdx = _iNextFrame; }

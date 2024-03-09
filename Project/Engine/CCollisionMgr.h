@@ -5,7 +5,6 @@ class CLayer;
 class CCollider2D;
 class CCollider3D;
 
-
 union CollisionID
 {
 	struct

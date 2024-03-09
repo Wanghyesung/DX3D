@@ -274,7 +274,7 @@
     <ClInclude Include="CDemonHold.h">
       <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
     </ClInclude>
-    <ClInclude Include="CPxEvent.h" />
+    <ClInclude Include="CPxCollisionEvent.h" />
     <ClInclude Include="CJumpEnd.h">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClInclude>
@@ -550,7 +550,7 @@
     <ClCompile Include="CDemonHold.cpp">
       <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
     </ClCompile>
-    <ClCompile Include="CPxEvent.cpp" />
+    <ClCompile Include="CPxCollisionEvent.cpp" />
     <ClCompile Include="CJumpEnd.cpp">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClCompile>

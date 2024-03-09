@@ -24,6 +24,7 @@ public:
 	STATE_TYPE GetCurStateType();
 	STATE_TYPE GetPrevStateType() { return m_ePrevtateTypes; }
 
+	
 	void ChanageState(STATE_TYPE _eType);
 	void AddState(STATE_TYPE _eType, CState* _pState);
 	void SetState(STATE_TYPE _eType);

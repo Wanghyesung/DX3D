@@ -38,10 +38,6 @@ void CPxRigidbody::finaltick()
    
    else
       tick_velocity(Vvel);
-
-
-   
-   
     
     PxTransform transform = m_pRigidbody->getGlobalPose();
     //m_pRigidbody->setGlobalPose(transform);
@@ -136,8 +132,6 @@ const Vec3& CPxRigidbody::GetPxRotate()
     return Vec3(vRot.x, vRot.y, vRot.z);
 }
 
-
-
 void CPxRigidbody::AddPxPosition(Vec3 _vPos)
 {
     PxVec3 vOffsetPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
@@ -176,6 +170,7 @@ void CPxRigidbody::friction_force()
 
 void CPxRigidbody::tick_force(const PxVec3& _vFoce)
 {
+
     m_pRigidbody->addForce(_vFoce, m_eForceMode);
 }
 

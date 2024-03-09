@@ -49,6 +49,7 @@ STATE_TYPE CFSM::GetCurStateType()
 }
 
 
+
 void CFSM::ChanageState(STATE_TYPE _eType)
 {
     CState* pState = FindState(_eType);

@@ -19,7 +19,7 @@ void CDemonIdle::final_tick()
 	if (m_pTarget == nullptr || m_pTarget->IsDead())
 		return;
 
-	check_player();
+	//check_player();
 }
 
 void CDemonIdle::Enter()

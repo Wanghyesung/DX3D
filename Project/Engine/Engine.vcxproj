@@ -233,7 +233,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CPhysxMgr.h" />
     <ClInclude Include="CPlayerHit.h" />
     <ClInclude Include="CPrefab.h" />
-    <ClInclude Include="CPxEvent.h" />
+    <ClInclude Include="CPxCollisionEvent.h" />
     <ClInclude Include="CPxRigidbody.h" />
     <ClInclude Include="CRaycastShader.h" />
     <ClInclude Include="CRenderComponent.h" />
@@ -332,7 +332,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CPhysxMgr.cpp" />
     <ClCompile Include="CPlayerHit.cpp" />
     <ClCompile Include="CPrefab.cpp" />
-    <ClCompile Include="CPxEvent.cpp" />
+    <ClCompile Include="CPxCollisionEvent.cpp" />
     <ClCompile Include="CPxRigidbody.cpp" />
     <ClCompile Include="CRaycastShader.cpp" />
     <ClCompile Include="CRenderComponent.cpp" />

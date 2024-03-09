@@ -95,6 +95,9 @@ void CEngine::tick()
 	//이전 프레임 물체 운동 업데이트
 	CPhysxMgr::GetInst()->tick();
 
+	//이번 프레임에서 충돌이 되었다면 이벤트 호출
+	CPhysxMgr::GetInst()->tick_collision();
+
 	// Level 내에 GameObject 들의 변경점에 의해서 발생한 충돌을 체크한다.
 	CCollisionMgr::GetInst()->tick();
 }

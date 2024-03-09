@@ -5,6 +5,7 @@
 #include "CAnimator3D.h"
 
 
+
 void CState::Chanage_Anim(const wstring& _strName, bool _bRepeat)
 {
 	const vector<CGameObject*>& vecChild = GetOwner()->GetChild();

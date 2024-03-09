@@ -4,6 +4,7 @@
 #include "CPxRigidbody.h"
 #include "CJumpState.h"
 #include "CFSM.h"
+#include "CJumpingState.h"
 CJumpEnd::CJumpEnd()
 {
 }
@@ -47,6 +48,8 @@ void CJumpEnd::Enter()
 
 void CJumpEnd::Exit()
 {
+	CJumpingState* pJumping = GetFSM()->GetState<CJumpingState>();
+	pJumping->EraseAttack();
 	//GetOwner()->PxRigidbody()->SetGround(false);
 }
 

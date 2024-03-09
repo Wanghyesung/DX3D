@@ -326,7 +326,7 @@ void CreateMonster()
 	pWeapon->AddComponent(new CTransform());
 	pWeapon->AddComponent(new CEquip());
 	
-	pWeapon->Transform()->SetRelativeScale(Vec3(3.1f,3.1f,3.1f));
+	pWeapon->Transform()->SetRelativeScale(Vec3(4.6f,4.6f,4.6f));
 	
 	float fRadian = XM_PI / 180.f;
 	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
@@ -342,10 +342,12 @@ void CreateMonster()
 	// -15.f, 162.f, 173.f
 	CGameObject* pBoss = new CGameObject();
 	pBoss->SetName(L"Taurus_Demon_Fianl");
+
+
 	pBoss->AddComponent(new CTransform());
 	pBoss->AddComponent(new CCollider3D());
 	pBoss->AddComponent(new CNavMesh);
-
+	pBoss->Transform()->SetRelativeScale(Vec3(1.5f, 1.5f, 1.5f));
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pRigi->init(Vec3(1500.f, 120.f, 1500.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pBoss);
 	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
@@ -361,20 +363,15 @@ void CreateMonster()
 	CGameObject* pHand = pBoss->GetChild().at(1);
 	pWeapon->Equip()->SetChar(pHand);
 	SpawnGameObject(pBoss, Vec3(1000.f, 0.f, 1000.f), (int)LAYER_TYPE::Monster);
-	
-	//
-	pMonsterScript->AddAnimFrame(L"Attack0", 651, 792);
-	pMonsterScript->AddAnimFrame(L"Attack1", 977, 1114);
-	pMonsterScript->AddAnimFrame(L"Attack2", 1115, 1266);
-	pMonsterScript->AddAnimFrame(L"Attack3", 1267, 1427);
+
 	
 	//pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
 	
 	CMonsterIdle* pIdle = new CMonsterIdle();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 119);
 	
-	CMonsterMove* pMove = new CMonsterMove();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 121, 180);
+	//CMonsterMove* pMove = new CMonsterMove();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 121, 180);
 	
 	CMonsterAttack* pAttack = new CMonsterAttack();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
@@ -382,11 +379,13 @@ void CreateMonster()
 	CMonsterJump* pJump = new CMonsterJump();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 398, 478);
 
+	CMonsterHit* pHit = new CMonsterHit();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527,650);
 
-
-	//CMonsterHit* pHit = new CMonsterHit();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
-
+	pMonsterScript->AddAnimFrame(L"Attack0", 651, 792);
+	pMonsterScript->AddAnimFrame(L"Attack1", 977, 1114);
+	pMonsterScript->AddAnimFrame(L"Attack2", 1115, 1266);
+	pMonsterScript->AddAnimFrame(L"Attack3", 1267, 1427);
 
 	//pMonster = new CGameObject();
 	//pMonster = InitializeFBX(L"Heavy_Knight");
@@ -422,7 +421,7 @@ void CreateLandScape()
 	pLandScape->LandScape()->SetFrustumCheck(false);
 	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
 	
-	CPhysxMgr::GetInst()->AddActor(Vec3(9000.f, 0.f, 9000.f), Vec3(18000.f, 1.f, 18000.f), Vec3::Zero, 0.f,
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(9000.f, 0.f, 9000.f), Vec3(18000.f, 1.f, 18000.f), Vec3::Zero, 0.f,
 		(int)LAYER_TYPE::LandScape, pLandScape);
 
 	SpawnGameObject(pLandScape, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::LandScape);

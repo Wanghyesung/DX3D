@@ -24,7 +24,11 @@ public:
     void SetActive(bool _bActive) {}
 
     void SetFSM(CFSM* _pFSM);
+    CFSM* GetFSM() { return m_pFSM; }
+
     void Initialize();
+
+    void Chanage_AnimDT(float _fDivDT);
 private:
 
     void set_attack();

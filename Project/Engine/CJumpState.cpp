@@ -81,29 +81,29 @@ void CJumpState::addForce(UINT _iFrame)
 	if (_iFrame < 924)
 		return;
 
-	Vec3 vFinalVel = m_vJumpVel;
+	check_attack();
+
+	Vec3 vFinalVel = {};
 	check_key(vFinalVel);
 
 	//위로
 	if (_iFrame <= m_iJumpFrame)
 	{
 		if (check_pos())
-			GetOwner()->PxRigidbody()->AddForce(vFinalVel);
+			GetOwner()->PxRigidbody()->AddForce(vFinalVel + m_vJumpVel);
 	}
 
 	//아래로
 	else
 	{
 		if (!check_pos())
-			GetOwner()->PxRigidbody()->AddForce(-vFinalVel * 2.8f);
+			GetOwner()->PxRigidbody()->AddForce(vFinalVel + -m_vJumpVel * 2.8f);
 
 		if (_iFrame >= m_iEndFrame)
 		{
 			ChanageState(GetFSM(), STATE_TYPE::JUMPING);
 			return;
 		}
-
-		check_attack();
 	}
 }
 
@@ -129,7 +129,7 @@ void CJumpState::check_key(Vec3& _vFinalVel)
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 300.f;
+	float fSpeed = 50.f;
 
 	if (KEY_PRESSED(KEY::D))
 	{

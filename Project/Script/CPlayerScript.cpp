@@ -23,6 +23,8 @@
 #include <Engine\CJumpingState.h>
 #include <Engine\CPxRigidbody.h>
 
+#include <Engine\CLevelMgr.h>
+#include <Engine\CStructuredBuffer.h>
 CPlayerScript::CPlayerScript()
 	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_fSpeed(100.f)
@@ -57,8 +59,32 @@ void CPlayerScript::tick()
 	{
 		rotate();
 	}
-
 	m_pFSM->final_tick();
+
+	//CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
+	//CGameObject* _pMonster = pLayer->GetParentObject().at(1)->GetChild().at(0);
+	//CAnimator3D* pAnim = _pMonster->Animator3D();
+	//CStructuredBuffer* pBoneBuffer = pAnim->GetFinalBoneMat();
+	//
+	//vector<Matrix> vecBone = {};
+	//vecBone.resize(pAnim->GetBoneCount());
+	//pBoneBuffer->GetData(vecBone.data());
+	//
+	//Matrix m_matFinalBone = {};
+	//m_matFinalBone = vecBone[m_iBone];
+	//m_matFinalBone.m[3][3] = 1;
+	//m_matFinalBone = XMMatrixTranspose(m_matFinalBone);
+	//
+	//Matrix matMonWorldMat = _pMonster->Transform()->GetWorldMat(); //월드 행렬
+	//Matrix matMonScaleMat = _pMonster->Transform()->GetWorldScaleMat();
+	//Matrix matMonScaleInv = XMMatrixInverse(nullptr, matMonScaleMat);//크기 역행렬
+	//
+	//Matrix matFinalPos = matMonScaleInv * m_matFinalBone * matMonWorldMat;
+	//
+	//Vec3 vPos = matFinalPos.Translation();
+	//
+	//GetOwner()->PxRigidbody()->SetPxTransform(vPos);
+	
 
 }
 
@@ -234,7 +260,7 @@ void CPlayerScript::set_attack()
 	pAttackObj = new CGameObject();
 
 	CCollider3D* pCollider = new CCollider3D();
-	pCollider->SetOffsetScale(Vec3(200.f, 200.f, 200.f));
+	pCollider->SetOffsetScale(Vec3(200.f, 250.f, 200.f));
 	pAttackObj->AddComponent(pCollider);
 	pAttackObj->AddComponent(new CTransform);
 	pAttackObj->AddComponent(pJumpAttack);
@@ -265,6 +291,16 @@ void CPlayerScript::rotate()
 	GetOwner()->PxRigidbody()->SetPxRotate(newRotation);
 }
 
+void CPlayerScript::Chanage_AnimDT(float _fDivDT)
+{
+	const vector<CGameObject*>& vecChild = GetOwner()->GetChild();
+	for (int i = 0; i < vecChild.size(); ++i)
+	{
+		//자식 오브젝트에 애니메이션에서 지금 내 상태에 맞는 애니메이션 실행
+		vecChild[i]->Animator3D()->SetAnimDivDT(_fDivDT);
+	}
+}
+
 void CPlayerScript::BeginOverlap(CCollider3D* _Other)
 {
 	//플레이어가 먼저 들어옴
@@ -288,16 +324,17 @@ void CPlayerScript::BeginOverlap(CCollider3D* _Other)
 	//{
 	//
 	//}
+	int a = 10;
 }
 
 void CPlayerScript::OnOverlap(CCollider3D* _Other)
 {
-
+	int a = 10;
 }
 
 void CPlayerScript::EndOverlap(CCollider3D* _Other)
 {
-
+	int a = 10;
 }
 
 

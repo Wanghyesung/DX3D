@@ -5,6 +5,7 @@
 #include "CJumpState.h"
 #include "CGameObject.h"
 #include "CTransform.h"
+
 CJumpingState::CJumpingState()
 {
 
@@ -57,8 +58,10 @@ void CJumpingState::Enter()
 void CJumpingState::Exit()
 {
 	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eACCELERATION); //기본 이동
-
-	EraseObject(m_pJumpAttackObj, (int)LAYER_TYPE::Attack);
 	m_bJumpAttack = false;
 }
 
+void CJumpingState::EraseAttack()
+{
+	EraseObject(m_pJumpAttackObj, (int)LAYER_TYPE::Attack);
+}

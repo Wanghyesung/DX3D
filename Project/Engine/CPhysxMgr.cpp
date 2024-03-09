@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CPhysxMgr.h"
 #include "CTimeMgr.h"
-#include "CPxEvent.h"
+#include "CPxCollisionEvent.h"
 #include "CCollider3D.h"
 class TriggersFilterCallback : public PxSimulationFilterCallback
 {
@@ -16,19 +16,11 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
         {
             pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
 
-            //if (usesCCD())
-            //    pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT | PxPairFlag::eNOTIFY_TOUCH_CCD;
+            if (CPhysxMgr::GetInst()->UseCCD())
+                pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT | PxPairFlag::eNOTIFY_TOUCH_CCD;
         }
         else
             pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-
-        //이벤트 충돌
-       
-        if (filterData0.word0 != 0 && filterData1.word0)
-        {
-            //필터 데이터를 내 오브젝트 확인용 데이터로 사용
-            CPhysxMgr::GetInst()->CollisionCheck(filterData0.word0, filterData1.word0);
-        }
 
         return PxFilterFlags();
     }
@@ -38,8 +30,6 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
         PxFilterObjectAttributes attributes1, PxFilterData filterData1,
         bool objectRemoved)	PX_OVERRIDE
     {
-        
-       
         //printf("pairLost\n");
     }
 
@@ -54,15 +44,32 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
     PxFilterObjectAttributes attributes1, PxFilterData filterData1,
     PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-    //	printf("contactReportFilterShader\n");
+    //내가 체크한 레이어들끼리 충돌했는지 검사
+    const bool isTriggerPair = CPhysxMgr::GetInst()->CollisionCheck(filterData0.word0, filterData1.word0);
 
-    //pairFlags = PxPairFlag::eCONTACT_EVENT_POSE;
-    
-    pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+    // If we have a trigger, replicate the trigger codepath from PxDefaultSimulationFilterShader
+    if (isTriggerPair)
+    {
+        //이벤트 트리거
+        pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_PERSISTS;// | PxPairFlag::eNOTIFY_TOUCH_LOST;
 
-    //pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT|PxPairFlag::eNOTIFY_TOUCH_CCD;
-    return PxFilterFlag::eCALLBACK;
+        if (CPhysxMgr::GetInst()->UseCCD())
+            pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
+        
+        
+        return PxFilterFlag::eDEFAULT;
+    }
+    else
+    {
+        //기본 트리거
+        // Otherwise use the default flags for regular pairs
+        pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+
+        return PxFilterFlag::eDEFAULT;
+    }
 }
+
+
 
 
 CPhysxMgr::CPhysxMgr()
@@ -70,6 +77,7 @@ CPhysxMgr::CPhysxMgr()
     , m_pFoundation(nullptr)
     , m_pPhysics(nullptr)
     , m_mapEventObj{}
+    , m_bUseCCD(true)
 {
 
 }
@@ -100,33 +108,78 @@ void CPhysxMgr::init()
     PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
     //sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // 중력 세팅
 
-    //m_pCollisionCallback = new CPxEvent();
-    //m_pScene->setSimulationEventCallback(m_pCollisionCallback);
-
+    
     m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = m_pDispatcher;
 
-    //sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+    
     sceneDesc.filterShader = triggersUsingFilterCallback;
     sceneDesc.filterCallback = &gTriggersFilterCallback;
-    //sceneDesc.simulationEventCallback = m_pCollisionCallback;
+
+    m_pCollisionCallback = new CPxCollisionEvent();
+    sceneDesc.simulationEventCallback = m_pCollisionCallback;
    
      //PxFilterFlag::eCALLBACK;
-    sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;//Multi Box Pruning
+    //sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;//Multi Box Pruning
     //sceneDesc.broadPhaseCallback = 
     //sceneDesc.solverType = PxDynamicsSolverType::eTGS;
 
     m_pScene = m_pPhysics->createScene(sceneDesc);
 
     m_pScene->setGravity(PxVec3(0.0f, -981.f, 0.0f));//중력
-    m_pScene->setFlag(PxSceneFlag::eENABLE_CCD, false); // CCD 활성화
-
-   
+    m_pScene->setFlag(PxSceneFlag::eENABLE_CCD, m_bUseCCD); // CCD 활성화
 }
 void CPhysxMgr::tick()
 {
+    //ResetCollisionCheck();
+
     m_pScene->simulate(1.f / 60.f);
     m_pScene->fetchResults(true);
+}
+
+void CPhysxMgr::tick_collision()
+{
+    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.begin();
+    for (iter; iter != m_mapCol.end(); ++iter)
+    {
+        CGameObject* pLeftObj = iter->second.pLeftObj;
+        CGameObject* pRightObj = iter->second.pRightObj;
+
+
+        if (iter->second.bCheck)
+        {
+            //이전에도 충돌이고 지금도 충돌
+            if (iter->second.bOnColl)
+            {
+                pLeftObj->Collider3D()->OnOverlap(pRightObj->Collider3D());
+                pRightObj->Collider3D()->OnOverlap(pLeftObj->Collider3D());
+            }
+
+            //이전에는 충돌하지 않음
+            else
+            {
+                pLeftObj->Collider3D()->BeginOverlap(pRightObj->Collider3D());
+                pRightObj->Collider3D()->BeginOverlap(pLeftObj->Collider3D());
+                iter->second.bOnColl = true;
+            }
+
+            iter->second.bCheck = false;
+        }
+
+
+        else
+        {
+            //이번 프레임에서 충돌체크를 받지 않았는데 onColl이 true면 exit
+            if (iter->second.bOnColl)
+            {
+                pLeftObj->Collider3D()->EndOverlap(pRightObj->Collider3D());
+                pRightObj->Collider3D()->EndOverlap(pLeftObj->Collider3D());
+
+                iter->second.bOnColl = false;
+            }
+        }
+    }
+
 }
 
 PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer,
@@ -142,13 +195,17 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
 
     PxTransform pose(vPos);
     PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f);
-    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
-   
+
+    PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSIMULATION_SHAPE;
+    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true, shapeFlags);
+    
+
+
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
-    pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+    //pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
     pRigidbody->attachShape(*pShape);
-    pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false); // CCD 설정
+    pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, m_bUseCCD); // CCD 설정
     
 
     //pRigidbody->getActorFlags().setAll(PxActorFlag::eVISUALIZATION); // 시각화 플래그 설정
@@ -207,12 +264,13 @@ void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, fl
     }
 
     PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f); 
-    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
+    PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSIMULATION_SHAPE;
+    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true, shapeFlags);
   
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
-    pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+    //pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
     pRigidbody->attachShape(*pShape);
-    pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false); // CCD 설정
+    pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, m_bUseCCD); // CCD 설정
     
    
     pRigidbody->setContactReportThreshold(0.01f);
@@ -259,10 +317,9 @@ void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAx
 
     PxRigidStatic* pRigidbody = m_pPhysics->createRigidStatic(pose);
 
-   
-    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true);
+    PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSIMULATION_SHAPE;
+    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true, shapeFlags);
     pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
-    pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
    
     //pRigidbody->getShapes(&pShape, 1);
     pRigidbody->attachShape(*pShape);
@@ -278,6 +335,34 @@ void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAx
     pShape->release();
 }
 
+void CPhysxMgr::CollisionCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj)
+{
+    PxCollisionID id = {};
+    id.LeftID = _pLeftObj->Collider3D()->GetID();
+    id.RightID = _pRightObj->Collider3D()->GetID();
+
+    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.find(id.id);
+   
+    if (iter == m_mapCol.end())
+    {
+        PxCheckColl pxColl = PxCheckColl{ false, false ,_pLeftObj, _pRightObj};
+        m_mapCol.insert(make_pair(id.id, pxColl));
+        iter = m_mapCol.find(id.id);
+    }
+
+    iter->second.bCheck = true;
+}
+
+void CPhysxMgr::ResetCollisionCheck()
+{
+    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.begin();
+
+    for (iter; iter != m_mapCol.end(); ++iter)
+    {
+        iter->second.bCheck = false;//충돌검사 전에 전부 false로 충돌이 됐다면 eventcallback에서 true로 전환
+    }
+}
+
 void CPhysxMgr::AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer)
 {
     UINT ID = _pGameObj->GetID();
@@ -286,7 +371,8 @@ void CPhysxMgr::AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _i
 
     if (tEvent.pEventObj == nullptr)
     {
-        PxFilterData  filterData;
+        PxFilterData filterData;
+        //filterData = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
         filterData.word0 = ID; 
 
        // 충돌 그룹 및 충돌 마스크 설정
@@ -327,7 +413,7 @@ void CPhysxMgr::LayerCheck(UINT _left, UINT _right)
 }
 
 
-void CPhysxMgr::CollisionCheck(UINT _ileft, UINT _iright)
+bool CPhysxMgr::CollisionCheck(UINT _ileft, UINT _iright)
 {
     PxCollisionEvent pLeftEvent = FIndEventObj(_ileft);
     PxCollisionEvent pRightEvent = FIndEventObj(_iright);
@@ -336,15 +422,7 @@ void CPhysxMgr::CollisionCheck(UINT _ileft, UINT _iright)
     UINT iCol = pRightEvent.eLayerBit;
 
     if (!(m_matrix[iRow] & (1 << iCol)))
-        return;
+        return false;
 
-    CCollider3D* pLeftCollider = pLeftEvent.pEventObj->Collider3D();
-    CCollider3D* pRightCollider = pRightEvent.pEventObj->Collider3D();
-
-    if (pLeftCollider && pRightCollider)
-    {
-        pLeftCollider->BeginOverlap(pRightCollider);
-        pRightCollider->BeginOverlap(pLeftCollider);
-    }
-
+    return true;
 }

@@ -14,6 +14,7 @@ public:
 	virtual void Exit() = 0;
 	virtual void Enter() = 0;
 
+	
 	void Chanage_Anim(const wstring& _strName, bool _bRepeat = true);
 	void Stop_Anim(bool _bStop = true);
 

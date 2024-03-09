@@ -1,6 +1,7 @@
 #pragma once
 #include "CState.h"
 
+
 class CJumpEnd : public CState
 {
 private:

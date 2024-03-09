@@ -17,6 +17,26 @@
 
 using namespace physx;
 
+union PxCollisionID
+{
+	struct
+	{
+		UINT LeftID;
+		UINT RightID;
+	};
+
+	UINT_PTR id;
+};
+
+struct PxCheckColl
+{
+	bool bOnColl;//충돌 체크
+	bool bCheck;//이번프레임에서 업데이트를 받았는지
+
+	CGameObject* pLeftObj;
+	CGameObject* pRightObj;
+};
+
 struct PxCollisionEvent
 {
 	CGameObject* pEventObj;
@@ -24,7 +44,7 @@ struct PxCollisionEvent
 };
 
 
-class CPxEvent;
+class CPxCollisionEvent;
 class CPhysxMgr
 	: public CSingleton<CPhysxMgr>
 {
@@ -42,24 +62,26 @@ private:
 
 	// CPU 리소스를 효율적으로 공유할 수 있도록 하기 위해 구현
 	PxDefaultCpuDispatcher* m_pDispatcher;
-	CPxEvent* m_pCollisionCallback;
+	CPxCollisionEvent* m_pCollisionCallback;
 
 	UINT	m_matrix[MAX_LAYER];
-	map<UINT, PxCollisionEvent> m_mapEventObj;//충돌됐을 때 이벤트 호출
+	map<UINT, PxCollisionEvent> m_mapEventObj;//충돌 될시에 이벤트 호출될 오브젝트들
+	map<UINT_PTR, PxCheckColl> m_mapCol;//물체가 충돌됐는지 안됐는지 확인용
 	//PxMaterial* m_pMaterial;
 
-	
+	bool m_bUseCCD;
 
 public:
 	void init();
 	void tick();
-	
-	
+	void tick_collision();
 
 	PxScene* GetScene() { return m_pScene; }
 	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer, CGameObject* _pCollEventObj = nullptr);
 	PxMaterial* GetPxMaterial();
-	CPxEvent* GetEvent() { return m_pCollisionCallback; }
+	CPxCollisionEvent* GetEvent() { return m_pCollisionCallback; }
+
+	bool UseCCD() { return m_bUseCCD; }
 	const PxVec3& GetGravity() { return m_pScene->getGravity(); }
 
 	void AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
@@ -70,6 +92,8 @@ public:
 
 
 	//collision
+	void CollisionCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj);
+	void ResetCollisionCheck();//PxCheckColl에 bCheck값을 false로
 	void AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer);
 	PxCollisionEvent FIndEventObj(UINT _iID);
 	void Clear()
@@ -77,6 +101,6 @@ public:
 		memset(m_matrix, 0, sizeof(UINT) * MAX_LAYER);
 	}
 	void LayerCheck(UINT _left, UINT _right); // UINT(LAYER_TYPE) 
-	void CollisionCheck(UINT _ileft, UINT _iright);
+	bool CollisionCheck(UINT _ileftLayer, UINT _irightLayer);
 
 };

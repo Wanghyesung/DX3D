@@ -14,6 +14,7 @@ public:
 	void Exit()override;
 
 	void SetAttackObj(CGameObject* _pJumpAttack) { m_pJumpAttackObj = _pJumpAttack; }
+	void EraseAttack();
 public:
 	CJumpingState();
 	virtual ~CJumpingState();

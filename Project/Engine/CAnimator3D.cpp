@@ -30,6 +30,7 @@ CAnimator3D::CAnimator3D()
 	, m_fRatio(0.f)
 	, m_iCurAnim(0)
 	, m_AnimCount(0)
+	, m_fDivDT(1.f)
 	, CComponent(COMPONENT_TYPE::ANIMATOR3D)
 {
 	m_pBoneFinalMatBuffer = new CStructuredBuffer;
@@ -95,6 +96,8 @@ void CAnimator3D::finaltick()
 			return;
 	}
 
+
+	m_fAnimDT = (DT / m_fDivDT);
 	m_pCurAnimation->final_tick();
 	m_iCurAnim = m_pCurAnimation->m_iAnimIdx;
 

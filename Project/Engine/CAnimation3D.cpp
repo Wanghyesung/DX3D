@@ -11,7 +11,7 @@ void CAnimation3D::final_tick()
 	//	Reset();
 	//}
 
-	m_fCurTime += DT;
+	m_fCurTime += m_pOwner->GetAnimDT();
 	//const vector<tMTAnimClip>* vecClip = m_pOwner->GetAnimClip();
 
 	//전체 시간 48초
