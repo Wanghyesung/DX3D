@@ -59,31 +59,31 @@ void CPlayerScript::tick()
 	{
 		rotate();
 	}
-	m_pFSM->final_tick();
+	// m_pFSM->final_tick();
 
-	//CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
-	//CGameObject* _pMonster = pLayer->GetParentObject().at(1)->GetChild().at(0);
-	//CAnimator3D* pAnim = _pMonster->Animator3D();
-	//CStructuredBuffer* pBoneBuffer = pAnim->GetFinalBoneMat();
-	//
-	//vector<Matrix> vecBone = {};
-	//vecBone.resize(pAnim->GetBoneCount());
-	//pBoneBuffer->GetData(vecBone.data());
-	//
-	//Matrix m_matFinalBone = {};
-	//m_matFinalBone = vecBone[m_iBone];
-	//m_matFinalBone.m[3][3] = 1;
-	//m_matFinalBone = XMMatrixTranspose(m_matFinalBone);
-	//
-	//Matrix matMonWorldMat = _pMonster->Transform()->GetWorldMat(); //월드 행렬
-	//Matrix matMonScaleMat = _pMonster->Transform()->GetWorldScaleMat();
-	//Matrix matMonScaleInv = XMMatrixInverse(nullptr, matMonScaleMat);//크기 역행렬
-	//
-	//Matrix matFinalPos = matMonScaleInv * m_matFinalBone * matMonWorldMat;
-	//
-	//Vec3 vPos = matFinalPos.Translation();
-	//
-	//GetOwner()->PxRigidbody()->SetPxTransform(vPos);
+	CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
+	CGameObject* _pMonster = pLayer->GetParentObject().at(1)->GetChild().at(0);
+	CAnimator3D* pAnim = _pMonster->Animator3D();
+	CStructuredBuffer* pBoneBuffer = pAnim->GetFinalBoneMat();
+	
+	vector<Matrix> vecBone = {};
+	vecBone.resize(pAnim->GetBoneCount());
+	pBoneBuffer->GetData(vecBone.data());
+	
+	Matrix m_matFinalBone = {};
+	m_matFinalBone = vecBone[m_iBone];
+	m_matFinalBone.m[3][3] = 1;
+	m_matFinalBone = XMMatrixTranspose(m_matFinalBone);
+	
+	Matrix matMonWorldMat = _pMonster->Transform()->GetWorldMat(); //월드 행렬
+	Matrix matMonScaleMat = _pMonster->Transform()->GetWorldScaleMat();
+	Matrix matMonScaleInv = XMMatrixInverse(nullptr, matMonScaleMat);//크기 역행렬
+	
+	Matrix matFinalPos = matMonScaleInv * m_matFinalBone * matMonWorldMat;
+	
+	Vec3 vPos = matFinalPos.Translation();
+	
+	GetOwner()->PxRigidbody()->SetPxTransform(vPos);
 	
 
 }
@@ -250,7 +250,7 @@ void CPlayerScript::set_attack()
 	tAttackInfo attackjump = {};
 	attackjump.iStartFrame = 954;
 	attackjump.iEndFrame = 960;
-	attackjump.vAttackScale = Vec3(150.f, 150.f, 150.f);
+	attackjump.vAttackScale = Vec3(200.f, 250.f, 200.f);
 	attackjump.tAttackValue.iMatCount = 1;
 	attackjump.tAttackValue.fAttackTime = 0.f;
 	attackjump.tAttackValue.bDown = true;
@@ -260,10 +260,17 @@ void CPlayerScript::set_attack()
 	pAttackObj = new CGameObject();
 
 	CCollider3D* pCollider = new CCollider3D();
-	pCollider->SetOffsetScale(Vec3(200.f, 250.f, 200.f));
+	pCollider->SetOffsetScale(attackjump.vAttackScale);
 	pAttackObj->AddComponent(pCollider);
 	pAttackObj->AddComponent(new CTransform);
 	pAttackObj->AddComponent(pJumpAttack);
+
+	CPxRigidbody* pRigid = new CPxRigidbody();
+	pAttackObj->AddComponent(pRigid);
+	pRigid->init(Vec3(-2000.f, -2000.f, -2000.f), attackjump.vAttackScale, (int)LAYER_TYPE::Attack, pAttackObj);
+	pRigid->SetGround(true, false); //땅상태 , 중력 안받음 
+	pRigid->SetPass(true); // 충돌해도 통과되게
+
 	CJumpingState* pJumpingState = m_pFSM->GetState<CJumpingState>();
 	pJumpingState->SetAttackObj(pAttackObj);
 }

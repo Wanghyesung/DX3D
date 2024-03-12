@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "CAttackScript.h"
 #include "CMonsterScript.h"
+#include "CPlayerScript.h"
+#include "CObjstacleScript.h"
 
 #include <Engine\CTimeMgr.h>
 #include <Engine\CAttackState.h>
@@ -110,7 +112,12 @@ void CAttackScript::BeginOverlap(CCollider3D* _Other)
 
 void CAttackScript::OnOverlap(CCollider3D* _Other)
 {	
-	
+	int a = 10;
+
+	if (_Other->GetOwner()->GetScript<CMonsterScript>())
+	{
+		int a = 10;
+	}
 }
 
 void CAttackScript::EndOverlap(CCollider3D* _Other)

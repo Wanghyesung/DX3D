@@ -7,7 +7,9 @@
 CPxRigidbody::CPxRigidbody():
 	CComponent(COMPONENT_TYPE::PXRIGIDBODY),
     m_bGround(true),
+    m_bBasicGravity(true),
     m_bAccumulate(false),
+    m_bPass(false),
     m_vTransformOffset(0.f,0.f,0.f)
 {
     m_eForceMode = PxForceMode::eACCELERATION;
@@ -63,12 +65,16 @@ void CPxRigidbody::SetMass(float _fMass)
     m_pRigidbody->setMass(_fMass);
 }
 
-void CPxRigidbody::SetGround(bool _bGround)
+
+
+void CPxRigidbody::SetGround(bool _bGround, bool _bBasicGravity)
 {
     m_bGround = _bGround; 
+    m_bBasicGravity = _bBasicGravity;
 
     m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, _bGround);
 }
+
 
 void CPxRigidbody::ChanageMaterial(UINT _iStaticCoef, UINT _iDynamicCoef)
 {
@@ -176,8 +182,12 @@ void CPxRigidbody::tick_force(const PxVec3& _vFoce)
 
 void CPxRigidbody::tick_velocity(const PxVec3& _vVel)
 {
-    PxVec3 vGravity = CPhysxMgr::GetInst()->GetGravity();
-    PxVec3 vFinalVel = _vVel + vGravity;
+    PxVec3 vFinalVel = _vVel;
+    if (m_bBasicGravity)
+    {
+        PxVec3 vBasicGravity = CPhysxMgr::GetInst()->GetGravity();
+        vFinalVel = _vVel + vBasicGravity;
+    }
 
     m_pRigidbody->setLinearVelocity(vFinalVel);
 }

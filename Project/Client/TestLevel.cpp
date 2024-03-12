@@ -10,8 +10,9 @@
 #include <Engine\CIdleState.h>
 #include <Engine\CWalkState.h>
 #include <Engine\CRunState.h>
-#include <Engine\CMonsterJump.h>
 
+#include <Engine\CMonsterFSM.h>
+#include <Engine\CMonsterJump.h>
 #include <Engine\CMonsterIdle.h>
 #include <Engine\CMonsterMove.h>
 #include <Engine\CMonsterAttack.h>
@@ -39,9 +40,10 @@
 
 void CreateTestLevel()
 {
-	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Attack, (UINT)LAYER_TYPE::Monster);
-	CCollisionMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::MonsterAttack, (UINT)LAYER_TYPE::Player);
+	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Monster, (UINT)LAYER_TYPE::Attack);
+	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player,(UINT)LAYER_TYPE::MonsterAttack);
 
+	//CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Monster);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Monster, (UINT)LAYER_TYPE::LandScape);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Stairs);
@@ -165,15 +167,15 @@ void CreateTestLevel()
 	pAritorias->AddComponent(new CTransform());
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
-	pRigi->init(Vec3(1000.f, 820.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
-	
 	pAritorias->AddComponent(pRigi);
-	
+	pRigi->init(Vec3(1000.f, 820.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
+	//pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
+
 	CCollider3D* pCollider = new CCollider3D();
 	pAritorias->AddComponent(pCollider);
 	pCollider->SetAbsolute(true);
 	pCollider->SetOffsetScale(Vec3(115.f, 115.f, 225.f));
-	pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
+	
 	
 	CPlayerScript* pScript = new CPlayerScript(); 
 	pAritorias->AddComponent(pScript);
@@ -286,9 +288,10 @@ void CreateMonster()
 	//pMonster->AddComponent(new CCollider3D());
 	//pMonster->AddComponent(new CNavMesh);
 	//CPxRigidbody* pRigi = new CPxRigidbody();
+	//pMonster->AddComponent(pRigi);
 	//pRigi->init(Vec3(2000.f, 120.f, 2000.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
 	//pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
-	//pMonster->AddComponent(pRigi);
+	
 	//
 	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
 	//pMonster->Collider3D()->SetAbsolute(true);
@@ -349,10 +352,11 @@ void CreateMonster()
 	pBoss->AddComponent(new CNavMesh);
 	pBoss->Transform()->SetRelativeScale(Vec3(1.5f, 1.5f, 1.5f));
 	CPxRigidbody* pRigi = new CPxRigidbody();
-	pRigi->init(Vec3(1500.f, 120.f, 1500.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pBoss);
-	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
 	pBoss->AddComponent(pRigi);
 
+	pRigi->init(Vec3(1500.f, 120.f, 1500.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pBoss);
+	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
+	
 	pBoss->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
 	pBoss->Collider3D()->SetAbsolute(true);
 	
@@ -398,6 +402,7 @@ void CreateMonster()
 	//pMonsterScript = new CMonsterScript();
 	//pMonster->AddComponent(pMonsterScript);
 	//SpawnGameObject(pMonster, Vec3(1000.f, 0.f, 1000.f), (int)LAYER_TYPE::Monster);
+	//pMonsterScript->GetFSM()->SetState(MONSTER_STATE_TYPE::HIT);
 }
 
 void CreateLandScape()

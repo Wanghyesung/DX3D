@@ -20,7 +20,7 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
                 pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT | PxPairFlag::eNOTIFY_TOUCH_CCD;
         }
         else
-            pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+            pairFlags = PxPairFlag::eCONTACT_DEFAULT;                          
        
 
         return PxFilterFlags();
@@ -46,7 +46,10 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
     PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
     //내가 체크한 레이어들끼리 충돌했는지 검사
-    const bool isTriggerPair = CPhysxMgr::GetInst()->CollisionCheck(filterData0.word0, filterData1.word0);
+    PxCollisionEvent pLeftEvent = CPhysxMgr::GetInst()->FIndEventObj(filterData0.word0);
+    PxCollisionEvent pRightEvent = CPhysxMgr::GetInst()->FIndEventObj(filterData1.word0);
+
+    const bool isTriggerPair = CPhysxMgr::GetInst()->CollisionCheck(pLeftEvent.eLayerBit, pRightEvent.eLayerBit);
 
     // If we have a trigger, replicate the trigger codepath from PxDefaultSimulationFilterShader
     if (isTriggerPair)
@@ -54,22 +57,32 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
         //* pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_PERSISTS 기존 코드
 
         //이벤트 트리거
-        pairFlags = PxPairFlag::eTRIGGER_DEFAULT | 
-            PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eCONTACT_DEFAULT;// | PxPairFlag::eNOTIFY_TOUCH_LOST;
+        pairFlags = PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eTRIGGER_DEFAULT;
+      
+
+        if (!pLeftEvent.bPass && !pRightEvent.bPass)
+        {
+            pairFlags |= PxPairFlag::eCONTACT_DEFAULT;
+        }
+     
+        else
+        {
+            int a = 10;
+        }
 
         if (CPhysxMgr::GetInst()->UseCCD())
             pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
         
         return PxFilterFlag::eDEFAULT;
     }
-
     else
     {
         //기본 트리거
         // Otherwise use the default flags for regular pairs
-        //pairFlags = PxPairFlag::eCONTACT_DEFAULT; 기존 코드
-
-        pairFlags = PxPairFlag::eNOTIFY_TOUCH_LOST;// 뚫리게 할라면
+        //필터에 걸리지 않으면 기본 충돌x 이벤트 호출 o
+     
+        //pairFlags = PxPairFlag::eCONTACT_DEFAULT; //기존 코드
+        //pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_PERSISTS;// 뚫리게 할라면
 
         return PxFilterFlag::eDEFAULT;
     }
@@ -393,6 +406,13 @@ PxCollisionEvent CPhysxMgr::FIndEventObj(UINT _iID)
         return PxCollisionEvent();
     }
     
+    CPxRigidbody* pRigid = iter->second.pEventObj->PxRigidbody();
+    if (pRigid)
+    {
+        bool b = pRigid->IsPass();
+        iter->second.bPass = b;
+    }
+
     return iter->second;
 }
 
@@ -409,17 +429,20 @@ void CPhysxMgr::LayerCheck(UINT _left, UINT _right)
     }
 
     m_matrix[iRow] |= (1 << iCol);
-
 }
 
 
 bool CPhysxMgr::CollisionCheck(UINT _ileft, UINT _iright)
 {
-    PxCollisionEvent pLeftEvent = FIndEventObj(_ileft);
-    PxCollisionEvent pRightEvent = FIndEventObj(_iright);
+    UINT iRow = _ileft;
+    UINT iCol = _iright;
 
-    UINT iRow = pLeftEvent.eLayerBit;
-    UINT iCol = pRightEvent.eLayerBit;
+    if (iRow > iCol)
+    {
+        UINT iTemp = iCol;
+        iCol = iRow;
+        iRow = iTemp;
+    }
 
     if (!(m_matrix[iRow] & (1 << iCol)))
         return false;

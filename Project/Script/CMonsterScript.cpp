@@ -68,7 +68,7 @@ void CMonsterScript::begin()
 
 	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
 
-	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::IDLE);
+	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
 }
 
 void CMonsterScript::Initialize(const wstring& _strFbxName)

@@ -36,6 +36,8 @@ public:
 
     void SetMonsterInfo(const tMonsterInfo& _tInfo) { m_tMonsterInfo = _tInfo; }
     void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
+
+    CMonsterFSM* GetFSM() { return m_pFSM; }
 public:
     CMonsterScript();
     ~CMonsterScript();

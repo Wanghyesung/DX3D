@@ -71,8 +71,6 @@ void CJumpState::Enter()
 
 void CJumpState::Exit()
 {
-	GetOwner()->PxRigidbody()->BlockTransformY(false);
-
 	GetOwner()->PxRigidbody()->SetOffsetPosition(m_vBeginOffsetPos);
 }
 

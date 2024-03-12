@@ -40,7 +40,9 @@ struct PxCheckColl
 struct PxCollisionEvent
 {
 	CGameObject* pEventObj;
-	UINT eLayerBit; // 0 << 1 
+	UINT eLayerBit; // 0 << 1
+
+	bool bPass;
 };
 
 

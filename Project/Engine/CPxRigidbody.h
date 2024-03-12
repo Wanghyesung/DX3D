@@ -26,20 +26,24 @@ private:
 
 
 	float m_fMaxVelocity;
+	
 	bool m_bAccumulate;//힘들 누적해서 받을지
 	bool m_bGround; //땅인지;
+	bool m_bBasicGravity;
 
-	bool m_bBlockTransformY; //transform이동 못하게
+	bool m_bPass;
 
 	bool m_bDecrease; //속도 감소
-	
 
 	float m_fMass;
 
 public:
 	void SetMass(float _fMass);
-	void SetGround(bool _bGround);
+	void SetGround(bool _bGround , bool _bBasicGravity = true);
+	void SetPass(bool _bPass) { m_bPass = _bPass; }
+
 	bool IsGround() { return m_bGround; }
+	bool IsPass() { return m_bPass; }
 
 	void ChanageMaterial(UINT _iStaticCoef, UINT _iDynamicCoef);
 
@@ -71,8 +75,7 @@ public:
 
 	void SetPxTransform(const Vec3& _vPos);
 	void SetPxRotate(const PxQuat& _pQuat);
-	void BlockTransformY(bool _bBlockY) { m_bBlockTransformY = _bBlockY; }
-
+	
 
 private:
 	void friction_force();
