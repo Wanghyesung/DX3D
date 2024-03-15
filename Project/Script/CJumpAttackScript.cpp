@@ -13,7 +13,8 @@ CJumpAttackScript::CJumpAttackScript() :
 	CAttackScript(SCRIPT_TYPE::JUMPATTACKSCRIPT),
 	m_bBeginOn(false),
 	m_pPlayer(nullptr),
-	m_iBoneIndex(6)
+	m_iBoneIndex(26),
+	m_vOffsetTransform(Vec3(0.f, 540.f, 520.f))
 {
 
 }
@@ -40,11 +41,30 @@ void CJumpAttackScript::check_bone_pos(CGameObject* _pMonster)
 	Matrix matMonScaleMat = _pMonster->Transform()->GetWorldScaleMat();
 	Matrix matMonScaleInv = XMMatrixInverse(nullptr, matMonScaleMat);//크기 역행렬
 
-	Matrix matFinalPos = matMonScaleInv * m_matFinalBone* matMonWorldMat;
+	Matrix matFinalPos = matMonScaleInv * m_matFinalBone * matMonWorldMat;
 
 	Vec3 vPos = matFinalPos.Translation();
+	vPos += m_vOffsetTransform;
 
+	//GetOwner()->PxRigidbody()->SetPxTransform(vPos);
 	m_pPlayer->PxRigidbody()->SetPxTransform(vPos);
+
+}
+bool CJumpAttackScript::check_pos(CGameObject* _pMonster)
+{
+	Vec3 vPlayerPos = m_pPlayer->PxRigidbody()->GetPxPosition();
+	Vec3 vMonsterPos = _pMonster->PxRigidbody()->GetPxPosition();
+
+	Vec3 vDiff = vMonsterPos - vPlayerPos;
+
+	float fRevision = 200.f;
+
+	if (vDiff.y + fRevision < vPlayerPos.y)
+	{
+		return true;
+	}
+
+	return false;
 }
 void CJumpAttackScript::tick()
 {
@@ -71,8 +91,10 @@ void CJumpAttackScript::BeginOverlap(CCollider3D* _Other)
 	{
 		m_pPlayer->GetScript<CPlayerScript>()->Chanage_AnimDT(2.f);
 
-		m_bBeginOn = true;
-		ChanageState(pPlayer->GetFSM(), STATE_TYPE::JUMPEND);
+		m_bBeginOn = true;// check_pos(_Other->GetOwner());
+
+		if(m_bBeginOn)
+			ChanageState(pPlayer->GetFSM(), STATE_TYPE::JUMPEND);
 	}
 }
 
@@ -82,6 +104,7 @@ void CJumpAttackScript::OnOverlap(CCollider3D* _Other)
 	if (m_bBeginOn)
 	{
 		CGameObject* pMonster = _Other->GetOwner()->GetChild().at(0);
+
 		check_bone_pos(pMonster);
 	}
 }

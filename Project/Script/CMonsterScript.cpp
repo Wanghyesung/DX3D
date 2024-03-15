@@ -15,7 +15,8 @@
 
 CMonsterScript::CMonsterScript()
 	: CScript((UINT)SCRIPT_TYPE::MONSTERSCRIPT),
-	m_pFSM(nullptr)
+	m_pFSM(nullptr),
+	m_bBoss(false)
 {
 	
 }
@@ -43,13 +44,18 @@ void CMonsterScript::OnOverlap(CCollider3D* _Other)
 	CAttackScript* pAttack = pObj->GetScript<CAttackScript>();
 	if (pAttack)
 	{
+
 		bool bOn = pAttack->IsAttackOn(GetOwner()->GetID());
 		if (bOn)
 		{
+			//µ¥¹ÌÁö
 			CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
 			pHit->SetHitInfo(m_tHitInfo);
-			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+
 			
+			if (m_pFSM->GetCurStateType() == MONSTER_STATE_TYPE::HIT)
+				return;
+			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
 		}
 	}
 }
@@ -68,7 +74,7 @@ void CMonsterScript::begin()
 
 	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
 
-	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+	ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::IDLE);
 }
 
 void CMonsterScript::Initialize(const wstring& _strFbxName)

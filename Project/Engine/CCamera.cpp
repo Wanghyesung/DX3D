@@ -57,10 +57,12 @@ CCamera::CCamera(const CCamera& _Other)
 	, m_iLayerMask(_Other.m_iLayerMask)
 	, m_iCamIdx(-1)
 {
+
 }
 
 CCamera::~CCamera()
 {
+
 }
 
 void CCamera::begin()

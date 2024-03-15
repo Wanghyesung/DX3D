@@ -30,11 +30,16 @@ CPlayerScript::CPlayerScript()
 	, m_fSpeed(100.f)
 	, m_iActive(1)
 	, m_pFSM(nullptr)
-	, m_iBone(1)
+	, m_iBone(4)
+	, m_vOffsetTransform(Vec3(0.f, 500.f, 520.f))
 {
 	AddScriptParam(SCRIPT_PARAM::FLOAT, &m_fSpeed, "Player Speed");
-	AddScriptParam(SCRIPT_PARAM::INT, &m_iActive, "Player Active");
+	AddScriptParam(SCRIPT_PARAM::INT,  &m_iActive, "Player Active");
 	AddScriptParam(SCRIPT_PARAM::INT, &m_iBone, "Player Bone");
+	AddScriptParam(SCRIPT_PARAM::VEC4, &m_vOffsetTransform, "Player OffsetPos");
+	// 4 16	61 26
+	// 0 500 520
+	// 26
 }
 
 CPlayerScript::~CPlayerScript()
@@ -59,32 +64,32 @@ void CPlayerScript::tick()
 	{
 		rotate();
 	}
-	// m_pFSM->final_tick();
+	 m_pFSM->final_tick();
 
-	CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
-	CGameObject* _pMonster = pLayer->GetParentObject().at(1)->GetChild().at(0);
-	CAnimator3D* pAnim = _pMonster->Animator3D();
-	CStructuredBuffer* pBoneBuffer = pAnim->GetFinalBoneMat();
-	
-	vector<Matrix> vecBone = {};
-	vecBone.resize(pAnim->GetBoneCount());
-	pBoneBuffer->GetData(vecBone.data());
-	
-	Matrix m_matFinalBone = {};
-	m_matFinalBone = vecBone[m_iBone];
-	m_matFinalBone.m[3][3] = 1;
-	m_matFinalBone = XMMatrixTranspose(m_matFinalBone);
-	
-	Matrix matMonWorldMat = _pMonster->Transform()->GetWorldMat(); //월드 행렬
-	Matrix matMonScaleMat = _pMonster->Transform()->GetWorldScaleMat();
-	Matrix matMonScaleInv = XMMatrixInverse(nullptr, matMonScaleMat);//크기 역행렬
-	
-	Matrix matFinalPos = matMonScaleInv * m_matFinalBone * matMonWorldMat;
-	
-	Vec3 vPos = matFinalPos.Translation();
-	
-	GetOwner()->PxRigidbody()->SetPxTransform(vPos);
-	
+	//CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
+	//CGameObject* _pMonster = pLayer->GetParentObject().at(1)->GetChild().at(0);
+	//CAnimator3D* pAnim = _pMonster->Animator3D();
+	//CStructuredBuffer* pBoneBuffer = pAnim->GetFinalBoneMat();
+	//
+	//vector<Matrix> vecBone = {};
+	//vecBone.resize(pAnim->GetBoneCount());
+	//pBoneBuffer->GetData(vecBone.data());
+	//
+	//Matrix m_matFinalBone = {};
+	//m_matFinalBone = vecBone[m_iBone];
+	//m_matFinalBone.m[3][3] = 1;
+	//m_matFinalBone = XMMatrixTranspose(m_matFinalBone);
+	//
+	//Matrix matMonWorldMat = _pMonster->Transform()->GetWorldMat(); //월드 행렬
+	//Matrix matMonScaleMat = _pMonster->Transform()->GetWorldScaleMat();
+	//Matrix matMonScaleInv = XMMatrixInverse(nullptr, matMonScaleMat);//크기 역행렬
+	//
+	//Matrix matFinalPos = matMonScaleInv * m_matFinalBone * matMonWorldMat;
+	//
+	//Vec3 vPos = matFinalPos.Translation();
+	//	
+	//vPos += m_vOffsetTransform;
+	//GetOwner()->PxRigidbody()->SetPxTransform(vPos);
 
 }
 

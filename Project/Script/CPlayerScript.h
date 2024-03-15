@@ -12,7 +12,8 @@ private:
     CFSM*       m_pFSM;
 
     int         m_iBone;
-
+    
+    Vec3        m_vOffsetTransform;
 public:
     virtual void begin() override;
     virtual void tick() override;

@@ -8,13 +8,16 @@ private:
     bool m_bBeginOn;
 
     Matrix m_matFinalBone;
-
     int m_iBoneIndex;
+
+    Vec3 m_vOffsetTransform; //몬스터 잡기 위치
+    
 
     CGameObject* m_pPlayer;
 private:
     void check_bone_pos(CGameObject* _pMonster);
 
+    bool check_pos(CGameObject* _pMonster);
 public:
     virtual void tick() override;
     virtual void begin()override;

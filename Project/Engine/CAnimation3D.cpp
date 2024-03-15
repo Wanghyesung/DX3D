@@ -4,7 +4,41 @@
 #include "CTimeMgr.h"
 #include "CAnimator3D.h"
 
+
+
 void CAnimation3D::final_tick()
+{
+	if (m_bReverse)
+		reverse_update();
+	else
+		update();
+}
+
+void CAnimation3D::reverse_update()
+{
+	m_fCurTime -= m_pOwner->GetAnimDT();
+	
+	//30프레임 고정
+	int iFrameCount = 30;
+	// 현재 프레임 인덱스 구하기
+	double dFrameIdx = m_fCurTime * (double)iFrameCount;
+	m_iCurFrame = (int)(dFrameIdx);
+
+	if (m_iCurFrame <= m_iEndFrame)
+	{
+		m_iCurFrame = m_iEndFrame;
+
+		m_iNextFrame = m_iEndFrame;
+	}
+	else
+	{
+		m_iNextFrame = m_iCurFrame - 1;
+	}
+
+	m_fRatio = (float)(dFrameIdx - (double)m_iCurFrame);
+}
+
+void CAnimation3D::update()
 {
 	//if (m_fCurTime >= m_fEndTime && m_bRepeat)
 	//{
@@ -41,6 +75,7 @@ void CAnimation3D::final_tick()
 
 	m_fRatio = (float)(dFrameIdx - (double)m_iCurFrame);
 }
+
 
 bool CAnimation3D::IsComplete()
 {

@@ -24,7 +24,7 @@ void CJumpingState::final_tick()
 	if (m_bJumpAttack)
 	{
 		Vec3 vPos = pObj->PxRigidbody()->GetPxPosition();
-		m_pJumpAttackObj->Transform()->SetRelativePos(vPos);
+		m_pJumpAttackObj->PxRigidbody()->SetPxTransform(vPos);
 	}
 
 	if (pObj->PxRigidbody()->IsGround())

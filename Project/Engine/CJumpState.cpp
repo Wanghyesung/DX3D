@@ -72,6 +72,7 @@ void CJumpState::Enter()
 void CJumpState::Exit()
 {
 	GetOwner()->PxRigidbody()->SetOffsetPosition(m_vBeginOffsetPos);
+
 }
 
 void CJumpState::addForce(UINT _iFrame)

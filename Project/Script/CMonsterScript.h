@@ -12,6 +12,8 @@ private:
 
     tMonsterInfo m_tMonsterInfo;
     tHitInfo m_tHitInfo;
+
+    bool m_bBoss;
 public:
     virtual void tick() override;
     virtual void BeginOverlap(CCollider3D* _Other)override;
@@ -28,14 +30,16 @@ public:
 
 public:
     void AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState,
-                         const wstring& _strAnimName, int _iStartFrame, int _iEndFrame);
+        const wstring& _strAnimName, int _iStartFrame, int _iEndFrame);
     void AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState, const wstring& _strAnimName);
 
     void AddMonsterAttack(int _iAttackNum, float _fForce, float _fRotate, float _fTime, int _iStartFrame, int _iEndFrame,
-                          Vec3 _vAttackScale, float _fOffsetPos, Vec3 _vAttackRot);
+        Vec3 _vAttackScale, float _fOffsetPos, Vec3 _vAttackRot);
 
     void SetMonsterInfo(const tMonsterInfo& _tInfo) { m_tMonsterInfo = _tInfo; }
     void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
+
+    void SetBoss(bool _bBoss) { m_bBoss = _bBoss; }
 
     CMonsterFSM* GetFSM() { return m_pFSM; }
 public:

@@ -24,7 +24,15 @@ private:
 	//bool  m_bRepeat;
 	UINT m_iAnimIdx;
 
+	//애니메이션 반대로 갈지
+	bool m_bReverse;
+
 	CAnimator3D* m_pOwner;
+
+private:
+	void reverse_update();
+	void update();
+
 public:
 	void final_tick();
 

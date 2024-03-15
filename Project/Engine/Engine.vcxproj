@@ -186,6 +186,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CConstBuffer.h" />
     <ClInclude Include="CCopyBoneShader.h" />
     <ClInclude Include="CDecal.h" />
+    <ClInclude Include="CDemonHit.h" />
     <ClInclude Include="CDemonHold.h" />
     <ClInclude Include="CDemonIdle.h" />
     <ClInclude Include="CDevice.h" />
@@ -282,6 +283,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CConstBuffer.cpp" />
     <ClCompile Include="CCopyBoneShader.cpp" />
     <ClCompile Include="CDecal.cpp" />
+    <ClCompile Include="CDemonHit.cpp" />
     <ClCompile Include="CDemonHold.cpp" />
     <ClCompile Include="CDemonIdle.cpp" />
     <ClCompile Include="CDevice.cpp" />

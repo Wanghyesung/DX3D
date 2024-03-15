@@ -18,6 +18,9 @@
 #include <Engine\CMonsterAttack.h>
 #include <Engine\CMonsterHit.h>
 
+#include <Engine\CDemonIdle.h>
+#include <Engine\CDemonHit.h>
+
 #include <Engine\CResMgr.h>
 #include <Engine\CCollisionMgr.h>
 #include <Engine\CPhysxMgr.h>
@@ -169,7 +172,7 @@ void CreateTestLevel()
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pAritorias->AddComponent(pRigi);
 	pRigi->init(Vec3(1000.f, 820.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
-	//pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
+	pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
 
 	CCollider3D* pCollider = new CCollider3D();
 	pAritorias->AddComponent(pCollider);
@@ -354,10 +357,10 @@ void CreateMonster()
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pBoss->AddComponent(pRigi);
 
-	pRigi->init(Vec3(1500.f, 120.f, 1500.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pBoss);
-	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
+	pRigi->init(Vec3(1500.f, 120.f, 1500.f), Vec3(300.f, 600.f, 300.f), (int)LAYER_TYPE::Monster, pBoss);
+	pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
 	
-	pBoss->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
+	pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
 	pBoss->Collider3D()->SetAbsolute(true);
 	
 	CMonsterScript* pMonsterScript = new CMonsterScript();
@@ -371,11 +374,11 @@ void CreateMonster()
 	
 	//pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
 	
-	CMonsterIdle* pIdle = new CMonsterIdle();
+	CDemonIdle* pIdle = new CDemonIdle();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 119);
 	
-	//CMonsterMove* pMove = new CMonsterMove();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 121, 180);
+	CMonsterMove* pMove = new CMonsterMove();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 121, 180);
 	
 	CMonsterAttack* pAttack = new CMonsterAttack();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
@@ -383,7 +386,7 @@ void CreateMonster()
 	CMonsterJump* pJump = new CMonsterJump();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 398, 478);
 
-	CMonsterHit* pHit = new CMonsterHit();
+	CDemonHit* pHit = new CDemonHit();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527,650);
 
 	pMonsterScript->AddAnimFrame(L"Attack0", 651, 792);

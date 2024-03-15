@@ -3,7 +3,7 @@
 
 class CMonsterHit : public CMonsterState
 {
-private:
+protected:
 	tHitInfo m_tHitInfo;
 
 public:
