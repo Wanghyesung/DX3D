@@ -253,9 +253,6 @@
     <ClInclude Include="CMonsterAttack.h">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayerHit.h">
-      <Filter>Source\10. FSM\PlayerFSM</Filter>
-    </ClInclude>
     <ClInclude Include="CPhysxMgr.h">
       <Filter>Source\03. Manager\11.PhysxMgr</Filter>
     </ClInclude>
@@ -283,6 +280,12 @@
     </ClInclude>
     <ClInclude Include="CDemonHit.h">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeadState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CHitState.h">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -532,9 +535,6 @@
     <ClCompile Include="CMonsterAttack.cpp">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
     </ClCompile>
-    <ClCompile Include="CPlayerHit.cpp">
-      <Filter>Source\10. FSM\PlayerFSM</Filter>
-    </ClCompile>
     <ClCompile Include="CPhysxMgr.cpp">
       <Filter>Source\03. Manager\11.PhysxMgr</Filter>
     </ClCompile>
@@ -562,6 +562,12 @@
     </ClCompile>
     <ClCompile Include="CDemonHit.cpp">
       <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeadState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CHitState.cpp">
+      <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -795,6 +801,9 @@
     </Filter>
     <Filter Include="Source\10. FSM\MonsterFSM\DemonFSM">
       <UniqueIdentifier>{2d662cae-cb89-4bc4-9a25-8d49ab15b7f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\EngineUI">
+      <UniqueIdentifier>{47a6c379-bdc6-4793-8590-e2555c9d4f55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

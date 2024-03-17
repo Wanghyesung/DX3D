@@ -32,6 +32,12 @@ struct Events
     Event tEndEvent;
 };
 
+struct FrameEvent
+{
+    Event tEvent;
+    int   iStartFrame;
+};
+
 class CAnimator3D :
     public CComponent
 {
@@ -80,7 +86,7 @@ public:
     void SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip);
     void SetClipTime(int _iClipIdx, float _fTime) { m_vecClipUpdateTime[_iClipIdx] = _fTime; }
 
-    void CreateAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame);
+    void CreateAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame , bool _bReverse = false);
     void CreateAnimationT(const wstring& _strAnimName, float _fStartTime, float _fLastTime);
     void AddAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame);
 
@@ -113,12 +119,14 @@ public:
 
     CAnimation3D* GetCurAnim() { return m_pCurAnimation; }
     void SetCurIdx(int _iIdx);
+
+
     //animation event
     std::function<void()>& StartEvent(const std::wstring _strKey);
     std::function<void()>& CompleteEvent(const std::wstring _strKey);
     std::function<void()>& EndEvent(const std::wstring _strKey);
 
-
+    void AddEvent(const wstring& _strAnimName, std::function<void()> _pFun,  int _iStartFrame);
 
 private:
     void check_mesh(Ptr<CMesh> _pMesh);

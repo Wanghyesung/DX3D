@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "CMonsterAttackScript.h"
+#include "CPlayerScript.h"
+
 #include <Engine\CLevelMgr.h>
 #include <Engine\CLayer.h>
 #include <Engine\CTimeMgr.h>
@@ -60,7 +62,18 @@ bool CMonsterAttackScript::IsAttackOn()
 
 void CMonsterAttackScript::BeginOverlap(CCollider3D* _Other)
 {
-	
+	CGameObject* pGameObj = _Other->GetOwner();
+	CPlayerScript* pPlayer = pGameObj->GetScript<CPlayerScript>();
+
+	if (pPlayer)
+	{
+		tHitInfo tHit = {};
+		tHit.bDown = m_tAttack.bDown;
+		tHit.fHitRcnt = m_tAttack.fAttRcnt;
+		tHit.fHitTime = m_tAttack.fAddForceTime;
+
+		pPlayer->SetHitInfo(tHit);
+	}
 }
 
 void CMonsterAttackScript::OnOverlap(CCollider3D* _Other)

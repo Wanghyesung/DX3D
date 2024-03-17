@@ -128,7 +128,7 @@ void CJumpState::check_key(Vec3& _vFinalVel)
 	Vec3 vFoward = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 50.f;
+	float fSpeed = 120.f;
 
 	if (KEY_PRESSED(KEY::D))
 	{

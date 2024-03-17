@@ -175,6 +175,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CAttackScript.h" />
     <ClInclude Include="CBossStageScript.h" />
     <ClInclude Include="CCameraMoveScript.h" />
+    <ClInclude Include="CDemonScript.h" />
     <ClInclude Include="CGravityScript.h" />
     <ClInclude Include="CJumpAttackScript.h" />
     <ClInclude Include="CLandScpaeScript.h" />
@@ -194,6 +195,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CAttackScript.cpp" />
     <ClCompile Include="CBossStageScript.cpp" />
     <ClCompile Include="CCameraMoveScript.cpp" />
+    <ClCompile Include="CDemonScript.cpp" />
     <ClCompile Include="CGravityScript.cpp" />
     <ClCompile Include="CJumpAttackScript.cpp" />
     <ClCompile Include="CLandScpaeScript.cpp" />

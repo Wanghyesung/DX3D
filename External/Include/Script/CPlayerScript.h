@@ -14,6 +14,8 @@ private:
     int         m_iBone;
     
     Vec3        m_vOffsetTransform;
+
+    tHitInfo    m_tHitInfo;
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -21,6 +23,8 @@ public:
     virtual void BeginOverlap(CCollider3D* _Other)override;
     virtual void OnOverlap(CCollider3D* _Other)override;
     virtual void EndOverlap(CCollider3D* _Other)override;
+
+    void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
 
     void SetActive(bool _bActive) {}
 

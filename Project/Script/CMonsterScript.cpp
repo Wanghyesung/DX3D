@@ -21,6 +21,14 @@ CMonsterScript::CMonsterScript()
 	
 }
 
+CMonsterScript::CMonsterScript(SCRIPT_TYPE _eType)
+	: CScript(_eType),
+	m_pFSM(nullptr),
+	m_bBoss(false)
+{
+
+}
+
 CMonsterScript::~CMonsterScript()
 {
 	if (m_pFSM != nullptr)
@@ -55,6 +63,7 @@ void CMonsterScript::OnOverlap(CCollider3D* _Other)
 			
 			if (m_pFSM->GetCurStateType() == MONSTER_STATE_TYPE::HIT)
 				return;
+
 			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
 		}
 	}
@@ -172,12 +181,22 @@ void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRo
 
 	//고정 데미지
 	tAttackInfo.tAttackValue.bDown = false;
-	tAttackInfo.tAttackValue.fAttRcnt = 5.f;
-	tAttackInfo.tAttackValue.fDamage = 5.f;
+	tAttackInfo.tAttackValue.fAttRcnt = 400.f;
+	tAttackInfo.tAttackValue.fDamage = 10.f;
+	tAttackInfo.tAttackValue.fAddForceTime = 0.7f;
 
 	CGameObject* pAttackObj = new CGameObject();
 	CMonsterAttackScript* pAttack = new CMonsterAttackScript();
 	pAttack->SetAttackValue(tAttackInfo.tAttackValue);
 	pAttackObj->AddComponent(pAttack);
 	m_pFSM->AddMonsterAttack(tAttackInfo, pAttackObj);
+}
+
+void CMonsterScript::AddMonsterAttack(const tAttackInfo& _tAttackInfo)
+{
+	CGameObject* pAttackObj = new CGameObject();
+	CMonsterAttackScript* pAttack = new CMonsterAttackScript();
+	pAttack->SetAttackValue(_tAttackInfo.tAttackValue);
+	pAttackObj->AddComponent(pAttack);
+	m_pFSM->AddMonsterAttack(_tAttackInfo, pAttackObj);
 }

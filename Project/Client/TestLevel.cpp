@@ -7,9 +7,7 @@
 #include <Engine\CGameObject.h>
 #include <Engine\components.h>
 #include <Engine\CFSM.h>
-#include <Engine\CIdleState.h>
-#include <Engine\CWalkState.h>
-#include <Engine\CRunState.h>
+
 
 #include <Engine\CMonsterFSM.h>
 #include <Engine\CMonsterJump.h>
@@ -27,6 +25,7 @@
 
 #include <Script\CPlayerScript.h>
 #include <Script\CMonsterScript.h>
+#include <Script\CDemonScript.h>
 #include <Script\CCameraMoveScript.h>
 #include <Script\CTerrainScript.h>
 #include <Script\CLandFormScript.h>
@@ -328,7 +327,7 @@ void CreateMonster()
 	//SpawnGameObject(pMonster, Vec3(2000.f, 120.f, 2000.f), (int)LAYER_TYPE::Monster);
 	//300
 
-	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");;
+	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
 	pWeapon->AddComponent(new CTransform());
 	pWeapon->AddComponent(new CEquip());
 	
@@ -336,7 +335,7 @@ void CreateMonster()
 	
 	float fRadian = XM_PI / 180.f;
 	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
-	;
+	
 	pWeapon->Transform()->SetAbsolute(true);
 	//-90 270 -9
 	
@@ -363,9 +362,9 @@ void CreateMonster()
 	pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
 	pBoss->Collider3D()->SetAbsolute(true);
 	
-	CMonsterScript* pMonsterScript = new CMonsterScript();
-	pBoss->AddComponent(pMonsterScript);
-	pMonsterScript->Initialize(L"Taurus_Demon_Fianl");
+	CDemonScript* pDemonScript = new CDemonScript();
+	pBoss->AddComponent(pDemonScript);
+	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
 	
 	CGameObject* pHand = pBoss->GetChild().at(1);
 	pWeapon->Equip()->SetChar(pHand);
@@ -374,25 +373,7 @@ void CreateMonster()
 	
 	//pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
 	
-	CDemonIdle* pIdle = new CDemonIdle();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 119);
 	
-	CMonsterMove* pMove = new CMonsterMove();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 121, 180);
-	
-	CMonsterAttack* pAttack = new CMonsterAttack();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
-	
-	CMonsterJump* pJump = new CMonsterJump();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 398, 478);
-
-	CDemonHit* pHit = new CDemonHit();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527,650);
-
-	pMonsterScript->AddAnimFrame(L"Attack0", 651, 792);
-	pMonsterScript->AddAnimFrame(L"Attack1", 977, 1114);
-	pMonsterScript->AddAnimFrame(L"Attack2", 1115, 1266);
-	pMonsterScript->AddAnimFrame(L"Attack3", 1267, 1427);
 
 	//pMonster = new CGameObject();
 	//pMonster = InitializeFBX(L"Heavy_Knight");

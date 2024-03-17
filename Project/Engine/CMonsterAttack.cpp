@@ -52,7 +52,7 @@ void CMonsterAttack::final_tick()
 
 void CMonsterAttack::Exit()
 {
-	//GetOwner()->Rigidbody()->SetAcumulate(false);
+	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eACCELERATION);
 	m_fCurMoveTime = 0.f;
 	m_iAttackCount = 0;
 }
@@ -60,10 +60,12 @@ void CMonsterAttack::Exit()
 void CMonsterAttack::Enter()
 {
 	//랜덤 공격
+	int iMaxAttack = m_vecAttack.size()-1;
+
 	std::random_device rDiv;
 	std::mt19937 en(rDiv());
-	std::uniform_int_distribution<int> num(0, 1);
-	UINT iAttackNum = (UINT)num(en);
+	std::uniform_int_distribution<int> num(0, iMaxAttack);
+	UINT iAttackNum = 3;//(UINT)num(en);
 
 	m_tCurAttack = m_vecAttack[iAttackNum];
 
@@ -89,6 +91,13 @@ void CMonsterAttack::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackOb
 	CCollider3D* pCollider = new CCollider3D();
 	pCollider->SetOffsetScale(_tAttackInfo.vAttackScale);
 	_pAttackObj->AddComponent(pCollider);
+
+	CPxRigidbody* pRigid = new CPxRigidbody();
+	_pAttackObj->AddComponent(pRigid);
+	pRigid->init(Vec3(-2000.f, -2000.f, -2000.f), _tAttackInfo.vAttackScale, (int)LAYER_TYPE::MonsterAttack, _pAttackObj);
+	pRigid->SetGround(true, false); //땅상태 , 중력 안받음 
+	pRigid->SetPass(true); // 충돌해도 통과되게
+
 }
 
 void CMonsterAttack::add_force()
@@ -101,7 +110,7 @@ void CMonsterAttack::add_force()
 	{
 		Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
 		vFront.y = 0.f;
-		GetOwner()->PxRigidbody()->AddVelocity(vFront * -m_tCurAttack.fForce);
+		GetOwner()->PxRigidbody()->AddVelocity(vFront * m_tCurAttack.fForce);
 	}
 }
 
@@ -126,11 +135,14 @@ void CMonsterAttack::check_event()
 		Vec3 vOffsetPos = -vDir * m_tCurAttack.fOffsetPos;
 		vPos += vOffsetPos;
 
-		//rotate는 collider에서 처리를 하지않음
 		Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();
 		vRot.y += m_tCurAttack.fRotate;
-		m_pCurGameObj->Transform()->SetRelativeRot(vRot);
-		//spawn
+		PxQuat yRotation(vRot.y, PxVec3(0.0f, 1.0f, 0.0f));
+
+		//여기에 충돌체 위치랑 회전 rigidbody에 넣기
+		m_pCurGameObj->PxRigidbody()->SetPxRotate(yRotation);
+		m_pCurGameObj->PxRigidbody()->SetPxTransform(vPos);
+
 		SpawnGameObject(m_pCurGameObj, vPos, (int)LAYER_TYPE::MonsterAttack);
 	}
 
@@ -139,6 +151,7 @@ void CMonsterAttack::check_event()
 		m_iAttackCount = 2;
 
 		EraseObject(m_pCurGameObj, (int)LAYER_TYPE::MonsterAttack);
+		m_pCurGameObj->PxRigidbody()->SetPxTransform(Vec3(-2000.f, -2000.f, -2000.f));
 
 		add_objpull(m_tCurAttack.iAttackNum, m_pCurGameObj);
 		m_pCurGameObj = nullptr;

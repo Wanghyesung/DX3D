@@ -5,7 +5,7 @@
 #include "CCollider3D.h"
 CDemonIdle::CDemonIdle()
 {
-
+	SetStopLen(500.f);
 }
 
 CDemonIdle::~CDemonIdle()
@@ -19,7 +19,7 @@ void CDemonIdle::final_tick()
 	if (m_pTarget == nullptr || m_pTarget->IsDead())
 		return;
 
-	//check_player();
+	check_player();
 }
 
 void CDemonIdle::Enter()
@@ -44,12 +44,12 @@ void CDemonIdle::check_player()
 	float fCheckLen = GetCheckLen();
 	float fStopLen = GetStopLen();
 
-	if (fLen <= fCheckLen && fStopLen <= fLen)
-	{
-		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
-	}
+	//if (fLen <= fCheckLen && fStopLen <= fLen)
+	//{
+	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
+	//}
 
-	else if (fStopLen > fLen)
+	if (fStopLen > fLen)
 	{
 		//각도 계산 캐릭터가 위에 있는지
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);

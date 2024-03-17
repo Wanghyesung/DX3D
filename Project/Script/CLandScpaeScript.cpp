@@ -20,11 +20,16 @@ void CLandScpaeScript::BeginOverlap(CCollider3D* _Other)
 {
 	CGameObject* pObj = _Other->GetOwner();
 
-	CPlayerScript* pScript = pObj->GetScript<CPlayerScript>();
-	if (pScript)
+	CPxRigidbody* pRigid = pObj->PxRigidbody();
+	if (pRigid)
 	{
-		if (pScript->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
-			return;
+		CPlayerScript* pPlayer = pObj->GetScript<CPlayerScript>();
+
+		if (pPlayer)
+		{
+			if (pPlayer->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
+				return;
+		}
 
 		pObj->PxRigidbody()->SetGround(true);
 	}
@@ -34,11 +39,16 @@ void CLandScpaeScript::OnOverlap(CCollider3D* _Other)
 {
 	CGameObject* pObj = _Other->GetOwner();
 
-	CPlayerScript* pScript = pObj->GetScript<CPlayerScript>();
-	if (pScript)
+	CPxRigidbody* pRigid = pObj->PxRigidbody();
+	if (pRigid)
 	{
-		if (pScript->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
-			return;
+		CPlayerScript* pPlayer = pObj->GetScript<CPlayerScript>();
+
+		if (pPlayer)
+		{
+			if (pPlayer->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
+				return;
+		}
 
 		pObj->PxRigidbody()->SetGround(true);
 	}
@@ -46,7 +56,13 @@ void CLandScpaeScript::OnOverlap(CCollider3D* _Other)
 
 void CLandScpaeScript::EndOverlap(CCollider3D* _Other)
 {
-	int a = 10;
+	CGameObject* pObj = _Other->GetOwner();
+
+	CPxRigidbody* pRigid = pObj->PxRigidbody();
+	if (pRigid)
+	{
+		pObj->PxRigidbody()->SetGround(false);
+	}
 }
 
 void CLandScpaeScript::Initialize(const wstring& _strFbxName)

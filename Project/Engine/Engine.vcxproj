@@ -185,6 +185,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CComputeShader.h" />
     <ClInclude Include="CConstBuffer.h" />
     <ClInclude Include="CCopyBoneShader.h" />
+    <ClInclude Include="CDeadState.h" />
     <ClInclude Include="CDecal.h" />
     <ClInclude Include="CDemonHit.h" />
     <ClInclude Include="CDemonHold.h" />
@@ -201,6 +202,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGraphicsShader.h" />
     <ClInclude Include="CHeightMapShader.h" />
+    <ClInclude Include="CHitState.h" />
     <ClInclude Include="CIdleState.h" />
     <ClInclude Include="CInstancingBuffer.h" />
     <ClInclude Include="CJumpEnd.h" />
@@ -232,7 +234,6 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CParticleUpdateShader.h" />
     <ClInclude Include="CPathMgr.h" />
     <ClInclude Include="CPhysxMgr.h" />
-    <ClInclude Include="CPlayerHit.h" />
     <ClInclude Include="CPrefab.h" />
     <ClInclude Include="CPxCollisionEvent.h" />
     <ClInclude Include="CPxRigidbody.h" />
@@ -282,6 +283,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CComputeShader.cpp" />
     <ClCompile Include="CConstBuffer.cpp" />
     <ClCompile Include="CCopyBoneShader.cpp" />
+    <ClCompile Include="CDeadState.cpp" />
     <ClCompile Include="CDecal.cpp" />
     <ClCompile Include="CDemonHit.cpp" />
     <ClCompile Include="CDemonHold.cpp" />
@@ -301,6 +303,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGraphicsShader.cpp" />
     <ClCompile Include="CHeightMapShader.cpp" />
+    <ClCompile Include="CHitState.cpp" />
     <ClCompile Include="CIdleState.cpp" />
     <ClCompile Include="CInstancingBuffer.cpp" />
     <ClCompile Include="CJumpEnd.cpp" />
@@ -332,7 +335,6 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CParticleUpdateShader.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
     <ClCompile Include="CPhysxMgr.cpp" />
-    <ClCompile Include="CPlayerHit.cpp" />
     <ClCompile Include="CPrefab.cpp" />
     <ClCompile Include="CPxCollisionEvent.cpp" />
     <ClCompile Include="CPxRigidbody.cpp" />

@@ -22,6 +22,7 @@
 #include <Engine\CJumpEnd.h>
 #include <Engine\CJumpingState.h>
 #include <Engine\CPxRigidbody.h>
+#include <Engine\CHitState.h>
 
 #include <Engine\CLevelMgr.h>
 #include <Engine\CStructuredBuffer.h>
@@ -158,6 +159,10 @@ void CPlayerScript::Initialize()
 
 			pObj->Animator3D()->CreateAnimationF(L"Attack6", 1214, 1287);
 			pObj->Animator3D()->CreateAnimationF(L"Attack7", 1290, 1363);
+
+			pObj->Animator3D()->CreateAnimationF(L"Hit", 1465, 1483);
+			pObj->Animator3D()->CreateAnimationF(L"Hit_", 1477, 1483, true);//¹Ý´ë·Î
+
 			pObj->Animator3D()->CreateAnimationF(L"Dead", 1465, 1685);
 
 			pObj->Animator3D()->Play(L"Idle", true);
@@ -199,6 +204,10 @@ void CPlayerScript::Initialize()
 	CJumpingState* pJumping = new CJumpingState;
 	pJumping->SetName(L"Jump_Ing");
 	m_pFSM->AddState(STATE_TYPE::JUMPING, pJumping);
+
+	CHitState* pHit = new CHitState();
+	pHit->SetName(L"Hit");
+	m_pFSM->AddState(STATE_TYPE::HIT, pHit);
 
 	set_attack();
 
@@ -319,29 +328,31 @@ void CPlayerScript::BeginOverlap(CCollider3D* _Other)
 	//CMonsterAttackScript* pAttack = _Other->GetOwner()->GetScript<CMonsterAttackScript>();
 	//if (pAttack)
 	//{
-	//	bool bOn = pAttack->IsAttackOn();
-	//	if (bOn)
-	//	{
-	//		tAttack tAttack = pAttack->GetAttackValue();
-	//		//CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
-	//		//pHit->SetHitInfo(m_tHitInfo);
-	//
-	//		ChanageState(m_pFSM, STATE_TYPE::HIT);
-	//	}
+	//	tAttack tAttack = pAttack->GetAttackValue();
+	//	CPlayerHit* pHit = dynamic_cast<CPlayerHit*>(m_pFSM->FindState(STATE_TYPE::HIT));
+	//	//pHit->SetHitInfo(m_tHitInfo);
+	//	
+	//	ChanageState(m_pFSM, STATE_TYPE::HIT);
 	//}
-
-	//CMonsterScript* pMonster = _Other->GetOwner()->GetScript<CMonsterScript>();
-	//
-	//if (pMonster)
-	//{
-	//
-	//}
-	int a = 10;
 }
 
 void CPlayerScript::OnOverlap(CCollider3D* _Other)
 {
-	int a = 10;
+	CGameObject* pObj = _Other->GetOwner();
+	CMonsterAttackScript* pAttack = pObj->GetScript<CMonsterAttackScript>();
+
+	if (pAttack)
+	{
+		if (m_pFSM->GetCurStateType() == STATE_TYPE::HIT)
+			return;
+
+		tAttack tAttack = pAttack->GetAttackValue();
+		CHitState* pHit = dynamic_cast<CHitState*>(m_pFSM->FindState(STATE_TYPE::HIT));
+		pHit->SetHitInfo(m_tHitInfo);
+
+		ChanageState(m_pFSM, STATE_TYPE::HIT);
+		
+	}
 }
 
 void CPlayerScript::EndOverlap(CCollider3D* _Other)

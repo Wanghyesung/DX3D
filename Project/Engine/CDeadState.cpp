@@ -5,10 +5,12 @@
 
 CDeadState::CDeadState()
 {
+
 }
 
 CDeadState::~CDeadState()
 {
+
 }
 
 
@@ -20,6 +22,7 @@ void CDeadState::final_tick()
 	if (bComplete)
 	{
 		dead();
+
 		ChanageState(GetFSM(), STATE_TYPE::IDLE);
 	}
 
@@ -33,9 +36,12 @@ void CDeadState::Exit()
 void CDeadState::Enter()
 {
 	Chanage_Anim(GetName());
+
+	//충돌체 끄기
 }
 
 void CDeadState::dead()
 {
+	//물체 옮기기 상태는 dead하지말고
 }
 

@@ -34,6 +34,10 @@ void CPxRigidbody::finaltick()
 	PxVec3 vFoce = PxVec3(m_vForce.x, m_vForce.y, m_vForce.z);
 	PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
+    //if(Vvel.isZero())
+    //    tick_force(vFoce);
+    //else
+    //    tick_velocity(Vvel);
     //누적해서 들어갈지
    if(!m_bGround)
       tick_force(vFoce);
@@ -176,7 +180,6 @@ void CPxRigidbody::friction_force()
 
 void CPxRigidbody::tick_force(const PxVec3& _vFoce)
 {
-
     m_pRigidbody->addForce(_vFoce, m_eForceMode);
 }
 

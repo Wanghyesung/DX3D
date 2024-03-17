@@ -4,9 +4,9 @@
 #include "CAttackScript.h"
 #include "CBossStageScript.h"
 #include "CCameraMoveScript.h"
+#include "CDemonScript.h"
 #include "CGravityScript.h"
 #include "CJumpAttackScript.h"
-
 #include "CLandScpaeScript.h"
 #include "CMissileScript.h"
 #include "CMonsterAttackScript.h"
@@ -22,10 +22,9 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CAttackScript");
 	_vec.push_back(L"CBossStageScript");
 	_vec.push_back(L"CCameraMoveScript");
-	_vec.push_back(L"CEquipScript");
+	_vec.push_back(L"CDemonScript");
 	_vec.push_back(L"CGravityScript");
 	_vec.push_back(L"CJumpAttackScript");
-	_vec.push_back(L"CLandFormScript");
 	_vec.push_back(L"CLandScpaeScript");
 	_vec.push_back(L"CMissileScript");
 	_vec.push_back(L"CMonsterAttackScript");
@@ -35,7 +34,6 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CStairsScript");
 	_vec.push_back(L"CTerrainScript");
 	_vec.push_back(L"CTestScript");
-	_vec.push_back(L"StairsScript");
 }
 
 CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
@@ -46,12 +44,12 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CBossStageScript;
 	if (L"CCameraMoveScript" == _strScriptName)
 		return new CCameraMoveScript;
-
+	if (L"CDemonScript" == _strScriptName)
+		return new CDemonScript;
 	if (L"CGravityScript" == _strScriptName)
 		return new CGravityScript;
 	if (L"CJumpAttackScript" == _strScriptName)
 		return new CJumpAttackScript;
-
 	if (L"CLandScpaeScript" == _strScriptName)
 		return new CLandScpaeScript;
 	if (L"CMissileScript" == _strScriptName)
@@ -70,7 +68,6 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CTerrainScript;
 	if (L"CTestScript" == _strScriptName)
 		return new CTestScript;
-	
 	return nullptr;
 }
 
@@ -87,14 +84,15 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 	case (UINT)SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return new CCameraMoveScript;
 		break;
-
+	case (UINT)SCRIPT_TYPE::DEMONSCRIPT:
+		return new CDemonScript;
+		break;
 	case (UINT)SCRIPT_TYPE::GRAVITYSCRIPT:
 		return new CGravityScript;
 		break;
 	case (UINT)SCRIPT_TYPE::JUMPATTACKSCRIPT:
 		return new CJumpAttackScript;
 		break;
-
 	case (UINT)SCRIPT_TYPE::LANDSCAPESCRIPT:
 		return new CLandScpaeScript;
 		break;
@@ -143,6 +141,9 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		return L"CCameraMoveScript";
 		break;
 
+	case SCRIPT_TYPE::DEMONSCRIPT:
+		return L"CDemonScript";
+		break;
 
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
 		return L"CGravityScript";
@@ -153,7 +154,7 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		break;
 
 	case SCRIPT_TYPE::LANDSCAPESCRIPT:
-		return L"CLandScapeScript";
+		return L"CLandScpaeScript";
 		break;
 
 	case SCRIPT_TYPE::MISSILESCRIPT:
@@ -187,7 +188,6 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 	case SCRIPT_TYPE::TESTSCRIPT:
 		return L"CTestScript";
 		break;
-
 
 	}
 	return nullptr;

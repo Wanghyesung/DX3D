@@ -151,7 +151,7 @@ void CAnimator3D::SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip)
 	m_vecClipUpdateTime[0] = fTime;*/
 }
 
-void CAnimator3D::CreateAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame)
+void CAnimator3D::CreateAnimationF(const wstring& _strAnimName, int _iStartFrame, int _iLastFrame, bool _bReverse)
 {
 	CAnimation3D* pAnim = FindAnimation(_strAnimName);
 	if (pAnim != nullptr)
@@ -165,15 +165,28 @@ void CAnimator3D::CreateAnimationF(const wstring& _strAnimName, int _iStartFrame
 	//pAnim->m_bRepeat = _bRepeat;
 
 	pAnim->m_iStartFrame = _iStartFrame;
-	pAnim->m_iCurFrame = _iStartFrame;
 	pAnim->m_iEndFrame = _iLastFrame;
 
 	pAnim->m_fStartTime = float(_iStartFrame) / float(m_iFrameCount);
-	pAnim->m_fCurTime = float(_iStartFrame) / float(m_iFrameCount);
 	pAnim->m_fEndTime = float(_iLastFrame) / float(m_iFrameCount);
-	pAnim->m_pOwner = this;
 
+	if (_bReverse)
+	{
+		pAnim->m_iCurFrame = _iLastFrame;
+		pAnim->m_fCurTime = float(_iLastFrame) / float(m_iFrameCount);
+	}
+	else
+	{
+		pAnim->m_iCurFrame = _iStartFrame;
+		pAnim->m_fCurTime = float(_iStartFrame) / float(m_iFrameCount);
+	}
+
+	pAnim->m_pOwner = this;
 	pAnim->m_iAnimIdx = ++m_AnimCount;
+	pAnim->m_bReverse = _bReverse;
+
+	pAnim->m_vecEvent.resize(_iLastFrame);
+	pAnim->m_iCurEventCheck = pAnim->m_iCurFrame; //이벤트 체크 전용
 
 	m_mapAnim.insert(make_pair(_strAnimName, pAnim));
 
@@ -382,6 +395,20 @@ std::function<void()>& CAnimator3D::EndEvent(const std::wstring _strKey)
 	Events* pEvents = FindEvents(_strKey);
 
 	return pEvents->tEndEvent.m_Event;
+}
+
+void CAnimator3D::AddEvent(const wstring& _strAnimName, std::function<void()> _pFun, int _iStartFrame)
+{
+	map<wstring, CAnimation3D*>::iterator iter =m_mapAnim.find(_strAnimName);
+
+	if (iter == m_mapAnim.end())
+		return;
+
+	FrameEvent tEvent = {};
+	tEvent.iStartFrame = _iStartFrame;
+	tEvent.tEvent = _pFun;
+
+	iter->second->AddAnimEvent(tEvent);
 }
 
 

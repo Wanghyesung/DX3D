@@ -9,7 +9,7 @@ CMonsterIdle::CMonsterIdle() :
 	m_fCheckLen(1000.f),
 	m_fStopLen(200.f)
 {
-
+	
 }
 
 CMonsterIdle::~CMonsterIdle()

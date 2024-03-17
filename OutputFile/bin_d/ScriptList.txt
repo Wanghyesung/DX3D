@@ -1,6 +1,7 @@
 CAttackScript
 CBossStageScript
 CCameraMoveScript
+CDemonScript
 CEquipScript
 CGravityScript
 CJumpAttackScript

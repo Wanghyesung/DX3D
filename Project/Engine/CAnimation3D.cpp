@@ -4,7 +4,26 @@
 #include "CTimeMgr.h"
 #include "CAnimator3D.h"
 
+CAnimation3D::CAnimation3D() :
+	m_iStartFrame(0),
+	m_iEndFrame(0),
+	m_fStartTime(0),
+	m_fEndTime(0),
+	m_iCurFrame(0),
+	m_fCurTime(0),
+	m_iNextFrame(0),
+	m_fRatio(0.f),
+	m_vecEvent{},
+	m_iCurEventCheck(0)
+	//m_bRepeat(false)
+{
 
+}
+
+CAnimation3D::~CAnimation3D()
+{
+
+}
 
 void CAnimation3D::final_tick()
 {
@@ -24,11 +43,12 @@ void CAnimation3D::reverse_update()
 	double dFrameIdx = m_fCurTime * (double)iFrameCount;
 	m_iCurFrame = (int)(dFrameIdx);
 
-	if (m_iCurFrame <= m_iEndFrame)
+	//마지막 프레임으로 초기화 1183  1175
+	if (m_iCurFrame <= m_iStartFrame)
 	{
-		m_iCurFrame = m_iEndFrame;
+		m_iCurFrame = m_iStartFrame;
 
-		m_iNextFrame = m_iEndFrame;
+		m_iNextFrame = m_iStartFrame;
 	}
 	else
 	{
@@ -74,21 +94,63 @@ void CAnimation3D::update()
 	}
 
 	m_fRatio = (float)(dFrameIdx - (double)m_iCurFrame);
+
+	check_event();
+}
+
+void CAnimation3D::check_event()
+{
+	if (m_iCurEventCheck == m_iCurFrame)
+		return;
+
+	if (m_vecEvent[m_iCurEventCheck].iStartFrame < m_iCurFrame)
+	{
+		//늦춰진 프레임만큼 이벤트 호출
+		for (int i = m_iCurEventCheck; i < m_iCurFrame; ++i)
+		{
+			m_vecEvent[i].tEvent();
+			++i;
+		}
+	}
+	else
+		m_vecEvent[m_iCurEventCheck].tEvent();
+	
+	m_iCurEventCheck = m_iCurFrame;
 }
 
 
 bool CAnimation3D::IsComplete()
 {
-	if (m_iCurFrame >= m_iEndFrame)
-		return true;
+	if (m_bReverse)
+	{
+		if (m_iCurFrame <= m_iStartFrame)
+			return true;
 
-	return false;
+		return false;
+	}
+	else
+	{
+		if (m_iCurFrame >= m_iEndFrame)
+			return true;
+
+		return false;
+	}
 }
 
 void CAnimation3D::Reset()
 {
-	m_iCurFrame = m_iStartFrame;
-	m_fCurTime = m_fStartTime;
+	if (m_bReverse)
+	{
+		m_fCurTime = m_fEndTime;
+		m_iCurFrame = m_iEndFrame;
+	}
+	else
+	{
+		m_fCurTime = m_fStartTime;
+		m_iCurFrame = m_iStartFrame;
+	}
+		
+	m_iCurEventCheck = m_iCurFrame;
 }
 
 void CAnimation3D::SetFrame(int _iStartFrame)
@@ -108,21 +170,9 @@ void CAnimation3D::SetFrame(int _iStartFrame)
 	}
 }
 
-CAnimation3D::CAnimation3D() :
-	m_iStartFrame(0),
-	m_iEndFrame(0),
-	m_fStartTime(0),
-	m_fEndTime(0),
-	m_iCurFrame(0),
-	m_fCurTime(0),
-	m_iNextFrame(0),
-	m_fRatio(0.f)
-	//m_bRepeat(false)
-{
 
+void CAnimation3D::AddAnimEvent(const FrameEvent& _tEvent)
+{
+	m_vecEvent[_tEvent.iStartFrame] = _tEvent;
 }
 
-CAnimation3D::~CAnimation3D()
-{
-
-}
