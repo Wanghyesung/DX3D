@@ -44,6 +44,7 @@ public:
 	virtual void finaltick() override;
 
 	void SetActive(bool _bActive) { m_bActive = _bActive; }
+	bool IsActive() { return m_bActive; }
 
 	void Initialize();
 

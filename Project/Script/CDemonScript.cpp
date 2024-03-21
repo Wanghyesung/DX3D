@@ -6,6 +6,8 @@
 #include <Engine\CMonsterAttack.h>
 #include <Engine\CDemonHit.h>
 #include <Engine\CMonsterJump.h>
+#include <Engine\CDemonMove.h>
+#include <Engine\CDemonWait.h>
 CDemonScript::CDemonScript():
 	CMonsterScript(SCRIPT_TYPE::DEMONSCRIPT),
 	m_bJumpTrigger(false)
@@ -26,7 +28,7 @@ void CDemonScript::tick()
 	if (m_bJumpTrigger)
 	{
 		Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
-		Vec3 vForce = -vFront * 1000.f;
+		Vec3 vForce = -vFront * m_vJumpForce;
 
 		GetOwner()->PxRigidbody()->SetVelocity(vForce);
 	}
@@ -64,14 +66,14 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	CDemonIdle* pIdle = new CDemonIdle();
 	AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 119);
 
-	CMonsterMove* pMove = new CMonsterMove();
+	CDemonMove* pMove = new CDemonMove();
 	AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 121, 180);
 
 	CMonsterAttack* pAttack = new CMonsterAttack();
 	AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
 
-	//CMonsterJump* pJump = new CMonsterJump();
-	//AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 1686, 1920);
+	CMonsterJump* pJump = new CMonsterJump();
+	AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 1686, 1920);
 
 	CDemonHit* pHit = new CDemonHit();
 	AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527, 650);
@@ -93,11 +95,15 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 void CDemonScript::jump_start()
 {
 	m_bJumpTrigger = true;
+
+	m_vJumpForce = Vec3(0.f, 1000.f, 0.f);
 }
 
 void CDemonScript::jump_end()
 {
 	m_bJumpTrigger = false;
+
+	m_vJumpForce = Vec3::Zero;
 }
 
 void CDemonScript::set_attack()

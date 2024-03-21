@@ -117,9 +117,41 @@ void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLi
     // Spot Light 인 경우
     else
     {
-        // LightDir 과 Angle 값을 활용해서 SpotLight 구현해보기
+       //내 빛의 위치
+        float3 vLightViewPos = mul(float4(LightInfo.vWorldPos.xyz, 1.f), g_matView).xyz;
         
-        // 포인트 라이트랑 동일
+        //빛에서 내 픽셀로 가는 방향 벡터
+        float3 vDir = normalize(_vViewPos - vLightViewPos);
+        
+        //내 빛의 방향
+        vViewLightDir = normalize(mul(float4(normalize(LightInfo.vWorldDir.xyz), 0.f), g_matView)).xyz;
+        
+        //내 각도
+        float fDotCos = dot(vViewLightDir, vDir);
+        
+        //최대 각도 범위
+        float fCos = cos(LightInfo.Angle);
+        
+        if (fDotCos < fCos)
+        {
+            fLightPow = 0.f;
+        }
+        else
+        {
+            float fDist = distance(_vViewPos, vLightViewPos);
+            float fDistPow = saturate(1.f - (fDist / LightInfo.Radius));
+        
+        //반사광
+            float3 vViewReflect = normalize(vViewLightDir + 2.f * (dot(-vViewLightDir, _vViewNormal)) * _vViewNormal);
+            float3 vEye = normalize(_vViewPos);
+        
+         //viewspac에서 노말벡터와 광원의 방향을 내적 (램버트 코사인 법칙)
+            fLightPow = saturate(dot(_vViewNormal, -vViewLightDir)) * fDistPow;
+        
+         //반사광의 세기 구하기
+            fSpecPow = saturate(dot(vViewReflect, -vEye)) * fDistPow;
+            fSpecPow = pow(fSpecPow, 20);
+        }
     }
       
     // 결과 전달하기

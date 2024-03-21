@@ -124,10 +124,12 @@ void CCollider3D::EndOverlap(CCollider3D* _Other)
 
 void CCollider3D::SaveToLevelFile(FILE* _File)
 {
+
 }
 
 void CCollider3D::LoadFromLevelFile(FILE* _File)
 {
+
 }
 
 

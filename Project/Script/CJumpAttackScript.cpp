@@ -46,7 +46,6 @@ void CJumpAttackScript::check_bone_pos(CGameObject* _pMonster)
 	Vec3 vPos = matFinalPos.Translation();
 	vPos += m_vOffsetTransform;
 
-	//GetOwner()->PxRigidbody()->SetPxTransform(vPos);
 	m_pPlayer->PxRigidbody()->SetPxTransform(vPos);
 
 }
@@ -91,7 +90,8 @@ void CJumpAttackScript::BeginOverlap(CCollider3D* _Other)
 	{
 		m_pPlayer->GetScript<CPlayerScript>()->Chanage_AnimDT(2.f);
 
-		m_bBeginOn = true;// check_pos(_Other->GetOwner());
+		//m_bBeginOn = true;
+		check_pos(_Other->GetOwner());
 
 		if(m_bBeginOn)
 			ChanageState(pPlayer->GetFSM(), STATE_TYPE::JUMPEND);

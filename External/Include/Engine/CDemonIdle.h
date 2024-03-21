@@ -1,7 +1,7 @@
 #pragma once
 #include "CMonsterIdle.h"
 
-class CGameObject;
+
 class CDemonIdle : public CMonsterIdle
 {
 private:

@@ -287,6 +287,12 @@
     <ClInclude Include="CHitState.h">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
     </ClInclude>
+    <ClInclude Include="CDemonWait.h">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CDemonMove.h">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -568,6 +574,12 @@
     </ClCompile>
     <ClCompile Include="CHitState.cpp">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CDemonWait.cpp">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CDemonMove.cpp">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

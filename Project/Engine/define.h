@@ -297,6 +297,7 @@ enum class MONSTER_STATE_TYPE
 	ROLL,
 	ATTACK,
 	JUMP,
+	WAIT,
 	HIT,
 	END,
 };

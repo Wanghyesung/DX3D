@@ -4,7 +4,7 @@
 class CGameObject;
 class CMonsterMove : public CMonsterState
 {
-private:
+protected:
 	CGameObject* m_pTarget;
 
 	float m_fCheckLen;

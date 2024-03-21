@@ -50,6 +50,8 @@ void CreateTestLevel()
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Monster, (UINT)LAYER_TYPE::LandScape);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Stairs);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Obstacle);
+	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Monster, (UINT)LAYER_TYPE::Obstacle);
+
 
 	//return;
 
@@ -487,6 +489,7 @@ void CreateStage()
 	pPxColl_0->SetName(L"Coll_0");
 	pPxColl_0->AddComponent(new CTransform());
 	pPxColl_0->AddComponent(new CStairsScript);
+
 	CCollider3D* pCollider = new CCollider3D();
 	pCollider->SetOffsetScale(Vec3(230.f, 1.f, 1142.f));
 	pCollider->SetOffsetRot(Vec3(fRadian* 30.f, 0.f, 0.f));
@@ -495,8 +498,152 @@ void CreateStage()
 		Vec3::Right, 30.f, (int)LAYER_TYPE::Stairs, pPxColl_0);
 	SpawnGameObject(pPxColl_0, Vec3(2700.f, 290.f, 6874.f), (int)LAYER_TYPE::Stairs);
 
-	//2700 300 6874
-	//230, 1 1142
-	//30 0 0
 
+	CGameObject* pPxColl_1 = new CGameObject();
+	pPxColl_1->SetName(L"Coll_1");
+	pPxColl_1->AddComponent(new CTransform());
+	pPxColl_1->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(230.f, 1.f, 1142.f));
+	pCollider->SetOffsetRot(Vec3(-fRadian * 30.f, 0.f, 0.f));
+	pPxColl_1->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(2924.f, 808.f, 6929.f), Vec3(230.f, 1.f, 1142.f),
+		Vec3::Right, -30.f, (int)LAYER_TYPE::Stairs, pPxColl_1);
+	SpawnGameObject(pPxColl_1, Vec3(2924.f, 808.f, 6929.f), (int)LAYER_TYPE::Stairs);
+
+	
+	CGameObject* pPxColl_2 = new CGameObject();
+	pPxColl_2->SetName(L"Coll_2");
+	pPxColl_2->AddComponent(new CTransform());
+	pPxColl_2->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(200.f, 1.f, 880.f));
+	pPxColl_2->AddComponent(pCollider); //570
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(2913.f, 570.f, 6128.f), Vec3(200.f, 1.f, 880.f),
+		Vec3::Zero, 0.f, (int)LAYER_TYPE::Stairs, pPxColl_2);
+	SpawnGameObject(pPxColl_2, Vec3(2913.f, 570.f, 6128.f), (int)LAYER_TYPE::Stairs);
+
+	
+	CGameObject* pPxColl_3 = new CGameObject();
+	pPxColl_3->SetName(L"Coll_3");
+	pPxColl_3->AddComponent(new CTransform());
+	pPxColl_3->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(200.f, 1.f, 672.f));
+	pPxColl_3->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(2715.f, 570.f, 6041.f), Vec3(200.f, 1.f, 672.f),
+		Vec3::Zero, 0.f, (int)LAYER_TYPE::Stairs, pPxColl_3);
+	SpawnGameObject(pPxColl_3, Vec3(2715.f, 570.f, 6041.f), (int)LAYER_TYPE::Stairs);
+
+	CGameObject* pPxColl_4 = new CGameObject();
+	pPxColl_4->SetName(L"Coll_4");
+	pPxColl_4->AddComponent(new CTransform());
+	pPxColl_4->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(430.f, 1.f, 880.f));
+	pPxColl_4->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(3044.f, 1094.f, 7865.f), Vec3(430.f, 1.f, 880.f),
+		Vec3::Zero, 0.f, (int)LAYER_TYPE::Stairs, pPxColl_4);
+	SpawnGameObject(pPxColl_4, Vec3(3044.f, 1094.f, 7865.f), (int)LAYER_TYPE::Stairs);
+
+	CGameObject* pPxColl_5 = new CGameObject();
+	pPxColl_5->SetName(L"Coll_5");
+	pPxColl_5->AddComponent(new CTransform());
+	pPxColl_5->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(200.f, 1.f, 650.f));
+	pPxColl_5->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(3154.f, 1094.f, 7127.f), Vec3(200.f, 1.f, 650.f),
+		Vec3::Zero, 0.f, (int)LAYER_TYPE::Stairs, pPxColl_5);
+	SpawnGameObject(pPxColl_5, Vec3(3154.f, 1094.f, 7127.f), (int)LAYER_TYPE::Stairs);
+
+	CGameObject* pPxColl_6 = new CGameObject();
+	pPxColl_6->SetName(L"Coll_6");
+	pPxColl_6->AddComponent(new CTransform());
+	pPxColl_6->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(230.f, 1.f, 1500.f));
+	pCollider->SetOffsetRot(Vec3(fRadian * 30.f, 0.f, 0.f));
+	pPxColl_6->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(3130.f, 1370.f, 6280.f), Vec3(230.f, 1.f, 1500.f),
+		Vec3::Right, 30.f, (int)LAYER_TYPE::Stairs, pPxColl_6);
+	SpawnGameObject(pPxColl_6, Vec3(3130.f, 1370.f, 6280.f), (int)LAYER_TYPE::Stairs);
+
+	
+	CGameObject* pPxColl_7 = new CGameObject();
+	pPxColl_7->SetName(L"Coll_7");
+	pPxColl_7->AddComponent(new CTransform());
+	pPxColl_7->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(200.f, 1.f, 880.f));
+	pPxColl_7->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(3149.f, 1743.f, 5196.f), Vec3(200.f, 1.f, 880.f),
+		Vec3::Zero, 0.f, (int)LAYER_TYPE::Stairs, pPxColl_7);
+	SpawnGameObject(pPxColl_7, Vec3(3149.f, 1743.f, 5196.f), (int)LAYER_TYPE::Stairs);
+
+	//3130 2036 4653
+	CGameObject* pPxColl_8 = new CGameObject();
+	pPxColl_8->SetName(L"Coll_8");
+	pPxColl_8->AddComponent(new CTransform());
+	pPxColl_8->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(230.f, 1.f, 1500.f));
+	pCollider->SetOffsetRot(Vec3(fRadian * 30.f, 0.f, 0.f));
+	pPxColl_8->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(3130.f, 2036.f, 4653.f), Vec3(230.f, 1.f, 1500.f),
+		Vec3::Right, 30.f, (int)LAYER_TYPE::Stairs, pPxColl_8);
+	SpawnGameObject(pPxColl_8, Vec3(3130.f, 2036.f, 4653.f), (int)LAYER_TYPE::Stairs);
+
+	//3150 2411 3333
+	//200 1 1340
+	CGameObject* pPxColl_9 = new CGameObject();
+	pPxColl_9->SetName(L"Coll_9");
+	pPxColl_9->AddComponent(new CTransform());
+	pPxColl_9->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(200.f, 1.f, 1340.f));
+	pPxColl_9->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(3150.f, 2411.f, 3333.f), Vec3(200.f, 1.f, 1340.f),
+		Vec3::Zero, 0.f, (int)LAYER_TYPE::Stairs, pPxColl_9);
+	SpawnGameObject(pPxColl_9, Vec3(3150.f, 2411.f, 3333.f), (int)LAYER_TYPE::Stairs);
+
+	//1738 2411 2450
+	//3000 1 1215
+	CGameObject* pPxColl_10 = new CGameObject();
+	pPxColl_10->SetName(L"Coll_10");
+	pPxColl_10->AddComponent(new CTransform());
+	pPxColl_10->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(3000.f, 1.f, 1215.f));
+	pPxColl_10->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(1738.f, 2411.f, 2450.f), Vec3(3000.f, 1.f, 1215.f),
+		Vec3::Zero, 0.f, (int)LAYER_TYPE::Stairs, pPxColl_10);
+	SpawnGameObject(pPxColl_10, Vec3(1738.f, 2411.f, 2450.f), (int)LAYER_TYPE::Stairs);
+
+	//1740 2410 3036
+	//2650 1 200
+	//90
+	CGameObject* pPxColl_11 = new CGameObject();
+	pPxColl_11->SetName(L"Coll_11");
+	pPxColl_11->AddComponent(new CTransform());
+	pPxColl_11->AddComponent(new CStairsScript);
+
+	pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(Vec3(2650.f, 1.f, 200.f));
+	pCollider->SetOffsetRot(Vec3(fRadian * 90.f, 0.f, 0.f));
+
+	pPxColl_11->AddComponent(pCollider);
+	CPhysxMgr::GetInst()->AddActorStatic(Vec3(1740.f, 2410.f, 3036.f), Vec3(2650.f, 1.f, 200.f),
+		Vec3::Right, 90.f, (int)LAYER_TYPE::Stairs, pPxColl_11);
+	SpawnGameObject(pPxColl_11, Vec3(1740.f, 2410.f, 3036.f), (int)LAYER_TYPE::Stairs);
 }

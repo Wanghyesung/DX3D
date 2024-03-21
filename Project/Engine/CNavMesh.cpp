@@ -136,7 +136,10 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 
 	Vec3 vDir;
 	if (vecWay.size() <= 1)
+	{
 		vDir = Vec3::Zero;
+		m_bActive = false;
+	}
 	else
 		vDir = Vec3(px, 0.f, pz) - Vec3(vecWay[0].x, 0.f, vecWay[0].z);
 
@@ -264,9 +267,14 @@ void CNavMesh::tracking_player()
 	//vRatio = vMonsterPos / m_iDivideX;
 	vRatio.x = vMonsterPos.x / m_vOwnerScale.x;
 	vRatio.z = vMonsterPos.z / m_vOwnerScale.z;
-	//m_vecMap[(int)vRatio.x][(int)vRatio.z] = 6;//시작 위치는 6	
+	\
 	Vec3 vStartPos = Vec3((int)vRatio.x, 0.f, (int)vRatio.z);
 
+	//여기서 플레이어의 위치가 내가 갈 수 없는 곳에 걸리면 벡터의 차로 방향을 잡음
+	if (m_vecClose[vStartPos.z][vStartPos.x] != 0)
+	{
+		int a = 10;
+	}
 
 	pair<int, int> tStart = make_pair(vStartPos.z, vStartPos.x);
 	pair<int, int> tGoal = make_pair(vGoalPos.z, vGoalPos.x);
