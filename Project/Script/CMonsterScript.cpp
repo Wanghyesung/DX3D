@@ -52,7 +52,6 @@ void CMonsterScript::OnOverlap(CCollider3D* _Other)
 	CAttackScript* pAttack = pObj->GetScript<CAttackScript>();
 	if (pAttack)
 	{
-
 		bool bOn = pAttack->IsAttackOn(GetOwner()->GetID());
 		if (bOn)
 		{
@@ -181,7 +180,7 @@ void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRo
 
 	//고정 데미지
 	tAttackInfo.tAttackValue.bDown = false;
-	tAttackInfo.tAttackValue.fAttRcnt = 400.f;
+	tAttackInfo.tAttackValue.fAttRcnt = 200.f;
 	tAttackInfo.tAttackValue.fDamage = 10.f;
 	tAttackInfo.tAttackValue.fAddForceTime = 0.7f;
 

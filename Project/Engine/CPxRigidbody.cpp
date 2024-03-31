@@ -34,23 +34,19 @@ void CPxRigidbody::finaltick()
 	PxVec3 vFoce = PxVec3(m_vForce.x, m_vForce.y, m_vForce.z);
 	PxVec3 Vvel = PxVec3(m_vVelocity.x, m_vVelocity.y, m_vVelocity.z);
 
-    //if(Vvel.isZero())
-    //    tick_force(vFoce);
-    //else
-    //    tick_velocity(Vvel);
-    //누적해서 들어갈지
    if(!m_bGround)
       tick_force(vFoce);
    
    else
       tick_velocity(Vvel);
     
+
     PxTransform transform = m_pRigidbody->getGlobalPose();
     //m_pRigidbody->setGlobalPose(transform);
     
     Vec3 vPos = Vec3(transform.p.x, transform.p.y, transform.p.z);
     pTrasnform->SetRelativePos(vPos + m_vTransformOffset);
-   
+
     m_vForce = Vec3::Zero;
     m_vVelocity = Vec3::Zero;
 }
@@ -75,6 +71,11 @@ void CPxRigidbody::SetGround(bool _bGround, bool _bBasicGravity)
 {
     m_bGround = _bGround; 
     m_bBasicGravity = _bBasicGravity;
+
+    if (m_bGround)
+        m_vAddGravityForce = PxVec3(0.f, 0.f, 0.f);
+    else
+        m_vAddGravityForce = PxVec3(0.f, 9.6f, 0.f);
 
     m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, _bGround);
 }
@@ -180,7 +181,8 @@ void CPxRigidbody::friction_force()
 
 void CPxRigidbody::tick_force(const PxVec3& _vFoce)
 {
-    m_pRigidbody->addForce(_vFoce, m_eForceMode);
+    m_vAddGravityForce *= DT;
+    m_pRigidbody->addForce(_vFoce + m_vAddGravityForce, m_eForceMode);
 }
 
 void CPxRigidbody::tick_velocity(const PxVec3& _vVel)
@@ -189,6 +191,7 @@ void CPxRigidbody::tick_velocity(const PxVec3& _vVel)
     if (m_bBasicGravity)
     {
         PxVec3 vBasicGravity = CPhysxMgr::GetInst()->GetGravity();
+
         vFinalVel = _vVel + vBasicGravity;
     }
 

@@ -161,7 +161,7 @@ void CPlayerScript::Initialize()
 			pObj->Animator3D()->CreateAnimationF(L"Attack7", 1290, 1363);
 
 			pObj->Animator3D()->CreateAnimationF(L"Hit", 1465, 1483);
-			pObj->Animator3D()->CreateAnimationF(L"Hit_", 1477, 1483, true);//반대로
+			pObj->Animator3D()->CreateAnimationF(L"Hit_", 1475, 1483, true);//반대로
 
 			pObj->Animator3D()->CreateAnimationF(L"Dead", 1465, 1685);
 
@@ -234,7 +234,7 @@ void CPlayerScript::set_attack()
 	attack0.vAttackScale = Vec3(150.f, 150.f, 150.f);
 	attack0.tAttackValue.iMatCount = 2;
 	attack0.tAttackValue.fAttackTime = 0.5f;
-	attack0.tAttackValue.fAttRcnt = 100.f;
+	attack0.tAttackValue.fAttRcnt = 120.f;
 
 	CAttackScript* pAttackScript = new CAttackScript();
 	pAttackScript->SetAttackValue(attack0.tAttackValue);
@@ -251,7 +251,7 @@ void CPlayerScript::set_attack()
 	attack1.fOffsetPos = 60.f;
 	attack1.vAttackScale = Vec3(300.f, 300.f, 300.f);
 	attack1.tAttackValue.iMatCount = 5;
-	attack1.tAttackValue.fAttRcnt = 0.f;
+	attack1.tAttackValue.fAttRcnt = 200.f;
 	attack1.tAttackValue.fAttackTime = 0.5f;
 	attack1.tAttackValue.bDown = true;
 

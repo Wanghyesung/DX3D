@@ -172,7 +172,7 @@ void CreateTestLevel()
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pAritorias->AddComponent(pRigi);
-	pRigi->init(Vec3(1000.f, 820.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
+	pRigi->init(Vec3(1000.f, 700.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
 	pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
 
 	CCollider3D* pCollider = new CCollider3D();
@@ -189,7 +189,7 @@ void CreateTestLevel()
 	//pAritorias->MotionBlur()->Initialize();
 	
 	SpawnGameObject(pAritorias, Vec3(1000.f, 700.f, 200.f), (int)LAYER_TYPE::Player);
-	
+	//774 999
 
 	CreateMonster();
 	
@@ -295,7 +295,7 @@ void CreateMonster()
 	//pMonster->AddComponent(pRigi);
 	//pRigi->init(Vec3(2000.f, 120.f, 2000.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
 	//pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
-	
+	//
 	//
 	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
 	//pMonster->Collider3D()->SetAbsolute(true);
@@ -347,18 +347,21 @@ void CreateMonster()
 	
 	// -90, 280 , 100
 	// -15.f, 162.f, 173.f
+
 	CGameObject* pBoss = new CGameObject();
 	pBoss->SetName(L"Taurus_Demon_Fianl");
-
-
+	
+	
 	pBoss->AddComponent(new CTransform());
 	pBoss->AddComponent(new CCollider3D());
-	pBoss->AddComponent(new CNavMesh);
+
 	pBoss->Transform()->SetRelativeScale(Vec3(1.5f, 1.5f, 1.5f));
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pBoss->AddComponent(pRigi);
-
-	pRigi->init(Vec3(1500.f, 120.f, 1500.f), Vec3(300.f, 600.f, 300.f), (int)LAYER_TYPE::Monster, pBoss);
+	//
+	//1700 300 6100
+	//1254 1292
+	pRigi->init(Vec3(1254.f, 120.f, 1292.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
 	pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
 	
 	pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
@@ -368,9 +371,16 @@ void CreateMonster()
 	pBoss->AddComponent(pDemonScript);
 	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
 	
+	vector<Vec3> worldVertices{};
+	vector<int> worldFaces{ };
+	CRDNavMesh* pNav = new CRDNavMesh();
+	pNav->CreatePlane({ 0,0,0 }, { 18000,0,18000 }, worldVertices, worldFaces);
+	pNav->BuildField(worldVertices, worldFaces);
+	pBoss->AddComponent(pNav);
+	
 	CGameObject* pHand = pBoss->GetChild().at(1);
 	pWeapon->Equip()->SetChar(pHand);
-	SpawnGameObject(pBoss, Vec3(1000.f, 0.f, 1000.f), (int)LAYER_TYPE::Monster);
+	SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
 
 	
 	//pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
@@ -412,6 +422,9 @@ void CreateLandScape()
 	pLandScape->LandScape()->SetFrustumCheck(false);
 	//pLandScape->LandScape()->SetHeightMap(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\HeightMap_01.jpg"));
 	
+	//CRDNavMesh* pNavMesh = new CRDNavMesh();
+	//pNavMesh->NavMeshBuild();
+
 	CPhysxMgr::GetInst()->AddActorStatic(Vec3(9000.f, 0.f, 9000.f), Vec3(18000.f, 1.f, 18000.f), Vec3::Zero, 0.f,
 		(int)LAYER_TYPE::LandScape, pLandScape);
 
@@ -470,6 +483,7 @@ void CreateLandScape()
 	//	(int)LAYER_TYPE::Obstacle, pPlain);
 
 	SpawnGameObject(pPlain, Vec3(1000.f, 0, 1000.f), (int)LAYER_TYPE::Obstacle);
+
 	// 0 200 0
 	//300 350 300
 
@@ -646,4 +660,19 @@ void CreateStage()
 	CPhysxMgr::GetInst()->AddActorStatic(Vec3(1740.f, 2410.f, 3036.f), Vec3(2650.f, 1.f, 200.f),
 		Vec3::Right, 90.f, (int)LAYER_TYPE::Stairs, pPxColl_11);
 	SpawnGameObject(pPxColl_11, Vec3(1740.f, 2410.f, 3036.f), (int)LAYER_TYPE::Stairs);
+
+
+	//±âµÕ
+	//CGameObject* Pillar = new CGameObject();
+	//Pillar->SetName(L"Pillar_1");
+	//Pillar->AddComponent(new CTransform());
+	//Pillar->AddComponent(new CStairsScript);
+	//
+	//pCollider = new CCollider3D();
+	//pCollider->SetOffsetScale(Vec3(2650.f, 1.f, 200.f));
+	//
+	//Pillar->AddComponent(pCollider);
+	//CPhysxMgr::GetInst()->AddActorStatic(Vec3(1740.f, 500.f, 6000.f), Vec3(2650.f, 1.f, 200.f),
+	//	Vec3::Zero, 0.f, (int)LAYER_TYPE::Obstacle, Pillar);
+	//SpawnGameObject(Pillar, Vec3(1740.f, 500.f, 6000.f), (int)LAYER_TYPE::Obstacle);
 }

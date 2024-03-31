@@ -2,7 +2,7 @@
 #include "CJumpAttackScript.h"
 #include "CMonsterScript.h"
 #include "CPlayerScript.h"
-
+#include "CDemonScript.h"
 
 #include <Engine\CAnimator3D.h>
 #include <Engine\CPxRigidbody.h>
@@ -51,6 +51,9 @@ void CJumpAttackScript::check_bone_pos(CGameObject* _pMonster)
 }
 bool CJumpAttackScript::check_pos(CGameObject* _pMonster)
 {
+	if (!_pMonster->GetScript<CDemonScript>())
+		return false;
+
 	Vec3 vPlayerPos = m_pPlayer->PxRigidbody()->GetPxPosition();
 	Vec3 vMonsterPos = _pMonster->PxRigidbody()->GetPxPosition();
 
@@ -91,10 +94,12 @@ void CJumpAttackScript::BeginOverlap(CCollider3D* _Other)
 		m_pPlayer->GetScript<CPlayerScript>()->Chanage_AnimDT(2.f);
 
 		//m_bBeginOn = true;
-		check_pos(_Other->GetOwner());
+		m_bBeginOn = check_pos(_Other->GetOwner());
 
-		if(m_bBeginOn)
+		if (m_bBeginOn)
+		{
 			ChanageState(pPlayer->GetFSM(), STATE_TYPE::JUMPEND);
+		}
 	}
 }
 

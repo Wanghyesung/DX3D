@@ -65,6 +65,11 @@ void CAttackState::final_tick()
 void CAttackState::Exit()
 {
 	//GetOwner()->Rigidbody()->SetAcumulate(false);
+	if (m_pCurGameObj)
+	{
+		erase_attack();
+	}
+
 	m_fCurMoveTime = 0.f;
 	m_iAttackCount = 0;
 }
@@ -105,38 +110,14 @@ void CAttackState::check_event()
 	{
 		m_iAttackCount = 1;
 
-		m_pCurGameObj = m_vecAttackObj[m_tCurAttack.iAttackNum].front();
-		m_vecAttackObj[m_tCurAttack.iAttackNum].pop();
-
-		//중심은 물체의 충돌체 위치를 중심으로 잡음 
-		Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
-		Vec3 vDir = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
-		Vec3 vOffsetPos = -vDir * m_tCurAttack.fOffsetPos;
-		vPos += vOffsetPos;
-
-		//rotate는 collider에서 처리를 하지않음
-		Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();
-		vRot.y += m_tCurAttack.fRotate;
-		PxQuat yRotation(vRot.y, PxVec3(0.0f, 1.0f, 0.0f));
-
-		//여기에 충돌체 위치랑 회전 rigidbody에 넣기
-		m_pCurGameObj->PxRigidbody()->SetPxRotate(yRotation);
-		m_pCurGameObj->PxRigidbody()->SetPxTransform(vPos);
-
-		//spawn
-		SpawnGameObject(m_pCurGameObj, vPos, (int)LAYER_TYPE::Attack);
+		spawn_attack();
 	}
 
 	else if (m_iAttackCount == 1 && m_tCurAttack.iEndFrame <= iCurFrame)
 	{
 		m_iAttackCount = 2;
 
-		EraseObject(m_pCurGameObj, (int)LAYER_TYPE::Attack);
-		//잠시만 테스트용 코드 -> 피직스 물체는 사라지지 않음 계속 충돌이 발생함
-		m_pCurGameObj->PxRigidbody()->SetPxTransform(Vec3(-2000.f, -2000.f, -2000.f));
-
-		add_objpull(m_tCurAttack.iAttackNum, m_pCurGameObj);
-		m_pCurGameObj = nullptr;
+		erase_attack();
 	}
 }
 
@@ -168,6 +149,40 @@ void CAttackState::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj)
 	pRigid->init(Vec3(-2000.f,-2000.f,-2000.f), _tAttackInfo.vAttackScale, (int)LAYER_TYPE::Attack, _pAttackObj);
 	pRigid->SetGround(true,false); //땅상태 , 중력 안받음 
 	pRigid->SetPass(true); // 충돌해도 통과되게
+}
+
+void CAttackState::erase_attack()
+{
+	EraseObject(m_pCurGameObj, (int)LAYER_TYPE::Attack);
+	//잠시만 테스트용 코드 -> 피직스 물체는 사라지지 않음 계속 충돌이 발생함
+	m_pCurGameObj->PxRigidbody()->SetPxTransform(Vec3(-2000.f, -2000.f, -2000.f));
+
+	add_objpull(m_tCurAttack.iAttackNum, m_pCurGameObj);
+	m_pCurGameObj = nullptr;
+}
+
+void CAttackState::spawn_attack()
+{
+	m_pCurGameObj = m_vecAttackObj[m_tCurAttack.iAttackNum].front();
+	m_vecAttackObj[m_tCurAttack.iAttackNum].pop();
+
+	//중심은 물체의 충돌체 위치를 중심으로 잡음 
+	Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
+	Vec3 vDir = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+	Vec3 vOffsetPos = -vDir * m_tCurAttack.fOffsetPos;
+	vPos += vOffsetPos;
+
+	//rotate는 collider에서 처리를 하지않음
+	Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();
+	vRot.y += m_tCurAttack.fRotate;
+	PxQuat yRotation(vRot.y, PxVec3(0.0f, 1.0f, 0.0f));
+
+	//여기에 충돌체 위치랑 회전 rigidbody에 넣기
+	m_pCurGameObj->PxRigidbody()->SetPxRotate(yRotation);
+	m_pCurGameObj->PxRigidbody()->SetPxTransform(vPos);
+
+	//spawn
+	SpawnGameObject(m_pCurGameObj, vPos, (int)LAYER_TYPE::Attack);
 }
 
 

@@ -190,6 +190,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CDemonHit.h" />
     <ClInclude Include="CDemonHold.h" />
     <ClInclude Include="CDemonIdle.h" />
+    <ClInclude Include="CDemonJump.h" />
     <ClInclude Include="CDemonMove.h" />
     <ClInclude Include="CDemonWait.h" />
     <ClInclude Include="CDevice.h" />
@@ -205,6 +206,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CGraphicsShader.h" />
     <ClInclude Include="CHeightMapShader.h" />
     <ClInclude Include="CHitState.h" />
+    <ClInclude Include="ChunkyTriMesh.h" />
     <ClInclude Include="CIdleState.h" />
     <ClInclude Include="CInstancingBuffer.h" />
     <ClInclude Include="CJumpEnd.h" />
@@ -230,6 +232,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CMonsterState.h" />
     <ClInclude Include="CMotionBlur.h" />
     <ClInclude Include="CMRT.h" />
+    <ClInclude Include="CNavAgent.h" />
     <ClInclude Include="CNavMesh.h" />
     <ClInclude Include="components.h" />
     <ClInclude Include="CParticleSystem.h" />
@@ -240,6 +243,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CPxCollisionEvent.h" />
     <ClInclude Include="CPxRigidbody.h" />
     <ClInclude Include="CRaycastShader.h" />
+    <ClInclude Include="CRDNavMesh.h" />
     <ClInclude Include="CRenderComponent.h" />
     <ClInclude Include="CRenderMgr.h" />
     <ClInclude Include="CRes.h" />
@@ -262,11 +266,31 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CWalkState.h" />
     <ClInclude Include="CWeightMapShader.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="DetourAlloc.h" />
+    <ClInclude Include="DetourAssert.h" />
+    <ClInclude Include="DetourCommon.h" />
+    <ClInclude Include="DetourCrowd.h" />
+    <ClInclude Include="DetourLocalBoundary.h" />
+    <ClInclude Include="DetourMath.h" />
+    <ClInclude Include="DetourNavMesh.h" />
+    <ClInclude Include="DetourNavMeshBuilder.h" />
+    <ClInclude Include="DetourNavMeshQuery.h" />
+    <ClInclude Include="DetourNode.h" />
+    <ClInclude Include="DetourObstacleAvoidance.h" />
+    <ClInclude Include="DetourPathCorridor.h" />
+    <ClInclude Include="DetourPathQueue.h" />
+    <ClInclude Include="DetourProximityGrid.h" />
+    <ClInclude Include="DetourStatus.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="func.h" />
     <ClInclude Include="global.h" />
+    <ClInclude Include="InputGeom.h" />
+    <ClInclude Include="MeshLoaderObj.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ptr.h" />
+    <ClInclude Include="Recast.h" />
+    <ClInclude Include="RecastAlloc.h" />
+    <ClInclude Include="RecastAssert.h" />
     <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="struct.h" />
   </ItemGroup>
@@ -290,6 +314,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CDemonHit.cpp" />
     <ClCompile Include="CDemonHold.cpp" />
     <ClCompile Include="CDemonIdle.cpp" />
+    <ClCompile Include="CDemonJump.cpp" />
     <ClCompile Include="CDemonMove.cpp" />
     <ClCompile Include="CDemonWait.cpp" />
     <ClCompile Include="CDevice.cpp" />
@@ -308,6 +333,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CGraphicsShader.cpp" />
     <ClCompile Include="CHeightMapShader.cpp" />
     <ClCompile Include="CHitState.cpp" />
+    <ClCompile Include="ChunkyTriMesh.cpp" />
     <ClCompile Include="CIdleState.cpp" />
     <ClCompile Include="CInstancingBuffer.cpp" />
     <ClCompile Include="CJumpEnd.cpp" />
@@ -334,6 +360,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CMonsterState.cpp" />
     <ClCompile Include="CMotionBlur.cpp" />
     <ClCompile Include="CMRT.cpp" />
+    <ClCompile Include="CNavAgent.cpp" />
     <ClCompile Include="CNavMesh.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />
     <ClCompile Include="CParticleUpdateShader.cpp" />
@@ -343,6 +370,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CPxCollisionEvent.cpp" />
     <ClCompile Include="CPxRigidbody.cpp" />
     <ClCompile Include="CRaycastShader.cpp" />
+    <ClCompile Include="CRDNavMesh.cpp" />
     <ClCompile Include="CRenderComponent.cpp" />
     <ClCompile Include="CRenderMgr.cpp" />
     <ClCompile Include="CRenderMgr_init.cpp" />
@@ -365,15 +393,41 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CTransform.cpp" />
     <ClCompile Include="CWalkState.cpp" />
     <ClCompile Include="CWeightMapShader.cpp" />
+    <ClCompile Include="DetourAlloc.cpp" />
+    <ClCompile Include="DetourAssert.cpp" />
+    <ClCompile Include="DetourCommon.cpp" />
+    <ClCompile Include="DetourCrowd.cpp" />
+    <ClCompile Include="DetourLocalBoundary.cpp" />
+    <ClCompile Include="DetourNavMesh.cpp" />
+    <ClCompile Include="DetourNavMeshBuilder.cpp" />
+    <ClCompile Include="DetourNavMeshQuery.cpp" />
+    <ClCompile Include="DetourNode.cpp" />
+    <ClCompile Include="DetourObstacleAvoidance.cpp" />
+    <ClCompile Include="DetourPathCorridor.cpp" />
+    <ClCompile Include="DetourPathQueue.cpp" />
+    <ClCompile Include="DetourProximityGrid.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="extern.cpp" />
     <ClCompile Include="func.cpp" />
+    <ClCompile Include="InputGeom.cpp" />
+    <ClCompile Include="MeshLoaderObj.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Recast.cpp" />
+    <ClCompile Include="RecastAlloc.cpp" />
+    <ClCompile Include="RecastArea.cpp" />
+    <ClCompile Include="RecastAssert.cpp" />
+    <ClCompile Include="RecastContour.cpp" />
+    <ClCompile Include="RecastFilter.cpp" />
+    <ClCompile Include="RecastLayers.cpp" />
+    <ClCompile Include="RecastMesh.cpp" />
+    <ClCompile Include="RecastMeshDetail.cpp" />
+    <ClCompile Include="RecastRasterization.cpp" />
+    <ClCompile Include="RecastRegion.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
   </ItemGroup>
   <ItemGroup>

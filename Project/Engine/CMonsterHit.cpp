@@ -5,6 +5,8 @@
 #include "CRigidbody.h"
 #include "CTransform.h"
 #include "CPxRigidbody.h"
+#include "CTimeMgr.h"
+#include "CFontMgr.h"
 CMonsterHit::CMonsterHit():
 	m_tHitInfo{}
 {
@@ -22,21 +24,24 @@ void CMonsterHit::final_tick()
 	CGameObject* pObj = GetOwner()->GetChild().at(0);
 	bool bCompplete = pObj->Animator3D()->GetCurAnim()->IsComplete();
 
-	//if (bCompplete)
-	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
+	if (bCompplete)
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
 	
-	//else
-	//{
-	//	CPxRigidbody* pRigidbody = GetOwner()->PxRigidbody();
-	//
-	//	Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
-	//
-	//	Vec3 vDir = vFront * m_tHitInfo.fHitRcnt;
-	//
-	//	pRigidbody->SetVelocity(vDir);
-	//}
+	m_fCurFoceTime += DT;
 
-	//¿©±â¶û player transformoffset , begin ºÎºÐ 
+	if (m_fCurFoceTime <= m_tHitInfo.fHitTime)
+	{
+		CGameObject* pObj = GetOwner();
+
+		Vec3 vFront = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
+		vFront.y = 0.f;
+		Vec3 vFoce = vFront * m_tHitInfo.fHitRcnt;
+		float fRatio = (m_tHitInfo.fHitTime / m_fCurFoceTime);
+
+		m_vFinalFoce = vFoce * fRatio;
+
+		GetOwner()->PxRigidbody()->AddVelocity(m_vFinalFoce);
+	}
 }
 
 void CMonsterHit::Exit()
@@ -54,4 +59,6 @@ void CMonsterHit::Enter()
 	{
 		Chanage_Anim(GetName(), true);
 	}
+
+	//CFontMgr::GetInst()->DrawFont(L"12", 10, 10, 100, 20);
 }

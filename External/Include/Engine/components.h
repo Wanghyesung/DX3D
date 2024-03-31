@@ -15,6 +15,7 @@
 #include "CMotionBlur.h"
 #include "CLandScape.h"
 #include "CNavMesh.h"
+#include "CRDNavMesh.h"
 #include "CPxRigidbody.h"
 #include "CEquip.h"
 

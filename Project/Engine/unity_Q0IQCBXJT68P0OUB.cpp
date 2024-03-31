@@ -1,8 +1,5 @@
 #include "pch.h"
 
-#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CDemonMove.cpp"
-
-
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CDemonWait.cpp"
 
 
@@ -42,6 +39,9 @@
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CHitState.cpp"
 
 
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\ChunkyTriMesh.cpp"
+
+
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CIdleState.cpp"
 
 
@@ -55,4 +55,10 @@
 
 
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CJumpState.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CKeyMgr.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CLandScape.cpp"
 

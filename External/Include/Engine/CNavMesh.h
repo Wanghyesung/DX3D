@@ -21,6 +21,8 @@ private:
 
 	Vec3 m_vOwnerScale; //몬스터 크기만큼 맵 나누기
 	Vec3 m_vLandScapeLen;//내 맵 전체 길이
+
+	Vec3 m_vDivede;
 	int  m_iDivideX; //맵 전체 수
 	int  m_iDivideZ;
 
@@ -33,6 +35,7 @@ private:
 private:
 	//void init_target(int _ID);
 	void astar(pair<int, int> _tStart, pair<int, int> _tGoal);
+	bool aabb(const Vec3& _vGoalNode, const Vec3& _vCurNode);
 
 	void init_map();
 	void init_closemap();

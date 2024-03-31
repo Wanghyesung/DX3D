@@ -8,6 +8,8 @@
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "CCollider3D.h"
+#include "CFSM.h"
+#include "CJumpingState.h"
 CJumpState::CJumpState() :
 	m_iJumpFrame(938),
 	m_iEndFrame(953),
@@ -95,12 +97,16 @@ void CJumpState::addForce(UINT _iFrame)
 	//¾Æ·¡·Î
 	else
 	{
+		Vec3 vForce = vFinalVel + -m_vJumpVel * 2.8f;
+
 		if (!check_pos())
-			GetOwner()->PxRigidbody()->AddForce(vFinalVel + -m_vJumpVel * 2.8f);
+			GetOwner()->PxRigidbody()->AddForce(vForce);
 
 		if (_iFrame >= m_iEndFrame)
 		{
 			ChanageState(GetFSM(), STATE_TYPE::JUMPING);
+			CJumpingState* pJumping = GetFSM()->GetState<CJumpingState>();
+			pJumping->SetFinalFoce(vForce);
 			return;
 		}
 	}

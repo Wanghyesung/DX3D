@@ -52,6 +52,13 @@ void CStairsScript::OnOverlap(CCollider3D* _Other)
 
 void CStairsScript::EndOverlap(CCollider3D* _Other)
 {
+	CGameObject* pObj = _Other->GetOwner();
+
+	CPxRigidbody* pRigid = pObj->PxRigidbody();
+	if (pRigid)
+	{
+		pObj->PxRigidbody()->SetGround(false);
+	}
 }
 
 void CStairsScript::Initialize(const wstring& _strFbxName)

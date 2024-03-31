@@ -44,15 +44,15 @@ void CDemonIdle::check_player()
 	float fCheckLen = GetCheckLen();
 	float fStopLen = GetStopLen();
 
-	//if (fLen <= fCheckLen && fStopLen <= fLen)
-	//{
-	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
-	//}
+	if (fLen <= fCheckLen && fStopLen <= fLen)
+	{
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
+	}
 
 	if (fStopLen > fLen)
 	{
 		//각도 계산 캐릭터가 위에 있는지
-		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);//wait
 	}
 }
 

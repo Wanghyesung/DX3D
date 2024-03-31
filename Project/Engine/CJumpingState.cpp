@@ -53,6 +53,8 @@ void CJumpingState::Enter()
 	{
 		Chanage_Anim(L"Jumping", false);
 	}
+
+	GetOwner()->PxRigidbody()->AddForce(m_vFinalForce);
 }
 
 void CJumpingState::Exit()
@@ -60,6 +62,7 @@ void CJumpingState::Exit()
 	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eACCELERATION); //기본 이동
 	m_bJumpAttack = false;
 }
+
 
 void CJumpingState::EraseAttack()
 {

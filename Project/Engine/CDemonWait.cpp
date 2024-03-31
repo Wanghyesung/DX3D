@@ -23,15 +23,15 @@ void CDemonWait::final_tick()
 {
 	m_fCurTime += DT;
 
-	if (m_fCurTime >= m_fWaitTime)
-	{
-		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::JUMP);
-	}
-
-	if (!check_len())
-	{
-		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
-	}
+	//if (m_fCurTime >= m_fWaitTime)
+	//{
+	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::JUMP);
+	//}
+	//
+	//if (!check_len())
+	//{
+	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
+	//}
 
 	rotate();
 
@@ -48,7 +48,7 @@ void CDemonWait::Enter()
 
 	m_fCurTime = 0.f;
 	m_pTarget = 
-		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Player)->GetObjects().at(0);
+		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Player)->GetParentObject().at(0);
 }
 
 void CDemonWait::rotate()
@@ -83,6 +83,7 @@ void CDemonWait::rotate()
 
 	PxQuat yRotation(vFinalRot.y, PxVec3(0.0f, 1.0f, 0.0f));
 	GetOwner()->PxRigidbody()->SetPxRotate(yRotation);
+	GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 }
 
 bool CDemonWait::check_len()

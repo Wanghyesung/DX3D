@@ -1,11 +1,5 @@
 #include "pch.h"
 
-#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CKeyMgr.cpp"
-
-
-#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CLandScape.cpp"
-
-
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CLandScape_init.cpp"
 
 
@@ -55,4 +49,16 @@
 
 
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CMonsterState.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CMotionBlur.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CMRT.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CNavAgent.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CNavMesh.cpp"
 

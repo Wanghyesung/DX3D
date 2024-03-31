@@ -21,9 +21,9 @@ private:
 	Vec3 m_vForce;
 
 	Vec3 m_vPxScale;
-	
 	Vec3 m_vTransformOffset;//실제 충돌에 영향을 주는 PXTransform과 그릴 위치를 나타내는 transform으로 구분
 
+	PxVec3 m_vAddGravityForce;//땅에서 떨어졌을때 중력 가속도 영향을 받게
 
 	float m_fMaxVelocity;
 	

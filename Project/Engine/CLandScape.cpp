@@ -67,6 +67,7 @@ void CLandScape::finaltick()
 			m_pCSHeightMap->SetBrushScale(m_vBrushScale);   // 브러쉬 크기
 			m_pCSHeightMap->SetHeightMap(m_HeightMap);
 			m_pCSHeightMap->Execute();
+
 		}
 		else if (LANDSCAPE_MOD::SPLAT == m_eMod)
 		{

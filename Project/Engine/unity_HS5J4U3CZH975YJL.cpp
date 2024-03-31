@@ -56,3 +56,9 @@
 
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CDemonIdle.cpp"
 
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CDemonJump.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CDemonMove.cpp"
+

@@ -209,7 +209,7 @@
       <Filter>Source\07. Resource\InstancingBuffer</Filter>
     </ClInclude>
     <ClInclude Include="CNavMesh.h">
-      <Filter>Source\06. Component\11. NavMesh</Filter>
+      <Filter>Source\06. Component\11.NavMesh</Filter>
     </ClInclude>
     <ClInclude Include="CAttackState.h">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
@@ -292,6 +292,78 @@
     </ClInclude>
     <ClInclude Include="CDemonMove.h">
       <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CDemonJump.h">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourAlloc.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourAssert.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourCommon.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourMath.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourNavMesh.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourNavMeshBuilder.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourNavMeshQuery.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourNode.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourStatus.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="Recast.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="RecastAlloc.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="RecastAssert.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="CRDNavMesh.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourCrowd.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourLocalBoundary.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourObstacleAvoidance.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourPathCorridor.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourPathQueue.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourProximityGrid.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="InputGeom.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkyTriMesh.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoaderObj.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="CNavAgent.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -497,7 +569,7 @@
       <Filter>Source\07. Resource\InstancingBuffer</Filter>
     </ClCompile>
     <ClCompile Include="CNavMesh.cpp">
-      <Filter>Source\06. Component\11. NavMesh</Filter>
+      <Filter>Source\06. Component\11.NavMesh</Filter>
     </ClCompile>
     <ClCompile Include="CAttackState.cpp">
       <Filter>Source\10. FSM\PlayerFSM</Filter>
@@ -580,6 +652,96 @@
     </ClCompile>
     <ClCompile Include="CDemonMove.cpp">
       <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CDemonJump.cpp">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourAlloc.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourAssert.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourCommon.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourNavMesh.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourNavMeshBuilder.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourNavMeshQuery.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourNode.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="Recast.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastAlloc.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastArea.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastAssert.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastContour.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastFilter.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastLayers.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastMesh.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastMeshDetail.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastRasterization.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastRegion.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="CRDNavMesh.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourCrowd.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourLocalBoundary.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourObstacleAvoidance.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourPathCorridor.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourPathQueue.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourProximityGrid.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="InputGeom.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkyTriMesh.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoaderObj.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavAgent.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -790,9 +952,6 @@
     <Filter Include="Source\07. Resource\InstancingBuffer">
       <UniqueIdentifier>{332cf7af-72c1-4b45-be00-c992d986e442}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\06. Component\11. NavMesh">
-      <UniqueIdentifier>{ec4a9248-204a-4e7e-b6c5-dde9240fafdf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\10. FSM">
       <UniqueIdentifier>{86397da0-1d06-4a8d-a55d-d64724d7a4e6}</UniqueIdentifier>
     </Filter>
@@ -816,6 +975,12 @@
     </Filter>
     <Filter Include="Source\EngineUI">
       <UniqueIdentifier>{47a6c379-bdc6-4793-8590-e2555c9d4f55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\06. Component\11.NavMesh">
+      <UniqueIdentifier>{ec4a9248-204a-4e7e-b6c5-dde9240fafdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\06. Component\11.NavMesh\RecastDetour">
+      <UniqueIdentifier>{bc7444dc-50da-433b-b482-889e2024c6ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

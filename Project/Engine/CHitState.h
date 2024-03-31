@@ -8,8 +8,10 @@ private:
 
 	tHitInfo m_tHitInfo;
 
-	float m_fCurFoceTime;
+	Vec3 m_vFinalFoce;
 
+	float m_fCurFoceTime;
+	float m_fDecFoce;
 private:
 	void add_foce();
 

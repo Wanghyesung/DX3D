@@ -22,6 +22,7 @@ class CSkyBox;
 class CLandScape;
 class CMotionBlur;
 class CNavMesh;
+class CRDNavMesh;
 class CPxRigidbody;
 class CEquip;
 
@@ -88,6 +89,7 @@ public:
     GET_COMPONENT(Decal, DECAL);
     GET_COMPONENT(LandScape, LANDSCAPE);
     GET_COMPONENT(NavMesh, NAVMESH);
+    GET_COMPONENT(RDNavMesh, RDNAVMESH);
     GET_COMPONENT(Equip, EQUIP);
 
 

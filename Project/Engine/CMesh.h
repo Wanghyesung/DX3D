@@ -40,8 +40,9 @@ private:
 
 public:
 	Vtx* GetVtxSysMem() { return (Vtx*)m_pVtxSys; }
+	UINT* GetIndexMem(UINT _iSubset) { return (UINT*)m_vecIdxInfo[_iSubset].pIdxSysMem; }
 	UINT GetSubsetCount() { return (UINT)m_vecIdxInfo.size(); }
-
+	
 	const vector<tMTBone>* GetBones() { return &m_vecBones; }
 	UINT GetBoneCount() { return (UINT)m_vecBones.size(); }
 	const vector<tMTAnimClip>* GetAnimClip() { return &m_vecAnimClip; }

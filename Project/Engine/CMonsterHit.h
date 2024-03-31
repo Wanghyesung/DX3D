@@ -3,6 +3,11 @@
 
 class CMonsterHit : public CMonsterState
 {
+private:
+	float m_fCurFoceTime;
+
+	Vec3 m_vFinalFoce;
+
 protected:
 	tHitInfo m_tHitInfo;
 

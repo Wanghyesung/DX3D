@@ -25,6 +25,7 @@ private:
     void add_monster(int _ID);
     void erase_monster(int _ID);
 
+protected:
     tCheckInfo& find_monster(int _ID);
 
 public:

@@ -65,7 +65,7 @@ void CMonsterAttack::Enter()
 	std::random_device rDiv;
 	std::mt19937 en(rDiv());
 	std::uniform_int_distribution<int> num(0, iMaxAttack);
-	UINT iAttackNum = 3;//(UINT)num(en);
+	UINT iAttackNum = (UINT)num(en);
 
 	m_tCurAttack = m_vecAttack[iAttackNum];
 

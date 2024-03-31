@@ -5,7 +5,7 @@
 #include "CTransform.h"
 #include "CPxRigidbody.h"
 #include "CTimeMgr.h"
-
+#include "CFontMgr.h"
 CHitState::CHitState()
 {
 	
@@ -27,9 +27,13 @@ void CHitState::add_foce()
 
 		Vec3 vFront = pObj->Transform()->GetRelativeDir(DIR_TYPE::UP);
 		vFront.y = 0.f;
-		GetOwner()->PxRigidbody()->AddVelocity(vFront * m_tHitInfo.fHitRcnt);
-	}
+		Vec3 vFoce = vFront * m_tHitInfo.fHitRcnt;
+		float fRatio = (m_tHitInfo.fHitTime / m_fCurFoceTime);
 
+		m_vFinalFoce = vFoce * fRatio;
+
+		GetOwner()->PxRigidbody()->AddVelocity(m_vFinalFoce);
+	}
 }
 
 void CHitState::final_tick()
@@ -58,14 +62,11 @@ void CHitState::final_tick()
 
 void CHitState::Exit()
 {
-
+	GetOwner()->PxRigidbody()->SetDecrease(false);
 }
 
 void CHitState::Enter()
 {
-	m_bReverse = false;
-	m_fCurFoceTime = 0.f;
-
 	Chanage_Anim(GetName());
 
 	Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
@@ -73,5 +74,11 @@ void CHitState::Enter()
 	Vec3 vDir = vFront * m_tHitInfo.fHitRcnt;
 
 	GetOwner()->PxRigidbody()->SetVelocity(vDir);
+	GetOwner()->PxRigidbody()->SetDecrease(true);
+	m_bReverse = false;
+	m_fCurFoceTime = 0.f;
+	m_fDecFoce = m_tHitInfo.fHitRcnt;
+
+	CFontMgr::GetInst()->DrawFont(L"12", 10, 10, 100, 20);
 }
 

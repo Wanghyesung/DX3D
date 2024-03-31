@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CMonsterMove.h"
 #include "CNavMesh.h"
+#include "CRDNavMesh.h"
 #include "CTransform.h"
 #include "CRigidbody.h"
 #include "CPxRigidbody.h"
@@ -33,15 +34,15 @@ void CMonsterMove::final_tick()
 		lookat_player();
 	}
 
-	else
-	{
-		if (!m_bActive)
-			return;
-
-		rotate();
-
-		move();
-	}
+	//else
+	//{
+	//	if (!m_bActive)
+	//		return;
+	//
+	//	rotate();
+	//
+	//	move();
+	//}
 }
 
 void CMonsterMove::Enter()
@@ -53,12 +54,13 @@ void CMonsterMove::Enter()
 	if(vecObj[0] != nullptr)
 		m_pTarget = vecObj[0];
 
-	GetOwner()->NavMesh()->SetActive(true);
+	GetOwner()->RDNavMesh()->SetActive(true);
+	m_bActive = true;
 }
 
 void CMonsterMove::Exit()
 {
-	GetOwner()->NavMesh()->SetActive(false);
+	GetOwner()->RDNavMesh()->SetActive(false);
 	m_bActive = false;
 }
 
@@ -116,7 +118,7 @@ void CMonsterMove::rotate()
 
 	float fDiff = fabs(vFinalRot.y - vRot.y);
 	//각도가 크게 변경되었을 때
-	if (fDiff >= XM_PI / 2.f)
+	if (fDiff >= XM_PI)
 	{
 		GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 		vPxRot = vFinalRot;

@@ -8,6 +8,7 @@
 #include <Engine\CMonsterJump.h>
 #include <Engine\CDemonMove.h>
 #include <Engine\CDemonWait.h>
+#include <Engine\CDemonJump.h>
 CDemonScript::CDemonScript():
 	CMonsterScript(SCRIPT_TYPE::DEMONSCRIPT),
 	m_bJumpTrigger(false)
@@ -72,8 +73,11 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	CMonsterAttack* pAttack = new CMonsterAttack();
 	AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
 
-	CMonsterJump* pJump = new CMonsterJump();
+	CDemonJump* pJump = new CDemonJump();
 	AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 1686, 1920);
+
+	CDemonWait* pWait = new CDemonWait();
+	AddMonsterState(MONSTER_STATE_TYPE::WAIT, pWait, L"Wait", 1686, 1686);
 
 	CDemonHit* pHit = new CDemonHit();
 	AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527, 650);

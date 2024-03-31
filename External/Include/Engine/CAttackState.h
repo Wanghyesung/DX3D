@@ -19,6 +19,8 @@ private:
 public:
 	void AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj);
 
+	void erase_attack();
+	void spawn_attack();
 private:
 	void add_force();
 	void check_event();

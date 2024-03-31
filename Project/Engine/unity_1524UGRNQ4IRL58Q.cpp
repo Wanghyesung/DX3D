@@ -1,14 +1,5 @@
 #include "pch.h"
 
-#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CMotionBlur.cpp"
-
-
-#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CMRT.cpp"
-
-
-#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CNavMesh.cpp"
-
-
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CParticleSystem.cpp"
 
 
@@ -33,6 +24,9 @@
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CRaycastShader.cpp"
 
 
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CRDNavMesh.cpp"
+
+
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CRenderComponent.cpp"
 
 
@@ -55,4 +49,16 @@
 
 
 #include "C:\Users\wangh\source\source\DX113D\Project\Engine\CRollState.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CRunState.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CScript.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CSetColorShader.cpp"
+
+
+#include "C:\Users\wangh\source\source\DX113D\Project\Engine\CShader.cpp"
 

@@ -30,6 +30,7 @@ CNavMesh::CNavMesh() :
 	m_fTraceTime(0.15f),
 	m_vSearchDir(Vec3::Zero),
 	m_vOwnerScale(Vec3::Zero),
+	m_vDivede(Vec3(50.f, 0.f, 50.f)),
 	m_bActive(false)
 {
 
@@ -72,8 +73,8 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 
 	vector<tNode> vecWay;							//내가 간 길
 
-	int DX[8] = { 1, 1,-1, -1, 0 ,1, 0, -1};				// 방향 좌표 ↘↗↙↖↑→↓← = 시계방향으로
-	int DZ[8] = { 1,-1, 1, -1, -1 ,0, 1,  0};
+	int DX[8] = { 0 ,1, 0, -1 , 1, 1,-1, -1, };				// 방향 좌표 ↘↗↙↖↑→↓← = 시계방향으로
+	int DZ[8] = { -1 ,0, 1,  0, 1,-1, 1, -1, };
 
 	// 시작지점 초기화
 	tStartNode.x = _tStart.second; // x축이 second
@@ -88,22 +89,30 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 	{
 		int x = queueWay.top().x;						// 우선순위 큐에서 top 정보 추출
 		int z = queueWay.top().z;
+
 		int cost = queueWay.top().iCurCos;
 		vecWay.push_back(queueWay.top());
 		m_vecMap[z][x] = 8; 
 		queueWay.pop();
-		if (x == _tGoal.second && z == _tGoal.first) break;	
+		if (x == _tGoal.second && z == _tGoal.first)
+			break;	
 
 		tNode tAddNode; //주변탐색에 쓰일 노드
 		for (int i = 0; i < 8; i++)
 		{// top 노드에서 상하좌우 8방향으로 탐색
 			int nextX = x + DX[i];
 			int nextZ = z + DZ[i];
+
 			//지정된 범위를 벗어나지 않게
 			if (nextX >= 0 && nextX < m_vecMap[0].size() && nextZ >= 0 && nextZ < m_vecMap.size())
 			{
 				//막힌길이거나 내가 온 길이면 다시 못오게
-				if (m_vecClose[nextZ][nextX] != 1 && m_vecMap[nextZ][nextX] == false)
+				//막힌길이지만 플레이어가 있다면
+				if (!aabb(Vec3(_tGoal.second, 0.f, _tGoal.first), Vec3(nextX, 0.f, nextZ)))
+					continue;
+
+				if (/*!(x == _tGoal.second && z == _tGoal.first) ||*/ m_vecClose[nextZ][nextX] != 1 
+					&& m_vecMap[nextZ][nextX] == false)
 				{
 					tAddNode.x = nextX;
 					tAddNode.z = nextZ;
@@ -147,6 +156,28 @@ void CNavMesh::astar(pair<int, int> _tStart, pair<int, int> _tGoal)
 	m_vSearchDir = vDir;
 }
 
+bool CNavMesh::aabb(const Vec3& _vGoalNode, const Vec3& _vCurNode)
+{
+	
+	Vec3 vScale = Vec3(m_vOwnerScale / (m_vDivede * 2));
+	vScale.x = (int)round(vScale.x);
+	vScale.z = (int)round(vScale.z);
+
+	for (int z = _vCurNode.z - vScale.z; z <= _vCurNode.z + vScale.z; ++z)
+	{
+		for (int x = _vCurNode.x - -vScale.x; x <= _vCurNode.x + vScale.x; ++x)
+		{
+			if (x < 0 || z < 0)
+				continue;
+
+			else if (m_vecClose[z][x] == 1)
+				return false;
+		}
+	}
+
+	return true;
+}
+
 void CNavMesh::init_map()
 {
 	const vector<CGameObject*>& vecLand =
@@ -171,7 +202,9 @@ void CNavMesh::init_map()
 	//m_vOwnerScale.z = m_vOwnerScale.y;
 	//m_vOwnerScale.y = fTem;
 
-	Vec3 vDivideSize = m_vLandScapeLen / m_vOwnerScale; // 150 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
+	//m_vDivede = m_vOwnerScale;
+	//Vec3 vDivideSize = m_vLandScapeLen / m_vOwnerScale; // 150 150사이즈 몬스터가 지나갈 수 있는 범위로 설계 
+	Vec3 vDivideSize = m_vLandScapeLen / m_vDivede; //이정도 크기로만 잡아보기
 	//120개
 	//정교하게 할려면 나눌 사이즈는 삭제 전체 맵은 크게
 	m_iDivideX =  vDivideSize.x; //전체 지형을 나눌 수
@@ -198,29 +231,27 @@ void CNavMesh::init_closemap()
 		//크기
 		Vec3 vformScale = vecLandform[i]->Collider3D()->GetOffsetScale();
 		vformScale /= 2.f;
+
 		//좌 우 하 상
 		float fPos[4] = { vformPos.x - vformScale.x, vformPos.x + vformScale.x,
 						 vformPos.z - vformScale.z, vformPos.z + vformScale.z };
 
 		//칸당 갈수있는 길이
-		float fOffsetX = m_iDivideX /3.f;
-		float fOffsetZ = m_iDivideZ /3.f;
-
-		float fCorrectionZ = vformScale.z / 3.f;
-		float fCorrectionX = vformScale.x / 3.f;
+		float fOffsetX = m_vDivede.x/2.f;
+		float fOffsetZ = m_vDivede.z / 2.f;
 
 		//정교하게 할려면 foffset값을 작게
-		for (float i = fPos[2] + fCorrectionZ; i <= fPos[3] - fCorrectionZ; i += fOffsetZ)//z
+		for (float i = fPos[2]; i < fPos[3]; i += fOffsetZ)//z
 		{
-			for (float j = fPos[0] + fCorrectionX; j <= fPos[1] - fCorrectionX; j += fOffsetX) //x
+			for (float j = fPos[0]; j < fPos[1]; j += fOffsetX) //x
 			{
 				//현재 검사하는 위치
 				Vec3 vPos = Vec3{ j, 0.f, i };
 
 				//맵에서의 비율을 잡기
 				Vec3 vRatio = {}; 
-				vRatio.x = vPos.x / m_vOwnerScale.x;
-				vRatio.z = vPos.z / m_vOwnerScale.z;
+				vRatio.x = vPos.x / m_vDivede.x;
+				vRatio.z = vPos.z / m_vDivede.z;
 
 				//Vec3 vAbsRatio = Vec3(abs(vRatio.x), abs(vRatio.y), abs(vRatio.z));
 
@@ -228,10 +259,12 @@ void CNavMesh::init_closemap()
 				//vRatio.x /= m_iDivideX; //0.5 * 40 = 20
 				//vRatio.z /= m_iDivideZ;
 				//못가는 길
-				m_vecClose[(int)vRatio.z][(int)vRatio.x] = 1;
+				m_vecClose[(int)(vRatio.z)][(int)(vRatio.x)] = 1;
 			}
 		}
 	}
+
+	int a = 10;
 }
 
 void CNavMesh::tracking_player()
@@ -254,20 +287,24 @@ void CNavMesh::tracking_player()
 
 	Vec3 vRatio = {};
 
-	vRatio.x = vPlayerPos.x / m_vOwnerScale.x;
-	vRatio.z = vPlayerPos.z / m_vOwnerScale.z;
+	vRatio.x = (int)(vPlayerPos.x / m_vDivede.x);
+	vRatio.z = (int)(vPlayerPos.z / m_vDivede.z);
+
+	if (m_vecClose[vRatio.z][vRatio.x] == 1)
+		int a = 10;
 
 	//m_vecMap[(int)vRatio.x][(int)vRatio.z] = 5;//목적지는 5
-	Vec3 vGoalPos = Vec3((int)vRatio.x, 0.f, (int)vRatio.z);
+	Vec3 vGoalPos = Vec3(vRatio.x, 0.f, vRatio.z);
 	// --몬스터
 
 	CGameObject* pMonster = GetOwner();
 	Vec3 vMonsterPos = pMonster->Collider3D()->GetWorldPos();
 
+	
 	//vRatio = vMonsterPos / m_iDivideX;
-	vRatio.x = vMonsterPos.x / m_vOwnerScale.x;
-	vRatio.z = vMonsterPos.z / m_vOwnerScale.z;
-	\
+	vRatio.x = (vMonsterPos.x / m_vDivede.x);
+	vRatio.z = (vMonsterPos.z / m_vDivede.z);
+	
 	Vec3 vStartPos = Vec3((int)vRatio.x, 0.f, (int)vRatio.z);
 
 	//여기서 플레이어의 위치가 내가 갈 수 없는 곳에 걸리면 벡터의 차로 방향을 잡음
