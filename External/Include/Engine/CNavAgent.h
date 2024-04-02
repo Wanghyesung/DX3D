@@ -1,13 +1,14 @@
 #pragma once
 #include "CComponent.h"
-#include "CRDNavMesh.h"
+#include "CRDNavMeshField.h"
 
-class CRDNavMesh;
+class CRDNavMeshField;
 class CNavAgent : public CComponent
 {
 private:
-    CRDNavMesh* m_pNavMesh;
+    CRDNavMeshField* m_pNavMesh;
 
+    static int m_iAgentCount;
     int m_iAgentIdx{ -1 };
     //const dtCrowdAgent* agent{ nullptr };
     dtCrowd* m_pCrowd{ nullptr };
@@ -17,8 +18,10 @@ private:
 
     dtCrowdAgentParams m_tAgentParams;
    
+    CGameObject* m_pTaretObj;
+
 public:
-    void AssignToNavigationField(CRDNavMesh* _pNavField);
+    void AssignToNavigationField(CRDNavMeshField* _pNavField);
 
     void SetSpeed(float _fSpeed);
     void SetAcceleration(float _fAccel);
@@ -44,6 +47,6 @@ public:
     virtual ~CNavAgent();
  
  
-    friend CRDNavMesh;
+    friend CRDNavMeshField;
 };
 

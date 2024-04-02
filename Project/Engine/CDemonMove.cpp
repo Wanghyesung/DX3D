@@ -2,7 +2,7 @@
 #include "CDemonMove.h"
 #include "CNavMesh.h"
 #include "CPxRigidbody.h"
-
+#include "CRDNavMeshField.h"
 CDemonMove::CDemonMove():
 	m_fCheckLen(800.f)
 {
@@ -19,15 +19,15 @@ void CDemonMove::final_tick()
 {
 	CMonsterMove::final_tick();
 
-	//bool bActive = GetOwner()->NavMesh()->IsActive();
+	//bool bActive = GetOwner()->RDNavMesh()->IsActive();
 	//
 	//if (!bActive)
 	//{
 	//	//플레이어가 위에 있다면 플레이어 쪽을 바라보도록
-	//	if (check_dir())
-	//	{
-	//		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WAIT);
-	//	}
+	//	//if (check_dir())
+	//	//{
+	//	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WAIT);
+	//	//}
 	//}
 }
 

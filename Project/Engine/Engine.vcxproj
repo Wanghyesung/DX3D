@@ -243,7 +243,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CPxCollisionEvent.h" />
     <ClInclude Include="CPxRigidbody.h" />
     <ClInclude Include="CRaycastShader.h" />
-    <ClInclude Include="CRDNavMesh.h" />
+    <ClInclude Include="CRDNavMeshField.h" />
     <ClInclude Include="CRenderComponent.h" />
     <ClInclude Include="CRenderMgr.h" />
     <ClInclude Include="CRes.h" />
@@ -370,7 +370,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CPxCollisionEvent.cpp" />
     <ClCompile Include="CPxRigidbody.cpp" />
     <ClCompile Include="CRaycastShader.cpp" />
-    <ClCompile Include="CRDNavMesh.cpp" />
+    <ClCompile Include="CRDNavMeshField.cpp" />
     <ClCompile Include="CRenderComponent.cpp" />
     <ClCompile Include="CRenderMgr.cpp" />
     <ClCompile Include="CRenderMgr_init.cpp" />

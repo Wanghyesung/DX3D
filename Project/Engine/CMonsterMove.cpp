@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CMonsterMove.h"
 #include "CNavMesh.h"
-#include "CRDNavMesh.h"
+#include "CRDNavMeshField.h"
 #include "CTransform.h"
 #include "CRigidbody.h"
 #include "CPxRigidbody.h"
@@ -34,15 +34,15 @@ void CMonsterMove::final_tick()
 		lookat_player();
 	}
 
-	//else
-	//{
-	//	if (!m_bActive)
-	//		return;
-	//
-	//	rotate();
-	//
-	//	move();
-	//}
+	else
+	{
+		if (!m_bActive)
+			return;
+	
+		rotate();
+	
+		move();
+	}
 }
 
 void CMonsterMove::Enter()
@@ -54,13 +54,13 @@ void CMonsterMove::Enter()
 	if(vecObj[0] != nullptr)
 		m_pTarget = vecObj[0];
 
-	GetOwner()->RDNavMesh()->SetActive(true);
+	GetOwner()->RDNavMeshField()->SetActive(true);
 	m_bActive = true;
 }
 
 void CMonsterMove::Exit()
 {
-	GetOwner()->RDNavMesh()->SetActive(false);
+	GetOwner()->RDNavMeshField()->SetActive(false);
 	m_bActive = false;
 }
 
@@ -89,7 +89,7 @@ bool CMonsterMove::check_len()
 
 void CMonsterMove::rotate()
 {
-	Vec3 vDir = GetOwner()->NavMesh()->GetTargetPath();
+	Vec3 vDir = GetOwner()->RDNavMeshField()->GetFindPath();
 
 	//z <--> y fbx√‡ 
 	Vec3 vFoward = Vec3(0.f, 0.f, -1.f);

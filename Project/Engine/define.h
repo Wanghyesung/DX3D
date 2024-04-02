@@ -82,7 +82,7 @@ enum class COMPONENT_TYPE
 	//TRANSFORM,		// 위치, 크기, 회전
 
 	NAVAGENT,		//실질적으로 움질일 메쉬
-	RDNAVMESH,		//라이브러리 네이게이션
+	RDNAVMESHFIELD,		//라이브러리 네이게이션
 	NAVMESH,		// 네비게이션
 	CAMERA,			// Camera
 

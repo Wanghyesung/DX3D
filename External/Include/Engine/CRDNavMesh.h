@@ -42,7 +42,13 @@ private:
     dtNavMeshQuery* navQuery;
     dtCrowd* crowd;
 
+    Vec3 m_vPathDir;
+
     bool m_bActive;
+
+    float m_fCurTime;
+    float m_fSearchTime;
+
 public:
 	void RecastCleanup();
 
@@ -59,10 +65,14 @@ public:
     void CreatePlane(Vec3 botleft, Vec3 topright, vector<Vec3>& worldVertices, vector<int>& worldFaces);
 
     void SetActive(bool _bActive) { m_bActive = _bActive; }
+    bool IsActive() { return m_bActive; }
+
+    void SetSearchTime(float _fTime) { m_fSearchTime = _fTime; }
 public:
     virtual void begin();
     virtual void finaltick();
    
+    const Vec3& GetFindPath() { return m_vPathDir; }
 public:
     virtual void SaveToLevelFile(FILE* _File);
     virtual void LoadFromLevelFile(FILE* _FILE) ;

@@ -371,13 +371,29 @@ void CreateMonster()
 	pBoss->AddComponent(pDemonScript);
 	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
 	
-	vector<Vec3> worldVertices{};
-	vector<int> worldFaces{ };
-	CRDNavMesh* pNav = new CRDNavMesh();
-	pNav->CreatePlane({ 0,0,0 }, { 18000,0,18000 }, worldVertices, worldFaces);
-	pNav->BuildField(worldVertices, worldFaces);
-	pBoss->AddComponent(pNav);
+	{
+		//CGameObject* pNavField = new CGameObject;
+		//pNavField->AddComponent(new CTransform);
+		vector<Vec3> worldVertices{};
+		vector<int> worldFaces{ };
+		CRDNavMeshField* pNav = new CRDNavMeshField();
+		pNav->CreatePlane({ 0,0,0 }, { 18000,0,18000 }, worldVertices, worldFaces);
+		pNav->BuildField(worldVertices, worldFaces);
+		pBoss->AddComponent(pNav);
+		//pNavField->AddComponent(pNav);
+		//SpawnGameObject(pNavField, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Default);
+
+
+		//CNavAgent* pAgent = new CNavAgent;
+		//pBoss->AddComponent(pAgent);
+		//pAgent->SetSpeed(2);
+		//pAgent->SetRadius(0.5);
+		//pAgent->AssignToNavigationField(pNav);
+	}
+
 	
+
+
 	CGameObject* pHand = pBoss->GetChild().at(1);
 	pWeapon->Equip()->SetChar(pHand);
 	SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
@@ -403,6 +419,9 @@ void CreateMonster()
 
 void CreateLandScape()
 {
+
+
+
 	// LandScape Object
 	CGameObject* pLandScape = new CGameObject;
 	

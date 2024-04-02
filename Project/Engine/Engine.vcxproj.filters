@@ -332,7 +332,7 @@
     <ClInclude Include="RecastAssert.h">
       <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClInclude>
-    <ClInclude Include="CRDNavMesh.h">
+    <ClInclude Include="CRDNavMeshField.h">
       <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClInclude>
     <ClInclude Include="DetourCrowd.h">
@@ -710,7 +710,7 @@
     <ClCompile Include="RecastRegion.cpp">
       <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClCompile>
-    <ClCompile Include="CRDNavMesh.cpp">
+    <ClCompile Include="CRDNavMeshField.cpp">
       <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClCompile>
     <ClCompile Include="DetourCrowd.cpp">

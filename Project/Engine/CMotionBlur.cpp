@@ -10,6 +10,7 @@
 #include "CTimeMgr.h"
 #include "CStructuredBuffer.h"
 #include "CAnimator3D.h"
+#include "CPxRigidbody.h"
 CMotionBlur::CMotionBlur() :
 	CComponent(COMPONENT_TYPE::MOTIONBLUR),
 	m_fPosCheckTime(0.1f),
@@ -45,7 +46,7 @@ void CMotionBlur::finaltick()
 	Vec3 vScale = Transform()->GetRelativeScale();
 	m_pMotionBlur->Transform()->SetRelativeScale(vScale);
 
-	Vec3 vPostion = Transform()->GetRelativePos();
+	Vec3 vPostion = GetOwner()->PxRigidbody()->GetPxPosition();
 	m_pMotionBlur->Transform()->SetRelativePos(vPostion);
 
 	//const vector<CGameObject*>& vecChild = m_pMotionBlur->GetChild();
