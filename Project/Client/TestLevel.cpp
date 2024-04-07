@@ -224,6 +224,8 @@ void CreateTestLevel()
 
 	SpawnGameObject(pUICam, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Camera);
 
+
+	
 	CreateLandScape();
 	
 
@@ -372,17 +374,13 @@ void CreateMonster()
 	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
 	
 	{
-		//CGameObject* pNavField = new CGameObject;
-		//pNavField->AddComponent(new CTransform);
-		vector<Vec3> worldVertices{};
-		vector<int> worldFaces{ };
 		CRDNavMeshField* pNav = new CRDNavMeshField();
-		pNav->CreatePlane({ 0,0,0 }, { 18000,0,18000 }, worldVertices, worldFaces);
-		pNav->BuildField(worldVertices, worldFaces);
-		pBoss->AddComponent(pNav);
-		//pNavField->AddComponent(pNav);
-		//SpawnGameObject(pNavField, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Default);
+		pNav->CreatePlane2({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+		pNav->CreatePlane2({3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
 
+		pNav->BuildField();
+		pBoss->AddComponent(pNav);
+		
 
 		//CNavAgent* pAgent = new CNavAgent;
 		//pBoss->AddComponent(pAgent);
@@ -419,9 +417,6 @@ void CreateMonster()
 
 void CreateLandScape()
 {
-
-
-
 	// LandScape Object
 	CGameObject* pLandScape = new CGameObject;
 	

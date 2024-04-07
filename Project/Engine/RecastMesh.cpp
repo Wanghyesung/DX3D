@@ -22,13 +22,7 @@
 #include "Recast.h"
 #include "RecastAlloc.h"
 #include "RecastAssert.h"
-
-struct rcEdge
-{
-	unsigned short vert[2];
-	unsigned short polyEdge[2];
-	unsigned short poly[2];
-};
+#include "DetourTileCacheBuilder.h"
 
 static bool buildMeshAdjacency(unsigned short* polys, const int npolys,
 							   const int nverts, const int vertsPerPoly)

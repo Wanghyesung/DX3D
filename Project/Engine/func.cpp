@@ -109,7 +109,7 @@ CGameObject* InitializeFBX(const wstring& _strFbxName)
 	vector<Ptr<CMeshData>> vecMeshData = {};
 	CGameObject* pObj = nullptr;
 
-	//Artorias4.fbx
+	
 	vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\" + _strFbxName + L".fbx");
 
 	for (int i = 0; i < pVecMeshData.size(); ++i)

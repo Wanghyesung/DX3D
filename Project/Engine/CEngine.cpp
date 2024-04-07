@@ -13,6 +13,8 @@
 #include "CFontMgr.h"
 #include "CInstancingBuffer.h"
 #include "CPhysxMgr.h"
+#include "CNavMeshMgr.h"
+
 CEngine::CEngine()
 	: m_hWnd(nullptr)
 {
@@ -59,6 +61,8 @@ int CEngine::init(HWND _hWnd, UINT _iWidth, UINT _iHeight)
 
 	CLevelMgr::GetInst()->init();		
 	
+	//CNavMeshMgr::GetInst()->init();
+
 	CInstancingBuffer::GetInst()->init();
 
 	CPhysxMgr::GetInst()->init();

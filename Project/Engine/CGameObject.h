@@ -24,6 +24,7 @@ class CMotionBlur;
 class CNavMesh;
 class CRDNavMeshField;
 class CNavAgent;
+class CNavMeshPlane;
 class CPxRigidbody;
 class CEquip;
 
@@ -91,6 +92,7 @@ public:
     GET_COMPONENT(LandScape, LANDSCAPE);
     GET_COMPONENT(NavMesh, NAVMESH);
     GET_COMPONENT(RDNavMeshField, RDNAVMESHFIELD);
+    GET_COMPONENT(NavMeshPlane, NAVMESHPLANE);
     GET_COMPONENT(NavAgent, NAVAGENT);
     GET_COMPONENT(Equip, EQUIP);
 

@@ -18,6 +18,7 @@
 #include "CRDNavMeshField.h"
 #include "CNavAgent.h"
 #include "CPxRigidbody.h"
+#include "CNavMeshPlane.h"
 #include "CEquip.h"
 
 #include "CMeshRender.h"

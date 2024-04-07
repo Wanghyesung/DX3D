@@ -106,6 +106,10 @@ public:
 	//bool load(class rcContext* ctx, const std::string& filepath);
 	//bool saveGeomSet(const BuildSettings* settings);
 	
+	//tem
+	bool loadMesh(class rcContext* ctx, const float* worldVertices, size_t verticesNum,
+		const int* faces, size_t facesNum, float* minBounds, float* maxBounds);
+
 	/// Method to return static mesh data.
 	const rcMeshLoaderObj* getMesh() const { return m_mesh; }
 	const float* getMeshBoundsMin() const { return m_meshBMin; }

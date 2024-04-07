@@ -365,6 +365,18 @@
     <ClInclude Include="CNavAgent.h">
       <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClInclude>
+    <ClInclude Include="DetourTileCacheBuilder.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="fastlz.h">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="CNavMeshMgr.h">
+      <Filter>Source\03. Manager\12.NavMeshMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CNavMeshPlane.h">
+      <Filter>Source\06. Component\11.NavMesh\NavMeshPlane</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -743,6 +755,18 @@
     <ClCompile Include="CNavAgent.cpp">
       <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
     </ClCompile>
+    <ClCompile Include="DetourTileCacheBuilder.cpp">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="fastlz.c">
+      <Filter>Source\06. Component\11.NavMesh\RecastDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavMeshMgr.cpp">
+      <Filter>Source\03. Manager\12.NavMeshMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavMeshPlane.cpp">
+      <Filter>Source\06. Component\11.NavMesh\NavMeshPlane</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -981,6 +1005,12 @@
     </Filter>
     <Filter Include="Source\06. Component\11.NavMesh\RecastDetour">
       <UniqueIdentifier>{bc7444dc-50da-433b-b482-889e2024c6ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\03. Manager\12.NavMeshMgr">
+      <UniqueIdentifier>{9efa2457-d830-4e97-aa91-2013ecb5b4b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\06. Component\11.NavMesh\NavMeshPlane">
+      <UniqueIdentifier>{2ad2e909-f2e7-48f8-9d38-32025340857a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

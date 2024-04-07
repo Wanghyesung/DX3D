@@ -155,6 +155,29 @@ bool InputGeom::loadMesh(rcContext* ctx, const std::string& filepath)
 	return true;
 }
 
+bool InputGeom::loadMesh(rcContext* ctx, const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum
+					, float* minBounds, float* maxBounds)
+{
+	m_offMeshConCount = 0;
+	m_volumeCount = 0;
+
+	rcCalcBounds(worldVertices, verticesNum, minBounds, maxBounds);
+	m_chunkyMesh = new rcChunkyTriMesh;
+
+	if (!m_chunkyMesh)
+	{
+		ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Out of memory 'm_chunkyMesh'.");
+		return false;
+	}
+	if (!rcCreateChunkyTriMesh(worldVertices, faces, facesNum, 256, m_chunkyMesh))
+	{
+		ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Failed to build chunky mesh.");
+		return false;
+	}
+
+	return false;
+}
+
 
 
 

@@ -83,6 +83,7 @@ enum class COMPONENT_TYPE
 
 	NAVAGENT,		//실질적으로 움질일 메쉬
 	RDNAVMESHFIELD,		//라이브러리 네이게이션
+	NAVMESHPLANE,   //네비메쉬 발판
 	NAVMESH,		// 네비게이션
 	CAMERA,			// Camera
 

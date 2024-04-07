@@ -9,12 +9,18 @@
 #include "CMeshRender.h"
 #include "CResMgr.h"
 #include "CTimeMgr.h"
+#include "CNavMeshPlane.h"
 
-CRDNavMeshField::CRDNavMeshField():
-	CComponent(COMPONENT_TYPE::RDNAVMESHFIELD),
+#include "DetourTileCacheBuilder.h"
+
+UINT CRDNavMeshField::m_iPlaneCount = 0;
+CRDNavMeshField::CRDNavMeshField() :
+    CComponent(COMPONENT_TYPE::RDNAVMESHFIELD),
     m_bActive(false),
     m_fCurTime(0.1f),
-    m_fSearchTime(0.1f)
+    m_fSearchTime(0.1f),
+    m_worldVertices{},
+    m_worldFaces{}
 {
 	navQuery = dtAllocNavMeshQuery();
 	crowd = dtAllocCrowd();
@@ -26,15 +32,15 @@ CRDNavMeshField::~CRDNavMeshField()
 	if (navMesh)
 		dtFreeNavMesh(navMesh);
 
-	if (polyMesh)
-		delete polyMesh;
+    if (polyMesh)
+        rcFreePolyMesh(polyMesh);
 
 	if (navQuery)
 		dtFreeNavMeshQuery(navQuery);
 
-	if (polyMeshDetail)
-		delete polyMeshDetail;
-
+    if (polyMeshDetail)
+        rcFreePolyMeshDetail(polyMeshDetail);
+		
 	if (context)
 		delete context;
     
@@ -162,10 +168,12 @@ void CRDNavMeshField::RecastCleanup()
 	
 }
 
-void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const BuildSettings& buildSettings)
+
+
+void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const tBuildSettings& buildSettings)
 {
-    float bmin[3] = { 0.f, 0.f, 0.f };//{ std::numeric_limits<float>::max(),std::numeric_limits<float>::max(),std::numeric_limits<float>::max() };
-    float bmax[3] = { 0.f, 0.f, 0.f };//{ -std::numeric_limits<float>::max(),-std::numeric_limits<float>::max(),-std::numeric_limits<float>::max() };
+    float bmin[3] = { WCHAR_MAX,WCHAR_MAX, WCHAR_MAX };
+    float bmax[3] = { -WCHAR_MAX, -WCHAR_MAX, -WCHAR_MAX };
     // 바운더리 정보부터 설정
     for (auto i = 0; i < verticesNum; i++)
     {
@@ -336,10 +344,6 @@ void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum,
 }
 
 
-void CRDNavMeshField::AddObstacle(const float* pos, const float radius, const float height, dtObstacleRef* result)
-{
-
-}
 
 int CRDNavMeshField::FindPath(float* pStartPos, float* pEndPos)
 {
@@ -461,21 +465,74 @@ int CRDNavMeshField::FindPath(float* pStartPos, float* pEndPos)
 	return 0;
 }
 
-void CRDNavMeshField::CreatePlane(Vec3 botleft, Vec3 topright, vector<Vec3>& worldVertices, vector<int>& worldFaces)
+void CRDNavMeshField::CreatePlane2(const Vec3& _vPos, Vec3 _vScale)
 {
-	int startingIdx = worldVertices.size();
-	worldVertices.push_back({ botleft.x,0,topright.z });
-	worldVertices.push_back({ botleft.x,0,botleft.z });
-	worldVertices.push_back({ topright.x,0,botleft.z });
-	worldVertices.push_back({ topright.x,0,topright.z });
+    Vec3 vTemScale = _vScale / 2.f;
+    Vec3 vBotleft = _vPos - vTemScale;
+    Vec3 vTopRight = _vPos + vTemScale;
 
-	worldFaces.push_back(startingIdx + 2);
-	worldFaces.push_back(startingIdx + 1);
-	worldFaces.push_back(startingIdx + 0);
-	worldFaces.push_back(startingIdx + 3);
-	worldFaces.push_back(startingIdx + 2);
-	worldFaces.push_back(startingIdx + 0);
+    int startingIdx = m_worldVertices.size();
+    m_worldVertices.push_back({ vBotleft.x,0,vTopRight.z });
+    m_worldVertices.push_back({ vBotleft.x,0,vBotleft.z });
+    m_worldVertices.push_back({ vTopRight.x,0,vBotleft.z });
+    m_worldVertices.push_back({ vTopRight.x,0,vTopRight.z });
 
+
+    m_worldFaces.push_back(startingIdx + 2);
+    m_worldFaces.push_back(startingIdx + 1);
+    m_worldFaces.push_back(startingIdx + 0);
+    m_worldFaces.push_back(startingIdx + 3);
+    m_worldFaces.push_back(startingIdx + 2);
+    m_worldFaces.push_back(startingIdx + 0);
+
+    CGameObject* pGameObj = new CGameObject();
+    pGameObj->SetName(L"navMeshPlane" + m_iPlaneCount);
+    pGameObj->AddComponent(new CTransform);
+
+    float fTem = _vScale.y;
+    _vScale.y = _vScale.z;
+    _vScale.z = fTem;
+
+    pGameObj->Transform()->SetRelativeScale(_vScale);
+    float fDegree = XM_PI / 180.f;
+    pGameObj->Transform()->SetRelativeRot(Vec3(fDegree*90.f, 0.f, 0.f));
+
+    pGameObj->AddComponent(new CMeshRender);
+    pGameObj->AddComponent(new CNavMeshPlane);
+    SpawnGameObject(pGameObj, _vPos, (int)LAYER_TYPE::Default);
+
+    ++m_iPlaneCount;
+
+
+}
+
+void CRDNavMeshField::CreatePlane(Vec3 botleft, Vec3 topright)
+{
+	int startingIdx = m_worldVertices.size();
+	m_worldVertices.push_back({ botleft.x,0,topright.z });
+	m_worldVertices.push_back({ botleft.x,0,botleft.z });
+	m_worldVertices.push_back({ topright.x,0,botleft.z });
+	m_worldVertices.push_back({ topright.x,0,topright.z });
+
+	m_worldFaces.push_back(startingIdx + 2);
+	m_worldFaces.push_back(startingIdx + 1);
+	m_worldFaces.push_back(startingIdx + 0);
+	m_worldFaces.push_back(startingIdx + 3);
+	m_worldFaces.push_back(startingIdx + 2);
+	m_worldFaces.push_back(startingIdx + 0);
+
+    CGameObject* pGameObj = new CGameObject();
+    pGameObj->SetName(L"navMeshPlane" + m_iPlaneCount);
+    pGameObj->AddComponent(new CTransform);
+
+    //Vec3 vScale = 
+    //pGameObj->Transform()->SetRelativeScale(new Vec3())
+    pGameObj->AddComponent(new CMeshRender);
+    pGameObj->AddComponent(new CNavMeshPlane);
+    Vec3 vPos = (botleft + topright) / 2.f;
+    SpawnGameObject(pGameObj, vPos, (int)LAYER_TYPE::Default);
+
+    ++m_iPlaneCount;
 	/*auto tilePlane = yunutyEngine::Scene::getCurrentScene()->AddGameObject()->AddComponent<DebugTilePlane>();
 	auto size = topright - botleft;
 	tilePlane->GetTransform()->SetWorldPosition((botleft + topright) / 2.0);
