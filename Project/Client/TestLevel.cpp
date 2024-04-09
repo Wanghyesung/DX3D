@@ -22,6 +22,8 @@
 #include <Engine\CResMgr.h>
 #include <Engine\CCollisionMgr.h>
 #include <Engine\CPhysxMgr.h>
+#include <Engine\CNavMeshMgr.h>
+
 
 #include <Script\CPlayerScript.h>
 #include <Script\CMonsterScript.h>
@@ -33,6 +35,7 @@
 #include <Script\CBossStageScript.h>
 #include <Script\CLandScpaeScript.h>
 #include <Script\CStairsScript.h>
+
 #include "CLevelSaveLoad.h"
 
 
@@ -172,9 +175,9 @@ void CreateTestLevel()
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pAritorias->AddComponent(pRigi);
-	pRigi->init(Vec3(1000.f, 700.f, 200.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
+	pRigi->init(Vec3(1800.f, 700.f, 2500.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
 	pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
-
+	//1800 2500
 	CCollider3D* pCollider = new CCollider3D();
 	pAritorias->AddComponent(pCollider);
 	pCollider->SetAbsolute(true);
@@ -192,7 +195,27 @@ void CreateTestLevel()
 	//774 999
 
 	CreateMonster();
+
+	//네비메쉬는 알아서 내가 직접 만들기
+	//CNavMeshMgr::GetInst()->init();
+
+	//Vec3 vStagePos = Vec3(3000.f, 3573.f, 3000.f);// stage worldpos
+	//
+	////몬스터
+	//Vec3 vMonsterPos = Vec3(1732.f, 120.f, 4000.f);
+	//
+	////플레이어
+	//Vec3 vPlayerPos = Vec3(1800.f, 700.f, 2500.f);
+	//
+	//vMonsterPos -= vStagePos;
+	//vPlayerPos -= vStagePos;
+
+	//플레이어 역행렬, 몬스터 역행렬을 가져와야함
 	
+	//XMVector3TransformCoord(vMonsterPos,)
+
+	//월드 좌표에서 + 2000 2000하고 worldInv곱해서 로컬좌표로 계산 후 다시 월드좌표를 곱하기
+	//vector<Vec3> vecPos = CNavMeshMgr::GetInst()->FindPath(Vec3(224, -937.f, -1400.f), Vec3(-170.f, -973.f, -1537.f));
 
 	// Main Camera Object 생성
 	CGameObject* pMainCam = new CGameObject;
@@ -345,7 +368,7 @@ void CreateMonster()
 	
 	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
 	//-330 -50 360 
-	
+	// 1732, 0 4000
 	
 	// -90, 280 , 100
 	// -15.f, 162.f, 173.f
@@ -363,7 +386,7 @@ void CreateMonster()
 	//
 	//1700 300 6100
 	//1254 1292
-	pRigi->init(Vec3(1254.f, 120.f, 1292.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
+	pRigi->init(Vec3(1732.f, 120.f, 4000.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
 	pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
 	
 	pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
@@ -375,13 +398,22 @@ void CreateMonster()
 	
 	{
 		CRDNavMeshField* pNav = new CRDNavMeshField();
-		pNav->CreatePlane2({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-		pNav->CreatePlane2({3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+		pNav->CreatePlane2({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f),false);
+		pNav->CreatePlane2({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f), false);
+		//1700 0 5500 1000 7000
+		pNav->CreatePlane2({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f), false);
+		//1700 0 2400 1300 800
+		pNav->CreatePlane2({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f), false);
+
+		//1275 350 5490 7000 650 0
+		//pNav->CreatePlane2({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f),true);
+		//pNav->CreatePlane2({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f),true);
+
 
 		pNav->BuildField();
 		pBoss->AddComponent(pNav);
 		
-
+	
 		//CNavAgent* pAgent = new CNavAgent;
 		//pBoss->AddComponent(pAgent);
 		//pAgent->SetSpeed(2);

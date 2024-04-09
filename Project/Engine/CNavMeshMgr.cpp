@@ -101,6 +101,7 @@ bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
         memset(data, 0, tileHeader.dataSize);
         fread(data, tileHeader.dataSize, 1, fp);
 
+        
         m_NavMesh->addTile(data, tileHeader.dataSize, DT_TILE_FREE_DATA, tileHeader.tileRef, 0);
     }
 
@@ -121,6 +122,16 @@ bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
 
 }
 
+bool CNavMeshMgr::BuildNavMesh()
+{
+    return false;
+}
+
+void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
+{
+
+}
+
 void CNavMeshMgr::init()
 {
     if (!m_NavMesh && !m_NavQuery)
@@ -137,9 +148,11 @@ void CNavMeshMgr::render()
 
 }
 
-vector<Vec3> CNavMeshMgr::FindPath(const Vec3& _vStartPos, const Vec3& _vEndPos, UINT _iId)
+vector<Vec3> CNavMeshMgr::FindPath(const Vec3& _vStartPos, const Vec3& _vEndPos/*, UINT _iId*/)
 {
-    NavMeshID ID = m_hashObjID[_iId];
+    Vec3 vFinalStart = _vStartPos - Vec3(2000.f, 2000.f, 2000.f);
+
+    //NavMeshID ID = m_hashObjID[_iId];
 
     // 시작 위치와 끝 위치를 설정합니다.
     float startpos[3] = { _vStartPos.x, _vStartPos.y, -_vStartPos.z }; // 시작 위치
@@ -147,8 +160,8 @@ vector<Vec3> CNavMeshMgr::FindPath(const Vec3& _vStartPos, const Vec3& _vEndPos,
 
     dtPolyRef startRef, endRef;
     //float polyPickExt[3] = { ID.vScale.x, ID.vScale.y, ID.vScale.z };
-    //float polyPickExt[3] = { 6000,6000,6000 }; // 범위를 제한하기 위한 벡터
-    float polyPickExt[3] = { 22000,22000,22000 }; // 범위를 제한하기 위한 벡터
+    float polyPickExt[3] = { 6000,6000,6000 }; // 범위를 제한하기 위한 벡터
+    //float polyPickExt[3] = { 22000,22000,22000 }; // 범위를 제한하기 위한 벡터
 
     dtQueryFilter filter;
     filter.setIncludeFlags(0xFFFF); // 모든 폴리곤 참조

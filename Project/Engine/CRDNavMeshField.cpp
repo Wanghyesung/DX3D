@@ -241,7 +241,7 @@ void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum,
     compactHeightField = rcAllocCompactHeightfield();
     assert(compactHeightField != nullptr);
 
- 
+
     processResult = rcBuildCompactHeightfield(context, config.walkableHeight, config.walkableClimb, *heightField, *compactHeightField);
     //rcFreeHeightField(heightField);
     assert(processResult == true);
@@ -272,12 +272,12 @@ void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum,
     // 디테일 메시 생성
     polyMeshDetail = rcAllocPolyMeshDetail();
     assert(polyMeshDetail != nullptr);
-   
+
     processResult = rcBuildPolyMeshDetail(context, *polyMesh, *compactHeightField, config.detailSampleDist, config.detailSampleMaxError, *polyMeshDetail);
     assert(processResult == true);
 
     //rcFreeCompactHeightfield(compactHeightField);
-    //rcFreeContourSet(contourSet);
+    rcFreeContourSet(contourSet);
 
     // detour 데이터 생성
     unsigned char* navData{ nullptr };
@@ -323,11 +323,11 @@ void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum,
     params.cs = config.cs;
     params.ch = config.ch;
     params.buildBvTree = true;
-    
+
     processResult = dtCreateNavMeshData(&params, &navData, &navDataSize);
     assert(processResult == true);
 
-    
+
     navMesh = dtAllocNavMesh();
     assert(navMesh != nullptr);
 
@@ -338,6 +338,7 @@ void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum,
 
     navQuery = dtAllocNavMeshQuery();
     status = navQuery->init(navMesh, 2048);
+    
     assert(dtStatusFailed(status) == false);
 
     crowd->init(1024, buildSettings.maxAgentRadius, navMesh);
@@ -347,7 +348,21 @@ void CRDNavMeshField::BuildField(const float* worldVertices, size_t verticesNum,
 
 int CRDNavMeshField::FindPath(float* pStartPos, float* pEndPos)
 {
-    
+   
+    /*Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
+    float fTargetPos[3] = { vTargetPos.x, vTargetPos.y, vTargetPos.z };
+
+    const dtQueryFilter* filter_ = crowd->getFilter(0);
+    const dtCrowdAgent* agent = crowd->getAgent(0);
+   
+    const float* halfExtents = crowd->getQueryExtents();
+
+    dtPolyRef targetRef = {};
+    navQuery->findNearestPoly(fTargetPos, halfExtents, filter_, &targetRef, vTargetPos);
+    crowd->requestMoveTarget(0, targetRef, vTargetPos);
+    crowd->update()*/
+
+    ////
     const Vec3 vScale = GetOwner()->Collider3D()->GetOffsetScale();
     float ext[3] = { vScale.x, vScale.y, vScale.z };
 
@@ -363,93 +378,33 @@ int CRDNavMeshField::FindPath(float* pStartPos, float* pEndPos)
     dtPolyRef endPoly;
     navQuery->findNearestPoly(pEndPos, targetext, filter, &endPoly, nearestPoint);
 
+    // 시작과 끝 위치를 찾습니다.
+    float nearestStartPos[3], nearestEndPos[3];
+    dtStatus status01 = navQuery->closestPointOnPoly(startPoly, pStartPos, nearestStartPos, 0);
+    dtStatus status02 = navQuery->closestPointOnPoly(endPoly, pEndPos, nearestEndPos, 0);
+
     dtPolyRef path[128];
     int pathCount;
     navQuery->findPath(startPoly, endPoly, pStartPos, pEndPos, filter, path, &pathCount, 128);
     
-    if (pathCount)
+    float* actualPath = new float[3 * 256];
+    int actualPathCount;
+    navQuery->findStraightPath(nearestStartPos, nearestEndPos, path, pathCount, actualPath, 0, 0, &actualPathCount, 256);
+
+    // Vec3 형태의 경로를 생성합니다.
+    vector<Vec3> vecPath(actualPathCount);
+    for (int i = 0; i < actualPathCount; ++i)
     {
-        dtPolyRef polys[128];
-        memcpy(polys, path, sizeof(dtPolyRef) * pathCount);
-        int npolys = pathCount;
-
-        float iterPos[3], targetPos[3];
-        navQuery->closestPointOnPoly(startPoly, pStartPos, iterPos, 0);
-        navQuery->closestPointOnPoly(polys[npolys - 1], pEndPos, targetPos, 0);
-
-        static const float STEP_SIZE = 18.f;
-        static const float SLOP = 0.01f;
-
-        m_nsmoothPath = 0;
-
-        dtVcopy(&m_smoothPath[m_nsmoothPath * 3], iterPos);
-        m_nsmoothPath++;
-
-        float result[3] = { 0,0,0 };
-        //지금부터는 반복문에 진입하여 부드러운 경로(smoothPath)를 만들어내는 구간이다.
-        //getSteerTarget함수는 네비게이션 메시가 목적지까지 가기 위해 직진하다가 경로를 
-        // 꺾어야(Steer) 하는 지점을 찾아준다.더 이상 경로를 꺾을 것도 없이 직진만 해도 
-        // 목표지점에 도달할 수 있다면 endOfPath가 참 값이 된다.
-         // 만약 경로를 꺾어야 하는 지점이 네비게이션 메시 바깥에 존재한다면 
-         // offMeshConnection이 참 값이 된다.
-
-        while (npolys && m_nsmoothPath < MAX_SMOOTH)
-        {
-            float steerPos[3];
-            unsigned char steerPosFlag;
-            dtPolyRef steerPosRef;
-
-            if (!getSteerTarget(navQuery, iterPos, targetPos, SLOP,
-                polys, npolys, steerPos, steerPosFlag, steerPosRef))
-                break;
-
-            bool endOfPath = (steerPosFlag & DT_STRAIGHTPATH_END) ? true : false;
-            bool offMeshConnection = (steerPosFlag & DT_STRAIGHTPATH_OFFMESH_CONNECTION) ? true : false;
-
-            float delta[3], len;
-            dtVsub(delta, steerPos, iterPos);
-            len = dtMathSqrtf(dtVdot(delta, delta));
-            // If the steer target is end of path or off-mesh link, do not move past the location.
-            if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
-                len = 1;
-            else
-                len = STEP_SIZE / len; //2.f / 900.f
-            float moveTgt[3];
-            dtVmad(moveTgt, iterPos, delta, len);
-
-            //이제 네비게이션 쿼리의 moveAlongSurface 함수를 호출하면 목표위치로 이동을 시도하고, 
-            // 이동이 끝난 좌표를 result에 저장한다. 길을 찾아 진행하는 과정에서 어떤 네비게이션 폴리곤들을 
-            // 탐색하였는지에 대한 결과를 visitied,nvisited 변수로 받아온다. 
-            // fixupShortcuts 함수는 탐색된 경로에 유턴이 없는지 확인하고 수정한다
-
-            //move
-            result[3];
-            dtPolyRef visited[16];
-            int nvisited = 0;
-            navQuery->moveAlongSurface(polys[0], iterPos, moveTgt, &m_filter,
-                result, visited, &nvisited, 16);
-
-
-            npolys = dtMergeCorridorStartMoved(polys, npolys,
-                                               MAX_POLYS, visited, nvisited);
-            npolys = fixupShortcuts(polys, npolys, navQuery);
-
-
-            float h = 0;
-            navQuery->getPolyHeight(polys[0], result, &h);
-            result[1] = h;
-            dtVcopy(iterPos, result);
-
-
-            int a = 10;
-        }
-
-            
-        m_vPathDir = Vec3(result[0] - pStartPos[0], result[1] - pStartPos[1],
-            result[2] - pStartPos[2]);
-
-        m_vPathDir.Normalize();
+        vecPath[i] = Vec3(actualPath[3 * i], actualPath[3 * i + 1], actualPath[3 * i + 2]);
     }
+
+    delete[] actualPath; // 더이상 필요없는 calcPath를 삭제합니다.
+
+    m_vPathDir = Vec3(vecPath[1].x - vecPath[0].x, vecPath[1].y - vecPath[0].y,
+        vecPath[1].z - vecPath[0].z);
+    
+    m_vPathDir.Normalize();
+    
     //const dtPolyRef polyRef = path[1];
     //float closestPoint[3];
     //navQuery->closestPointOnPoly(polyRef, pStartPos, closestPoint, NULL);
@@ -465,17 +420,21 @@ int CRDNavMeshField::FindPath(float* pStartPos, float* pEndPos)
 	return 0;
 }
 
-void CRDNavMeshField::CreatePlane2(const Vec3& _vPos, Vec3 _vScale)
+void CRDNavMeshField::CreatePlane2(const Vec3& _vPos, Vec3 _vScale, bool _bHeightMesh)
 {
     Vec3 vTemScale = _vScale / 2.f;
-    Vec3 vBotleft = _vPos - vTemScale;
-    Vec3 vTopRight = _vPos + vTemScale;
+    Vec3 vBotleft = _vPos - vTemScale; //1275, 0 , 1990
+    Vec3 vTopRight = _vPos + vTemScale;//1275, 700 ,8990
 
     int startingIdx = m_worldVertices.size();
-    m_worldVertices.push_back({ vBotleft.x,0,vTopRight.z });
-    m_worldVertices.push_back({ vBotleft.x,0,vBotleft.z });
-    m_worldVertices.push_back({ vTopRight.x,0,vBotleft.z });
-    m_worldVertices.push_back({ vTopRight.x,0,vTopRight.z });
+
+    // 1 ----4
+    // |     |
+    // 2-----3
+    m_worldVertices.push_back({ vBotleft.x, vTopRight.y,vTopRight.z }); //0 0 18000
+    m_worldVertices.push_back({ vBotleft.x, vBotleft.y ,vBotleft.z });//0, 0, -18000
+    m_worldVertices.push_back({ vTopRight.x, vBotleft.y,vBotleft.z });//18000 0 0
+    m_worldVertices.push_back({ vTopRight.x, vTopRight.y ,vTopRight.z });//-18000 0 0
 
 
     m_worldFaces.push_back(startingIdx + 2);
@@ -486,17 +445,11 @@ void CRDNavMeshField::CreatePlane2(const Vec3& _vPos, Vec3 _vScale)
     m_worldFaces.push_back(startingIdx + 0);
 
     CGameObject* pGameObj = new CGameObject();
-    pGameObj->SetName(L"navMeshPlane" + m_iPlaneCount);
+    pGameObj->SetName(L"navMeshPlane" + std::to_wstring(m_iPlaneCount));
     pGameObj->AddComponent(new CTransform);
-
-    float fTem = _vScale.y;
-    _vScale.y = _vScale.z;
-    _vScale.z = fTem;
-
+    
     pGameObj->Transform()->SetRelativeScale(_vScale);
-    float fDegree = XM_PI / 180.f;
-    pGameObj->Transform()->SetRelativeRot(Vec3(fDegree*90.f, 0.f, 0.f));
-
+   
     pGameObj->AddComponent(new CMeshRender);
     pGameObj->AddComponent(new CNavMeshPlane);
     SpawnGameObject(pGameObj, _vPos, (int)LAYER_TYPE::Default);
@@ -563,10 +516,12 @@ void CRDNavMeshField::finaltick()
        Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
        Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
    
-       float fStart[3] = { vPos.x, vPos.y, vPos.z };
+       float fStart[3] = { vPos.x, vPos.y,vPos.z };
        float fEnd[3] = { vTargetPos.x, vTargetPos.y, vTargetPos.z };
    
        FindPath(fStart, fEnd);
+
+       int a = 10;
    }
 }
 

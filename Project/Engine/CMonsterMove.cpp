@@ -90,9 +90,10 @@ bool CMonsterMove::check_len()
 
 void CMonsterMove::rotate()
 {
-	//잠시만용
+
 	Vec3 vDir = GetOwner()->RDNavMeshField()->GetFindPath();
 	
+
 	//z <--> y fbx축 
 	Vec3 vFoward = Vec3(0.f, 0.f, -1.f);
 	//vFoward.y = 0.f;

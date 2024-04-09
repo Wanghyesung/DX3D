@@ -18,7 +18,7 @@ void CNavMeshPlane::finaltick()
 
 	const Matrix& m_tMat = GetOwner()->Transform()->GetWorldMat();
 
-	DrawDebugRect(m_tMat,vColor,0.0f,false);
+	DrawDebugCube(m_tMat,vColor,0.0f,false);
 }
 
 void CNavMeshPlane::SaveToLevelFile(FILE* _File)

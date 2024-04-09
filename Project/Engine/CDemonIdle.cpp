@@ -41,7 +41,7 @@ void CDemonIdle::check_player()
 
 	float fLen = (vTargetPos - vPos).Length();
 
-	float fCheckLen = GetCheckLen();
+	float fCheckLen = 3000.f;
 	float fStopLen = GetStopLen();
 
 	if (fLen <= fCheckLen && fStopLen <= fLen)

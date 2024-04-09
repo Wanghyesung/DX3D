@@ -85,7 +85,7 @@ public:
 
 	int FindPath(float* pStartPos, float* pEndPos);
     void CreatePlane(Vec3 botleft, Vec3 topright);
-    void CreatePlane2(const Vec3& _vPos, Vec3 _vScale);
+    void CreatePlane2(const Vec3& _vPos, Vec3 _vScale, bool _bHeightMesh);
 
     void SetActive(bool _bActive) { m_bActive = _bActive; }
     bool IsActive() { return m_bActive; }

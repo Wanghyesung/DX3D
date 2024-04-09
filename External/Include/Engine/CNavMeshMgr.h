@@ -39,6 +39,9 @@ private:
     vector<CGameObject*>    m_vColliderObjects;
 
     static UINT m_iNextID;
+
+    vector<Vec3> m_vecWorldVertexes;
+    vector<int>  m_vecWorldIndexes;
 private:
     tNaviResult             m_sResultPos;
 
@@ -54,14 +57,17 @@ private:
 private:
     bool LoadNavMeshFromFile(const char* path);
 
-
+    
 public:
     void init();
     void tick();
     void render();
 
+    bool BuildNavMesh();
+    void CreatePlane(Vec3 _vPos, Vec3 _vScale);
+
 public:
-    vector<Vec3> FindPath(const Vec3& _vStartPos, const Vec3& _vEndPos, UINT _iId);
+    vector<Vec3> FindPath(const Vec3& _vStartPos, const Vec3& _vEndPos/*, UINT _iId*/);
 
     UINT InitMesh(const Vec3& _vScale);//메쉬 생성후 내 id를 반환해줌
 

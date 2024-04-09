@@ -48,7 +48,7 @@ bool CDemonMove::check_dir()
 
 	Vec3 vDiff = vTargetPos - vPos;
 
-	if (vDiff.y > 800.f)
+	if (vDiff.y > 3000.f)
 	{
 		Vec3 vDir = vDiff.Normalize();
 
