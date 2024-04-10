@@ -18,124 +18,369 @@
 #include "CCamera.h"
 #include "CCollisionMgr.h"
 
+#include "CMeshRender.h"
+#include "CNavMeshPlane.h"
 UINT CNavMeshMgr::m_iNextID = 0;
+UINT CNavMeshMgr::m_iPlaneCount = 0;
 
-CNavMeshMgr::CNavMeshMgr()
-    : m_NavMesh(nullptr)
-    , m_NavQuery(nullptr)
-    , RayResultTrigger(false)
-    , m_MapCollider(nullptr)
-    , m_hashObjID{}
+CNavMeshMgr::CNavMeshMgr():
+    m_hashObjID{}
 {
+    navQuery = dtAllocNavMeshQuery();
+    crowd = dtAllocCrowd();
+    context = new rcContext();
 }
 
 CNavMeshMgr::~CNavMeshMgr()
 {
-    if (m_NavMesh)
-    {
-        dtFreeNavMesh(m_NavMesh);
-        m_NavMesh = nullptr;
-    }
-    if (m_NavQuery)
-    {
-        dtFreeNavMeshQuery(m_NavQuery);
-        m_NavQuery = nullptr;
-    }
+    if (navMesh)
+        dtFreeNavMesh(navMesh);
+
+    if (polyMesh)
+        rcFreePolyMesh(polyMesh);
+
+    if (navQuery)
+        dtFreeNavMeshQuery(navQuery);
+
+    if (polyMeshDetail)
+        rcFreePolyMeshDetail(polyMeshDetail);
+
+    if (context)
+        delete context;
+
+    if (heightField)
+        delete heightField;
+
+    if (compactHeightField)
+        delete compactHeightField;
+
+    if (crowd)
+        dtFreeCrowd(crowd);
 }
 
-
-bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
+inline bool inRange(const float* v1, const float* v2, const float r, const float h)
 {
-    // NavMesh 파일 경로로부터 불러오기
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-    wstring wpath = converter.from_bytes(path);
-    wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-    strFilePath += wpath;
+    const float dx = v2[0] - v1[0];
+    const float dy = v2[1] - v1[1];
+    const float dz = v2[2] - v1[2];
+    return (dx * dx + dz * dz) < r * r && fabsf(dy) < h;
+}
 
-    FILE* fp = nullptr;
-    errno_t err = _wfopen_s(&fp, strFilePath.c_str(), L"rb");
-    if (err != 0 || !fp)
-    {
-        return 0;
-    }
-
-    // NavMesh 헤더 읽어오기
-    NavMeshSetHeader header;
-    fread(&header, sizeof(NavMeshSetHeader), 1, fp);
-    if (header.magic != NAVMESHSET_MAGIC)
-    {
-        fclose(fp);
+static bool getSteerTarget(dtNavMeshQuery* navQuery, const float* startPos, const float* endPos,
+    const float minTargetDist,
+    const dtPolyRef* path, const int pathSize,
+    float* steerPos, unsigned char& steerPosFlag, dtPolyRef& steerPosRef,
+    float* outPoints = 0, int* outPointCount = 0)
+{
+    // Find steer target.
+    static const int MAX_STEER_POINTS = 3;
+    float steerPath[MAX_STEER_POINTS * 3];
+    unsigned char steerPathFlags[MAX_STEER_POINTS];
+    dtPolyRef steerPathPolys[MAX_STEER_POINTS];
+    int nsteerPath = 0;
+    navQuery->findStraightPath(startPos, endPos, path, pathSize,
+        steerPath, steerPathFlags, steerPathPolys, &nsteerPath, MAX_STEER_POINTS);
+    if (!nsteerPath)
         return false;
-    }
-    if (header.version != NAVMESHSET_VERSION)
+
+    if (outPoints && outPointCount)
     {
-        fclose(fp);
-        return false;
+        *outPointCount = nsteerPath;
+        for (int i = 0; i < nsteerPath; ++i)
+            dtVcopy(&outPoints[i * 3], &steerPath[i * 3]);
     }
 
-    // NavMesh 초기화
-    m_NavMesh = dtAllocNavMesh();
-    if (!m_NavMesh)
-    {
-        fclose(fp);
-        return false;
-    }
 
-    dtStatus status = m_NavMesh->init(&header.params);
-    if (dtStatusFailed(status))
+    // Find vertex far enough to steer to.
+    int ns = 0;
+    while (ns < nsteerPath)
     {
-        fclose(fp);
-        return false;
-    }
-
-    // NavMesh의 타일 정보 읽어오기 (저희는 타일 옵션을 사용하진 않습니다)
-    for (int i = 0; i < header.numTiles; ++i)
-    {
-        NavMeshTileHeader tileHeader;
-        fread(&tileHeader, sizeof(tileHeader), 1, fp);
-        if (!tileHeader.tileRef || !tileHeader.dataSize)
+        // Stop at Off-Mesh link or when point is further than slop away.
+        if ((steerPathFlags[ns] & DT_STRAIGHTPATH_OFFMESH_CONNECTION) ||
+            !inRange(&steerPath[ns * 3], startPos, minTargetDist, 1000.0f))
             break;
-
-        unsigned char* data = (unsigned char*)dtAlloc(tileHeader.dataSize, DT_ALLOC_PERM);
-        if (!data) break;
-        memset(data, 0, tileHeader.dataSize);
-        fread(data, tileHeader.dataSize, 1, fp);
-
-        
-        m_NavMesh->addTile(data, tileHeader.dataSize, DT_TILE_FREE_DATA, tileHeader.tileRef, 0);
+        ns++;
     }
-
-    // NavQuery 초기화
-    m_NavQuery = dtAllocNavMeshQuery();
-    if (!m_NavQuery)
-    {
-        dtFreeNavMesh(m_NavMesh);
-        m_NavQuery = nullptr;
-        fclose(fp);
+    // Failed to find good point to steer to.
+    if (ns >= nsteerPath)
         return false;
-    }
-    if (dtStatusFailed(m_NavQuery->init(m_NavMesh, 2048))) {
-        assert(false);
-    }
+
+    dtVcopy(steerPos, &steerPath[ns * 3]);
+    steerPos[1] = startPos[1];
+    steerPosFlag = steerPathFlags[ns];
+    steerPosRef = steerPathPolys[ns];
 
     return true;
+}
+static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
+{
+    if (npath < 3)
+        return npath;
 
+    // Get connected polygons
+    static const int maxNeis = 16;
+    dtPolyRef neis[maxNeis];
+    int nneis = 0;
+
+    const dtMeshTile* tile = 0;
+    const dtPoly* poly = 0;
+    if (dtStatusFailed(navQuery->getAttachedNavMesh()->getTileAndPolyByRef(path[0], &tile, &poly)))
+        return npath;
+
+    for (unsigned int k = poly->firstLink; k != DT_NULL_LINK; k = tile->links[k].next)
+    {
+        const dtLink* link = &tile->links[k];
+        if (link->ref != 0)
+        {
+            if (nneis < maxNeis)
+                neis[nneis++] = link->ref;
+        }
+    }
+
+    // If any of the neighbour polygons is within the next few polygons
+    // in the path, short cut to that polygon directly.
+    static const int maxLookAhead = 6;
+    int cut = 0;
+    for (int i = dtMin(maxLookAhead, npath) - 1; i > 1 && cut == 0; i--) {
+        for (int j = 0; j < nneis; j++)
+        {
+            if (path[i] == neis[j]) {
+                cut = i;
+                break;
+            }
+        }
+    }
+    if (cut > 1)
+    {
+        int offset = cut - 1;
+        npath -= offset;
+        for (int i = 1; i < npath; i++)
+            path[i] = path[i + offset];
+    }
+
+    return npath;
+}
+void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
+{
+    Vec3 vTemScale = _vScale / 2.f;
+    Vec3 vBotleft = _vPos - vTemScale; //1275, 0 , 1990
+    Vec3 vTopRight = _vPos + vTemScale;//1275, 700 ,8990
+
+    int startingIdx = m_worldVertices.size();
+
+    // 1 ----4
+    // |     |
+    // 2-----3
+    m_worldVertices.push_back({ vBotleft.x, vTopRight.y,vTopRight.z }); //0 0 18000
+    m_worldVertices.push_back({ vBotleft.x, vBotleft.y ,vBotleft.z });//0, 0, -18000
+    m_worldVertices.push_back({ vTopRight.x, vBotleft.y,vBotleft.z });//18000 0 0
+    m_worldVertices.push_back({ vTopRight.x, vTopRight.y ,vTopRight.z });//-18000 0 0
+
+
+    m_worldFaces.push_back(startingIdx + 2);
+    m_worldFaces.push_back(startingIdx + 1);
+    m_worldFaces.push_back(startingIdx + 0);
+    m_worldFaces.push_back(startingIdx + 3);
+    m_worldFaces.push_back(startingIdx + 2);
+    m_worldFaces.push_back(startingIdx + 0);
+
+    CGameObject* pGameObj = new CGameObject();
+    pGameObj->SetName(L"navMeshPlane" + std::to_wstring(m_iPlaneCount));
+    pGameObj->AddComponent(new CTransform);
+
+    pGameObj->Transform()->SetRelativeScale(_vScale);
+
+    pGameObj->AddComponent(new CMeshRender);
+    pGameObj->AddComponent(new CNavMeshPlane);
+    SpawnGameObject(pGameObj, _vPos, (int)LAYER_TYPE::Default);
+
+    ++m_iPlaneCount;
 }
 
-bool CNavMeshMgr::BuildNavMesh()
+void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const tBuildSettings& buildSettings)
+{
+    float bmin[3] = { WCHAR_MAX,WCHAR_MAX, WCHAR_MAX };
+    float bmax[3] = { -WCHAR_MAX, -WCHAR_MAX, -WCHAR_MAX };
+    // 바운더리 정보부터 설정
+    for (auto i = 0; i < verticesNum; i++)
+    {
+        if (bmin[0] > worldVertices[i * 3])
+            bmin[0] = worldVertices[i * 3];
+        if (bmin[1] > worldVertices[i * 3 + 1])
+            bmin[1] = worldVertices[i * 3 + 1];
+        if (bmin[2] > worldVertices[i * 3 + 2])
+            bmin[2] = worldVertices[i * 3 + 2];
+
+        if (bmax[0] < worldVertices[i * 3])
+            bmax[0] = worldVertices[i * 3];
+        if (bmax[1] < worldVertices[i * 3 + 1])
+            bmax[1] = worldVertices[i * 3 + 1];
+        if (bmax[2] < worldVertices[i * 3 + 2])
+            bmax[2] = worldVertices[i * 3 + 2];
+    }
+    //auto& config{ impl->config };
+    memset(&config, 0, sizeof(rcConfig));
+
+    config.cs = buildSettings.divisionSizeXZ;
+    config.ch = buildSettings.divisionSizeY;
+    config.walkableSlopeAngle = buildSettings.walkableSlopeAngle;
+    config.walkableHeight = (int)ceilf(buildSettings.walkableHeight / config.ch);
+    config.walkableClimb = (int)floorf(buildSettings.walkableClimb / config.ch);
+    config.walkableRadius = (int)ceilf(buildSettings.agentRadius / config.cs);
+    config.maxEdgeLen = (int)(config.cs * 40 / config.cs);
+    config.maxSimplificationError = 1.3f;
+    config.minRegionArea = (int)rcSqr(config.cs * 27);		// Note: area = size*size
+    config.mergeRegionArea = (int)rcSqr(config.cs * 67);	// Note: area = size*size
+    config.maxVertsPerPoly = (int)6;
+    config.detailSampleDist = 6.0f < 0.9f ? 0 : config.cs * 6.0f;
+    config.detailSampleMaxError = config.ch * 1;
+
+    rcVcopy(config.bmin, bmin);
+    rcVcopy(config.bmax, bmax);
+    rcCalcGridSize(config.bmin, config.bmax, config.cs, &config.width, &config.height);
+
+    // 작업 맥락을 저장할 context 객체 생성, 작업의 성패여부를 저장할 processResult 선언
+    //context = 
+    bool processResult{ false };
+    // 복셀 높이필드 공간 할당
+    heightField = rcAllocHeightfield();
+    assert(heightField != nullptr);
+
+    processResult = rcCreateHeightfield(context, *heightField, config.width, config.height, config.bmin, config.bmax, config.cs, config.ch);
+    assert(processResult == true);
+
+
+    std::vector<unsigned char> triareas;
+    triareas.resize(facesNum);
+    //unsigned char * triareas = new unsigned char[facesNum];
+    //memset(triareas, 0, facesNum*sizeof(unsigned char));
+
+    rcMarkWalkableTriangles(context, config.walkableSlopeAngle, worldVertices, verticesNum, faces, facesNum, triareas.data());
+    processResult = rcRasterizeTriangles(context, worldVertices, verticesNum, faces, triareas.data(), facesNum, *heightField, config.walkableClimb);
+    assert(processResult == true);
+
+    // 필요없는 부분 필터링
+    rcFilterLowHangingWalkableObstacles(context, config.walkableClimb, *heightField);
+    rcFilterLedgeSpans(context, config.walkableHeight, config.walkableClimb, *heightField);
+    rcFilterWalkableLowHeightSpans(context, config.walkableHeight, *heightField);
+
+    // 밀집 높이 필드 만들기
+    compactHeightField = rcAllocCompactHeightfield();
+    assert(compactHeightField != nullptr);
+
+
+    processResult = rcBuildCompactHeightfield(context, config.walkableHeight, config.walkableClimb, *heightField, *compactHeightField);
+    //rcFreeHeightField(heightField);
+    assert(processResult == true);
+
+    //agentradius 범위에 따라 메쉬 가공 -> radius가 클수록 메쉬 범위 작게
+    processResult = rcErodeWalkableArea(context, config.walkableRadius, *compactHeightField);
+    assert(processResult == true);
+
+    processResult = rcBuildDistanceField(context, *compactHeightField);
+    assert(processResult == true);
+
+    rcBuildRegions(context, *compactHeightField, 0, config.minRegionArea, config.mergeRegionArea);
+    assert(processResult == true);
+
+    // 윤곽선 만들기
+    rcContourSet* contourSet{ rcAllocContourSet() };
+    assert(contourSet != nullptr);
+
+    processResult = rcBuildContours(context, *compactHeightField, config.maxSimplificationError, config.maxEdgeLen, *contourSet);
+    assert(processResult == true);
+
+    // 윤곽선으로부터 폴리곤 생성
+    polyMesh = rcAllocPolyMesh();
+    assert(polyMesh != nullptr);
+
+    processResult = rcBuildPolyMesh(context, *contourSet, config.maxVertsPerPoly, *polyMesh);
+    assert(processResult == true);
+
+    // 디테일 메시 생성
+    polyMeshDetail = rcAllocPolyMeshDetail();
+    assert(polyMeshDetail != nullptr);
+
+    processResult = rcBuildPolyMeshDetail(context, *polyMesh, *compactHeightField, config.detailSampleDist, config.detailSampleMaxError, *polyMeshDetail);
+    assert(processResult == true);
+
+    //rcFreeCompactHeightfield(compactHeightField);
+    rcFreeContourSet(contourSet);
+
+    // detour 데이터 생성
+    unsigned char* navData{ nullptr };
+    int navDataSize{ 0 };
+
+    assert(config.maxVertsPerPoly <= DT_VERTS_PER_POLYGON);
+
+    // Update poly flags from areas.
+    for (int i = 0; i < polyMesh->npolys; ++i)
+    {
+        if (polyMesh->areas[i] == RC_WALKABLE_AREA)
+        {
+            polyMesh->areas[i] = 0;
+            polyMesh->flags[i] = 1;
+        }
+    }
+    dtNavMeshCreateParams params;
+    memset(&params, 0, sizeof(params));
+    params.verts = polyMesh->verts;
+    params.vertCount = polyMesh->nverts;
+    params.polys = polyMesh->polys;
+    params.polyAreas = polyMesh->areas;
+    params.polyFlags = polyMesh->flags;
+    params.polyCount = polyMesh->npolys;
+    params.nvp = polyMesh->nvp;
+    params.detailMeshes = polyMeshDetail->meshes;
+    params.detailVerts = polyMeshDetail->verts;
+    params.detailVertsCount = polyMeshDetail->nverts;
+    params.detailTris = polyMeshDetail->tris;
+    params.detailTriCount = polyMeshDetail->ntris;
+    params.offMeshConVerts = 0;
+    params.offMeshConRad = 0;
+    params.offMeshConDir = 0;
+    params.offMeshConAreas = 0;
+    params.offMeshConFlags = 0;
+    params.offMeshConUserID = 0;
+    params.offMeshConCount = 0;
+    params.walkableHeight = config.walkableHeight;
+    params.walkableRadius = config.walkableRadius;
+    params.walkableClimb = config.walkableClimb;
+    rcVcopy(params.bmin, polyMesh->bmin);
+    rcVcopy(params.bmax, polyMesh->bmax);
+    params.cs = config.cs;
+    params.ch = config.ch;
+    params.buildBvTree = true;
+
+    processResult = dtCreateNavMeshData(&params, &navData, &navDataSize);
+    assert(processResult == true);
+
+
+    navMesh = dtAllocNavMesh();
+    assert(navMesh != nullptr);
+
+    dtStatus status;
+    status = navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
+    //dtFree(navData);
+    assert(dtStatusFailed(status) == false);
+
+    navQuery = dtAllocNavMeshQuery();
+    status = navQuery->init(navMesh, 2048);
+
+    assert(dtStatusFailed(status) == false);
+
+    crowd->init(1024, buildSettings.maxAgentRadius, navMesh);
+}
+
+bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
 {
     return false;
 }
 
-void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
-{
-
-}
-
 void CNavMeshMgr::init()
 {
-    if (!m_NavMesh && !m_NavQuery)
-        LoadNavMeshFromFile("navmesh\\solo_navmesh.bin");
+    //if (!navMesh && !navQuery)
+    //    LoadNavMeshFromFile("navmesh\\solo_navmesh.bin");
 }
 
 void CNavMeshMgr::tick()
@@ -148,59 +393,58 @@ void CNavMeshMgr::render()
 
 }
 
-vector<Vec3> CNavMeshMgr::FindPath(const Vec3& _vStartPos, const Vec3& _vEndPos/*, UINT _iId*/)
+const Vec3& CNavMeshMgr::FindPath(float* _pStartPos, float* _pEndPos)
 {
-    Vec3 vFinalStart = _vStartPos - Vec3(2000.f, 2000.f, 2000.f);
-
-    //NavMeshID ID = m_hashObjID[_iId];
-
-    // 시작 위치와 끝 위치를 설정합니다.
-    float startpos[3] = { _vStartPos.x, _vStartPos.y, -_vStartPos.z }; // 시작 위치
-    float endpos[3] = { _vEndPos.x, _vEndPos.y, -_vEndPos.z }; // 끝 위치
-
-    dtPolyRef startRef, endRef;
-    //float polyPickExt[3] = { ID.vScale.x, ID.vScale.y, ID.vScale.z };
     float polyPickExt[3] = { 6000,6000,6000 }; // 범위를 제한하기 위한 벡터
-    //float polyPickExt[3] = { 22000,22000,22000 }; // 범위를 제한하기 위한 벡터
 
-    dtQueryFilter filter;
-    filter.setIncludeFlags(0xFFFF); // 모든 폴리곤 참조
-    filter.setExcludeFlags(0);      // 제외할 폴리곤 없음
+    //const Vec3 vScale = GetOwner()->Collider3D()->GetOffsetScale();
+    //float ext[3] = { vScale.x, vScale.y, vScale.z };
 
-    // 지형 종류별(땅, 물, 벽 등)로 가중치를 주는 부분인데 저희 메쉬에는 지형 종류 설정이 되어있지 않습니다.
-    //filter.setAreaCost(1, 1.0f); // Set cost for ground area.
-    //filter.setAreaCost(2, 10.0f); // Set high cost for water area.
-    //filter.setAreaCost(3, FLT_MAX); // Set infinite cost for wall area.
+    const dtQueryFilter* filter = crowd->getFilter(0);
 
-    // 가까운 폴리곤 검색
-    dtStatus status01 = m_NavQuery->findNearestPoly(startpos, polyPickExt, &filter, &startRef, 0);
-    dtStatus status02 = m_NavQuery->findNearestPoly(endpos, polyPickExt, &filter, &endRef, 0);
+    dtPolyRef startPoly;
+    float nearestPoint[3];
+    navQuery->findNearestPoly(_pStartPos, polyPickExt, filter, &startPoly, nearestPoint);
+
+    //const Vec3 vTargetScale = m_pTarget->Collider3D()->GetOffsetScale();
+    //float targetext[3] = { vTargetScale.x, vTargetScale.y, vTargetScale.z };
+
+    dtPolyRef endPoly;
+    navQuery->findNearestPoly(_pEndPos, polyPickExt, filter, &endPoly, nearestPoint);
 
     // 시작과 끝 위치를 찾습니다.
     float nearestStartPos[3], nearestEndPos[3];
-    status01 = m_NavQuery->closestPointOnPoly(startRef, startpos, nearestStartPos, 0);
-    status02 = m_NavQuery->closestPointOnPoly(endRef, endpos, nearestEndPos, 0);
+    dtStatus status01 = navQuery->closestPointOnPoly(startPoly, _pStartPos, nearestStartPos, 0);
+    dtStatus status02 = navQuery->closestPointOnPoly(endPoly, _pEndPos, nearestEndPos, 0);
 
-    // 경로를 계획합니다.
-    dtPolyRef path[MAX_POLY];
+    dtPolyRef path[128];
     int pathCount;
-    m_NavQuery->findPath(startRef, endRef, nearestStartPos, nearestEndPos, &filter, path, &pathCount, 256);
+    navQuery->findPath(startPoly, endPoly, _pStartPos, _pEndPos, filter, path, &pathCount, 128);
 
-    // 경로를 따라 실제 이동 경로를 생성합니다.
-    float* actualPath = new float[3 * MAX_POLY];
+    float* actualPath = new float[3 * 256];
     int actualPathCount;
-    m_NavQuery->findStraightPath(nearestStartPos, nearestEndPos, path, pathCount, actualPath, 0, 0, &actualPathCount, MAX_POLY);
+    navQuery->findStraightPath(nearestStartPos, nearestEndPos, path, pathCount, actualPath, 0, 0, &actualPathCount, 256);
 
     // Vec3 형태의 경로를 생성합니다.
     vector<Vec3> vecPath(actualPathCount);
     for (int i = 0; i < actualPathCount; ++i)
     {
-        vecPath[i] = Vec3(actualPath[3 * i], actualPath[3 * i + 1], -actualPath[3 * i + 2]);
+        vecPath[i] = Vec3(actualPath[3 * i], actualPath[3 * i + 1], actualPath[3 * i + 2]);
     }
 
     delete[] actualPath; // 더이상 필요없는 calcPath를 삭제합니다.
 
-    return vecPath;
+    if (vecPath.size() == 0)
+    {
+        return Vec3::Zero;
+    }
+
+    Vec3 vDir = Vec3(vecPath[1].x - vecPath[0].x, vecPath[1].y - vecPath[0].y,
+        vecPath[1].z - vecPath[0].z);
+
+    vDir.Normalize();
+
+    return vDir;
 
 }
 
@@ -227,11 +471,11 @@ bool CNavMeshMgr::IsValidPoint(const Vec3& _CheckPos)
     filter.setExcludeFlags(0);      // 제외할 폴리곤 없음
 
     // 가까운 폴리곤 검색
-    dtStatus status = m_NavQuery->findNearestPoly(checkpos, polyPickExt, &filter, &checkRef, 0);
+    dtStatus status = navQuery->findNearestPoly(checkpos, polyPickExt, &filter, &checkRef, 0);
 
     // 시작과 끝 위치를 찾습니다.
     float nearestPos[3];
-    status = m_NavQuery->closestPointOnPoly(checkRef, checkpos, nearestPos, 0);
+    status = navQuery->closestPointOnPoly(checkRef, checkpos, nearestPos, 0);
 
     Vec3 FinalPos = { nearestPos[0], nearestPos[1], -nearestPos[2] };
     Vec3 OriginPos = _CheckPos;

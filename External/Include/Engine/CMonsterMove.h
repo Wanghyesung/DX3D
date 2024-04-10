@@ -22,7 +22,7 @@ public:
 private:
 	bool check_len();
 
-	void rotate();
+	bool rotate();
 	void move();
 
 	void lookat_player();

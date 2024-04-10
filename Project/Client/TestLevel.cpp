@@ -397,20 +397,16 @@ void CreateMonster()
 	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
 	
 	{
+		CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+		CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+		CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
+		//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
+		//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
+		tBuildSettings tSetting = {};
+		tSetting.agentRadius = 900; // 900 / 5 = 180
+		CNavMeshMgr::GetInst()->BuildField(tSetting);
+
 		CRDNavMeshField* pNav = new CRDNavMeshField();
-		pNav->CreatePlane2({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f),false);
-		pNav->CreatePlane2({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f), false);
-		//1700 0 5500 1000 7000
-		pNav->CreatePlane2({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f), false);
-		//1700 0 2400 1300 800
-		pNav->CreatePlane2({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f), false);
-
-		//1275 350 5490 7000 650 0
-		//pNav->CreatePlane2({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f),true);
-		//pNav->CreatePlane2({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f),true);
-
-
-		pNav->BuildField();
 		pBoss->AddComponent(pNav);
 		
 	

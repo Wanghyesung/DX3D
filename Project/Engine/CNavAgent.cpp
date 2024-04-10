@@ -32,9 +32,7 @@ CNavAgent::~CNavAgent()
 void CNavAgent::AssignToNavigationField(CRDNavMeshField* _pNavField)
 {
     m_pNavMesh = _pNavField;
-    m_pCrowd = m_pNavMesh->crowd;
-
-    int i = m_pNavMesh->crowd->getAgentCount();
+    m_pCrowd = CNavMeshMgr::GetInst()->GetCrowd();
 
     m_iAgentIdx = m_iAgentCount;
     ++m_iAgentCount;
@@ -93,7 +91,8 @@ void CNavAgent::MoveTo(Vec3 destination)
     const dtCrowdAgent* agent = m_pCrowd->getAgent(m_iAgentIdx);
     const float* halfExtents = m_pCrowd->getQueryExtents();
 
-    m_pNavMesh->navQuery->findNearestPoly(reinterpret_cast<float*>(&destination), halfExtents, filter, &targetRef, vTargetPos);
+    CNavMeshMgr::GetInst()->GetNavMeshQuery()->
+        findNearestPoly(reinterpret_cast<float*>(&destination), halfExtents, filter, &targetRef, vTargetPos);
     m_pCrowd->requestMoveTarget(m_iAgentIdx, targetRef, vTargetPos);
 
 

@@ -117,7 +117,8 @@ void CPhysxMgr::init()
     if (!m_pFoundation)
         assert(nullptr);
 
-    m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale(), true);
+
+    m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale(), true/*, pvd*/);
     if (!m_pPhysics)
         assert(nullptr);
 
@@ -125,7 +126,7 @@ void CPhysxMgr::init()
     PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
     //sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // 중력 세팅
 
-    
+  
     m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = m_pDispatcher;
 
@@ -143,6 +144,13 @@ void CPhysxMgr::init()
 
     m_pScene->setGravity(PxVec3(0.0f, -981.f, 0.0f));//중력
     m_pScene->setFlag(PxSceneFlag::eENABLE_CCD, m_bUseCCD); // CCD 활성화
+
+
+    //디버그 시각화를 활성화하려면 먼저 전역 시각화 배율을 양수 값으로 설정해야 합니다.
+    m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+    //그런 다음 시각화되어야 하는 개별 속성을 다시 양수 값을 사용하여 활성화할 수 있습니다.
+    m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 2.0f);
+
 }
 void CPhysxMgr::tick()
 {
@@ -221,9 +229,10 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
     pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, m_bUseCCD); // CCD 설정
     
 
+    //POD(PxVisualDebugger)설치
     //pRigidbody->getActorFlags().setAll(PxActorFlag::eVISUALIZATION); // 시각화 플래그 설정
     pRigidbody->setContactReportThreshold(0.01f);
-
+        
     m_pScene->addActor(*pRigidbody);
 
 
@@ -234,6 +243,8 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
 
     material->release();
     pShape->release();
+
+    //pRigidbody->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
 
     return pRigidbody;
 

@@ -4,7 +4,7 @@
 #include "CPxRigidbody.h"
 #include "CRDNavMeshField.h"
 CDemonMove::CDemonMove():
-	m_fCheckLen(800.f)
+	m_fCheckLen(3000.f)
 {
 
 }
@@ -48,13 +48,12 @@ bool CDemonMove::check_dir()
 
 	Vec3 vDiff = vTargetPos - vPos;
 
-	if (vDiff.y > 3000.f)
+	if (vDiff.y > m_fCheckLen)
 	{
 		Vec3 vDir = vDiff.Normalize();
 
 		return true;
 	}
-		
 
 	return false;
 }

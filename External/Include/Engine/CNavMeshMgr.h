@@ -1,27 +1,39 @@
 #pragma once
 #include "CSingleton.h"
-
+#include "Recast.h"
+#include "DetourCommon.h"
 #include "DetourNavMesh.h"
+#include "DetourNavMeshBuilder.h"
 #include "DetourNavMeshQuery.h"
-
-struct NavMeshSetHeader
-{
-    int magic;
-    int version;
-    int numTiles;
-    dtNavMeshParams params;
-};
-
-struct NavMeshTileHeader
-{
-    dtTileRef tileRef;
-    int dataSize;
-};
+#include "DetourCrowd.h"
 
 struct NavMeshID
 {
     Vec3 vScale;
 };
+
+struct tBuildSettings
+{
+    // 길찾기 주체들의 최대 개체수
+    int maxCrowdNumber{ 1024 };
+    // 길찾기 주체들의 최대 충돌반경
+    float maxAgentRadius{ 30 };
+    // 오를수 있는 경사
+    float walkableSlopeAngle{ 45 };
+
+    float agentRadius{ 1000.f };
+    // 오를 수 있는 단차
+    float walkableClimb{ 0.3f };
+    // 천장의 최소 높이
+    float walkableHeight{ 1.f };
+    // x축,z축 공간 분할의 단위, 단위가 작을수록 판정이 더 세밀해지지만, 네비게이션 빌드와 길찾기 시스템의 부하가 늘게 된다.
+    float divisionSizeXZ{ 5.f };
+    // y축 공간 분할의 단위, 단위가 작을수록 판정이 더 세밀해지지만, 네비게이션 빌드와 길찾기 시스템의 부하가 늘게 된다.
+    float divisionSizeY{ 5.f };
+    // 공간 분할은 xz축으로 250*330, y축으로 200개 정도 분할되는 정도면 순식간에 네비게이션 빌드도 되면서 길찾기도 무리없이 하게 되는 정도다.
+    // xz축으로 743* 989개 정도 분할이 되도 큰 부하는 없다.
+};
+
 
 static const int NAVMESHSET_MAGIC = 'M' << 24 | 'S' << 16 | 'E' << 8 | 'T'; //'MSET';
 static const int NAVMESHSET_VERSION = 1;
@@ -33,21 +45,22 @@ class CNavMeshMgr : public CSingleton<CNavMeshMgr>
     SINGLE(CNavMeshMgr);
 
 private:
-    dtNavMesh* m_NavMesh;
-    dtNavMeshQuery* m_NavQuery;
-    CGameObject* m_MapCollider;
-    vector<CGameObject*>    m_vColliderObjects;
-
+    static UINT m_iPlaneCount;
     static UINT m_iNextID;
+    rcContext* context;
+    rcPolyMesh* polyMesh;
+    rcConfig config;
+    rcPolyMeshDetail* polyMeshDetail;
+    rcCompactHeightfield* compactHeightField;
+    rcHeightfield* heightField;
+    dtNavMesh* navMesh;
+    dtNavMeshQuery* navQuery;
+    dtCrowd* crowd;
+    dtQueryFilter m_filter;
 
-    vector<Vec3> m_vecWorldVertexes;
-    vector<int>  m_vecWorldIndexes;
+    vector<Vec3> m_worldVertices;
+    vector<int> m_worldFaces;
 private:
-    tNaviResult             m_sResultPos;
-
-private:
-    vector<Vec4>                    m_vNaviVtx;
-    map<pair<float, float>, float>  m_mNaviMap;
    
     unordered_map<UINT, NavMeshID>  m_hashObjID;
 private:
@@ -63,26 +76,25 @@ public:
     void tick();
     void render();
 
-    bool BuildNavMesh();
     void CreatePlane(Vec3 _vPos, Vec3 _vScale);
 
+    void BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const tBuildSettings& buildSettings = tBuildSettings{});
+    void BuildField(const tBuildSettings& buildSettings = tBuildSettings{})
+    {
+        assert(sizeof(Vec3) == sizeof(float) * 3);
+        assert(!m_worldVertices.empty() && !m_worldFaces.empty());
+        assert(m_worldFaces.size() % 3 == 0);
+        BuildField(reinterpret_cast<float*>(&m_worldVertices[0]), m_worldVertices.size(), &m_worldFaces[0], m_worldFaces.size() / 3, buildSettings);
+    }
+
 public:
-    vector<Vec3> FindPath(const Vec3& _vStartPos, const Vec3& _vEndPos/*, UINT _iId*/);
+    const Vec3& FindPath(float * _pStartPos, float* _pEndPos);
 
     UINT InitMesh(const Vec3& _vScale);//메쉬 생성후 내 id를 반환해줌
 
     bool IsValidPoint(const Vec3& _CheckPos);
 public:
-    void SetNaviResult(tNaviResult _result) { m_sResultPos = _result; }
-    void SetNavMeshScale(Vec3 _scale) { m_vNavMeshScale = _scale; }
-    void SetRayResultTrigger(bool _trigger) { RayResultTrigger = _trigger; }
-    void SetMapCollider(CGameObject* _object) { m_MapCollider = _object; }
-    void AddColliderObjects(CGameObject* _object) { m_vColliderObjects.push_back(_object); }
-
-    tNaviResult GetNaviResult() { return m_sResultPos; }
-    const vector<Vec4> GetNaviVtx() { return m_vNaviVtx; }
-    bool GetRayResultTrigger() { return RayResultTrigger; }
-    CGameObject* GetMapCollider() { return m_MapCollider; }
-
+    dtCrowd* GetCrowd() { return crowd; }
+    dtNavMeshQuery* GetNavMeshQuery() { return navQuery; }
 };
 

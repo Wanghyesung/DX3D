@@ -40,7 +40,11 @@ void CMonsterMove::final_tick()
 		if (!m_bActive)
 			return;
 	
-		rotate();
+		//만약 길을 못찾았다면(ex::바로 앞)
+		if (!rotate())
+		{
+			return;
+		}
 	
 		move();
 	}
@@ -88,11 +92,12 @@ bool CMonsterMove::check_len()
 	return false;
 }
 
-void CMonsterMove::rotate()
+bool CMonsterMove::rotate()
 {
-
 	Vec3 vDir = GetOwner()->RDNavMeshField()->GetFindPath();
 	
+	if (vDir == Vec3::Zero)
+		return false;
 
 	//z <--> y fbx축 
 	Vec3 vFoward = Vec3(0.f, 0.f, -1.f);
@@ -136,6 +141,8 @@ void CMonsterMove::rotate()
 
 	PxQuat yRotation(vFinalRot.y, PxVec3(0.0f, 1.0f, 0.0f));
 	GetOwner()->PxRigidbody()->SetPxRotate(yRotation);
+
+	return true;
 }
 
 

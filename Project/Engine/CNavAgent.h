@@ -1,6 +1,6 @@
 #pragma once
 #include "CComponent.h"
-#include "CRDNavMeshField.h"
+#include "CNavMeshMgr.h"
 
 class CRDNavMeshField;
 class CNavAgent : public CComponent
@@ -46,7 +46,6 @@ public:
     CNavAgent();
     virtual ~CNavAgent();
  
- 
-    friend CRDNavMeshField;
+
 };
 
