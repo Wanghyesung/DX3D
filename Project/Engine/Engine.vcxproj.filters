@@ -377,6 +377,12 @@
     <ClInclude Include="CNavMeshPlane.h">
       <Filter>Source\06. Component\11.NavMesh\NavMeshPlane</Filter>
     </ClInclude>
+    <ClInclude Include="CEngineUI.h">
+      <Filter>Source\EngineUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CEngineUIMgr.h">
+      <Filter>Source\03. Manager\13.EngineUIMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -767,6 +773,12 @@
     <ClCompile Include="CNavMeshPlane.cpp">
       <Filter>Source\06. Component\11.NavMesh\NavMeshPlane</Filter>
     </ClCompile>
+    <ClCompile Include="CEngineUI.cpp">
+      <Filter>Source\EngineUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CEngineUIMgr.cpp">
+      <Filter>Source\03. Manager\13.EngineUIMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -1011,6 +1023,9 @@
     </Filter>
     <Filter Include="Source\06. Component\11.NavMesh\NavMeshPlane">
       <UniqueIdentifier>{2ad2e909-f2e7-48f8-9d38-32025340857a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\03. Manager\13.EngineUIMgr">
+      <UniqueIdentifier>{9536ee7c-229c-4dfc-9550-d0ed158981d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

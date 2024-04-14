@@ -3,6 +3,7 @@
 
 #include "CGameObject.h"
 #include "CCollider3D.h"
+#include "CTransform.h"
 CDemonIdle::CDemonIdle()
 {
 	SetStopLen(500.f);

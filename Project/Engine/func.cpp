@@ -248,6 +248,18 @@ void DrawDebugSphere(const Matrix& _matWorld, Vec4 _vColor, float _fTime, bool D
 	CRenderMgr::GetInst()->AddDebugShapeInfo(info);
 }
 
+void DrawDebugCylinder(const Matrix& _matWorld, Vec4 _vColor, float _fTime, bool DepthTest)
+{
+	tDebugShapeInfo info = {};
+
+	info.matWorld = _matWorld;
+	info.eShape = SHAPE_TYPE::CYLINDER;
+	info.fMaxTime = _fTime;
+	info.vColor = _vColor;
+	info.bDepthTest = DepthTest;
+
+	CRenderMgr::GetInst()->AddDebugShapeInfo(info);
+}
 
 
 

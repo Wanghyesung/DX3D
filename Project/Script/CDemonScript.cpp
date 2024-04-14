@@ -24,6 +24,9 @@ CDemonScript::~CDemonScript()
 
 void CDemonScript::tick()
 {
+	const Matrix& mat = GetOwner()->Collider3D()->GetColliderWorldMat();
+	DrawDebugCylinder(mat, Vec4(0.f, 0.f, 1.f, 1.f), 0.f, false);
+
 	CMonsterScript::tick();
 
 	if (m_bJumpTrigger)

@@ -428,7 +428,7 @@ void CreateMonster()
 	//pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
 	
 	
-
+	
 	//pMonster = new CGameObject();
 	//pMonster = InitializeFBX(L"Heavy_Knight");
 	//pMonster->AddComponent(new CTransform());
@@ -717,4 +717,8 @@ void CreateStage()
 	//CPhysxMgr::GetInst()->AddActorStatic(Vec3(1740.f, 500.f, 6000.f), Vec3(2650.f, 1.f, 200.f),
 	//	Vec3::Zero, 0.f, (int)LAYER_TYPE::Obstacle, Pillar);
 	//SpawnGameObject(Pillar, Vec3(1740.f, 500.f, 6000.f), (int)LAYER_TYPE::Obstacle);
+}
+
+void CreateUI()
+{
 }

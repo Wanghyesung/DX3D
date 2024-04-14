@@ -195,6 +195,8 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CDemonWait.h" />
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CEngine.h" />
+    <ClInclude Include="CEngineUI.h" />
+    <ClInclude Include="CEngineUIMgr.h" />
     <ClInclude Include="CEntity.h" />
     <ClInclude Include="CEquip.h" />
     <ClInclude Include="CEventMgr.h" />
@@ -326,6 +328,8 @@ call EngineCopy.bat</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="CEngineUI.cpp" />
+    <ClCompile Include="CEngineUIMgr.cpp" />
     <ClCompile Include="CEntity.cpp" />
     <ClCompile Include="CEquip.cpp" />
     <ClCompile Include="CEventMgr.cpp" />

@@ -151,6 +151,49 @@ void CResMgr::CreateDefaultMesh()
 	vecVtx.clear();
 	vecIdx.clear();
 
+	// ========
+	// Cylinder
+	// ========
+	for (UINT i = 0; i < Slice; ++i)
+	{
+		//À­ ¿ø
+		v.vPos = Vec3(fRadius * cosf(fTheta * (float)i), 0.5f , fRadius * sinf(fTheta * (float)i));
+		v.vUV = Vec2(v.vPos.x + 0.5f, -v.vPos.y + 0.5f);
+		vecVtx.push_back(v);
+
+		//¾Æ·¡ ¿ø
+		v.vPos = Vec3(fRadius * cosf(fTheta * (float)i), -0.5f, fRadius * sinf(fTheta * (float)i));
+		v.vUV = Vec2(v.vPos.x + 0.5f, -v.vPos.y + 0.5f);
+		vecVtx.push_back(v);
+	}
+
+	// ÀÎµ¦½º ¼³Á¤
+	for (UINT i = 0; i < Slice * 2; ++i)
+	{
+		// 0
+		// | \
+		// |  \
+		// 1 - 3
+
+		// 0 - 2
+		// |  /
+		// | /
+		// 3
+		vecIdx.push_back(i);
+		vecIdx.push_back(i + 2);
+		vecIdx.push_back(i + 1);
+
+		vecIdx.push_back(i);
+		vecIdx.push_back(i + 2);
+		vecIdx.push_back(i + 3);
+	}
+	pMesh = new CMesh(true);
+	pMesh->Create(vecVtx.data(), (UINT)vecVtx.size(), vecIdx.data(), (UINT)vecIdx.size());
+	AddRes(L"CylinderMesh_Debug", pMesh);
+
+	vecVtx.clear();
+	vecIdx.clear();
+
 
 	// ========
 	// CubeMesh

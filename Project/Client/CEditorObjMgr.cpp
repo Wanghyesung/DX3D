@@ -52,6 +52,12 @@ void CEditorObjMgr::init()
 	m_DebugShape[(UINT)SHAPE_TYPE::SPHERE]->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 	m_DebugShape[(UINT)SHAPE_TYPE::SPHERE]->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"DebugShapeSphereMtrl"), 0);
 
+	m_DebugShape[(UINT)SHAPE_TYPE::CYLINDER] = new CGameObjectEx;
+	m_DebugShape[(UINT)SHAPE_TYPE::CYLINDER]->AddComponent(new CTransform);
+	m_DebugShape[(UINT)SHAPE_TYPE::CYLINDER]->AddComponent(new CMeshRender);
+	m_DebugShape[(UINT)SHAPE_TYPE::CYLINDER]->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CylinderMesh_Debug"));
+	m_DebugShape[(UINT)SHAPE_TYPE::CYLINDER]->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"DebugShapeSphereMtrl"), 0);
+
 	// EditorObject »ý¼º
 	CGameObjectEx* pEditorCamObj = new CGameObjectEx;
 	pEditorCamObj->AddComponent(new CTransform);
@@ -126,6 +132,9 @@ void CEditorObjMgr::render()
 		case SHAPE_TYPE::SPHERE:
 			pShapeObj = m_DebugShape[(UINT)SHAPE_TYPE::SPHERE];
 			break;		
+		case SHAPE_TYPE::CYLINDER:
+			pShapeObj = m_DebugShape[(UINT)SHAPE_TYPE::CYLINDER];
+			break;
 		}
 
 		if (iter->matWorld != XMMatrixIdentity())
