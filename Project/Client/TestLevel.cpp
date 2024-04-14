@@ -7,7 +7,7 @@
 #include <Engine\CGameObject.h>
 #include <Engine\components.h>
 #include <Engine\CFSM.h>
-
+#include <Engine\CEngineUI.h>
 
 #include <Engine\CMonsterFSM.h>
 #include <Engine\CMonsterJump.h>
@@ -529,6 +529,8 @@ void CreateLandScape()
 	// 0 200 0
 	//300 350 300
 
+
+	CreateUI();
 }
 
 void CreateStage()
@@ -721,4 +723,8 @@ void CreateStage()
 
 void CreateUI()
 {
+	CEngineUI* pUI = new CEngineUI();
+	pUI->Initialize();
+	SpawnGameObject(pUI, Vec3(300.f, 300.f, -1.f), (int)LAYER_TYPE::UI);
+
 }

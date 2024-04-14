@@ -89,6 +89,7 @@ private:
 	Vec2				m_vPrevMousePos;
 	Vec2				m_vMouseDir;
 
+	Vec2				m_vNDCMousePos;
 public:
 	void init();
 	void tick();
@@ -98,4 +99,6 @@ public:
 	KEY_STATE GetKeyState(KEY _key) { return m_vecKey[(UINT)_key].state; }
 	Vec2 GetMousePos() { return m_vMousePos; }
 	Vec2 GetMouseDir() { return m_vMouseDir; }
+
+	Vec2 GetNDCMousePos() { return m_vMousePos; }
 };

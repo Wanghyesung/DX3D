@@ -6,6 +6,9 @@
 #include "CLayer.h"
 #include "CGameObject.h"
 #include "CCamera.h"
+
+#include "CLevelMgr.h"
+#include "CLayer.h"
 int g_arrVK[(UINT)KEY::END]
 =
 {
@@ -140,6 +143,25 @@ void CKeyMgr::tick()
 
 		m_vMouseDir = m_vMousePos - m_vPrevMousePos;
 		m_vMouseDir.y *= -1;
+
+
+		RECT tRect = {};
+		GetClientRect(CEngine::GetInst()->GetMainWnd(), &tRect);
+
+		Viewport view(0.f, 0.f, tRect.right - tRect.left, tRect.bottom - tRect.top);
+		
+		const vector<CGameObject*>& vecCam =
+			CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Camera)->GetParentObject();
+
+		if (vecCam.size() == 0)
+			return;
+
+		CCamera* pCam = vecCam.at(1)->Camera();//UI
+		Vec3 vMousePos = 
+			view.Unproject(vMousePos, pCam->GetProjMat(), pCam->GetViewMat(), Matrix::Identity);
+
+		m_vNDCMousePos.x = vMousePos.x;
+		m_vNDCMousePos.y = vMousePos.y;
 	}
 
 	// Window 가 focus 상태가 아니다

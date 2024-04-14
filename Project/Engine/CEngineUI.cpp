@@ -2,6 +2,8 @@
 #include "CEngineUI.h"
 #include "CTransform.h"
 #include "CKeyMgr.h"
+#include "CResMgr.h"
+#include "CMeshRender.h"
 CEngineUI::CEngineUI():
 	m_bLbntDown(false),
 	m_bMouseOn(false),
@@ -23,33 +25,41 @@ CEngineUI::CEngineUI(const CEngineUI& _pOrigin):
 
 CEngineUI::~CEngineUI()
 {
-	for (CEngineUI* pChildUI : m_vecChildUI)
-	{
-		if (pChildUI != nullptr)
-		{
-			delete pChildUI;
-			pChildUI = nullptr;
-		}
-	}
+	
 }
 
 void CEngineUI::Initialize()
 {
+	CMeshRender* pMeshRender = new CMeshRender;
+	pMeshRender->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DMtrl"),0);
 
+	AddComponent(pMeshRender);
+	AddComponent(new CTransform);
+
+	pMeshRender->MeshRender()->GetMaterial(0)->SetTexParam(TEX_0,
+		CResMgr::GetInst()->FindRes<CTexture>(L"MagicCircle"));
+
+	Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
+	Transform()->SetRelativePos(Vec3(200.f, 200.f, -1.f));
+
+	SetName(L"Engine UI");
 }
 
 void CEngineUI::finaltick()
 {
-
+	CGameObject::finaltick();
 }
 
 
 void CEngineUI::MouseOn()
 {
+	
 }
 
 void CEngineUI::MouseLbtnDown()
 {
+	int a = 10;
 }
 
 void CEngineUI::MouseLbtnUp()
@@ -76,11 +86,11 @@ void CEngineUI::MouseOnCheck()
 	Vector3 vPos = pTransform->GetRelativePos();
 
 	
-	//Vector2 vMousePos = CKeyMgr::GetInst()->GetNDCMousePos();
+	Vector2 vMousePos = CKeyMgr::GetInst()->GetNDCMousePos();
 
-	//if ((vPos.x - vScale.x / 2.f) <= vMousePos.x && vMousePos.x <= (vPos.x + vScale.x / 2.f) &&
-	//	(vPos.y - vScale.y / 2.f) <= vMousePos.y && vMousePos.y <= (vPos.y + vScale.y / 2.f))
-	//	m_bMouseOn = true;
-	//else
-	//	m_bMouseOn = false;
+	if ((vPos.x - vScale.x / 2.f) <= vMousePos.x && vMousePos.x <= (vPos.x + vScale.x / 2.f) &&
+		(vPos.y - vScale.y / 2.f) <= vMousePos.y && vMousePos.y <= (vPos.y + vScale.y / 2.f))
+		m_bMouseOn = true;
+	else
+		m_bMouseOn = false;
 }
