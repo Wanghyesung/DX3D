@@ -10,7 +10,7 @@ public:
 	CEngineUI(const CEngineUI& _pOrigin);
 	virtual ~CEngineUI();
 
-	virtual void Initialize();
+	virtual void Initialize(const wstring& _strTexName, const Vec3& _vScale);
 	virtual void finaltick()override;
 	
 	virtual void MouseOn();//UI위에 마우스 올라왔을 떄 

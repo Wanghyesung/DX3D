@@ -140,6 +140,7 @@ void CKeyMgr::tick()
 		GetCursorPos(&ptMousePos);
 		ScreenToClient(CEngine::GetInst()->GetMainWnd(), &ptMousePos);
 		m_vMousePos = Vec2((float)ptMousePos.x, (float)ptMousePos.y);
+		Vec3 vMousePos = Vec3((float)ptMousePos.x, (float)ptMousePos.y, 0.f);
 
 		m_vMouseDir = m_vMousePos - m_vPrevMousePos;
 		m_vMouseDir.y *= -1;
@@ -148,7 +149,9 @@ void CKeyMgr::tick()
 		RECT tRect = {};
 		GetClientRect(CEngine::GetInst()->GetMainWnd(), &tRect);
 
-		Viewport view(0.f, 0.f, tRect.right - tRect.left, tRect.bottom - tRect.top);
+		float fWidth = tRect.right - tRect.left;
+		float fHeight = tRect.bottom - tRect.top;
+		Viewport view(0.f, 0.f, fWidth, fHeight);
 		
 		const vector<CGameObject*>& vecCam =
 			CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Camera)->GetParentObject();
@@ -157,8 +160,7 @@ void CKeyMgr::tick()
 			return;
 
 		CCamera* pCam = vecCam.at(1)->Camera();//UI
-		Vec3 vMousePos = 
-			view.Unproject(vMousePos, pCam->GetProjMat(), pCam->GetViewMat(), Matrix::Identity);
+		vMousePos = view.Unproject(vMousePos, pCam->GetProjMat(), pCam->GetViewMat(), Matrix::Identity);
 
 		m_vNDCMousePos.x = vMousePos.x;
 		m_vNDCMousePos.y = vMousePos.y;

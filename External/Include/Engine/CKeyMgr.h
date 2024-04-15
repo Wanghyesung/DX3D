@@ -100,5 +100,5 @@ public:
 	Vec2 GetMousePos() { return m_vMousePos; }
 	Vec2 GetMouseDir() { return m_vMouseDir; }
 
-	Vec2 GetNDCMousePos() { return m_vMousePos; }
+	Vec2 GetNDCMousePos() { return m_vNDCMousePos; }
 };

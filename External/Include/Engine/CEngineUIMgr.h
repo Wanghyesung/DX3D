@@ -1,11 +1,14 @@
 #pragma once
 #include "CSingleton.h"
-#include "CEngineUI.h"
 
-class CEngineUIMgr : public CSingleton<CEngineUIMgr>
+class CEngineUI;
+
+class CEngineUIMgr :
+	public CSingleton<CEngineUIMgr>
 {
-	SINGLE(CEngineUIMgr);
+	//SINGLE(CEngineUIMgr);
 
+public:
 	void tick();
 	void SetFoucseUI(CEngineUI* _pUI);
 	void MoveFrontChildUI(CEngineUI* pUI);

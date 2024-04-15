@@ -724,7 +724,7 @@ void CreateStage()
 void CreateUI()
 {
 	CEngineUI* pUI = new CEngineUI();
-	pUI->Initialize();
-	SpawnGameObject(pUI, Vec3(300.f, 300.f, -1.f), (int)LAYER_TYPE::UI);
+	pUI->Initialize(L"texture\\MagicCircle.png", Vec3(200.f,200.f,0.f));
+	SpawnGameObject(pUI, Vec3(1.f, 1.f, -1.f), (int)LAYER_TYPE::UI);
 
 }

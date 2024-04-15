@@ -3,7 +3,7 @@
 
 #include "CEngine.h"
 #include "CFontMgr.h"
-
+#include "CKeyMgr.h"
 
 CTimeMgr::CTimeMgr()
 	: m_llPrevCount{}
@@ -63,7 +63,8 @@ void CTimeMgr::render()
 
 	if (1.f <= m_fTime)
 	{		
-		swprintf_s(szBuff, L"FPS : %d, DT : %f", m_iCallCount, m_fDeltaTime);
+		Vec2 vMousePos = CKeyMgr::GetInst()->GetNDCMousePos();
+		swprintf_s(szBuff, L"FPS : %d, DT : %f, KEY X : %f, Y : %f", m_iCallCount, m_fDeltaTime, vMousePos.x, vMousePos.y);
 		//SetWindowText(CEngine::GetInst()->GetMainWnd(), szBuff);	
 
 		m_fTime = 0.f;

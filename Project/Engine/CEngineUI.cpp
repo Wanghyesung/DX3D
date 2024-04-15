@@ -28,7 +28,7 @@ CEngineUI::~CEngineUI()
 	
 }
 
-void CEngineUI::Initialize()
+void CEngineUI::Initialize(const wstring& _strTexName, const Vec3& _vScale)
 {
 	CMeshRender* pMeshRender = new CMeshRender;
 	pMeshRender->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
@@ -38,17 +38,18 @@ void CEngineUI::Initialize()
 	AddComponent(new CTransform);
 
 	pMeshRender->MeshRender()->GetMaterial(0)->SetTexParam(TEX_0,
-		CResMgr::GetInst()->FindRes<CTexture>(L"MagicCircle"));
+		CResMgr::GetInst()->FindRes<CTexture>(_strTexName));
 
-	Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
-	Transform()->SetRelativePos(Vec3(200.f, 200.f, -1.f));
-
+	Transform()->SetRelativeScale(_vScale);
+	
 	SetName(L"Engine UI");
 }
 
 void CEngineUI::finaltick()
 {
 	CGameObject::finaltick();
+
+	MouseOnCheck();
 }
 
 

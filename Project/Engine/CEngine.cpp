@@ -14,7 +14,7 @@
 #include "CInstancingBuffer.h"
 #include "CPhysxMgr.h"
 #include "CNavMeshMgr.h"
-
+#include "CEngineUIMgr.h"
 CEngine::CEngine()
 	: m_hWnd(nullptr)
 {
@@ -96,6 +96,8 @@ void CEngine::tick()
 	// Level 안에 존재하는 모든 GameObject 들이 Tick 을 호출받음
 	CLevelMgr::GetInst()->tick();
 	
+	CEngineUIMgr::GetInst()->tick();
+		
 	//이전 프레임 물체 운동 업데이트
 	CPhysxMgr::GetInst()->tick();
 

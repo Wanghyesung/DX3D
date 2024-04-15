@@ -3,6 +3,7 @@
 #include "CKeyMgr.h"
 #include "CLayer.h"
 #include "CLevelMgr.h"
+#include "CEngineUI.h"
 
 void CEngineUIMgr::tick()
 {
