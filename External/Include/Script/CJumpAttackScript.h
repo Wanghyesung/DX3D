@@ -18,6 +18,7 @@ private:
     void check_bone_pos(CGameObject* _pMonster);
 
     bool check_pos(CGameObject* _pMonster);
+    void lookAtPlayer();
 public:
     virtual void tick() override;
     virtual void begin()override;

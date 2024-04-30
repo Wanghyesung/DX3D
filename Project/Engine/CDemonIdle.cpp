@@ -6,7 +6,7 @@
 #include "CTransform.h"
 CDemonIdle::CDemonIdle()
 {
-	SetStopLen(500.f);
+	SetStopLen(1000.f);
 }
 
 CDemonIdle::~CDemonIdle()
@@ -43,14 +43,14 @@ void CDemonIdle::check_player()
 	float fLen = (vTargetPos - vPos).Length();
 
 	float fCheckLen = 3000.f;
-	float fStopLen = GetStopLen();
+	float fStopLen = GetStopLen();//500
 
-	if (fLen <= fCheckLen && fStopLen <= fLen)
+	if (fLen <= fCheckLen)
 	{
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
 	}
 
-	if (fStopLen > fLen)
+	else if (fLen <= fStopLen)
 	{
 		//각도 계산 캐릭터가 위에 있는지
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);//wait

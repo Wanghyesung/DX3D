@@ -21,13 +21,13 @@ public:
 
 public:
 	void AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj);
-
+	vector<tAttackInfo>& GetAttackInfo() { return m_vecAttack; }
 private:
 	void add_force();
 	void check_event();
 
 	void add_objpull(UINT _iAttackNum, CGameObject* _pAttackObj);
-
+	
 public:
 	CMonsterAttack();
 	virtual ~CMonsterAttack();

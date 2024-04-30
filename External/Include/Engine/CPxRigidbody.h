@@ -29,7 +29,9 @@ private:
 	
 	bool m_bAccumulate;//힘들 누적해서 받을지
 	bool m_bGround; //땅인지;
-	bool m_bBasicGravity;
+
+	//계단에서는 내려갈때 중력의 영향을 더 크게 받을 수 있도록
+	bool m_bAddGravity;
 
 	bool m_bPass;
 
@@ -39,8 +41,9 @@ private:
 
 public:
 	void SetMass(float _fMass);
-	void SetGround(bool _bGround , bool _bBasicGravity = true);
+	void SetGround(bool _bGround , bool _bAddGravity = false);
 	void SetPass(bool _bPass) { m_bPass = _bPass; }
+	void SetAddGravity(bool _bGravity) { m_bAddGravity = _bGravity; }
 
 	bool IsGround() { return m_bGround; }
 	bool IsPass() { return m_bPass; }

@@ -53,23 +53,34 @@ void CMonsterAttack::final_tick()
 void CMonsterAttack::Exit()
 {
 	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eACCELERATION);
-	m_fCurMoveTime = 0.f;
-	m_iAttackCount = 0;
+
+	//임시
+	if (m_pCurGameObj)
+	{
+		EraseObject(m_pCurGameObj, (int)LAYER_TYPE::MonsterAttack);
+		m_pCurGameObj->PxRigidbody()->SetPxTransform(Vec3(-2000.f, -2000.f, -2000.f));
+
+		add_objpull(m_tCurAttack.iAttackNum, m_pCurGameObj);
+		m_pCurGameObj = nullptr;
+	}
 }
 
 void CMonsterAttack::Enter()
 {
+	m_fCurMoveTime = 0.f;
+	m_iAttackCount = 0;
+
 	//랜덤 공격
 	int iMaxAttack = m_vecAttack.size()-1;
 
 	std::random_device rDiv;
 	std::mt19937 en(rDiv());
 	std::uniform_int_distribution<int> num(0, iMaxAttack);
-	UINT iAttackNum = (UINT)num(en);
+	m_iCurAttack = 3;// (UINT)num(en);
 
-	m_tCurAttack = m_vecAttack[iAttackNum];
+	m_tCurAttack = m_vecAttack[m_iCurAttack];
 
-	wstring strName = GetName() + std::to_wstring(iAttackNum);
+	wstring strName = GetName() + std::to_wstring(m_iCurAttack);
 	Chanage_Anim(strName, false);
 
 	//GetOwner()->PxRigidbody()->SetAcumulate(true);
@@ -102,16 +113,37 @@ void CMonsterAttack::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackOb
 
 void CMonsterAttack::add_force()
 {
-	m_fCurMoveTime += DT;
+	
 
-	if (m_fCurMoveTime >= m_tCurAttack.fMoveTime)
-		return;
-	else
+	//if (m_fCurMoveTime > m_tCurAttack.fMoveTime)
+	//	return;
+	//else
+	//{
+	m_tCurAttack = m_vecAttack[m_iCurAttack];
+
+	if (m_tCurAttack.vForce != Vec3::Zero)
 	{
-		Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
-		vFront.y = 0.f;
-		GetOwner()->PxRigidbody()->AddVelocity(vFront * m_tCurAttack.fForce);
+		m_fCurMoveTime += DT;
+
+		float fRatio = (m_tCurAttack.fMoveTime - m_fCurMoveTime);
+
+		m_tCurAttack.vForce = m_tCurAttack.vForce * fRatio;
+
+		GetOwner()->PxRigidbody()->SetVelocity(m_tCurAttack.vForce);
 	}
+	
+		//임시
+		
+		
+		//GetOwner()->PxRigidbody()->AddVelocity(Vec3(0.f,1000.f,0.f));이건 들어가는데
+		 
+		//else
+		//Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+		//vFront.y = 0.f;
+		//Vec3 vFrontForce = -vFront * m_tCurAttack.fForce;
+		//GetOwner()->PxRigidbody()->AddVelocity(vFrontForce);
+		
+	//}
 }
 
 void CMonsterAttack::check_event()

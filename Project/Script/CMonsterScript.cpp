@@ -167,6 +167,7 @@ void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRo
 {
 	tAttackInfo tAttackInfo = {};
 	tAttackInfo.iAttackNum = _iAttackNum;
+	tAttackInfo.vForce = Vec3::Zero;
 	tAttackInfo.fForce = _fForce;
 	tAttackInfo.fRotate = _fRotate;
 	tAttackInfo.fMoveTime = _fTime;

@@ -408,16 +408,12 @@ void CreateMonster()
 
 		CRDNavMeshField* pNav = new CRDNavMeshField();
 		pBoss->AddComponent(pNav);
-		
-	
 		//CNavAgent* pAgent = new CNavAgent;
 		//pBoss->AddComponent(pAgent);
 		//pAgent->SetSpeed(2);
 		//pAgent->SetRadius(0.5);
 		//pAgent->AssignToNavigationField(pNav);
 	}
-
-	
 
 
 	CGameObject* pHand = pBoss->GetChild().at(1);
@@ -510,7 +506,6 @@ void CreateLandScape()
 	//}
 	//3000, 3573 , 3000
 
-
 	CGameObject* pPlain = InitializeFBX(L"Plain_CastleTower_Ruin_01");
 	pPlain->AddComponent(new CTransform);
 	pPlain->AddComponent(new CCollider3D);
@@ -530,7 +525,7 @@ void CreateLandScape()
 	//300 350 300
 
 
-	CreateUI();
+	//CreateUI();
 }
 
 void CreateStage()

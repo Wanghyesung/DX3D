@@ -17,7 +17,7 @@ void CDemonHit::final_tick()
 {
 	CGameObject* pObj = GetOwner()->GetChild().at(0);
 	bool bCompplete = pObj->Animator3D()->GetCurAnim()->IsComplete();
-
+	
 	if (bCompplete)
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
 }
@@ -33,6 +33,8 @@ void CDemonHit::Enter()
 	{
 		Chanage_Anim(GetName(), false);
 	}
+
+
 }
 
 

@@ -73,6 +73,7 @@ void CAnimation3D::update()
 	// 2 프레임 
 	//전체 프레임 1432
 	//뼈 134
+	check_event();
 
 	//30프레임 고정
 	int iFrameCount = 30;
@@ -94,28 +95,36 @@ void CAnimation3D::update()
 	}
 
 	m_fRatio = (float)(dFrameIdx - (double)m_iCurFrame);
-
-	check_event();
 }
 
 void CAnimation3D::check_event()
 {
-	if (m_iCurEventCheck == m_iCurFrame)
+	//마지막 프레임
+	if (m_iCurEventCheck == m_iEndFrame)
 		return;
 
+	
 	if (m_vecEvent[m_iCurEventCheck].iStartFrame < m_iCurFrame)
 	{
 		//늦춰진 프레임만큼 이벤트 호출
-		for (int i = m_iCurEventCheck; i < m_iCurFrame; ++i)
+		for (; m_iCurEventCheck < m_iCurFrame; ++m_iCurEventCheck)
 		{
-			m_vecEvent[i].tEvent();
-			++i;
+			m_vecEvent[m_iCurEventCheck].tEvent();
 		}
 	}
-	else
-		m_vecEvent[m_iCurEventCheck].tEvent();
-	
+
 	m_iCurEventCheck = m_iCurFrame;
+	m_vecEvent[m_iCurEventCheck].tEvent();
+	
+	//if (m_iCurEventCheck == m_iCurFrame)
+	//{
+	//	m_vecEvent[m_iCurEventCheck].tEvent();
+	//}
+		
+
+	/*else
+		m_vecEvent[m_iCurEventCheck].tEvent();*/
+
 }
 
 

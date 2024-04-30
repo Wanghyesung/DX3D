@@ -20,8 +20,6 @@ void CMonsterJump::final_tick()
 {
 	CAnimator3D* pAnimator = GetOwner()->GetChild().at(0)->Animator3D();
 	CAnimation3D* pAnim = pAnimator->GetCurAnim();
-
-	
 }
 
 void CMonsterJump::Enter()

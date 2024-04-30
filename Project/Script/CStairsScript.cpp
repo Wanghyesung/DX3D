@@ -28,6 +28,7 @@ void CStairsScript::BeginOverlap(CCollider3D* _Other)
 	if (pScript)
 	{
 		pObj->PxRigidbody()->SetGround(true);
+		pObj->PxRigidbody()->SetAddGravity(false);
 	}
 }
 
@@ -46,6 +47,7 @@ void CStairsScript::OnOverlap(CCollider3D* _Other)
 				return;
 		}
 
+		pObj->PxRigidbody()->SetAddGravity(true);
 		pObj->PxRigidbody()->SetGround(true);
 	}
 }
@@ -53,11 +55,12 @@ void CStairsScript::OnOverlap(CCollider3D* _Other)
 void CStairsScript::EndOverlap(CCollider3D* _Other)
 {
 	CGameObject* pObj = _Other->GetOwner();
-
+	
 	CPxRigidbody* pRigid = pObj->PxRigidbody();
 	if (pRigid)
 	{
-		pObj->PxRigidbody()->SetGround(false);
+		pObj->PxRigidbody()->SetAddGravity(true);
+		//pObj->PxRigidbody()->SetGround(false);
 	}
 }
 

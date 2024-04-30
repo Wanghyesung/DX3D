@@ -79,6 +79,6 @@ void CHitState::Enter()
 	m_fCurFoceTime = 0.f;
 	m_fDecFoce = m_tHitInfo.fHitRcnt;
 
-	CFontMgr::GetInst()->DrawFont(L"12", 10, 10, 100, 20);
+	//CFontMgr::GetInst()->DrawFont(L"12", 10, 10, 100, 20);
 }
 

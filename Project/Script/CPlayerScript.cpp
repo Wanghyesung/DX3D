@@ -60,8 +60,8 @@ void CPlayerScript::tick()
 		return;
 
 	STATE_TYPE eType = m_pFSM->GetCurStateType();
-	if (eType != STATE_TYPE::ATTACK &&
-		eType != STATE_TYPE::ROLL)
+	if (eType == STATE_TYPE::IDLE ||
+		eType == STATE_TYPE::WALK)
 	{
 		rotate();
 	}
@@ -91,7 +91,6 @@ void CPlayerScript::tick()
 	//	
 	//vPos += m_vOffsetTransform;
 	//GetOwner()->PxRigidbody()->SetPxTransform(vPos);
-
 }
 
 
@@ -226,8 +225,9 @@ void CPlayerScript::set_attack()
 
 	tAttackInfo attack0 = {};
 	attack0.iAttackNum = 0;
-	attack0.fForce = 100.f;
-	attack0.fMoveTime = 0.6f;
+	attack0.vForce = Vec3::Zero;
+	attack0.fForce = 200.f;
+	attack0.fMoveTime = 0.f;
 	attack0.iStartFrame = 528;
 	attack0.iEndFrame = 530;
 	attack0.fOffsetPos = 60.f;
@@ -244,7 +244,8 @@ void CPlayerScript::set_attack()
 
 	tAttackInfo attack1 = {};
 	attack1.iAttackNum = 1;
-	attack1.fForce = 200.f;
+	attack1.vForce = Vec3::Zero;
+	attack1.fForce = 400.f;
 	attack1.fMoveTime = 0.6f;
 	attack1.iStartFrame = 831;
 	attack1.iEndFrame = 835;

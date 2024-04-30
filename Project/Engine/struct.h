@@ -363,6 +363,8 @@ struct tAttackInfo
 	int iAttackNum;
 
 	//공격할때 움직임
+	Vec3 vForce;
+	//z축 움직임
 	float fForce;
 	float fRotate;
 	float fMoveTime; //움직임 시간
@@ -395,6 +397,8 @@ struct tHitInfo
 
 	//넘어질지
 	bool bDown;
+
+	Vec3 vHitDir;
 };
 
 

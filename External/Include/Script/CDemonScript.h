@@ -4,7 +4,6 @@
 class CDemonScript : public CMonsterScript
 {
 private:
-    bool m_bJumpTrigger;
 
     Vec3 m_vJumpForce; //공격, 점프..
 private:

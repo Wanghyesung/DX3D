@@ -14,7 +14,7 @@ CJumpAttackScript::CJumpAttackScript() :
 	m_bBeginOn(false),
 	m_pPlayer(nullptr),
 	m_iBoneIndex(26),
-	m_vOffsetTransform(Vec3(0.f, 540.f, 520.f))
+	m_vOffsetTransform(Vec3(0.f, 540.f, 0.f))
 {
 
 }
@@ -63,10 +63,20 @@ bool CJumpAttackScript::check_pos(CGameObject* _pMonster)
 
 	if (vDiff.y + fRevision < vPlayerPos.y)
 	{
+		//몬스터 up방향 x z 축 곱하기 500
+		Vec3 vDir = _pMonster->Transform()->GetRelativeDir(DIR_TYPE::UP);
+		vDir.z *= -500.f;
+		vDir.x *= -500.f;
+		m_vOffsetTransform.z = vDir.z;
+		m_vOffsetTransform.x = vDir.x;
+
 		return true;
 	}
-
 	return false;
+}
+void CJumpAttackScript::lookAtPlayer()
+{
+
 }
 void CJumpAttackScript::tick()
 {
@@ -92,6 +102,11 @@ void CJumpAttackScript::BeginOverlap(CCollider3D* _Other)
 	if (pMonster)
 	{
 		m_pPlayer->GetScript<CPlayerScript>()->Chanage_AnimDT(2.f);
+
+		//구간 가르기
+		float fMonsterZ = pMonster->GetOwner()->PxRigidbody()->GetPxPosition().z;
+		float fPlayerZ = m_pPlayer->PxRigidbody()->GetPxPosition().z;
+		
 
 		//m_bBeginOn = true;
 		m_bBeginOn = check_pos(_Other->GetOwner());

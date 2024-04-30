@@ -97,6 +97,7 @@ void CAttackState::add_force()
 
 	Vec3 vFront = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
 	vFront.y = 0.f;
+
 	GetOwner()->PxRigidbody()->AddVelocity(vFront * -m_tCurAttack.fForce);
 }
 

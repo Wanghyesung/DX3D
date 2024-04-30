@@ -92,4 +92,15 @@ void CMonsterFSM::AddMonsterAttack(const tAttackInfo& _tAttackInfo , CGameObject
 	pAttack->AddAttack(_tAttackInfo, _pAttckObj);
 }
 
+tAttackInfo& CMonsterFSM::GetAttackInfo(int _iIdx)
+{
+	CMonsterState* pState = FindState(MONSTER_STATE_TYPE::ATTACK);
+	CMonsterAttack* pAttack = dynamic_cast<CMonsterAttack*>(pState);
+
+
+	vector<tAttackInfo>& vecAttack = pAttack->GetAttackInfo();
+	tAttackInfo& tInfo = vecAttack[_iIdx];
+	return tInfo;
+}
+
 
