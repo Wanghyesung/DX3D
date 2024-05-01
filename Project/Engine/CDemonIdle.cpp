@@ -4,6 +4,7 @@
 #include "CGameObject.h"
 #include "CCollider3D.h"
 #include "CTransform.h"
+#include "CAnimator3D.h"
 CDemonIdle::CDemonIdle()
 {
 	SetStopLen(1000.f);
@@ -25,7 +26,7 @@ void CDemonIdle::final_tick()
 
 void CDemonIdle::Enter()
 {
-	CMonsterIdle::Enter();
+	CMonsterIdle::Enter();	
 }
 
 
@@ -43,14 +44,15 @@ void CDemonIdle::check_player()
 	float fLen = (vTargetPos - vPos).Length();
 
 	float fCheckLen = 3000.f;
-	float fStopLen = GetStopLen();//500
+	float fStopLen = GetStopLen();//1000
+	float fMinLen = 500.f;
 
 	if (fLen <= fCheckLen)
 	{
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
 	}
 
-	else if (fLen <= fStopLen)
+	else if (fMinLen <= fLen && fLen <= fStopLen)
 	{
 		//각도 계산 캐릭터가 위에 있는지
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);//wait

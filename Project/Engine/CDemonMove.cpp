@@ -3,10 +3,13 @@
 #include "CNavMesh.h"
 #include "CPxRigidbody.h"
 #include "CRDNavMeshField.h"
+#include "CCollider3D.h"
+#include "CTransform.h"
 CDemonMove::CDemonMove():
-	m_fCheckLen(3000.f)
+	m_fMaxRadian(XM_PI / 2.1f)
+	, m_fMaxDegree(15.f)
 {
-
+	SetCheckLen(3100.f);
 }
 
 CDemonMove::~CDemonMove()
@@ -17,18 +20,27 @@ CDemonMove::~CDemonMove()
 
 void CDemonMove::final_tick()
 {
-	CMonsterMove::final_tick();
+	if (m_pTarget == nullptr)
+		return;
 
-	//bool bActive = GetOwner()->RDNavMesh()->IsActive();
-	//
-	//if (!bActive)
-	//{
-	//	//플레이어가 위에 있다면 플레이어 쪽을 바라보도록
-	//	//if (check_dir())
-	//	//{
-	//	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WAIT);
-	//	//}
-	//}
+	if (check_len())
+	{
+		return; 
+	}
+
+	else
+	{
+		if (!m_bActive)
+			return;
+
+		if (!rotate())
+		{
+			return;
+		}
+
+		move();
+	}
+	
 }
 
 void CDemonMove::Enter()
@@ -43,15 +55,82 @@ void CDemonMove::Exit()
 
 bool CDemonMove::check_dir()
 {
+	//플레이어 와 몬스터 방향 벡터
+	//몬스터 z 방향 벡터 내적 
+
 	Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
 	Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
 
-	Vec3 vDiff = vTargetPos - vPos;
+	Vec3 vDir = (vTargetPos - vPos).Normalize();
+	Vec3 vFoward = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+	vFoward.z *= -1;
 
-	if (vDiff.y > m_fCheckLen)
+	float fCos = vDir.Dot(vFoward);
+	if (vDir.y < 0)
+		return false;
+	//반대 방향
+	if (fCos < 0)
+		return false;
+	
+	//외적 이용 오른쪽 왼쪽 판별
+	//Vec3 vCross = vFoward.Cross(vDir);
+
+	//if (vCross.y >= 0)
+	//	fRadian = acos(fCos);
+	//else
+	//	fRadian = 0.f;// XM_PI - acos(fCos);
+
+	
+
+	float fRadian = acos(fCos);
+
+	//xz축 플레이와 몬스터가 마주보고 있는지
+	float fMaxCos = cos(m_fMaxRadian);
+
+	//범위안에 각도만 들어오게
+	vFoward.y = 0.f;
+	vDir.y = 0.f;
+	vDir.Normalize();
+	float xzRadian = vDir.Dot(vFoward);
+	
+	if (0.8f > xzRadian || 0.9f <xzRadian)
+		return false;
+
+	//80?
+	if (fRadian >= m_fMaxRadian)
+		return true;
+
+	return false;
+}
+
+bool CDemonMove::check_len()
+{
+	Vec3 vTargetPos = m_pTarget->Collider3D()->GetWorldPos();
+
+	Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
+	
+	Vec3 vLen = vTargetPos - vPos;
+
+	Vec2 vTargetXY = Vec2(vTargetPos.x, vTargetPos.z);
+	Vec2 vXY = Vec2(vPos.x, vPos.z);
+
+	float fLen = (vTargetXY - vXY).Length(); //xy축으로만 계산
+
+	if (fLen <= m_fCheckLen)
+		m_bActive = true;
+	else
+		m_bActive = false;
+
+	if (!m_bActive)
 	{
-		Vec3 vDir = vDiff.Normalize();
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
+		return true;
+	}
 
+	//y축 검사 위에 플레이어가 있는지
+	else if ((check_dir()))
+	{
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WAIT);
 		return true;
 	}
 

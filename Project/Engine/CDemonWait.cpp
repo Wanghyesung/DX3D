@@ -6,10 +6,12 @@
 #include "CLayer.h"
 #include "CPxRigidbody.h"
 #include "CTransform.h"
+#include "CAnimator3D.h"
 CDemonWait::CDemonWait() :
 	m_fCurTime(0.f),
 	m_fWaitTime(15.f),
-	m_fCheckLen(1300.f)
+	m_fCheckLen(1300.f),
+	m_fMoveLen(1000.f)
 {
 
 }
@@ -49,6 +51,12 @@ void CDemonWait::Enter()
 	m_fCurTime = 0.f;
 	m_pTarget = 
 		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Player)->GetParentObject().at(0);
+
+	const vector<CGameObject*>& vecAnim = GetOwner()->GetChild();
+	for (int i = 0; i < vecAnim.size(); ++i)
+	{
+		vecAnim[i]->Animator3D()->Stop(true);
+	}
 }
 
 void CDemonWait::rotate()

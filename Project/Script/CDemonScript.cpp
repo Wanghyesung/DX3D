@@ -43,7 +43,36 @@ void CDemonScript::BeginOverlap(CCollider3D* _Other)
 
 void CDemonScript::OnOverlap(CCollider3D* _Other)
 {
-	CMonsterScript::OnOverlap(_Other);
+	//CMonsterScript::OnOverlap(_Other);
+
+	CGameObject* pObj = _Other->GetOwner();
+
+	CAttackScript* pAttack = pObj->GetScript<CAttackScript>();
+	if (pAttack)
+	{
+		Vec3 vPlayerPos = pObj->PxRigidbody()->GetPxPosition();
+		Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
+
+		float fYLen = vPos.y - vPlayerPos.y;
+
+		if (fYLen >= 200.f)
+		{
+			bool bOn = pAttack->IsAttackOn(GetOwner()->GetID());
+			if (bOn)
+			{
+				CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
+				pHit->SetHitInfo(m_tHitInfo);
+
+
+				if (m_pFSM->GetCurStateType() == MONSTER_STATE_TYPE::HIT)
+					return;
+
+				ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+			}
+		}
+
+
+	}
 }
 
 void CDemonScript::EndOverlap(CCollider3D* _Other)

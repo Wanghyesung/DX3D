@@ -49,7 +49,6 @@ void CRDNavMeshField::finaltick()
        float fEnd[3] = { vTargetPos.x, vTargetPos.y, vTargetPos.z };
    
        m_vPathDir = CNavMeshMgr::GetInst()->FindPath(fStart, fEnd);
-      
    }
 }
 

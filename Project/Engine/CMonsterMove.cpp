@@ -32,7 +32,7 @@ void CMonsterMove::final_tick()
 
 	if (check_len())
 	{
-		lookat_player();
+		return; //lookat_player();
 	}
 
 	else
@@ -77,12 +77,15 @@ bool CMonsterMove::check_len()
 
 	float fLen = (vTargetPos - vPos).Length();
 
+	m_fCheckLen = GetCheckLen();
+	//m_fStopLen = GetStopLen();
+
 	if (fLen <= m_fCheckLen)
 		m_bActive = true;
 	else
 		m_bActive = false;
 
-	if (fLen <= m_fStopLen || !m_bActive)
+	if (/*fLen <= m_fStopLen || */!m_bActive)
 	{
 		//여기서 플레어 방향까지 회전
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);

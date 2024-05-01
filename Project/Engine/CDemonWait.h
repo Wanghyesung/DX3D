@@ -12,6 +12,8 @@ private:
 
 	float m_fCheckLen;
 
+	//뒤로 이동할 거리
+	float m_fMoveLen;
 private:
 	void rotate();
 
