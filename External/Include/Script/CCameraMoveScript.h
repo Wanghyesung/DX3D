@@ -6,6 +6,9 @@ class CCameraMoveScript :
 {
 private:
     float       m_fCamSpeed;
+    float       m_fMaxDistance;
+
+    bool        m_bCameMove;
 
 public:
     virtual void tick() override;

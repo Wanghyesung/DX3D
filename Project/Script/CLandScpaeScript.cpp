@@ -2,10 +2,13 @@
 #include "CLandScpaeScript.h"
 
 #include "CPlayerScript.h"
+#include "CMonsterScript.h"
 #include <Engine\CGameObject.h>
 #include <Engine\CPxRigidbody.h>
 #include <Engine\CCollider3D.h>
 #include <Engine\CFSM.h>
+#include <Engine\CMonsterFSM.h>
+
 void CLandScpaeScript::begin()
 {
 
@@ -24,12 +27,17 @@ void CLandScpaeScript::BeginOverlap(CCollider3D* _Other)
 	if (pRigid)
 	{
 		CPlayerScript* pPlayer = pObj->GetScript<CPlayerScript>();
-
+		//CMonsterScript* pMonster = pObj->GetScript<CMonsterScript>();
 		if (pPlayer)
 		{
 			if (pPlayer->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
 				return;
 		}
+		//else if (pMonster)
+		//{
+		//	if (pMonster->GetFSM()->GetCurStateType() == MONSTER_STATE_TYPE::JUMP)
+		//		return;
+		//}
 
 		pObj->PxRigidbody()->SetGround(true);
 
@@ -46,14 +54,17 @@ void CLandScpaeScript::OnOverlap(CCollider3D* _Other)
 	if (pRigid)
 	{
 		CPlayerScript* pPlayer = pObj->GetScript<CPlayerScript>();
-
+		//CMonsterScript* pMonster = pObj->GetScript<CMonsterScript>();
 		if (pPlayer)
 		{
 			if (pPlayer->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
 				return;
 		}
-
-		pObj->PxRigidbody()->SetGround(true);
+		//else if (pMonster)
+		//{
+		//	if (pMonster->GetFSM()->GetCurStateType() == MONSTER_STATE_TYPE::JUMP)
+		//		return;
+		//}
 	}
 }
 

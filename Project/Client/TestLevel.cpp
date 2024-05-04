@@ -32,6 +32,7 @@
 #include <Script\CTerrainScript.h>
 #include <Script\CLandFormScript.h>
 #include <Script\CEquipScript.h>
+#include <Script\CObjstacleScript.h>
 #include <Script\CBossStageScript.h>
 #include <Script\CLandScpaeScript.h>
 #include <Script\CStairsScript.h>
@@ -175,9 +176,9 @@ void CreateTestLevel()
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pAritorias->AddComponent(pRigi);
-	pRigi->init(Vec3(1800.f, 700.f, 2500.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
+	pRigi->init(Vec3(1591.f, 2524.f, 2941.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
 	pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
-	//1800 2500
+	//1591 2524 2941
 	CCollider3D* pCollider = new CCollider3D();
 	pAritorias->AddComponent(pCollider);
 	pCollider->SetAbsolute(true);
@@ -384,9 +385,9 @@ void CreateMonster()
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pBoss->AddComponent(pRigi);
 	//
-	//1700 300 6100
+	//1783 300 2985
 	//1254 1292
-	pRigi->init(Vec3(1732.f, 120.f, 4000.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
+	pRigi->init(Vec3(1783.f, 120.f, 3585.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
 	pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
 	
 	pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
@@ -697,10 +698,10 @@ void CreateStage()
 
 	pPxColl_11->AddComponent(pCollider);
 	CPhysxMgr::GetInst()->AddActorStatic(Vec3(1740.f, 2410.f, 3036.f), Vec3(2650.f, 1.f, 200.f),
-		Vec3::Right, 90.f, (int)LAYER_TYPE::Stairs, pPxColl_11);
-	SpawnGameObject(pPxColl_11, Vec3(1740.f, 2410.f, 3036.f), (int)LAYER_TYPE::Stairs);
-
-
+		Vec3::Right, 90.f, (int)LAYER_TYPE::Obstacle, pPxColl_11);
+	SpawnGameObject(pPxColl_11, Vec3(1740.f, 2410.f, 3036.f), (int)LAYER_TYPE::Obstacle);
+	pPxColl_11->AddComponent(new CObjstacleScript);
+		
 	//±âµÕ
 	//CGameObject* Pillar = new CGameObject();
 	//Pillar->SetName(L"Pillar_1");

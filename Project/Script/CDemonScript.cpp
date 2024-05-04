@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CDemonScript.h"
 #include "CAttackScript.h"
+#include "CObjstacleScript.h"
 #include <Engine\CMonsterFSM.h>
 #include <Engine\CDemonIdle.h>
 #include <Engine\CMonsterMove.h>
@@ -10,6 +11,7 @@
 #include <Engine\CDemonMove.h>
 #include <Engine\CDemonWait.h>
 #include <Engine\CDemonJump.h>
+
 CDemonScript::CDemonScript():
 	CMonsterScript(SCRIPT_TYPE::DEMONSCRIPT)
 {
@@ -34,11 +36,20 @@ void CDemonScript::tick()
 
 void CDemonScript::BeginOverlap(CCollider3D* _Other)
 {
-	CAttackScript* pAttack = _Other->GetOwner()->GetScript<CAttackScript>();
-
-	if (pAttack)
-		int a = 10;
+	CGameObject* pObj = _Other->GetOwner();
+	CObjstacleScript* pObstacle = pObj->GetScript<CObjstacleScript>();
 	
+	if (pObstacle)
+	{
+		MONSTER_STATE_TYPE eState = m_pFSM->GetCurStateType();
+		if (eState == MONSTER_STATE_TYPE::JUMP)
+		{
+			CMonsterState* pState = m_pFSM->FindState(eState);
+			CDemonJump* pJump = dynamic_cast<CDemonJump*>(pState);
+
+			pJump->SetAttackTrigger();
+		}
+	}
 }
 
 void CDemonScript::OnOverlap(CCollider3D* _Other)
@@ -104,13 +115,17 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
 
 	CDemonJump* pJump = new CDemonJump();
-	AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 1686, 1920);
+	AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 1686, 1758);//1920
+
 
 	CDemonWait* pWait = new CDemonWait();
 	AddMonsterState(MONSTER_STATE_TYPE::WAIT, pWait, L"Wait", 1686, 1686);
 
 	CDemonHit* pHit = new CDemonHit();
 	AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527, 650);
+
+	AddAnimFrame(L"Walk_Back", 182, 241);
+	AddAnimFrame(L"Jump_Attack", 1759, 1921);
 
 	AddAnimFrame(L"Attack0", 651, 792);
 	AddAnimFrame(L"Attack1", 977, 1114);
@@ -125,6 +140,7 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	GetOwner()->GetChild().at(0)->Animator3D()->
 		AddEvent(L"Attack3", std::bind(&CDemonScript::jump_end, this), 1321);
 
+	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
 }
 
 void CDemonScript::jump_start()

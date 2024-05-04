@@ -9,9 +9,10 @@
 #include "CAnimator3D.h"
 CDemonWait::CDemonWait() :
 	m_fCurTime(0.f),
-	m_fWaitTime(15.f),
-	m_fCheckLen(1300.f),
-	m_fMoveLen(1000.f)
+	m_fWaitTime(5.f),
+	m_fCheckLen(1200.f),
+	m_fMoveLen(1000.f),
+	m_bJumpOn(false)
 {
 
 }
@@ -23,19 +24,18 @@ CDemonWait::~CDemonWait()
 
 void CDemonWait::final_tick()
 {
-	m_fCurTime += DT;
-
-	//if (m_fCurTime >= m_fWaitTime)
-	//{
-	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::JUMP);
-	//}
-	//
-	//if (!check_len())
-	//{
-	//	ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
-	//}
-
-	rotate();
+	if (!m_bJumpOn)
+	{
+		move_back();
+	}
+	else
+	{
+		m_fCurTime += DT;
+		if (m_fCurTime >= m_fWaitTime)
+		{
+			ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::JUMP);
+		}
+	}
 
 }
 
@@ -46,17 +46,20 @@ void CDemonWait::Exit()
 
 void CDemonWait::Enter()
 {
-	Chanage_Anim(GetName());
+    Chanage_Anim(L"Walk_Back");
 
+	m_bJumpOn = false;
+	m_fStartLen = GetOwner()->PxRigidbody()->GetPxPosition().z;
 	m_fCurTime = 0.f;
 	m_pTarget = 
 		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Player)->GetParentObject().at(0);
 
-	const vector<CGameObject*>& vecAnim = GetOwner()->GetChild();
-	for (int i = 0; i < vecAnim.size(); ++i)
-	{
-		vecAnim[i]->Animator3D()->Stop(true);
-	}
+
+	Vec3 vFinalRot = Vec3(-XM_PI / 2.f, XM_PI, 0.f);
+
+	PxQuat yRotation(vFinalRot.y, PxVec3(0.0f, 1.0f, 0.0f));
+	GetOwner()->PxRigidbody()->SetPxRotate(yRotation);
+	GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 }
 
 void CDemonWait::rotate()
@@ -94,7 +97,7 @@ void CDemonWait::rotate()
 	GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 }
 
-bool CDemonWait::check_len()
+bool CDemonWait::check_dir()
 {
 	Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
 	Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
@@ -105,3 +108,24 @@ bool CDemonWait::check_len()
 
 	return true;
 }
+
+void CDemonWait::move_back()
+{
+	Vec3 vFront = Vec3(0.f, 0.f, 1.f);
+
+	CPxRigidbody* pRigid = GetOwner()->PxRigidbody();
+	pRigid->AddVelocity(vFront * 400.f);
+	
+
+	float fCurLen = pRigid->GetPxPosition().z;
+	float fLen = fCurLen - m_fStartLen;
+
+	if (fabs(fLen) >= m_fCheckLen)
+	{
+		m_bJumpOn = true;
+		Chanage_Anim(GetName());
+	}
+	//내 범위에서 벗어났는지 확인
+	//check_dir();
+}
+

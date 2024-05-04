@@ -10,7 +10,8 @@ CPxRigidbody::CPxRigidbody():
     m_bAddGravity(true),
     m_bAccumulate(false),
     m_bPass(false),
-    m_vTransformOffset(0.f,0.f,0.f)
+    m_vTransformOffset(0.f,0.f,0.f),
+    m_vDecVel(Vec3::Zero)
 {
     m_eForceMode = PxForceMode::eACCELERATION;
 }
@@ -65,8 +66,6 @@ void CPxRigidbody::SetMass(float _fMass)
     m_pRigidbody->setMass(_fMass);
 }
 
-
-
 void CPxRigidbody::SetGround(bool _bGround, bool _bAddGravity)
 {
     m_bGround = _bGround; 
@@ -103,6 +102,7 @@ void CPxRigidbody::SetMaxVelocity(float _fMaxVelocity)
 {
     m_pRigidbody->setMaxLinearVelocity(_fMaxVelocity);
 }
+
 
 const Matrix& CPxRigidbody::GetPosMatrix()
 {

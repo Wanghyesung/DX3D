@@ -59,7 +59,7 @@ public:
 	void SetMaxVelocity(float _fMaxVelocity);
 
 	void AddForce(Vec3 _vForce) { m_vForce += _vForce; }
-
+	
 	void SetDecrease(bool _bDecrease) { m_bDecrease = _bDecrease; }
 	void SetAccumulate(bool _bAccumulate) { m_bAccumulate = _bAccumulate; }
 

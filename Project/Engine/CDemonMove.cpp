@@ -84,9 +84,9 @@ bool CDemonMove::check_dir()
 
 	float fRadian = acos(fCos);
 
+	//float fMaxCos = cos(m_fMaxRadian);
+	
 	//xz축 플레이와 몬스터가 마주보고 있는지
-	float fMaxCos = cos(m_fMaxRadian);
-
 	//범위안에 각도만 들어오게
 	vFoward.y = 0.f;
 	vDir.y = 0.f;

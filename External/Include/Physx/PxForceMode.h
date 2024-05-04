@@ -47,6 +47,11 @@ namespace physx
 */
 struct PxForceMode
 {
+	/*parameter는 질량* 길이 / 시간 ^ 2의 단위, 즉 힘을 갖습니다
+	parameter는 질량* 길이 / 시간 단위, 즉 힘* 시간 단위를 갖습니다
+	매개변수는 길이 / 시간의 단위를 갖습니다.즉, 효과는 질량에 독립적입니다.즉, 속도 변화입니다.
+	매개변수는 길이 / 시간 ^ 2의 단위, 즉 가속도를 갖습니다.적분하기 전에 질량을 나누지 않는 것을 제외하고는 힘과 같이 취급됩니다.*/
+
 	enum Enum
 	{
 		eFORCE,				//!< parameter has unit of mass * length / time^2, i.e., a force

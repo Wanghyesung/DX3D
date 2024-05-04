@@ -6,6 +6,7 @@ class CDemonScript : public CMonsterScript
 private:
 
     Vec3 m_vJumpForce; //공격, 점프..
+
 private:
     void jump_start();
     void jump_end();

@@ -10,6 +10,8 @@ CCameraMoveScript::CCameraMoveScript()
 	: CScript((UINT)SCRIPT_TYPE::CAMERAMOVESCRIPT)
 	, m_fCamSpeed(500.f)
 	, m_pTarget(nullptr)
+	, m_bCameMove(false)
+	, m_fMaxDistance(500.f)
 {
 }
 
@@ -112,12 +114,37 @@ void CCameraMoveScript::move_target()
 
 	//camera
 	Vec3 vRot = Transform()->GetRelativeRot();
-	vRot.x = XM_PI / 10.f;
-	vRot.y = vTargetRot.y;
-	//vTargetFoword *= -1;
-	float fMaxDistance = 500.f;
-	vTargetFoword *= fMaxDistance;
+	if (KEY_TAP(KEY::TAB))
+	{
+		if (m_bCameMove)
+			m_bCameMove = false;
+		else
+			m_bCameMove = true;
+	}
+	
 
+	if (m_bCameMove)
+	{
+		if (KEY_PRESSED(KEY::RIGHT))
+			vRot.x += DT;
+
+		vRot.y = vTargetRot.y;
+
+		if (KEY_PRESSED(KEY::UP))
+			m_fMaxDistance -= (DT * 200.f);
+		else if (KEY_PRESSED(KEY::DOWN))
+			m_fMaxDistance += (DT * 200.f);
+	}
+
+	else
+	{
+		vRot.x = XM_PI / 10.f;
+		vRot.y = vTargetRot.y;
+		//vTargetFoword *= -1;
+		m_fMaxDistance = 500.f;
+	}
+
+	vTargetFoword *= m_fMaxDistance;
 	Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
 	Vec3 vFinalPos = vTargetPos + vTargetFoword;
 	vFinalPos.y += 300.f;

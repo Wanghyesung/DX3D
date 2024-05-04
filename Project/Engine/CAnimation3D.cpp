@@ -87,6 +87,8 @@ void CAnimation3D::update()
 		m_iCurFrame = m_iEndFrame;
 
 		m_iNextFrame = m_iEndFrame;	// 끝이면 마지막 위치로
+
+		dFrameIdx = m_fEndTime * (double)iFrameCount;
 	}
 	else
 	{
