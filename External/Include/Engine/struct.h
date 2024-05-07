@@ -354,7 +354,8 @@ struct tAttack
 	bool bDown; //맞으면 넘어지는지
 	//float fAttRigidityTime; //경직 시간
 
-	int iMatCount; //공격 가능한 수
+	int iMaxCount; //공격 가능한 수
+	//int iCurCount; //현재 공격 수
 };
 
 //공격 정보
@@ -381,7 +382,7 @@ struct tAttackInfo
 	tAttack tAttackValue;
 };
 
-struct tMonsterInfo
+struct tActorInfo
 {
 	float fHP;
 	float fSpeed;
@@ -394,6 +395,9 @@ struct tHitInfo
 	
 	//날라가는 시간
 	float fHitTime;
+	
+	//데미지
+	float fDamage;
 
 	//넘어질지
 	bool bDown;

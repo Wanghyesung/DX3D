@@ -8,11 +8,11 @@
 
 CDemonJump::CDemonJump() :
 	m_bAttackTrigger(false),
-	m_vJumpForce(Vec3(0.f, 3000.f, 0.f)),
+	m_vJumpForce(Vec3(0.f, 3200.f, 0.f)),
 	m_iJumpStartFrame(1727),
-	m_vFinalJumpPos(Vec3(1783, 2131, 3460))
+	m_vFinalJumpPos(Vec3(1800, 2510, 3286))
 {
-	//1783 2131 3460
+	//1783 2510 3286
 }
 
 CDemonJump::~CDemonJump()
@@ -25,9 +25,20 @@ void CDemonJump::jump()
 	Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
 	if (vPos.z <= m_vFinalJumpPos.z)
 	{
-		GetOwner()->PxRigidbody()->SetAddGravity(false);
+		GetOwner()->PxRigidbody()->SetGround(true, false);
+		GetOwner()->PxRigidbody()->SetPxTransform(m_vFinalJumpPos);
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::JUMP_ATTACK);
 		return;
 	}
+
+	//만약 너무 높다 하면 최대 높이 정하기
+	if (vPos.y >= m_vFinalJumpPos.y)
+	{
+		vPos.y = m_vFinalJumpPos.y;
+		GetOwner()->PxRigidbody()->SetPxTransform(vPos);
+	}
+		
+
 	float fDiff = m_vFinalJumpPos.z - vPos.z;
 
 	//현재 목적지까지 남은 비율
@@ -43,10 +54,6 @@ void CDemonJump::jump()
 
 void CDemonJump::final_tick()
 {
-	if (m_bAttackTrigger)
-	{
-		int a = 10;
-	}
 	 int iFrame =
 		 GetOwner()->GetChild().at(0)->Animator3D()->GetCurAnim()->GetCurFrame();
 

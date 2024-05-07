@@ -98,6 +98,8 @@ public:
 	void ResetCollisionCheck();//PxCheckColl에 bCheck값을 false로
 	void AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer);
 	PxCollisionEvent FIndEventObj(UINT _iID);
+	void DeleteEventObj(UINT _iID);
+
 	void Clear()
 	{
 		memset(m_matrix, 0, sizeof(UINT) * MAX_LAYER);

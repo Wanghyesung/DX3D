@@ -4,7 +4,11 @@
 struct tCheckInfo
 {
     int ID;
+    //int iAttackCount;
+
     float fAttackTime;
+    float fCoolAttackTime; //초당 몇번 데미지가 들어가는지
+
     float fCurTime;
 
     bool bAttackOn;

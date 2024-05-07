@@ -416,8 +416,7 @@ void CreateMonster()
 		//pAgent->AssignToNavigationField(pNav);
 	}
 
-
-	CGameObject* pHand = pBoss->GetChild().at(1);
+	CGameObject* pHand = pBoss;
 	pWeapon->Equip()->SetChar(pHand);
 	SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
 

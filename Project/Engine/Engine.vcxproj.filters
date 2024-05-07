@@ -383,6 +383,15 @@
     <ClInclude Include="CEngineUIMgr.h">
       <Filter>Source\03. Manager\13.EngineUIMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CDemonJumpAttack.h">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonsterDead.h">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CRespawnMgr.h">
+      <Filter>Source\03. Manager\14.SpawnMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -779,6 +788,15 @@
     <ClCompile Include="CEngineUIMgr.cpp">
       <Filter>Source\03. Manager\13.EngineUIMgr</Filter>
     </ClCompile>
+    <ClCompile Include="CDemonJumpAttack.cpp">
+      <Filter>Source\10. FSM\MonsterFSM\DemonFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonsterDead.cpp">
+      <Filter>Source\10. FSM\MonsterFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CRespawnMgr.cpp">
+      <Filter>Source\03. Manager\14.SpawnMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -1026,6 +1044,9 @@
     </Filter>
     <Filter Include="Source\03. Manager\13.EngineUIMgr">
       <UniqueIdentifier>{9536ee7c-229c-4dfc-9550-d0ed158981d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\03. Manager\14.SpawnMgr">
+      <UniqueIdentifier>{7707d313-c3e0-475d-a1c4-26d4af6206c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

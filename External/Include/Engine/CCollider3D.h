@@ -9,6 +9,7 @@ private:
     Vec3            m_vOffsetScale;
     Vec3            m_vOffsetRot;
 
+    bool            m_bActive;
     bool            m_bAbsolute;
     COLLIDER3D_TYPE m_Shape;
     Matrix          m_matCollider3D;    // Collider 의 월드행렬
@@ -24,6 +25,7 @@ public:
     void SetOffsetScale(Vec3 _vOffsetScale) { m_vOffsetScale = Vec3(_vOffsetScale.x, _vOffsetScale.y, _vOffsetScale.z); }
     void SetOffsetRot(Vec3 _vRot) { m_vOffsetRot = _vRot; }
 
+    void SetActive(bool _bSet) { m_bActive = _bSet; }
     void SetAbsolute(bool _bSet) { m_bAbsolute = _bSet; }
     void SetCollider2DType(COLLIDER3D_TYPE _Type) { m_Shape = _Type; }
 
@@ -35,6 +37,8 @@ public:
     Vec3 GetOffsetRot() { return m_vOffsetRot; }
 
     bool GetIsAbsolute() { return m_bAbsolute; }
+    bool GetIsActive() { return m_bActive; }
+
 public:
 
     void BeginOverlap(CCollider3D* _Other);

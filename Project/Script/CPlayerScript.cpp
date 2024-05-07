@@ -232,9 +232,10 @@ void CPlayerScript::set_attack()
 	attack0.iEndFrame = 530;
 	attack0.fOffsetPos = 60.f;
 	attack0.vAttackScale = Vec3(150.f, 150.f, 150.f);
-	attack0.tAttackValue.iMatCount = 2;
+	attack0.tAttackValue.iMaxCount = 2;
 	attack0.tAttackValue.fAttackTime = 0.5f;
 	attack0.tAttackValue.fAttRcnt = 120.f;
+	attack0.tAttackValue.fDamage = 100.f;
 
 	CAttackScript* pAttackScript = new CAttackScript();
 	pAttackScript->SetAttackValue(attack0.tAttackValue);
@@ -251,9 +252,10 @@ void CPlayerScript::set_attack()
 	attack1.iEndFrame = 835;
 	attack1.fOffsetPos = 60.f;
 	attack1.vAttackScale = Vec3(300.f, 300.f, 300.f);
-	attack1.tAttackValue.iMatCount = 5;
+	attack1.tAttackValue.iMaxCount = 5;
 	attack1.tAttackValue.fAttRcnt = 200.f;
 	attack1.tAttackValue.fAttackTime = 0.5f;
+	attack1.tAttackValue.fDamage = 150.f;
 	attack1.tAttackValue.bDown = true;
 
 	pAttackScript = new CAttackScript();
@@ -266,8 +268,9 @@ void CPlayerScript::set_attack()
 	attackjump.iStartFrame = 954;
 	attackjump.iEndFrame = 960;
 	attackjump.vAttackScale = Vec3(200.f, 250.f, 200.f);
-	attackjump.tAttackValue.iMatCount = 1;
+	attackjump.tAttackValue.iMaxCount = 1;
 	attackjump.tAttackValue.fAttackTime = 0.f;
+	attackjump.tAttackValue.fDamage = 200.f;
 	attackjump.tAttackValue.bDown = true;
 	
 	CJumpAttackScript* pJumpAttack = new CJumpAttackScript();

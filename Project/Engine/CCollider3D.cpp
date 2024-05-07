@@ -9,6 +9,7 @@ CCollider3D::CCollider3D() :
 	CComponent(COMPONENT_TYPE::COLLIDER3D)
 	, m_Shape(COLLIDER3D_TYPE::CUBE)
 	, m_bAbsolute(false)
+	, m_bActive(true)
 	, m_iCollisionCount(0)
 	, m_matCollider3D(Matrix::Identity)
 	, m_vOffsetScale(Vec3::One)
@@ -24,6 +25,9 @@ CCollider3D::~CCollider3D()
 
 void CCollider3D::finaltick()
 {
+	if (!m_bActive)
+		return;
+
 	// 충돌 회수가 음수인 경우
 	assert(0 <= m_iCollisionCount);
 

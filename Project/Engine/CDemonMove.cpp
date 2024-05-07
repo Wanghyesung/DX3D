@@ -93,7 +93,8 @@ bool CDemonMove::check_dir()
 	vDir.Normalize();
 	float xzRadian = vDir.Dot(vFoward);
 	
-	if (0.8f > xzRadian || 0.9f <xzRadian)
+	//
+	if (0.75f > xzRadian || 0.9f <xzRadian)
 		return false;
 
 	//80?
@@ -115,23 +116,34 @@ bool CDemonMove::check_len()
 	Vec2 vXY = Vec2(vPos.x, vPos.z);
 
 	float fLen = (vTargetXY - vXY).Length(); //xy축으로만 계산
+	float fAttackLen = 700.f;
 
-	if (fLen <= m_fCheckLen)
-		m_bActive = true;
-	else
-		m_bActive = false;
 
-	if (!m_bActive)
+	if (fLen >= m_fCheckLen)
 	{
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
 		return true;
 	}
 
-	//y축 검사 위에 플레이어가 있는지
-	else if ((check_dir()))
+	//플레이어가 나보다 위에 있다면
+	if (vTargetPos.y >= vPos.y)
 	{
-		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WAIT);
-		return true;
+		//내 위로 각도 검사
+		if ((check_dir()))
+		{
+			ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WAIT);
+			return true;
+		}
+	}
+
+	else
+	{
+		if (fLen <= fAttackLen)
+		{
+			//각도 계산 캐릭터가 위에 있는지
+			ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);//wait
+			return true;
+		}
 	}
 
 	return false;

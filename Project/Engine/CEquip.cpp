@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CEquip.h"
+#include "CGameObject.h"
 #include "CAnimator3D.h"
 #include "CAnimation3D.h"
 #include "CStructuredBuffer.h"
@@ -27,6 +28,9 @@ void CEquip::begin()
 
 void CEquip::finaltick()
 {	
+	if (!m_pChar)
+		return;
+
 	if (!check_matrix())
 		return;
 
@@ -34,9 +38,9 @@ void CEquip::finaltick()
 
 	Matrix matWeaponWorld = Transform()->GetWorldMat();//무기
 
-	Matrix matCharWorldScale = m_pChar->GetParent()->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
+	Matrix matCharWorldScale = m_pChar->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
 	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
-	Matrix matCharWorld = m_pChar->GetParent()->Transform()->GetWorldMat(); //캐릭터 월드
+	Matrix matCharWorld = m_pChar->Transform()->GetWorldMat(); //캐릭터 월드
 	Matrix matWeapon = matCharSclaeInv * matWeaponWorld * m_matFinalBone * matCharWorld;
 
 	const vector<CGameObject*> vecChild = GetOwner()->GetChild();
@@ -49,10 +53,16 @@ void CEquip::finaltick()
 
 bool CEquip::check_matrix()
 {
-	if (!m_pChar)
+	if (m_pChar == nullptr)
 		return false;
 
-	CAnimator3D* pAnim = m_pChar->Animator3D();
+	else if (m_pChar->IsDead())
+	{
+		m_pChar = nullptr;
+		return false;
+	}
+
+	CAnimator3D* pAnim = m_pChar->GetChild().at(0)->Animator3D();
 
 	bool bOn = pAnim->IsFinalMatUpdate();
 	if (bOn)
@@ -71,6 +81,16 @@ bool CEquip::check_matrix()
 	}
 
 	return false;
+}
+
+void CEquip::SetDead(bool _bDelete)
+{
+	if (_bDelete)
+	{
+		DestroyObject(GetOwner()); //내 무기 삭제
+		return;
+	}
+	m_pChar = nullptr;
 }
 
 void CEquip::SaveToLevelFile(FILE* _File)

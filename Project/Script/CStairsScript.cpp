@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "CStairsScript.h"
 #include "CPlayerScript.h"
+#include "CDemonScript.h"
 #include <Engine\CFSM.h>
+#include <Engine\CMonsterFSM.h>
 CStairsScript::CStairsScript():
 	CScript(SCRIPT_TYPE::STAIRSSCRIPT)
 {
@@ -40,12 +42,17 @@ void CStairsScript::OnOverlap(CCollider3D* _Other)
 	if (pRigid)
 	{
 		CPlayerScript* pPlayer = pObj->GetScript<CPlayerScript>();
-
+		//CDemonScript* pMonster = pObj->GetScript<CDemonScript>();
 		if (pPlayer)
 		{
 			if (pPlayer->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
 				return;
 		}
+		//else if (pMonster)
+		//{
+		//	if (pMonster->GetFSM()->GetCurStateType() == MONSTER_STATE_TYPE::JUMP_ATTACK)
+		//		return;
+		//}
 
 		pObj->PxRigidbody()->SetAddGravity(true);
 		pObj->PxRigidbody()->SetGround(true);

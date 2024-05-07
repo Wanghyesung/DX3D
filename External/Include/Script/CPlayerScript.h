@@ -15,6 +15,7 @@ private:
     
     Vec3        m_vOffsetTransform;
 
+    tActorInfo  m_tPlayerInfo;
     tHitInfo    m_tHitInfo;
 public:
     virtual void begin() override;
@@ -25,6 +26,7 @@ public:
     virtual void EndOverlap(CCollider3D* _Other)override;
 
     void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
+    void SetPlayerInfo(const tActorInfo& _tActorInfo) { m_tPlayerInfo = _tActorInfo; }
 
     void SetActive(bool _bActive) {}
 

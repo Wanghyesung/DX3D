@@ -136,6 +136,16 @@ void CMonsterScript::AddAnimFrame(const wstring& _strAnimName, int _iStart, int 
 	}
 }
 
+void CMonsterScript::Chanage_AnimDT(float _fDivDT)
+{
+	const vector<CGameObject*>& vecChild = GetOwner()->GetChild();
+	for (int i = 0; i < vecChild.size(); ++i)
+	{
+		//자식 오브젝트에 애니메이션에서 지금 내 상태에 맞는 애니메이션 실행
+		vecChild[i]->Animator3D()->SetAnimDivDT(_fDivDT);
+	}
+}
+
 void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType,CMonsterState* _pState,
 									 const wstring& _strAnimName, int _iStartFrame, int _iEndFrame)
 {

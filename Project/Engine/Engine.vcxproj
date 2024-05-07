@@ -191,6 +191,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CDemonHold.h" />
     <ClInclude Include="CDemonIdle.h" />
     <ClInclude Include="CDemonJump.h" />
+    <ClInclude Include="CDemonJumpAttack.h" />
     <ClInclude Include="CDemonMove.h" />
     <ClInclude Include="CDemonWait.h" />
     <ClInclude Include="CDevice.h" />
@@ -226,6 +227,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CMeshData.h" />
     <ClInclude Include="CMeshRender.h" />
     <ClInclude Include="CMonsterAttack.h" />
+    <ClInclude Include="CMonsterDead.h" />
     <ClInclude Include="CMonsterFSM.h" />
     <ClInclude Include="CMonsterHit.h" />
     <ClInclude Include="CMonsterIdle.h" />
@@ -252,6 +254,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CRenderMgr.h" />
     <ClInclude Include="CRes.h" />
     <ClInclude Include="CResMgr.h" />
+    <ClInclude Include="CRespawnMgr.h" />
     <ClInclude Include="CRigidbody.h" />
     <ClInclude Include="CRollState.h" />
     <ClInclude Include="CRunState.h" />
@@ -321,6 +324,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CDemonHold.cpp" />
     <ClCompile Include="CDemonIdle.cpp" />
     <ClCompile Include="CDemonJump.cpp" />
+    <ClCompile Include="CDemonJumpAttack.cpp" />
     <ClCompile Include="CDemonMove.cpp" />
     <ClCompile Include="CDemonWait.cpp" />
     <ClCompile Include="CDevice.cpp" />
@@ -360,6 +364,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CMeshData.cpp" />
     <ClCompile Include="CMeshRender.cpp" />
     <ClCompile Include="CMonsterAttack.cpp" />
+    <ClCompile Include="CMonsterDead.cpp" />
     <ClCompile Include="CMonsterFSM.cpp" />
     <ClCompile Include="CMonsterHit.cpp" />
     <ClCompile Include="CMonsterIdle.cpp" />
@@ -387,6 +392,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CRes.cpp" />
     <ClCompile Include="CResMgr.cpp" />
     <ClCompile Include="CResMgr_Init.cpp" />
+    <ClCompile Include="CRespawnMgr.cpp" />
     <ClCompile Include="CRigidbody.cpp" />
     <ClCompile Include="CRollState.cpp" />
     <ClCompile Include="CRunState.cpp" />

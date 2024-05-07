@@ -2,6 +2,9 @@
 #include "CDemonScript.h"
 #include "CAttackScript.h"
 #include "CObjstacleScript.h"
+#include "CMonsterAttackScript.h"
+#include "CJumpAttackScript.h"
+
 #include <Engine\CMonsterFSM.h>
 #include <Engine\CDemonIdle.h>
 #include <Engine\CMonsterMove.h>
@@ -11,7 +14,8 @@
 #include <Engine\CDemonMove.h>
 #include <Engine\CDemonWait.h>
 #include <Engine\CDemonJump.h>
-
+#include <Engine\CDemonJumpAttack.h>
+#include <Engine\CMonsterDead.h>
 CDemonScript::CDemonScript():
 	CMonsterScript(SCRIPT_TYPE::DEMONSCRIPT)
 {
@@ -36,20 +40,20 @@ void CDemonScript::tick()
 
 void CDemonScript::BeginOverlap(CCollider3D* _Other)
 {
-	CGameObject* pObj = _Other->GetOwner();
-	CObjstacleScript* pObstacle = pObj->GetScript<CObjstacleScript>();
-	
-	if (pObstacle)
-	{
-		MONSTER_STATE_TYPE eState = m_pFSM->GetCurStateType();
-		if (eState == MONSTER_STATE_TYPE::JUMP)
-		{
-			CMonsterState* pState = m_pFSM->FindState(eState);
-			CDemonJump* pJump = dynamic_cast<CDemonJump*>(pState);
-
-			pJump->SetAttackTrigger();
-		}
-	}
+	//CGameObject* pObj = _Other->GetOwner();
+	//CObjstacleScript* pObstacle = pObj->GetScript<CObjstacleScript>();
+	//
+	//if (pObstacle)
+	//{
+	//	MONSTER_STATE_TYPE eState = m_pFSM->GetCurStateType();
+	//	if (eState == MONSTER_STATE_TYPE::JUMP)
+	//	{
+	//		CMonsterState* pState = m_pFSM->FindState(eState);
+	//		CDemonJump* pJump = dynamic_cast<CDemonJump*>(pState);
+	//
+	//		pJump->SetAttackTrigger();
+	//	}
+	//}
 }
 
 void CDemonScript::OnOverlap(CCollider3D* _Other)
@@ -61,28 +65,39 @@ void CDemonScript::OnOverlap(CCollider3D* _Other)
 	CAttackScript* pAttack = pObj->GetScript<CAttackScript>();
 	if (pAttack)
 	{
-		Vec3 vPlayerPos = pObj->PxRigidbody()->GetPxPosition();
+		Vec3 vAttackPos = pObj->PxRigidbody()->GetPxPosition();
 		Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
 
-		float fYLen = vPos.y - vPlayerPos.y;
+		//데미지 위에서 맞게
+		float fYLen = vAttackPos.y - vPos.y;
 
-		if (fYLen >= 200.f)
+		bool bOn = pAttack->IsAttackOn(GetOwner()->GetID());
+		if (bOn)
 		{
-			bool bOn = pAttack->IsAttackOn(GetOwner()->GetID());
-			if (bOn)
+			//공중에서 맞을 때 4배 데미지
+			if (fYLen >= 300.f)
 			{
 				CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
 				pHit->SetHitInfo(m_tHitInfo);
-
+				m_tMonsterInfo.fHP -= (m_tHitInfo.fDamage * 4);
 
 				if (m_pFSM->GetCurStateType() == MONSTER_STATE_TYPE::HIT)
 					return;
 
 				ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
 			}
+
+			//일반 데미지
+			else
+			{
+				m_tMonsterInfo.fHP -= m_tHitInfo.fDamage;
+			}
+
+			if (m_tMonsterInfo.fHP <= 0.f)
+			{
+				ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::DEAD);
+			}
 		}
-
-
 	}
 }
 
@@ -103,6 +118,8 @@ void CDemonScript::begin()
 
 void CDemonScript::Initialize(const wstring& _strFbxName)
 {
+	m_tMonsterInfo.fHP = 1000.f;
+
 	CMonsterScript::Initialize(_strFbxName);
 
 	CDemonIdle* pIdle = new CDemonIdle();
@@ -117,6 +134,8 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	CDemonJump* pJump = new CDemonJump();
 	AddMonsterState(MONSTER_STATE_TYPE::JUMP, pJump, L"Jump", 1686, 1758);//1920
 
+	CDemonJumpAttack* pJumpAttack = new CDemonJumpAttack();
+	AddMonsterState(MONSTER_STATE_TYPE::JUMP_ATTACK, pJumpAttack, L"Jump_Attack", 1758, 1921);
 
 	CDemonWait* pWait = new CDemonWait();
 	AddMonsterState(MONSTER_STATE_TYPE::WAIT, pWait, L"Wait", 1686, 1686);
@@ -124,9 +143,11 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	CDemonHit* pHit = new CDemonHit();
 	AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527, 650);
 
-	AddAnimFrame(L"Walk_Back", 182, 241);
-	AddAnimFrame(L"Jump_Attack", 1759, 1921);
+	CMonsterDead* pDead = new CMonsterDead();
+	AddMonsterState(MONSTER_STATE_TYPE::DEAD, pDead, L"Dead", 3110, 3275);
 
+	AddAnimFrame(L"Walk_Back", 182, 241);
+	
 	AddAnimFrame(L"Attack0", 651, 792);
 	AddAnimFrame(L"Attack1", 977, 1114);
 	AddAnimFrame(L"Attack2", 1115, 1266);
@@ -175,4 +196,34 @@ void CDemonScript::set_attack()
 	AddMonsterAttack(1,0.f, 0.f, 0.f, 1020, 1023, Vec3(400.f, 200.f, 400.f), 400.f, Vec3::Zero);
 	AddMonsterAttack(2,0.f, 0.f, 0.f, 1175, 1177, Vec3(400.f, 200.f, 400.f), 400.f, Vec3::Zero);
 	AddMonsterAttack(3, 800.f, 0.f, 0.f, 1323, 1326, Vec3(300.f, 200.f, 300.f), 440.f, Vec3::Zero);
+	
+
+	tAttackInfo attackjump = {};
+	//attackjump.iStartFrame = 954;
+	//attackjump.iEndFrame = 960;
+	attackjump.vAttackScale = Vec3(1000.f, 300.f, 1000.f);
+	attackjump.tAttackValue.iMaxCount = 1;
+	attackjump.tAttackValue.fAttRcnt = 200.f;
+	attackjump.tAttackValue.fDamage = 40.f;
+	attackjump.tAttackValue.fAddForceTime = 0.7f;
+	attackjump.tAttackValue.bDown = false;
+
+	CMonsterAttackScript* pJumpAttack = new CMonsterAttackScript();
+	pJumpAttack->SetAttackValue(attackjump.tAttackValue);
+	CGameObject* pAttackObj = new CGameObject();
+	CCollider3D* pCollider = new CCollider3D();
+	pCollider->SetOffsetScale(attackjump.vAttackScale);
+	pAttackObj->AddComponent(pCollider);
+	pAttackObj->AddComponent(new CTransform);
+	pAttackObj->AddComponent(pJumpAttack);
+
+	CPxRigidbody* pRigid = new CPxRigidbody();
+	pAttackObj->AddComponent(pRigid);
+	pRigid->init(Vec3(-2000.f, -2000.f, -2000.f), attackjump.vAttackScale, (int)LAYER_TYPE::MonsterAttack, pAttackObj);
+	pRigid->SetGround(true, false); //땅상태 , 중력 안받음 
+	pRigid->SetPass(true); // 충돌해도 통과되게
+
+	CMonsterState* pState = m_pFSM->FindState(MONSTER_STATE_TYPE::JUMP_ATTACK);
+	CDemonJumpAttack* pJumpingState = dynamic_cast<CDemonJumpAttack*>(pState);
+	pJumpingState->SetAttackObj(pAttackObj);
 }

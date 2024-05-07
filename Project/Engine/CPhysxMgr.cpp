@@ -65,11 +65,6 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
             pairFlags |= PxPairFlag::eCONTACT_DEFAULT;
         }
      
-        else
-        {
-            int a = 10;
-        }
-
         if (CPhysxMgr::GetInst()->UseCCD())
             pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
         
@@ -168,6 +163,14 @@ void CPhysxMgr::tick_collision()
         CGameObject* pLeftObj = iter->second.pLeftObj;
         CGameObject* pRightObj = iter->second.pRightObj;
 
+        //if (pLeftObj->IsDead() || pRightObj->IsDead())
+        //{
+        //    m_mapCol.erase(iter);
+        //}
+
+        if (!pLeftObj->Collider3D()->GetIsActive() ||
+           !pRightObj->Collider3D()->GetIsActive())
+            return;
 
         if (iter->second.bCheck)
         {
@@ -425,6 +428,15 @@ PxCollisionEvent CPhysxMgr::FIndEventObj(UINT _iID)
     }
 
     return iter->second;
+}
+
+void CPhysxMgr::DeleteEventObj(UINT _iID)
+{
+    map<UINT, PxCollisionEvent>::iterator iter = m_mapEventObj.find(_iID);
+    if (iter == m_mapEventObj.end())
+        return;
+
+    m_mapEventObj.erase(_iID);
 }
 
 void CPhysxMgr::LayerCheck(UINT _left, UINT _right)

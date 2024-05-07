@@ -100,7 +100,7 @@ public:
     bool IsFinalMatUpdate(){return m_bFinalMatUpdate;}
 
     float GetAnimDT() { return m_fAnimDT; }
-    void  SetAnimDivDT(float _fDiv) { m_fDivDT = _fDiv; }
+    void  SetAnimDivDT(float _fDiv) { m_fDivDT = _fDiv; } //애니메이션 몇 배 더 느리게 할지
 
     //animation에서 할당
     void SetNextFrame(int _iNextFrame) { m_iNextFrameIdx = _iNextFrame; }

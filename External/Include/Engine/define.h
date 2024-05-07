@@ -289,6 +289,7 @@ enum class STATE_TYPE
 	JUMPEND,
 	JUMPATTACK,
 	HIT,
+	DEAD,
 	END,
 };
 
@@ -300,8 +301,10 @@ enum class MONSTER_STATE_TYPE
 	ROLL,
 	ATTACK,
 	JUMP,
+	JUMP_ATTACK,
 	WAIT,
 	HIT,
+	DEAD,
 	END,
 };
 

@@ -10,6 +10,7 @@ CPxRigidbody::CPxRigidbody():
     m_bAddGravity(true),
     m_bAccumulate(false),
     m_bPass(false),
+    m_bActive(true),
     m_vTransformOffset(0.f,0.f,0.f),
     m_vDecVel(Vec3::Zero)
 {
@@ -25,6 +26,9 @@ CPxRigidbody::~CPxRigidbody()
 
 void CPxRigidbody::finaltick()
 {
+    /*if (!m_bActive)
+        return;*/
+
 	CTransform* pTrasnform = GetOwner()->Transform();
 
     if (m_bDecrease)
@@ -200,7 +204,6 @@ void CPxRigidbody::tick_velocity(const PxVec3& _vVel)
 
 void CPxRigidbody::SaveToLevelFile(FILE* _File)
 {
-    
     //m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
     //m_pRigidbody->setAngularVelocity(PxVec3(0.f, 0.f, 5.f)); //°¢¼Óµµ
     //m_pRigidbody->setAngularDamping(0.f);

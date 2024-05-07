@@ -37,9 +37,10 @@ void CAttackScript::add_monster(int _ID)
 	tInfo.ID = _ID;
 	tInfo.fAttackTime = m_tAttack.fAttackTime;
 	tInfo.fCurTime = 0.f;
+	//tInfo.iAttackCount = 1;
 	tInfo.bAttackOn = true;
 	
-	if (m_vecCheck.size() >= m_tAttack.iMatCount)
+	if (m_vecCheck.size() >= m_tAttack.iMaxCount)
 		return;
 
 	m_vecCheck.push_back(tInfo);
@@ -64,7 +65,10 @@ tCheckInfo& CAttackScript::find_monster(int _ID)
 	for (iter; iter != m_vecCheck.end(); ++iter)
 	{
 		if (iter->ID == _ID)
+		{
 			return *iter;
+		}
+			
 	}
 	tCheckInfo tNULL = {};
 
@@ -73,20 +77,20 @@ tCheckInfo& CAttackScript::find_monster(int _ID)
 
 void CAttackScript::tick()
 {
-	vector< tCheckInfo>::iterator iter = m_vecCheck.begin();
-
-	for (iter; iter != m_vecCheck.end(); ++iter)
-	{
-		if (iter->bAttackOn)
-			continue;
-
-		iter->fCurTime += DT;
-		if (iter->fCurTime >= iter->fAttackTime)
-		{
-			iter->bAttackOn = true;
-			iter->fCurTime = 0.f;
-		}
-	}	
+	//vector< tCheckInfo>::iterator iter = m_vecCheck.begin();
+	//
+	//for (iter; iter != m_vecCheck.end(); ++iter)
+	//{
+	//	if (iter->bAttackOn)
+	//		continue;
+	//
+	//	iter->fCurTime += DT;
+	//	if (iter->fCurTime >= iter->fAttackTime)
+	//	{
+	//		iter->bAttackOn = true;
+	//		iter->fCurTime = 0.f;
+	//	}
+	//}	
 
 }
 
@@ -105,6 +109,7 @@ void CAttackScript::BeginOverlap(CCollider3D* _Other)
 		tHitInfo tHit = {};
 		tHit.bDown = m_tAttack.bDown;
 		tHit.fHitRcnt = m_tAttack.fAttRcnt;
+		tHit.fDamage = m_tAttack.fDamage;
 
 		pMonsterScript->SetHitInfo(tHit);
 	}
@@ -138,6 +143,7 @@ bool CAttackScript::IsAttackOn(int _ID)
 	if (tInfo.bAttackOn)
 	{
 		tInfo.bAttackOn = false;
+		//++tInfo.iAttackCount;
 		return true;
 	}
 

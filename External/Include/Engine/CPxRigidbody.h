@@ -27,6 +27,8 @@ private:
 
 	float m_fMaxVelocity;
 	
+	bool m_bActive;
+
 	bool m_bAccumulate;//힘들 누적해서 받을지
 	bool m_bGround; //땅인지;
 
@@ -45,6 +47,7 @@ public:
 	void SetPass(bool _bPass) { m_bPass = _bPass; }
 	void SetAddGravity(bool _bGravity) { m_bAddGravity = _bGravity; }
 
+	bool IsActive() { return m_bActive; }
 	bool IsGround() { return m_bGround; }
 	bool IsPass() { return m_bPass; }
 
@@ -79,7 +82,7 @@ public:
 	void SetPxTransform(const Vec3& _vPos);
 	void SetPxRotate(const PxQuat& _pQuat);
 	
-
+	void SetActive(bool _bActive) { m_bActive = _bActive; }
 private:
 	void friction_force();
 

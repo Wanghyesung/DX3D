@@ -11,7 +11,7 @@ class CMonsterScript :
 protected:
     CMonsterFSM* m_pFSM;
 
-    tMonsterInfo m_tMonsterInfo;
+    tActorInfo m_tMonsterInfo;
     tHitInfo m_tHitInfo;
 
     bool m_bBoss;
@@ -39,8 +39,9 @@ public:
         Vec3 _vAttackScale, float _fOffsetPos, Vec3 _vAttackRot);
     void AddMonsterAttack(const tAttackInfo& _tAttackInfo);
 
+    void Chanage_AnimDT(float _fDivDT);
 
-    void SetMonsterInfo(const tMonsterInfo& _tInfo) { m_tMonsterInfo = _tInfo; }
+    void SetMonsterInfo(const tActorInfo& _tInfo) { m_tMonsterInfo = _tInfo; }
     void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
 
     void SetBoss(bool _bBoss) { m_bBoss = _bBoss; }
