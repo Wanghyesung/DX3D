@@ -248,14 +248,14 @@ void CPlayerScript::set_attack()
 	attack1.vForce = Vec3::Zero;
 	attack1.fForce = 400.f;
 	attack1.fMoveTime = 0.6f;
-	attack1.iStartFrame = 831;
+	attack1.iStartFrame = 832;
 	attack1.iEndFrame = 835;
 	attack1.fOffsetPos = 60.f;
 	attack1.vAttackScale = Vec3(300.f, 300.f, 300.f);
 	attack1.tAttackValue.iMaxCount = 5;
 	attack1.tAttackValue.fAttRcnt = 200.f;
 	attack1.tAttackValue.fAttackTime = 0.5f;
-	attack1.tAttackValue.fDamage = 150.f;
+	attack1.tAttackValue.fDamage = 200.f;
 	attack1.tAttackValue.bDown = true;
 
 	pAttackScript = new CAttackScript();

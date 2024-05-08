@@ -16,6 +16,8 @@ private:
 	CGameObject* m_pCurGameObj;//현재 소환한 공격오브젝트
 
 	float m_fCurMoveTime;
+
+	int tem;
 public:
 	void AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj);
 

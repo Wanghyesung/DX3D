@@ -115,8 +115,8 @@ void CAnimation3D::check_event()
 		}
 	}
 
-	m_iCurEventCheck = m_iCurFrame;
-	m_vecEvent[m_iCurEventCheck].tEvent();
+	//m_iCurEventCheck = m_iCurFrame;
+	m_vecEvent[m_iCurEventCheck++].tEvent();
 	
 	//if (m_iCurEventCheck == m_iCurFrame)
 	//{

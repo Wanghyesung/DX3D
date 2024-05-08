@@ -26,6 +26,9 @@ private:
 	void add_force();
 	void check_event();
 
+	void spawn_attack();
+	void erase_attack();
+
 	void add_objpull(UINT _iAttackNum, CGameObject* _pAttackObj);
 	
 public:

@@ -175,6 +175,8 @@ void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _
 void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRotate, float _fTime, int _iStartFrame, int _iEndFrame,
 									Vec3 _vAttackScale, float _fOffsetPos, Vec3 _vAttackRot)
 {
+	m_tMonsterInfo.fHP = 300.f;
+
 	tAttackInfo tAttackInfo = {};
 	tAttackInfo.iAttackNum = _iAttackNum;
 	tAttackInfo.vForce = Vec3::Zero;
@@ -192,8 +194,8 @@ void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRo
 	//고정 데미지
 	tAttackInfo.tAttackValue.bDown = false;
 	tAttackInfo.tAttackValue.fAttRcnt = 200.f;
-	tAttackInfo.tAttackValue.fDamage = 10.f;
-	tAttackInfo.tAttackValue.fAddForceTime = 0.7f;
+	tAttackInfo.tAttackValue.fDamage = 30.f;
+	tAttackInfo.tAttackValue.fAddForceTime = 0.5f;
 
 	CGameObject* pAttackObj = new CGameObject();
 	CMonsterAttackScript* pAttack = new CMonsterAttackScript();

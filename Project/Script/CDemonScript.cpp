@@ -144,7 +144,7 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit", 527, 650);
 
 	CMonsterDead* pDead = new CMonsterDead();
-	AddMonsterState(MONSTER_STATE_TYPE::DEAD, pDead, L"Dead", 3110, 3275);
+	AddMonsterState(MONSTER_STATE_TYPE::DEAD, pDead, L"Dead", 3110, 3274);
 
 	AddAnimFrame(L"Walk_Back", 182, 241);
 	

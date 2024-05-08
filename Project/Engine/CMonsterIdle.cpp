@@ -46,14 +46,14 @@ void CMonsterIdle::check_player()
 
 	float fLen = (vTargetPos - vPos).Length();
 
-	if (fLen <= m_fCheckLen && m_fStopLen <= fLen)
+	if (fLen <= m_fCheckLen /*&& m_fStopLen <= fLen*/)
 	{
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::WALK);
 	}
 
-	else if (m_fStopLen > fLen)
+	/*else if (m_fStopLen > fLen)
 	{
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);
-	}
+	}*/
 
 }

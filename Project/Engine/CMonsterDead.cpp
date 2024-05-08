@@ -40,7 +40,7 @@ void CMonsterDead::Exit()
 
 void CMonsterDead::Enter()
 {
-	Chanage_Anim(GetName());
+	Chanage_Anim(GetName(),false);
 
 	//CPhysxMgr::GetInst()->DeleteEventObj(GetOwner()->GetID());
 	GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);

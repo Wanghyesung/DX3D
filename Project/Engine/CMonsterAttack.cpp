@@ -47,7 +47,7 @@ void CMonsterAttack::final_tick()
 
 	add_force();
 
-	check_event();
+	//check_event();
 }
 
 void CMonsterAttack::Exit()
@@ -76,7 +76,8 @@ void CMonsterAttack::Enter()
 	std::random_device rDiv;
 	std::mt19937 en(rDiv());
 	std::uniform_int_distribution<int> num(0, iMaxAttack);
-	m_iCurAttack = 3;// (UINT)num(en);
+	//m_iCurAttack = 3;// (UINT)num(en);
+	m_iCurAttack = (UINT)num(en);
 
 	m_tCurAttack = m_vecAttack[m_iCurAttack];
 
@@ -109,11 +110,20 @@ void CMonsterAttack::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackOb
 	pRigid->SetGround(true, false); //땅상태 , 중력 안받음 
 	pRigid->SetPass(true); // 충돌해도 통과되게
 
+	//함수 이벤트 애니메이션에 등록
+	GetOwner()->GetChild().at(0)->Animator3D()->
+		AddEvent(L"Attack" + std::to_wstring(_tAttackInfo.iAttackNum), 
+			std::bind(&CMonsterAttack::spawn_attack, this), _tAttackInfo.iStartFrame);
+
+	GetOwner()->GetChild().at(0)->Animator3D()->
+		AddEvent(L"Attack" + std::to_wstring(_tAttackInfo.iAttackNum),
+			std::bind(&CMonsterAttack::erase_attack, this), _tAttackInfo.iEndFrame);
+
+
 }
 
 void CMonsterAttack::add_force()
 {
-	
 
 	//if (m_fCurMoveTime > m_tCurAttack.fMoveTime)
 	//	return;
@@ -179,6 +189,47 @@ void CMonsterAttack::check_event()
 	}
 
 	else if (m_iAttackCount == 1 && m_tCurAttack.iEndFrame <= iCurFrame)
+	{
+		m_iAttackCount = 2;
+
+		EraseObject(m_pCurGameObj, (int)LAYER_TYPE::MonsterAttack);
+		m_pCurGameObj->PxRigidbody()->SetPxTransform(Vec3(-2000.f, -2000.f, -2000.f));
+
+		add_objpull(m_tCurAttack.iAttackNum, m_pCurGameObj);
+		m_pCurGameObj = nullptr;
+	}
+}
+
+void CMonsterAttack::spawn_attack()
+{
+	if (m_iAttackCount == 0)
+	{
+		m_iAttackCount = 1;
+
+		m_pCurGameObj = m_vecAttackObj[m_tCurAttack.iAttackNum].front();
+		m_vecAttackObj[m_tCurAttack.iAttackNum].pop();
+
+		//중심은 물체의 충돌체 위치를 중심으로 잡음 
+		Vec3 vPos = GetOwner()->Collider3D()->GetWorldPos();
+		Vec3 vDir = GetOwner()->Transform()->GetRelativeDir(DIR_TYPE::UP);
+		Vec3 vOffsetPos = -vDir * m_tCurAttack.fOffsetPos;
+		vPos += vOffsetPos;
+
+		Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();
+		vRot.y += m_tCurAttack.fRotate;
+		PxQuat yRotation(vRot.y, PxVec3(0.0f, 1.0f, 0.0f));
+
+		//여기에 충돌체 위치랑 회전 rigidbody에 넣기
+		m_pCurGameObj->PxRigidbody()->SetPxRotate(yRotation);
+		m_pCurGameObj->PxRigidbody()->SetPxTransform(vPos);
+
+		SpawnGameObject(m_pCurGameObj, vPos, (int)LAYER_TYPE::MonsterAttack);
+	}
+}
+
+void CMonsterAttack::erase_attack()
+{
+	if (m_iAttackCount == 1)
 	{
 		m_iAttackCount = 2;
 

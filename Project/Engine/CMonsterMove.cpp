@@ -12,7 +12,8 @@
 #include "CNavMeshMgr.h"
 
 CMonsterMove::CMonsterMove():
-	m_fCheckLen(2000.f),
+	m_fCheckLen(1000.f),
+	m_fAttackLen(170.f),
 	m_pTarget(nullptr),
 	m_bActive(false),
 	m_fStopLen(200.f)
@@ -77,18 +78,19 @@ bool CMonsterMove::check_len()
 
 	float fLen = (vTargetPos - vPos).Length();
 
-	m_fCheckLen = GetCheckLen();
+	//m_fCheckLen = GetCheckLen();
+	
 	//m_fStopLen = GetStopLen();
 
-	if (fLen <= m_fCheckLen)
-		m_bActive = true;
-	else
-		m_bActive = false;
-
-	if (/*fLen <= m_fStopLen || */!m_bActive)
+	if (fLen >= m_fCheckLen)
 	{
 		//여기서 플레어 방향까지 회전
 		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
+		return true;
+	}
+	else if (fLen <= m_fAttackLen)
+	{
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);
 		return true;
 	}
 
