@@ -42,7 +42,7 @@ void CLandScpaeScript::BeginOverlap(CCollider3D* _Other)
 		pObj->PxRigidbody()->SetGround(true);
 
 		//중력 크게 받지 않도록
-		pObj->PxRigidbody()->SetAddGravity(false);
+		//pObj->PxRigidbody()->SetAddGravity(false);
 	}
 }
 
@@ -59,6 +59,8 @@ void CLandScpaeScript::OnOverlap(CCollider3D* _Other)
 		{
 			if (pPlayer->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
 				return;
+
+			pObj->PxRigidbody()->SetGround(true);
 		}
 		//else if (pMonster)
 		//{

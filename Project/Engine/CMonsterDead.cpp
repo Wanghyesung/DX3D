@@ -24,7 +24,7 @@ void CMonsterDead::final_tick()
 	if (bComplete)
 	{
 		//DestroyObject(GetOwner());
-		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
+		//ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
 		//GetOwner()->PxRigidbody()->SetPxTransform(Vec3(-2000.f, -2000.f, -2000.f));
 		GetOwner()->PxRigidbody()->SetGround(true, false);
 
@@ -42,8 +42,10 @@ void CMonsterDead::Enter()
 {
 	Chanage_Anim(GetName());
 
-	CPhysxMgr::GetInst()->DeleteEventObj(GetOwner()->GetID());
+	//CPhysxMgr::GetInst()->DeleteEventObj(GetOwner()->GetID());
 	GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);
-	GetOwner()->Collider3D()->SetActive(false);
+
+	//이거 끄고 m_mapcoll좀 어떻게 해야함
+	//GetOwner()->Collider3D()->SetActive(false);
 }
 

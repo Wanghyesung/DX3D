@@ -60,7 +60,7 @@ void CJumpState::Enter()
 	GetOwner()->PxRigidbody()->ChanageMaterial(10.f, 0.f);
 	GetOwner()->PxRigidbody()->SetGround(false);
 	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eIMPULSE);//气惯利栏肺 框流老 嫐
-
+	GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);
 	
 	m_vMaxPos = GetOwner()->PxRigidbody()->GetPxPosition();
 	m_vMaxPos += Vec3(0.f, 800.f, 0.f);

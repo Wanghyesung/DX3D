@@ -158,7 +158,7 @@ void CPhysxMgr::tick()
 void CPhysxMgr::tick_collision()
 {
     map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.begin();
-    for (iter; iter != m_mapCol.end(); ++iter)
+    for (iter; iter != m_mapCol.end(); )
     {
         CGameObject* pLeftObj = iter->second.pLeftObj;
         CGameObject* pRightObj = iter->second.pRightObj;
@@ -170,7 +170,13 @@ void CPhysxMgr::tick_collision()
 
         if (!pLeftObj->Collider3D()->GetIsActive() ||
            !pRightObj->Collider3D()->GetIsActive())
-            return;
+        {
+            //pLeftObj->Collider3D()->EndOverlap(pRightObj->Collider3D());
+            //pRightObj->Collider3D()->EndOverlap(pLeftObj->Collider3D());
+
+            //m_mapCol = m_mapCol.erase(iter);
+            continue;
+        }
 
         if (iter->second.bCheck)
         {
@@ -204,6 +210,8 @@ void CPhysxMgr::tick_collision()
                 iter->second.bOnColl = false;
             }
         }
+
+        ++iter;
     }
 
 }

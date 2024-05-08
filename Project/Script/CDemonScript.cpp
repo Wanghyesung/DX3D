@@ -118,7 +118,7 @@ void CDemonScript::begin()
 
 void CDemonScript::Initialize(const wstring& _strFbxName)
 {
-	m_tMonsterInfo.fHP = 1000.f;
+	m_tMonsterInfo.fHP = 100.f;
 
 	CMonsterScript::Initialize(_strFbxName);
 
