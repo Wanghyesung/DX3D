@@ -236,6 +236,7 @@ void CPlayerScript::set_attack()
 	attack0.tAttackValue.fAttackTime = 0.5f;
 	attack0.tAttackValue.fAttRcnt = 120.f;
 	attack0.tAttackValue.fDamage = 100.f;
+	attack0.tAttackValue.fAddForceTime = 0.4f;
 
 	CAttackScript* pAttackScript = new CAttackScript();
 	pAttackScript->SetAttackValue(attack0.tAttackValue);
@@ -256,6 +257,7 @@ void CPlayerScript::set_attack()
 	attack1.tAttackValue.fAttRcnt = 200.f;
 	attack1.tAttackValue.fAttackTime = 0.5f;
 	attack1.tAttackValue.fDamage = 200.f;
+	attack0.tAttackValue.fAddForceTime = 0.55f;
 	attack1.tAttackValue.bDown = true;
 
 	pAttackScript = new CAttackScript();

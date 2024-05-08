@@ -15,6 +15,8 @@ private:
 private:
 	void add_foce();
 
+	void rotate();
+
 public:
 	void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
 

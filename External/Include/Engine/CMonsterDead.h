@@ -4,7 +4,7 @@
 class CMonsterDead : public CMonsterState
 {
 private:
-
+	bool m_bDead;
 
 protected:
 	tHitInfo m_tHitInfo;

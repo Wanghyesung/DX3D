@@ -51,6 +51,8 @@ void CMonsterHit::Exit()
 
 void CMonsterHit::Enter()
 {
+	m_fCurFoceTime = 0.f;
+
 	if (m_tHitInfo.bDown)
 	{
 		Chanage_Anim(GetName()+ L"Down", false);

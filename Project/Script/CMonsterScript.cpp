@@ -13,6 +13,8 @@
 #include <Engine\CTransform.h>
 #include <Engine\CCollider3D.h>
 
+
+
 CMonsterScript::CMonsterScript()
 	: CScript((UINT)SCRIPT_TYPE::MONSTERSCRIPT),
 	m_pFSM(nullptr),
@@ -58,12 +60,17 @@ void CMonsterScript::OnOverlap(CCollider3D* _Other)
 			//µ¥¹ÌÁö
 			CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
 			pHit->SetHitInfo(m_tHitInfo);
-
+			m_tMonsterInfo.fHP -= m_tHitInfo.fDamage;
 			
 			if (m_pFSM->GetCurStateType() == MONSTER_STATE_TYPE::HIT)
 				return;
 
 			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::HIT);
+		}
+
+		if (m_tMonsterInfo.fHP <= 0.f)
+		{
+			ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::DEAD);
 		}
 	}
 }

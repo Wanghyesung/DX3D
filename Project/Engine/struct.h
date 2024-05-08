@@ -402,7 +402,7 @@ struct tHitInfo
 	//넘어질지
 	bool bDown;
 
-	Vec3 vHitDir;
+	Vec3 vHitPos;
 };
 
 

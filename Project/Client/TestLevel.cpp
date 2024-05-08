@@ -15,6 +15,7 @@
 #include <Engine\CMonsterMove.h>
 #include <Engine\CMonsterAttack.h>
 #include <Engine\CMonsterHit.h>
+#include <Engine\CMonsterDead.h>
 
 #include <Engine\CDemonIdle.h>
 #include <Engine\CDemonHit.h>
@@ -361,6 +362,9 @@ void CreateMonster()
 	CMonsterHit* pHit = new CMonsterHit();
 	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
 	
+	CMonsterDead* pMonsterDead = new CMonsterDead();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::DEAD, pMonsterDead, L"Dead", 1116, 1200);
+
 	pMonsterScript->AddMonsterAttack(0, 0.f, 0.f, 0.6f, 629, 634, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
 	pMonsterScript->AddMonsterAttack(1, 0.f, 0.f, 0.6f, 781, 785, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
 	
@@ -381,8 +385,8 @@ void CreateMonster()
 	////-90 270 -9
 	//
 	//SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
-	
-
+	//
+	//
 	//CGameObject* pBoss = new CGameObject();
 	//pBoss->SetName(L"Taurus_Demon_Fianl");
 	//
@@ -405,11 +409,10 @@ void CreateMonster()
 	//CDemonScript* pDemonScript = new CDemonScript();
 	//pBoss->AddComponent(pDemonScript);
 	//pDemonScript->Initialize(L"Taurus_Demon_Fianl");
-	//
 	//{
-	//	CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-	//	CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-	//	CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
+	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+	//	//CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
 	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
 	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
 	//	tBuildSettings tSetting = {};
@@ -429,8 +432,6 @@ void CreateMonster()
 	//pWeapon->Equip()->SetChar(pHand);
 	//SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
 
-	
-	//pMonsterScript->AddAnimFrame(L"Dead", 3110, 3274);
 	
 	
 	

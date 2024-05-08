@@ -104,12 +104,15 @@ void CAttackScript::BeginOverlap(CCollider3D* _Other)
 	CMonsterScript* pMonsterScript = _Other->GetOwner()->GetScript<CMonsterScript>();
 	if (pMonsterScript)
 	{
-		add_monster(_Other->GetOwner()->GetID());
+		CGameObject* pOtherObj = _Other->GetOwner();
+		add_monster(pOtherObj->GetID());
 
 		tHitInfo tHit = {};
 		tHit.bDown = m_tAttack.bDown;
 		tHit.fHitRcnt = m_tAttack.fAttRcnt;
 		tHit.fDamage = m_tAttack.fDamage;
+		tHit.fHitTime = m_tAttack.fAddForceTime;
+		tHit.vHitPos = pOtherObj->PxRigidbody()->GetPxPosition();
 
 		pMonsterScript->SetHitInfo(tHit);
 	}

@@ -116,7 +116,7 @@ bool CDemonMove::check_len()
 	Vec2 vXY = Vec2(vPos.x, vPos.z);
 
 	float fLen = (vTargetXY - vXY).Length(); //xy축으로만 계산
-	float fAttackLen = 700.f;
+	float fAttackLen = 600.f;
 
 
 	if (fLen >= m_fCheckLen)

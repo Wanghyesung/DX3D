@@ -165,16 +165,18 @@ void CPhysxMgr::tick_collision()
 
         //if (pLeftObj->IsDead() || pRightObj->IsDead())
         //{
-        //    m_mapCol.erase(iter);
+        //    pLeftObj->Collider3D()->EndOverlap(pRightObj->Collider3D());
+        //    pRightObj->Collider3D()->EndOverlap(pLeftObj->Collider3D());
+        //
+        //    iter->second.bOnColl = false;
+        //    ++iter;
+        //    continue;
         //}
 
         if (!pLeftObj->Collider3D()->GetIsActive() ||
            !pRightObj->Collider3D()->GetIsActive())
         {
-            //pLeftObj->Collider3D()->EndOverlap(pRightObj->Collider3D());
-            //pRightObj->Collider3D()->EndOverlap(pLeftObj->Collider3D());
-
-            //m_mapCol = m_mapCol.erase(iter);
+            ++iter;
             continue;
         }
 

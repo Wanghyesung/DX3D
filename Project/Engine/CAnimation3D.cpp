@@ -105,28 +105,11 @@ void CAnimation3D::check_event()
 	if (m_iCurEventCheck == m_iEndFrame)
 		return;
 
-	
-	if (m_vecEvent[m_iCurEventCheck].iStartFrame < m_iCurFrame)
+	//늦춰진 프레임만큼 이벤트 호출 현재 프레임까지
+	for (m_iCurEventCheck; m_iCurEventCheck <= m_iCurFrame; ++m_iCurEventCheck)
 	{
-		//늦춰진 프레임만큼 이벤트 호출
-		for (; m_iCurEventCheck < m_iCurFrame; ++m_iCurEventCheck)
-		{
-			m_vecEvent[m_iCurEventCheck].tEvent();
-		}
+		m_vecEvent[m_iCurEventCheck].tEvent();
 	}
-
-	//m_iCurEventCheck = m_iCurFrame;
-	m_vecEvent[m_iCurEventCheck++].tEvent();
-	
-	//if (m_iCurEventCheck == m_iCurFrame)
-	//{
-	//	m_vecEvent[m_iCurEventCheck].tEvent();
-	//}
-		
-
-	/*else
-		m_vecEvent[m_iCurEventCheck].tEvent();*/
-
 }
 
 

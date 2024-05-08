@@ -23,6 +23,9 @@ void CMonsterDead::final_tick()
 
 	if (bComplete)
 	{
+		if (m_bDead)
+			return;
+
 		//DestroyObject(GetOwner());
 		//ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
 		//GetOwner()->PxRigidbody()->SetPxTransform(Vec3(-2000.f, -2000.f, -2000.f));
@@ -30,6 +33,7 @@ void CMonsterDead::final_tick()
 
 		//юс╫ц╥н
 		CRespawnMgr::GetInst()->AddObject(GetOwner(), 10.f, Vec3(2000.f, 500.f, 2000.f));
+		m_bDead = true;
 	}
 }
 
@@ -40,6 +44,7 @@ void CMonsterDead::Exit()
 
 void CMonsterDead::Enter()
 {
+	m_bDead = false;
 	Chanage_Anim(GetName(),false);
 
 	//CPhysxMgr::GetInst()->DeleteEventObj(GetOwner()->GetID());

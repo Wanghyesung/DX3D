@@ -8,7 +8,10 @@
 #include "CTimeMgr.h"
 #include "CRigidbody.h"
 #include "CPxRigidbody.h"
-CMonsterAttack::CMonsterAttack()
+#include "CLevelMgr.h"
+#include "CLayer.h"
+CMonsterAttack::CMonsterAttack():
+	m_pTarget(nullptr)
 {
 
 }
@@ -71,7 +74,7 @@ void CMonsterAttack::Enter()
 	m_iAttackCount = 0;
 
 	//랜덤 공격
-	int iMaxAttack = m_vecAttack.size()-1;
+	int iMaxAttack = m_vecAttack.size() - 1;
 
 	std::random_device rDiv;
 	std::mt19937 en(rDiv());
@@ -84,7 +87,14 @@ void CMonsterAttack::Enter()
 	wstring strName = GetName() + std::to_wstring(m_iCurAttack);
 	Chanage_Anim(strName, false);
 
-	//GetOwner()->PxRigidbody()->SetAcumulate(true);
+
+	//플레이어 방향으로 바라보기
+	const vector<CGameObject*>& vecObj =
+		CLevelMgr::GetInst()->GetCurLevel()->GetLayer((UINT)LAYER_TYPE::Player)->GetParentObject();
+	if (vecObj[0] != nullptr)
+		m_pTarget = vecObj[0];
+
+	rotate();
 }
 
 void CMonsterAttack::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj)
@@ -118,8 +128,6 @@ void CMonsterAttack::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackOb
 	GetOwner()->GetChild().at(0)->Animator3D()->
 		AddEvent(L"Attack" + std::to_wstring(_tAttackInfo.iAttackNum),
 			std::bind(&CMonsterAttack::erase_attack, this), _tAttackInfo.iEndFrame);
-
-
 }
 
 void CMonsterAttack::add_force()
@@ -244,6 +252,41 @@ void CMonsterAttack::erase_attack()
 void CMonsterAttack::add_objpull(UINT _iAttackNum, CGameObject* _pAttackObj)
 {
 	m_vecAttackObj[_iAttackNum].push(_pAttackObj);
+}
+
+void CMonsterAttack::rotate()
+{
+	//z <--> y fbx축 
+	Vec3 vFoward = Vec3(0.f, 0.f, -1.f);
+	//vFoward.y = 0.f;
+
+	Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
+	Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
+
+	Vec3 vDir = (vTargetPos - vPos).Normalize();
+
+	//- = 90 ~ 270도 - 두 벡터의 방향이 둔각을 이룬다.
+	float fRadian;
+	float fCos = vDir.Dot(vFoward);
+	//외적 이용 오른쪽 왼쪽 판별
+	Vec3 vCross = vFoward.Cross(vDir);
+
+	if (vCross.y >= 0)
+	{
+		fRadian = XM_PI + acos(fCos);
+	}
+	else
+	{
+		fRadian = XM_PI - acos(fCos);
+	}
+
+	//
+	Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();
+	Vec3 vFinalRot = Vec3(-XM_PI / 2.f, fRadian, 0.f);
+
+	PxQuat yRotation(vFinalRot.y, PxVec3(0.0f, 1.0f, 0.0f));
+	GetOwner()->PxRigidbody()->SetPxRotate(yRotation);
+	GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 }
 
 

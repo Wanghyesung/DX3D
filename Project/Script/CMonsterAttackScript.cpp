@@ -70,7 +70,9 @@ void CMonsterAttackScript::BeginOverlap(CCollider3D* _Other)
 		tHitInfo tHit = {};
 		tHit.bDown = m_tAttack.bDown;
 		tHit.fHitRcnt = m_tAttack.fAttRcnt;
+		tHit.fDamage = m_tAttack.fDamage;
 		tHit.fHitTime = m_tAttack.fAddForceTime;
+		tHit.vHitPos = pGameObj->PxRigidbody()->GetPxPosition();
 
 		pPlayer->SetHitInfo(tHit);
 	}

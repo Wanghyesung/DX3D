@@ -14,6 +14,7 @@ private:
 	
 	float m_fCurMoveTime;
 
+	CGameObject* m_pTarget;
 public:
 	virtual void final_tick();
 	virtual void Exit();
@@ -31,6 +32,7 @@ private:
 
 	void add_objpull(UINT _iAttackNum, CGameObject* _pAttackObj);
 	
+	void rotate();
 public:
 	CMonsterAttack();
 	virtual ~CMonsterAttack();

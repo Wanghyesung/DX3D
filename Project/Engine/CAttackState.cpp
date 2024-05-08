@@ -179,7 +179,7 @@ void CAttackState::erase_attack()
 
 void CAttackState::spawn_attack()
 {
-	//++tem;
+	
 	if (m_iAttackCount == 0)
 	{
 		m_iAttackCount = 1;

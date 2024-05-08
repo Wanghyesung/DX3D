@@ -46,7 +46,6 @@ public:
 
     void SetBoss(bool _bBoss) { m_bBoss = _bBoss; }
 
-  
     CMonsterFSM* GetFSM() { return m_pFSM; }
 public:
     CMonsterScript();
