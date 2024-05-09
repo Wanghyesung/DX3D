@@ -392,6 +392,12 @@
     <ClInclude Include="CRespawnMgr.h">
       <Filter>Source\03. Manager\14.SpawnMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CBattleMgr.h">
+      <Filter>Source\03. Manager\15.BattleMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CGage.h">
+      <Filter>Source\EngineUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -797,6 +803,12 @@
     <ClCompile Include="CRespawnMgr.cpp">
       <Filter>Source\03. Manager\14.SpawnMgr</Filter>
     </ClCompile>
+    <ClCompile Include="CBattleMgr.cpp">
+      <Filter>Source\03. Manager\15.BattleMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CGage.cpp">
+      <Filter>Source\EngineUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -1048,6 +1060,9 @@
     <Filter Include="Source\03. Manager\14.SpawnMgr">
       <UniqueIdentifier>{7707d313-c3e0-475d-a1c4-26d4af6206c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\03. Manager\15.BattleMgr">
+      <UniqueIdentifier>{79b72c18-5342-40c7-b272-9295e6c0dbf3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -1130,6 +1145,9 @@
     </FxCompile>
     <FxCompile Include="copybone.fx">
       <Filter>Source\08. ShaderCode\Render\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="engine_ui.fx">
+      <Filter>Source\08. ShaderCode\Render\2D</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -10,7 +10,8 @@ public:
 	CEngineUI(const CEngineUI& _pOrigin);
 	virtual ~CEngineUI();
 
-	virtual void Initialize(const wstring& _strTexName, const Vec3& _vScale);
+	virtual void Initialize(const wstring& _strTexName, const Vec3& _vScale, 
+		const wstring& _strName);
 	virtual void finaltick()override;
 	
 	virtual void MouseOn();//UI위에 마우스 올라왔을 떄 
@@ -36,6 +37,7 @@ private:
 	//void ChildLateupdate();
 
 	//void MoveToParent();
+	Ptr<class CMaterial> create_uimatrial();
 
 private:
 	//내 자식 UI

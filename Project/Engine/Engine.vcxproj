@@ -177,6 +177,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CAnimator2D.h" />
     <ClInclude Include="CAnimator3D.h" />
     <ClInclude Include="CAttackState.h" />
+    <ClInclude Include="CBattleMgr.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollider2D.h" />
     <ClInclude Include="CCollider3D.h" />
@@ -209,6 +210,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CGraphicsShader.h" />
     <ClInclude Include="CHeightMapShader.h" />
     <ClInclude Include="CHitState.h" />
+    <ClInclude Include="CGage.h" />
     <ClInclude Include="ChunkyTriMesh.h" />
     <ClInclude Include="CIdleState.h" />
     <ClInclude Include="CInstancingBuffer.h" />
@@ -310,6 +312,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CAnimator2D.cpp" />
     <ClCompile Include="CAnimator3D.cpp" />
     <ClCompile Include="CAttackState.cpp" />
+    <ClCompile Include="CBattleMgr.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollider2D.cpp" />
     <ClCompile Include="CCollider3D.cpp" />
@@ -345,6 +348,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CGraphicsShader.cpp" />
     <ClCompile Include="CHeightMapShader.cpp" />
     <ClCompile Include="CHitState.cpp" />
+    <ClCompile Include="CGage.cpp" />
     <ClCompile Include="ChunkyTriMesh.cpp" />
     <ClCompile Include="CIdleState.cpp" />
     <ClCompile Include="CInstancingBuffer.cpp" />
@@ -477,6 +481,12 @@ call EngineCopy.bat</Command>
       </ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="decal.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="engine_ui.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>

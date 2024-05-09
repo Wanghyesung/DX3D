@@ -26,6 +26,8 @@
 
 #include <Engine\CLevelMgr.h>
 #include <Engine\CStructuredBuffer.h>
+
+#include <Engine\CGage.h>
 CPlayerScript::CPlayerScript()
 	: CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_fSpeed(100.f)
@@ -67,6 +69,8 @@ void CPlayerScript::tick()
 	}
 	 m_pFSM->final_tick();
 
+
+	 tick_gage();
 	//CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
 	//CGameObject* _pMonster = pLayer->GetParentObject().at(1)->GetChild().at(0);
 	//CAnimator3D* pAnim = _pMonster->Animator3D();
@@ -103,6 +107,9 @@ void CPlayerScript::SetFSM(CFSM* _pFSM)
 
 void CPlayerScript::Initialize()
 {
+	m_tPlayerInfo.fMaxHP = 1000.f;
+	m_tPlayerInfo.fHP = 1000.f;
+
 	CGameObject* pArtorias = GetOwner();
 	// ============
 	// FBX Loading
@@ -212,8 +219,22 @@ void CPlayerScript::Initialize()
 
 	m_pFSM->SetState(STATE_TYPE::IDLE);
 	ChanageState(m_pFSM, STATE_TYPE::IDLE);
+
+	set_ui();
 }
 
+
+void CPlayerScript::set_ui()
+{
+	m_pHP = new CGage();
+	m_pHP->Initialize(L"texture\\GameTexture\\PlayerHP.png", Vec3(800.f, 24.f, 0.f), L"PlayerHP");
+	SpawnGameObject(m_pHP, Vec3(-85.f, 283.f, -2.f), (int)LAYER_TYPE::UI);
+
+	//-85
+	//m_pHeal = new CGage();
+	//m_pHeal->Initialize(L"texture\\GameTexture\\PlayerHeal.png", Vec3(800.f, 18.f, 0.f), L"PlayerHeal");
+	//SpawnGameObject(m_pHeal, Vec3(-85.f, 260.f, -2.f), (int)LAYER_TYPE::UI);
+}
 
 void CPlayerScript::set_attack()
 {
@@ -328,6 +349,11 @@ void CPlayerScript::Chanage_AnimDT(float _fDivDT)
 	}
 }
 
+void CPlayerScript::tick_gage()
+{
+	m_pHP->UpdateGage(m_tPlayerInfo.fMaxHP, m_tPlayerInfo.fHP);
+}
+
 void CPlayerScript::BeginOverlap(CCollider3D* _Other)
 {
 	//플레이어가 먼저 들어옴
@@ -356,8 +382,9 @@ void CPlayerScript::OnOverlap(CCollider3D* _Other)
 		CHitState* pHit = dynamic_cast<CHitState*>(m_pFSM->FindState(STATE_TYPE::HIT));
 		pHit->SetHitInfo(m_tHitInfo);
 
+		m_tPlayerInfo.fHP -= m_tHitInfo.fDamage;
+
 		ChanageState(m_pFSM, STATE_TYPE::HIT);
-		
 	}
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <Engine\CScript.h>
 class CFSM;
-
+class CGage;
 class CPlayerScript :
     public CScript
 {
@@ -17,6 +17,10 @@ private:
 
     tActorInfo  m_tPlayerInfo;
     tHitInfo    m_tHitInfo;
+
+    CGage*      m_pHP;
+    CGage*      m_pHeal;
+
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -37,7 +41,9 @@ public:
 
     void Chanage_AnimDT(float _fDivDT);
 private:
+    void tick_gage();
 
+    void set_ui();
     void set_attack();
     void rotate();
 public:

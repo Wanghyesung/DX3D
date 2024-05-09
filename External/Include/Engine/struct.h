@@ -385,6 +385,7 @@ struct tAttackInfo
 struct tActorInfo
 {
 	float fHP;
+	float fMaxHP;
 	float fSpeed;
 };
 

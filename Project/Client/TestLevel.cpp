@@ -8,6 +8,7 @@
 #include <Engine\components.h>
 #include <Engine\CFSM.h>
 #include <Engine\CEngineUI.h>
+#include <Engine\CGage.h>
 
 #include <Engine\CMonsterFSM.h>
 #include <Engine\CMonsterJump.h>
@@ -535,7 +536,7 @@ void CreateLandScape()
 	//300 350 300
 
 
-	//CreateUI();
+	CreateUI();
 }
 
 void CreateStage()
@@ -728,8 +729,39 @@ void CreateStage()
 
 void CreateUI()
 {
-	CEngineUI* pUI = new CEngineUI();
-	pUI->Initialize(L"texture\\MagicCircle.png", Vec3(200.f,200.f,0.f));
-	SpawnGameObject(pUI, Vec3(1.f, 1.f, -1.f), (int)LAYER_TYPE::UI);
+	//-540 272
+	CEngineUI* pPlayerIcon = new CEngineUI();
+	pPlayerIcon->Initialize(L"texture\\GameTexture\\playerIcon.png", Vec3(100.f,100.f,0.f), L"PlayerIcon");
+	SpawnGameObject(pPlayerIcon, Vec3(-540.f, 272.f, -1.f), (int)LAYER_TYPE::UI);
 
+	//-85 272
+	CEngineUI* pPlayerFrame = new CEngineUI();
+	pPlayerFrame->Initialize(L"texture\\GameTexture\\playerframe.png", Vec3(800.f, 48.f, 0.f),L"PlayerFrame");
+	SpawnGameObject(pPlayerFrame, Vec3(-85, 272.f, 5.f), (int)LAYER_TYPE::UI);
+
+	//hp heal playerscript·Î
+	//-85
+
+
+	//menu 1.5¹è
+
+	//-520 -200
+	CEngineUI* pLeftMenu = new CEngineUI();
+	pLeftMenu->Initialize(L"texture\\GameTexture\\LeftRightMenu.png", Vec3(120.f, 150.f, 0.f), L"LeftRightMenu0");
+	SpawnGameObject(pLeftMenu, Vec3(-520.f, -200.f, -1.f), (int)LAYER_TYPE::UI);
+
+	//-280 -200
+	CEngineUI* pRightMenu = new CEngineUI();
+	pRightMenu->Initialize(L"texture\\GameTexture\\LeftRightMenu.png", Vec3(120.f, 150.f, 0.f), L"LeftRightMenu1");
+	SpawnGameObject(pRightMenu, Vec3(-280.f, -200.f, -1.f), (int)LAYER_TYPE::UI);
+
+	//-400 -90
+	CEngineUI* pTopMenu = new CEngineUI();
+	pTopMenu->Initialize(L"texture\\GameTexture\\TopBottomMenu.png", Vec3(99.f, 150.f, 0.f), L"TopBottomMenu0");
+	SpawnGameObject(pTopMenu, Vec3(-400.f, -90.f, -1.f), (int)LAYER_TYPE::UI);
+	//-400 -300
+	CEngineUI* pBottomMenu = new CEngineUI();
+	pBottomMenu->Initialize(L"texture\\GameTexture\\TopBottomMenu.png", Vec3(99.f, 150.f, 0.f), L"TopBottomMenu1");
+	SpawnGameObject(pBottomMenu, Vec3(-400.f, -300.f, -1.f), (int)LAYER_TYPE::UI);
+	
 }

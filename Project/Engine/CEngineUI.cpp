@@ -28,21 +28,32 @@ CEngineUI::~CEngineUI()
 	
 }
 
-void CEngineUI::Initialize(const wstring& _strTexName, const Vec3& _vScale)
+void CEngineUI::Initialize(const wstring& _strTexName, const Vec3& _vScale, 
+	const wstring& _strName)
 {
 	CMeshRender* pMeshRender = new CMeshRender;
 	pMeshRender->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DMtrl"),0);
+	pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DMtrl"), 0);
+	//if (_bCreateMaterial)
+		//pMeshRender->SetMaterial(create_uimatrial(),0);
+	//else
+		//pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DMtrl"), 0);
 
 	AddComponent(pMeshRender);
 	AddComponent(new CTransform);
 
-	pMeshRender->MeshRender()->GetMaterial(0)->SetTexParam(TEX_0,
-		CResMgr::GetInst()->FindRes<CTexture>(_strTexName));
+	Ptr<CMaterial> pMaterial = pMeshRender->MeshRender()->GetMaterial(0);
+	if (pMaterial->GetTexParam(TEX_0) == nullptr)
+		pMaterial->SetTexParam(TEX_0, CResMgr::GetInst()->FindRes<CTexture>(_strTexName));
+	else
+	{
+		Ptr<CMaterial> pDyanmicMater = pMeshRender->MeshRender()->GetDynamicMaterial(0);
+		pDyanmicMater->SetTexParam(TEX_0, CResMgr::GetInst()->FindRes<CTexture>(_strTexName));
+	}
 
 	Transform()->SetRelativeScale(_vScale);
 	
-	SetName(L"Engine UI");
+	SetName(_strName);
 }
 
 void CEngineUI::finaltick()
@@ -94,4 +105,28 @@ void CEngineUI::MouseOnCheck()
 		m_bMouseOn = true;
 	else
 		m_bMouseOn = false;
+}
+
+Ptr<CMaterial> CEngineUI::create_uimatrial()
+{
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader();
+	//pShader->SetKey(L"")
+	pShader->CreateVertexShader(L"shader\\std2d.fx", "VS_Std2D");
+	pShader->CreatePixelShader(L"shader\\std2d.fx", "PS_Std2D");
+
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::MASK);
+
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	// Param
+	pShader->AddTexParam(TEX_0, "Output Texture");
+
+	//CResMgr::GetInst()->AddRes(pShader->GetKey(), pShader);
+
+	Ptr<CMaterial> pMaterial = new CMaterial();
+	pMaterial->SetShader(pShader);
+
+	return pMaterial;
 }
