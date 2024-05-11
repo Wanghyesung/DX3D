@@ -76,9 +76,9 @@ void CPxRigidbody::SetGround(bool _bGround, bool _bAddGravity)
     m_bAddGravity = _bAddGravity;
 
     if (m_bGround)
-        m_vAddGravityForce = PxVec3(0.f, 0.f, 0.f);
+        m_vAddGravityForce = CPhysxMgr::GetInst()->GetGravity(); //속도 중력
     else
-        m_vAddGravityForce = PxVec3(0.f, 9.6f, 0.f);
+        m_vAddGravityForce = PxVec3(0.f, 9.6f, 0.f); //가속도 중력
 
     m_pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, _bGround);
 }
@@ -194,9 +194,9 @@ void CPxRigidbody::tick_velocity(const PxVec3& _vVel)
     PxVec3 vFinalVel = _vVel;
     if (m_bAddGravity)
     {
-        PxVec3 vGravity = CPhysxMgr::GetInst()->GetGravity();
+        m_vAddGravityForce += m_vAddGravityForce * 0.04f;
     
-        vFinalVel = _vVel + vGravity;
+        vFinalVel = _vVel + m_vAddGravityForce;
     }
     
     m_pRigidbody->setLinearVelocity(vFinalVel);

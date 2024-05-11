@@ -149,7 +149,7 @@ void CAttackState::AddAttack(tAttackInfo _tAttackInfo, CGameObject* _pAttackObj)
 	pRigid->init(Vec3(-2000.f,-2000.f,-2000.f), _tAttackInfo.vAttackScale, (int)LAYER_TYPE::Attack, _pAttackObj);
 	pRigid->SetGround(true,false); //땅상태 , 중력 안받음 
 	pRigid->SetPass(true); // 충돌해도 통과되게
-
+	//SpawnGameObject(_pAttackObj, Vec3(-2000.f, -2000.f, -2000.f), (int)LAYER_TYPE::Attack);
 
 	//함수 이벤트 애니메이션에 등록
 	GetOwner()->GetChild().at(0)->Animator3D()->

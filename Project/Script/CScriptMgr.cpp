@@ -10,6 +10,7 @@
 #include "CLandScpaeScript.h"
 #include "CMissileScript.h"
 #include "CMonsterAttackScript.h"
+#include "CMonsterHPScript.h"
 #include "CMonsterScript.h"
 #include "CObjstacleScript.h"
 #include "CPlayerScript.h"
@@ -23,17 +24,21 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CBossStageScript");
 	_vec.push_back(L"CCameraMoveScript");
 	_vec.push_back(L"CDemonScript");
+	_vec.push_back(L"CEquipScript");
 	_vec.push_back(L"CGravityScript");
 	_vec.push_back(L"CJumpAttackScript");
+	_vec.push_back(L"CLandFormScript");
 	_vec.push_back(L"CLandScpaeScript");
 	_vec.push_back(L"CMissileScript");
 	_vec.push_back(L"CMonsterAttackScript");
+	_vec.push_back(L"CMonsterHPScript");
 	_vec.push_back(L"CMonsterScript");
 	_vec.push_back(L"CObjstacleScript");
 	_vec.push_back(L"CPlayerScript");
 	_vec.push_back(L"CStairsScript");
 	_vec.push_back(L"CTerrainScript");
 	_vec.push_back(L"CTestScript");
+	_vec.push_back(L"StairsScript");
 }
 
 CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
@@ -56,6 +61,8 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CMissileScript;
 	if (L"CMonsterAttackScript" == _strScriptName)
 		return new CMonsterAttackScript;
+	if (L"CMonsterHPScript" == _strScriptName)
+		return new CMonsterHPScript;
 	if (L"CMonsterScript" == _strScriptName)
 		return new CMonsterScript;
 	if (L"CObjstacleScript" == _strScriptName)
@@ -102,6 +109,9 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 	case (UINT)SCRIPT_TYPE::MONSTERATTACKSCRIPT:
 		return new CMonsterAttackScript;
 		break;
+	case (UINT)SCRIPT_TYPE::MONSTERHPSCRIPT:
+		return new CMonsterHPScript;
+		break;
 	case (UINT)SCRIPT_TYPE::MONSTERSCRIPT:
 		return new CMonsterScript;
 		break;
@@ -114,13 +124,9 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 	case (UINT)SCRIPT_TYPE::STAIRSSCRIPT:
 		return new CStairsScript;
 		break;
-	case (UINT)SCRIPT_TYPE::TERRAINSCRIPT:
-		return new CTerrainScript;
-		break;
 	case (UINT)SCRIPT_TYPE::TESTSCRIPT:
 		return new CTestScript;
 		break;
-
 	}
 	return nullptr;
 }
@@ -163,6 +169,10 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 
 	case SCRIPT_TYPE::MONSTERATTACKSCRIPT:
 		return L"CMonsterAttackScript";
+		break;
+
+	case SCRIPT_TYPE::MONSTERHPSCRIPT:
+		return L"CMonsterHPScript";
 		break;
 
 	case SCRIPT_TYPE::MONSTERSCRIPT:

@@ -8,6 +8,7 @@
 #include "CRenderMgr.h"
 #include "CFSM.h"
 #include "CMonsterFSM.h"
+#include "CFontMgr.h"
 CEventMgr::CEventMgr()
 {
 
@@ -21,6 +22,7 @@ CEventMgr::~CEventMgr()
 
 void CEventMgr::tick()
 {
+
 	m_LevelChanged = false;
 
 	GC_Clear();

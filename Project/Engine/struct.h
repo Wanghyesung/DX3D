@@ -385,6 +385,7 @@ struct tAttackInfo
 struct tActorInfo
 {
 	float fHP;
+	float fMaxHP;
 	float fSpeed;
 };
 
@@ -404,6 +405,15 @@ struct tHitInfo
 
 	Vec3 vHitPos;
 };
+
+struct tFontInfo
+{
+	wstring Str;
+	float fPosX; float fPosY;
+	float fFontSize;
+	UINT Color;
+};
+
 
 
 

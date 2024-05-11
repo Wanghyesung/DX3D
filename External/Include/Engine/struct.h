@@ -406,5 +406,14 @@ struct tHitInfo
 	Vec3 vHitPos;
 };
 
+struct tFontInfo
+{
+	wstring Str;
+	float fPosX; float fPosY;
+	float fFontSize;
+	UINT Color;
+};
+
+
 
 

@@ -16,6 +16,7 @@
 #include <Engine\CDemonJump.h>
 #include <Engine\CDemonJumpAttack.h>
 #include <Engine\CMonsterDead.h>
+#include <Engine\CFontMgr.h>
 CDemonScript::CDemonScript():
 	CMonsterScript(SCRIPT_TYPE::DEMONSCRIPT)
 {
@@ -30,11 +31,12 @@ CDemonScript::~CDemonScript()
 
 void CDemonScript::tick()
 {
-	int a = 10;
+	
 	//const Matrix& mat = GetOwner()->Collider3D()->GetColliderWorldMat();
 	//DrawDebugCylinder(mat, Vec4(0.f, 0.f, 1.f, 1.f), 0.f, false);
 	//
 	CMonsterScript::tick();
+
 	//
 }
 
@@ -97,6 +99,8 @@ void CDemonScript::OnOverlap(CCollider3D* _Other)
 			{
 				ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::DEAD);
 			}
+
+			m_pHp->UpdateGage(m_tMonsterInfo.fMaxHP, m_tMonsterInfo.fHP);
 		}
 	}
 }
@@ -118,7 +122,8 @@ void CDemonScript::begin()
 
 void CDemonScript::Initialize(const wstring& _strFbxName)
 {
-	m_tMonsterInfo.fHP = 100.f;
+	m_tMonsterInfo.fHP = 300.f;
+	m_tMonsterInfo.fMaxHP = 300.f;
 
 	CMonsterScript::Initialize(_strFbxName);
 
@@ -162,6 +167,9 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 		AddEvent(L"Attack3", std::bind(&CDemonScript::jump_end, this), 1321);
 
 	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
+
+
+	init_hp();
 }
 
 void CDemonScript::jump_start()
@@ -201,7 +209,7 @@ void CDemonScript::set_attack()
 	tAttackInfo attackjump = {};
 	//attackjump.iStartFrame = 954;
 	//attackjump.iEndFrame = 960;
-	attackjump.vAttackScale = Vec3(1000.f, 300.f, 1000.f);
+	attackjump.vAttackScale = Vec3(1000.f, 600.f, 1000.f);
 	attackjump.tAttackValue.iMaxCount = 1;
 	attackjump.tAttackValue.fAttRcnt = 200.f;
 	attackjump.tAttackValue.fDamage = 40.f;
@@ -226,4 +234,18 @@ void CDemonScript::set_attack()
 	CMonsterState* pState = m_pFSM->FindState(MONSTER_STATE_TYPE::JUMP_ATTACK);
 	CDemonJumpAttack* pJumpingState = dynamic_cast<CDemonJumpAttack*>(pState);
 	pJumpingState->SetAttackObj(pAttackObj);
+}
+
+void CDemonScript::init_hp()
+{
+	CGameObject* pHP = new CGameObject();
+	m_pHp = new CMonsterHPScript();
+	m_pHp->Initialize(L"texture\\GameTexture\\Monster", Vec3(950.f, 35.f, 1.f), 
+		GetOwner()->GetName(),true, L"소머리 데몬");
+
+	m_pHp->SetMonster(GetOwner());
+
+	pHP->AddComponent(m_pHp);
+	pHP->AddComponent(new CTransform());
+	SpawnGameObject(pHP, Vec3::Zero, (int)LAYER_TYPE::UI);//2차원 공간
 }

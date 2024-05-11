@@ -21,7 +21,7 @@ private:
 private:
 	void rotate();
 
-	bool check_dir();
+	bool check_len();
 
 	void move_back();
 public:

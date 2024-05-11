@@ -10,8 +10,8 @@
 CDemonWait::CDemonWait() :
 	m_fCurTime(0.f),
 	m_fWaitTime(5.f),
-	m_fCheckLen(1200.f),
-	m_fMoveLen(1000.f),
+	m_fCheckLen(2000.f),
+	m_fMoveLen(600.f),
 	m_bJumpOn(false)
 {
 
@@ -37,6 +37,12 @@ void CDemonWait::final_tick()
 		}
 	}
 
+
+	//내 범위에서 벗어났는지 확인
+	if (check_len())
+	{
+		ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::IDLE);
+	}
 }
 
 void CDemonWait::Exit()
@@ -97,12 +103,12 @@ void CDemonWait::rotate()
 	GetOwner()->Transform()->SetRelativeRot(vFinalRot);
 }
 
-bool CDemonWait::check_dir()
+bool CDemonWait::check_len()
 {
 	Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
 	Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
 
-	float fLen = (vTargetPos - vPos).Length();
+	float fLen = (vTargetPos - vPos).y;
 	if (fLen > m_fCheckLen)
 		return false;
 
@@ -120,12 +126,10 @@ void CDemonWait::move_back()
 	float fCurLen = pRigid->GetPxPosition().z;
 	float fLen = fCurLen - m_fStartLen;
 
-	if (fabs(fLen) >= m_fCheckLen)
+	if (fabs(fLen) >= m_fMoveLen)
 	{
 		m_bJumpOn = true;
 		Chanage_Anim(GetName());
 	}
-	//내 범위에서 벗어났는지 확인
-	//check_dir();
 }
 

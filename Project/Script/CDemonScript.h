@@ -4,6 +4,8 @@
 class CDemonScript : public CMonsterScript
 {
 private:
+    CGage* m_pGage;
+    CEngineUI* m_pFrame;
 
     Vec3 m_vJumpForce; //공격, 점프..
 
@@ -12,7 +14,7 @@ private:
     void jump_end();
 
     void set_attack();
-
+    void init_hp();
 public:
     virtual void tick() override;
     virtual void BeginOverlap(CCollider3D* _Other)override;

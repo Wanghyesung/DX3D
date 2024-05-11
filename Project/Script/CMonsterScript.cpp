@@ -2,6 +2,7 @@
 #include "CMonsterScript.h"
 #include "CMonsterAttackScript.h"
 #include "CAttackScript.h"
+#include "CMonsterHPScript.h"
 
 #include <Engine\CRenderMgr.h>
 #include <Engine\CRigidbody.h>
@@ -94,6 +95,7 @@ void CMonsterScript::begin()
 
 void CMonsterScript::Initialize(const wstring& _strFbxName)
 {
+
 	CGameObject* pMonster = GetOwner();
 	// ============
 	// FBX Loading
@@ -105,7 +107,7 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\house.fbx");
 	//pMeshData = CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\house.mdat");
 	//pObj = pMeshData->Instantiate();
-	//pObj->SetName(L"House");
+	pMonster->SetName(_strFbxName);
 
 	//Artorias4.fbx
 	vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\" + _strFbxName + L".fbx");
@@ -131,6 +133,9 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 
 	m_pFSM = new CMonsterFSM();
 	m_pFSM->SetOwner(pMonster);
+
+
+	//init_hp();
 }
 
 void CMonsterScript::AddAnimFrame(const wstring& _strAnimName, int _iStart, int _iEnd)
@@ -151,6 +156,20 @@ void CMonsterScript::Chanage_AnimDT(float _fDivDT)
 		//자식 오브젝트에 애니메이션에서 지금 내 상태에 맞는 애니메이션 실행
 		vecChild[i]->Animator3D()->SetAnimDivDT(_fDivDT);
 	}
+}
+
+void CMonsterScript::init_hp()
+{
+	m_tMonsterInfo.fHP = 300.f;
+
+	CGameObject* pHP = new CGameObject();
+	m_pHp = new CMonsterHPScript();
+	m_pHp->Initialize(L"texture\\GameTexture\\Monster",Vec3(360,35.f,-2.f),GetOwner()->GetName(),false);
+	m_pHp->SetMonster(GetOwner());
+
+	pHP->AddComponent(m_pHp);
+	pHP->AddComponent(new CTransform());
+	SpawnGameObject(pHP, Vec3::Zero, (int)LAYER_TYPE::Default);//3차원 공간
 }
 
 void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType,CMonsterState* _pState,
@@ -182,7 +201,6 @@ void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _
 void CMonsterScript::AddMonsterAttack(int _iAttackNum, float _fForce, float _fRotate, float _fTime, int _iStartFrame, int _iEndFrame,
 									Vec3 _vAttackScale, float _fOffsetPos, Vec3 _vAttackRot)
 {
-	m_tMonsterInfo.fHP = 300.f;
 
 	tAttackInfo tAttackInfo = {};
 	tAttackInfo.iAttackNum = _iAttackNum;

@@ -321,117 +321,117 @@ void CreateMonster()
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
 
-	CGameObject* pMonster = new CGameObject;
-	pMonster->SetName(L"Balder_Knight");
-	pMonster->AddComponent(new CTransform());
-	pMonster->AddComponent(new CCollider3D());
-	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));	
-	{
-		tBuildSettings tSetting = {};
-		tSetting.agentRadius = 450.f; // 900 / 5 = 180
-		CNavMeshMgr::GetInst()->BuildField(tSetting);
-
-		CRDNavMeshField* pNav = new CRDNavMeshField();
-		pMonster->AddComponent(pNav);
-	}
-
-	CPxRigidbody* pRigi = new CPxRigidbody();
-	pMonster->AddComponent(pRigi);
-	pRigi->init(Vec3(1783.f, 120.f, 4585.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
-	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
-	
-	
-	CMonsterScript* pMonsterScript = new CMonsterScript();
-	pMonster->AddComponent(pMonsterScript);
-	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
-	
-    pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
-	pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
-	pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
-	pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
-	//pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
-	
-	CMonsterIdle* pIdle = new CMonsterIdle();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
-	
-	CMonsterMove* pMove = new CMonsterMove();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK,  pMove, L"Walk", 96, 140);
-	
-	CMonsterAttack* pAttack = new CMonsterAttack();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
-	
-	CMonsterHit* pHit = new CMonsterHit();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
-	
-	CMonsterDead* pMonsterDead = new CMonsterDead();
-	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::DEAD, pMonsterDead, L"Dead", 1116, 1200);
-
-	pMonsterScript->AddMonsterAttack(0, 0.f, 0.f, 0.6f, 629, 634, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
-	pMonsterScript->AddMonsterAttack(1, 0.f, 0.f, 0.6f, 781, 785, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
-	
-	pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
-	SpawnGameObject(pMonster, Vec3(1783.f, 120.f, 3585.f), (int)LAYER_TYPE::Monster);
-	//300
-
-	//CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
-	//pWeapon->AddComponent(new CTransform());
-	//pWeapon->AddComponent(new CEquip());
-	//
-	//pWeapon->Transform()->SetRelativeScale(Vec3(4.6f,4.6f,4.6f));
-	//
-	//float fRadian = XM_PI / 180.f;
-	//pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
-	//
-	//pWeapon->Transform()->SetAbsolute(true);
-	////-90 270 -9
-	//
-	//SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
-	//
-	//
-	//CGameObject* pBoss = new CGameObject();
-	//pBoss->SetName(L"Taurus_Demon_Fianl");
-	//
-	//
-	//pBoss->AddComponent(new CTransform());
-	//pBoss->AddComponent(new CCollider3D());
-	//
-	//pBoss->Transform()->SetRelativeScale(Vec3(1.5f, 1.5f, 1.5f));
-	//CPxRigidbody* pRigi = new CPxRigidbody();
-	//pBoss->AddComponent(pRigi);
-	////
-	////1783 300 2985
-	////1254 1292
-	//pRigi->init(Vec3(1783.f, 120.f, 3585.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
-	//pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
-	//
-	//pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
-	//pBoss->Collider3D()->SetAbsolute(true);
-	//
-	//CDemonScript* pDemonScript = new CDemonScript();
-	//pBoss->AddComponent(pDemonScript);
-	//pDemonScript->Initialize(L"Taurus_Demon_Fianl");
+	//CGameObject* pMonster = new CGameObject;
+	//pMonster->SetName(L"Balder_Knight");
+	//pMonster->AddComponent(new CTransform());
+	//pMonster->AddComponent(new CCollider3D());
+	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));	
 	//{
-	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-	//	//CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
-	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
-	//	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
 	//	tBuildSettings tSetting = {};
-	//	tSetting.agentRadius = 900; // 900 / 5 = 180
+	//	tSetting.agentRadius = 450.f; // 900 / 5 = 180
 	//	CNavMeshMgr::GetInst()->BuildField(tSetting);
 	//
 	//	CRDNavMeshField* pNav = new CRDNavMeshField();
-	//	pBoss->AddComponent(pNav);
-	//	//CNavAgent* pAgent = new CNavAgent;
-	//	//pBoss->AddComponent(pAgent);
-	//	//pAgent->SetSpeed(2);
-	//	//pAgent->SetRadius(0.5);
-	//	//pAgent->AssignToNavigationField(pNav);
+	//	pMonster->AddComponent(pNav);
 	//}
 	//
-	//CGameObject* pHand = pBoss;
-	//pWeapon->Equip()->SetChar(pHand);
-	//SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
+	//CPxRigidbody* pRigi = new CPxRigidbody();
+	//pMonster->AddComponent(pRigi);
+	//pRigi->init(Vec3(1783.f, 120.f, 4585.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
+	//pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
+	//
+	//
+	//CMonsterScript* pMonsterScript = new CMonsterScript();
+	//pMonster->AddComponent(pMonsterScript);
+	//pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+	//
+    //pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
+	//pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
+	//pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
+	//pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
+	////pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
+	//
+	//CMonsterIdle* pIdle = new CMonsterIdle();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
+	//
+	//CMonsterMove* pMove = new CMonsterMove();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK,  pMove, L"Walk", 96, 140);
+	//
+	//CMonsterAttack* pAttack = new CMonsterAttack();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
+	//
+	//CMonsterHit* pHit = new CMonsterHit();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
+	//
+	//CMonsterDead* pMonsterDead = new CMonsterDead();
+	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::DEAD, pMonsterDead, L"Dead", 1116, 1200);
+	//
+	//pMonsterScript->AddMonsterAttack(0, 0.f, 0.f, 0.6f, 629, 634, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
+	//pMonsterScript->AddMonsterAttack(1, 0.f, 0.f, 0.6f, 781, 785, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
+	//
+	//pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
+	//SpawnGameObject(pMonster, Vec3(1783.f, 120.f, 3585.f), (int)LAYER_TYPE::Monster);
+	//300
+
+	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
+	pWeapon->AddComponent(new CTransform());
+	pWeapon->AddComponent(new CEquip());
+	
+	pWeapon->Transform()->SetRelativeScale(Vec3(4.6f,4.6f,4.6f));
+	
+	float fRadian = XM_PI / 180.f;
+	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
+	
+	pWeapon->Transform()->SetAbsolute(true);
+	//-90 270 -9
+	
+	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
+	
+	
+	CGameObject* pBoss = new CGameObject();
+	pBoss->SetName(L"Taurus_Demon_Fianl");
+	
+	
+	pBoss->AddComponent(new CTransform());
+	pBoss->AddComponent(new CCollider3D());
+	
+	pBoss->Transform()->SetRelativeScale(Vec3(1.5f, 1.5f, 1.5f));
+	CPxRigidbody* pRigi = new CPxRigidbody();
+	pBoss->AddComponent(pRigi);
+	//
+	//1783 300 2985
+	//1254 1292
+	pRigi->init(Vec3(1783.f, 120.f, 3585.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
+	pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
+	
+	pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
+	pBoss->Collider3D()->SetAbsolute(true);
+	
+	CDemonScript* pDemonScript = new CDemonScript();
+	pBoss->AddComponent(pDemonScript);
+	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
+	{
+		//CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+		//CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+		//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
+		//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
+		//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
+		tBuildSettings tSetting = {};
+		tSetting.agentRadius = 900; // 900 / 5 = 180
+		CNavMeshMgr::GetInst()->BuildField(tSetting);
+	
+		CRDNavMeshField* pNav = new CRDNavMeshField();
+		pBoss->AddComponent(pNav);
+		//CNavAgent* pAgent = new CNavAgent;
+		//pBoss->AddComponent(pAgent);
+		//pAgent->SetSpeed(2);
+		//pAgent->SetRadius(0.5);
+		//pAgent->AssignToNavigationField(pNav);
+	}
+	
+	CGameObject* pHand = pBoss;
+	pWeapon->Equip()->SetChar(pHand);
+	SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
 
 	
 	
@@ -740,8 +740,6 @@ void CreateUI()
 	SpawnGameObject(pPlayerFrame, Vec3(-85, 272.f, 5.f), (int)LAYER_TYPE::UI);
 
 	//hp heal playerscript·Î
-	//-85
-
 
 	//menu 1.5¹è
 

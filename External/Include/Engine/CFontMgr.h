@@ -20,9 +20,15 @@ private:
 	IFW1Factory* m_pFW1Factory;
 	IFW1FontWrapper* m_pFontWrapper;
 
+	vector<tFontInfo> m_vecFont;
 public:
 	void init();
+	void render();
+
 	void DrawFont(const wchar_t* _pStr, float _fPosX, float _fPosY, float _fFontSize, UINT _Color);
+
+	void AddFont(const wstring& _strName, float _fPosX, float _fPosY, float _fFontSize, UINT _Color);
+
 
 public:
 	CFontMgr();

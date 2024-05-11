@@ -58,6 +58,7 @@ void CTimeMgr::tick()
 
 void CTimeMgr::render()
 {
+	
 	// 1초에 한번
 	static wchar_t szBuff[256] = {};
 
@@ -71,5 +72,5 @@ void CTimeMgr::render()
 		m_iCallCount = 0;
 	}
 
-	CFontMgr::GetInst()->DrawFont(szBuff, 10, 20, 16, FONT_RGBA(255, 0, 0, 255));
+	CFontMgr::GetInst()->DrawFont(szBuff, 10, 20, 16, FONT_RGBA(255, 255, 255, 255));
 }

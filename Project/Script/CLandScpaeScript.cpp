@@ -77,7 +77,7 @@ void CLandScpaeScript::EndOverlap(CCollider3D* _Other)
 	CPxRigidbody* pRigid = pObj->PxRigidbody();
 	if (pRigid)
 	{
-		pObj->PxRigidbody()->SetGround(false);
+		pObj->PxRigidbody()->SetGround(false, true);
 	}
 }
 

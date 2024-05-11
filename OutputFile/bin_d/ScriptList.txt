@@ -9,6 +9,7 @@ CLandFormScript
 CLandScpaeScript
 CMissileScript
 CMonsterAttackScript
+CMonsterHPScript
 CMonsterScript
 CObjstacleScript
 CPlayerScript

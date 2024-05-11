@@ -88,9 +88,13 @@ void CEngine::tick()
 	CResMgr::GetInst()->tick();
 	CTimeMgr::GetInst()->tick(); // DT(DeltaTime), FPS 구하기
 	CKeyMgr::GetInst()->tick();	
-
+	
 	// FMOD Update
 	CSound::g_pFMOD->update();
+
+	//이번 프레임에서 충돌이 되었다면 이벤트 호출
+	CPhysxMgr::GetInst()->tick_collision();
+
 
 	// Level Update
 	// Level 안에 존재하는 모든 GameObject 들이 Tick 을 호출받음
@@ -101,11 +105,8 @@ void CEngine::tick()
 	//이전 프레임 물체 운동 업데이트
 	CPhysxMgr::GetInst()->tick();
 
-	//이번 프레임에서 충돌이 되었다면 이벤트 호출
-	CPhysxMgr::GetInst()->tick_collision();
-
 	// Level 내에 GameObject 들의 변경점에 의해서 발생한 충돌을 체크한다.
-	CCollisionMgr::GetInst()->tick();
+	//CCollisionMgr::GetInst()->tick();
 }
 
 void CEngine::render()
@@ -114,4 +115,6 @@ void CEngine::render()
 
 	// FPS, DT 출력
 	CTimeMgr::GetInst()->render();
+
+	CFontMgr::GetInst()->render();
 }

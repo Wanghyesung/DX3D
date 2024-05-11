@@ -1,6 +1,6 @@
 #pragma once
 #include <Engine\CScript.h>
-
+#include "CMonsterHPScript.h"
 class CMonsterFSM;
 class CMonsterState;
 
@@ -16,6 +16,8 @@ protected:
 
     bool m_bBoss;
 
+    CMonsterHPScript* m_pHp;
+    
 public:
     virtual void tick() override;
     virtual void BeginOverlap(CCollider3D* _Other)override;
@@ -29,6 +31,9 @@ public:
 
     void AddAnimFrame(const wstring& _strAnimName, int _iStart, int _iEnd);
     CLONE(CMonsterScript);
+
+private:
+    void init_hp();
 
 public:
     void AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState,

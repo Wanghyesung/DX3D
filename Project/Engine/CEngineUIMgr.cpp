@@ -4,7 +4,7 @@
 #include "CLayer.h"
 #include "CLevelMgr.h"
 #include "CEngineUI.h"
-
+#include "CFontMgr.h"
 void CEngineUIMgr::tick()
 {
 	m_pFoucseUI = GetFoucseUI();
@@ -45,6 +45,7 @@ void CEngineUIMgr::tick()
 		pTargetUI->m_bMouseOn = false;
 	}
 }
+
 
 void CEngineUIMgr::SetFoucseUI(CEngineUI* _pUI)
 {

@@ -34,11 +34,7 @@ void CEngineUI::Initialize(const wstring& _strTexName, const Vec3& _vScale,
 	CMeshRender* pMeshRender = new CMeshRender;
 	pMeshRender->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DMtrl"), 0);
-	//if (_bCreateMaterial)
-		//pMeshRender->SetMaterial(create_uimatrial(),0);
-	//else
-		//pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DMtrl"), 0);
-
+	
 	AddComponent(pMeshRender);
 	AddComponent(new CTransform);
 

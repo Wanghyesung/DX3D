@@ -72,18 +72,9 @@ bool CDemonMove::check_dir()
 	if (fCos < 0)
 		return false;
 	
-	//외적 이용 오른쪽 왼쪽 판별
-	//Vec3 vCross = vFoward.Cross(vDir);
-
-	//if (vCross.y >= 0)
-	//	fRadian = acos(fCos);
-	//else
-	//	fRadian = 0.f;// XM_PI - acos(fCos);
-
-	
 
 	float fRadian = acos(fCos);
-
+	float fDegree = fRadian * 180.f / XM_PI;
 	//float fMaxCos = cos(m_fMaxRadian);
 	
 	//xz축 플레이와 몬스터가 마주보고 있는지
@@ -91,14 +82,14 @@ bool CDemonMove::check_dir()
 	vFoward.y = 0.f;
 	vDir.y = 0.f;
 	vDir.Normalize();
-	float xzRadian = vDir.Dot(vFoward);
+	float xzRadian = fabs(vDir.Dot(vFoward));
 	
 	//
 	if (0.75f > xzRadian || 0.9f <xzRadian)
 		return false;
 
-	//80?
-	if (fRadian >= m_fMaxRadian)
+	//75도?
+	if (fDegree >= 75.f)
 		return true;
 
 	return false;

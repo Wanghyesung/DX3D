@@ -8,8 +8,12 @@ class CEngineUIMgr :
 {
 	//SINGLE(CEngineUIMgr);
 
+private:
+	
+
 public:
 	void tick();
+	
 	void SetFoucseUI(CEngineUI* _pUI);
 	void MoveFrontChildUI(CEngineUI* pUI);
 
