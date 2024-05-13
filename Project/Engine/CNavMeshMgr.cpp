@@ -20,42 +20,45 @@
 
 #include "CMeshRender.h"
 #include "CNavMeshPlane.h"
-UINT CNavMeshMgr::m_iNextID = 0;
+
 UINT CNavMeshMgr::m_iPlaneCount = 0;
 
-CNavMeshMgr::CNavMeshMgr():
-    m_hashObjID{}
+CNavMeshMgr::CNavMeshMgr()
 {
-    navQuery = dtAllocNavMeshQuery();
-    crowd = dtAllocCrowd();
     context = new rcContext();
 }
 
 CNavMeshMgr::~CNavMeshMgr()
 {
-    if (navMesh)
-        dtFreeNavMesh(navMesh);
+    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.begin();
+    for (iter; iter != m_mapNavMesh.end(); ++iter)
+    {
+        tNavMeshInfo tNav = iter->second;
 
-    if (polyMesh)
-        rcFreePolyMesh(polyMesh);
+        if (tNav.navMesh)
+            dtFreeNavMesh(tNav.navMesh);
 
-    if (navQuery)
-        dtFreeNavMeshQuery(navQuery);
+        if (tNav.polyMesh)
+            rcFreePolyMesh(tNav.polyMesh);
 
-    if (polyMeshDetail)
-        rcFreePolyMeshDetail(polyMeshDetail);
+        if (tNav.navQuery)
+            dtFreeNavMeshQuery(tNav.navQuery);
+
+        if (tNav.polyMeshDetail)
+            rcFreePolyMeshDetail(tNav.polyMeshDetail);
+       
+        if (tNav.heightField)
+            rcFreeHeightField(tNav.heightField);
+
+        if (tNav.compactHeightField)
+            rcFreeCompactHeightfield(tNav.compactHeightField);
+
+        if (tNav.crowd)
+            dtFreeCrowd(tNav.crowd);
+    }
 
     if (context)
         delete context;
-
-    if (heightField)
-        delete heightField;
-
-    if (compactHeightField)
-        delete compactHeightField;
-
-    if (crowd)
-        dtFreeCrowd(crowd);
 }
 
 inline bool inRange(const float* v1, const float* v2, const float r, const float h)
@@ -199,6 +202,7 @@ void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
 
 void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const tBuildSettings& buildSettings)
 {
+    tNavMeshInfo tNavMesh = {};
     float bmin[3] = { WCHAR_MAX,WCHAR_MAX, WCHAR_MAX };
     float bmax[3] = { -WCHAR_MAX, -WCHAR_MAX, -WCHAR_MAX };
     // 바운더리 정보부터 설정
@@ -219,34 +223,36 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
             bmax[2] = worldVertices[i * 3 + 2];
     }
     //auto& config{ impl->config };
-    memset(&config, 0, sizeof(rcConfig));
+    memset(&tNavMesh.config, 0, sizeof(rcConfig));
 
-    config.cs = buildSettings.divisionSizeXZ;
-    config.ch = buildSettings.divisionSizeY;
-    config.walkableSlopeAngle = buildSettings.walkableSlopeAngle;
-    config.walkableHeight = (int)ceilf(buildSettings.walkableHeight / config.ch);
-    config.walkableClimb = (int)floorf(buildSettings.walkableClimb / config.ch);
-    config.walkableRadius = (int)ceilf(buildSettings.agentRadius / config.cs);
-    config.maxEdgeLen = (int)(config.cs * 40 / config.cs);
-    config.maxSimplificationError = 1.3f;
-    config.minRegionArea = (int)rcSqr(config.cs * 27);		// Note: area = size*size
-    config.mergeRegionArea = (int)rcSqr(config.cs * 67);	// Note: area = size*size
-    config.maxVertsPerPoly = (int)6;
-    config.detailSampleDist = 6.0f < 0.9f ? 0 : config.cs * 6.0f;
-    config.detailSampleMaxError = config.ch * 1;
+    tNavMesh.config.cs = buildSettings.divisionSizeXZ;
+    tNavMesh.config.ch = buildSettings.divisionSizeY;
+    tNavMesh.config.walkableSlopeAngle = buildSettings.walkableSlopeAngle;
+    tNavMesh.config.walkableHeight = (int)ceilf(buildSettings.walkableHeight / tNavMesh.config.ch);
+    tNavMesh.config.walkableClimb = (int)floorf(buildSettings.walkableClimb / tNavMesh.config.ch);
+    tNavMesh.config.walkableRadius = (int)ceilf(buildSettings.agentRadius / tNavMesh.config.cs);
+    tNavMesh.config.maxEdgeLen = (int)(tNavMesh.config.cs * 40 / tNavMesh.config.cs);
+    tNavMesh.config.maxSimplificationError = 1.3f;
+    tNavMesh.config.minRegionArea = (int)rcSqr(tNavMesh.config.cs * 27);		// Note: area = size*size
+    tNavMesh.config.mergeRegionArea = (int)rcSqr(tNavMesh.config.cs * 67);	// Note: area = size*size
+    tNavMesh.config.maxVertsPerPoly = (int)6;
+    tNavMesh.config.detailSampleDist = 6.0f < 0.9f ? 0 : tNavMesh.config.cs * 6.0f;
+    tNavMesh.config.detailSampleMaxError = tNavMesh.config.ch * 1;
 
-    rcVcopy(config.bmin, bmin);
-    rcVcopy(config.bmax, bmax);
-    rcCalcGridSize(config.bmin, config.bmax, config.cs, &config.width, &config.height);
+    rcVcopy(tNavMesh.config.bmin, bmin);
+    rcVcopy(tNavMesh.config.bmax, bmax);
+    rcCalcGridSize(tNavMesh.config.bmin, tNavMesh.config.bmax, tNavMesh.config.cs,
+        &tNavMesh.config.width, &tNavMesh.config.height);
 
     // 작업 맥락을 저장할 context 객체 생성, 작업의 성패여부를 저장할 processResult 선언
     //context = 
     bool processResult{ false };
     // 복셀 높이필드 공간 할당
-    heightField = rcAllocHeightfield();
-    assert(heightField != nullptr);
+    tNavMesh.heightField = rcAllocHeightfield();
+    assert(tNavMesh.heightField != nullptr);
 
-    processResult = rcCreateHeightfield(context, *heightField, config.width, config.height, config.bmin, config.bmax, config.cs, config.ch);
+    processResult = rcCreateHeightfield(context, *tNavMesh.heightField, tNavMesh.config.width, tNavMesh.config.height, tNavMesh.config.bmin,
+        tNavMesh.config.bmax, tNavMesh.config.cs, tNavMesh.config.ch);
     assert(processResult == true);
 
 
@@ -255,53 +261,58 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     //unsigned char * triareas = new unsigned char[facesNum];
     //memset(triareas, 0, facesNum*sizeof(unsigned char));
 
-    rcMarkWalkableTriangles(context, config.walkableSlopeAngle, worldVertices, verticesNum, faces, facesNum, triareas.data());
-    processResult = rcRasterizeTriangles(context, worldVertices, verticesNum, faces, triareas.data(), facesNum, *heightField, config.walkableClimb);
+    rcMarkWalkableTriangles(context, tNavMesh.config.walkableSlopeAngle, worldVertices, verticesNum, faces, facesNum, triareas.data());
+    processResult = rcRasterizeTriangles(context, worldVertices, verticesNum, faces, triareas.data(),
+        facesNum, *tNavMesh.heightField, tNavMesh.config.walkableClimb);
     assert(processResult == true);
 
     // 필요없는 부분 필터링
-    rcFilterLowHangingWalkableObstacles(context, config.walkableClimb, *heightField);
-    rcFilterLedgeSpans(context, config.walkableHeight, config.walkableClimb, *heightField);
-    rcFilterWalkableLowHeightSpans(context, config.walkableHeight, *heightField);
+    rcFilterLowHangingWalkableObstacles(context, tNavMesh.config.walkableClimb, *tNavMesh.heightField);
+    rcFilterLedgeSpans(context, tNavMesh.config.walkableHeight, tNavMesh.config.walkableClimb, *tNavMesh.heightField);
+    rcFilterWalkableLowHeightSpans(context, tNavMesh.config.walkableHeight, *tNavMesh.heightField);
 
     // 밀집 높이 필드 만들기
-    compactHeightField = rcAllocCompactHeightfield();
-    assert(compactHeightField != nullptr);
+    tNavMesh.compactHeightField = rcAllocCompactHeightfield();
+    assert(tNavMesh.compactHeightField != nullptr);
 
 
-    processResult = rcBuildCompactHeightfield(context, config.walkableHeight, config.walkableClimb, *heightField, *compactHeightField);
+    processResult = rcBuildCompactHeightfield(context, tNavMesh.config.walkableHeight, tNavMesh.config.walkableClimb,
+        *tNavMesh.heightField, *tNavMesh.compactHeightField);
     //rcFreeHeightField(heightField);
     assert(processResult == true);
 
     //agentradius 범위에 따라 메쉬 가공 -> radius가 클수록 메쉬 범위 작게
-    processResult = rcErodeWalkableArea(context, config.walkableRadius, *compactHeightField);
+    processResult = rcErodeWalkableArea(context, tNavMesh.config.walkableRadius, *tNavMesh.compactHeightField);
     assert(processResult == true);
 
-    processResult = rcBuildDistanceField(context, *compactHeightField);
+    processResult = rcBuildDistanceField(context, *tNavMesh.compactHeightField);
     assert(processResult == true);
 
-    rcBuildRegions(context, *compactHeightField, 0, config.minRegionArea, config.mergeRegionArea);
+    rcBuildRegions(context, *tNavMesh.compactHeightField, 0, tNavMesh.config.minRegionArea, 
+        tNavMesh.config.mergeRegionArea);
     assert(processResult == true);
 
     // 윤곽선 만들기
     rcContourSet* contourSet{ rcAllocContourSet() };
     assert(contourSet != nullptr);
 
-    processResult = rcBuildContours(context, *compactHeightField, config.maxSimplificationError, config.maxEdgeLen, *contourSet);
+    processResult = rcBuildContours(context, *tNavMesh.compactHeightField, tNavMesh.config.maxSimplificationError,
+        tNavMesh.config.maxEdgeLen, *contourSet);
     assert(processResult == true);
 
     // 윤곽선으로부터 폴리곤 생성
-    polyMesh = rcAllocPolyMesh();
-    assert(polyMesh != nullptr);
+    tNavMesh.polyMesh = rcAllocPolyMesh();
+    assert(tNavMesh.polyMesh != nullptr);
 
-    processResult = rcBuildPolyMesh(context, *contourSet, config.maxVertsPerPoly, *polyMesh);
+    processResult = rcBuildPolyMesh(context, *contourSet, tNavMesh.config.maxVertsPerPoly, *tNavMesh.polyMesh);
     assert(processResult == true);
 
     // 디테일 메시 생성
-    polyMeshDetail = rcAllocPolyMeshDetail();
-    assert(polyMeshDetail != nullptr);
+    tNavMesh.polyMeshDetail = rcAllocPolyMeshDetail();
+    assert(tNavMesh.polyMeshDetail != nullptr);
 
-    processResult = rcBuildPolyMeshDetail(context, *polyMesh, *compactHeightField, config.detailSampleDist, config.detailSampleMaxError, *polyMeshDetail);
+    processResult = rcBuildPolyMeshDetail(context, *tNavMesh.polyMesh, *tNavMesh.compactHeightField,
+        tNavMesh.config.detailSampleDist, tNavMesh.config.detailSampleMaxError, *tNavMesh.polyMeshDetail);
     assert(processResult == true);
 
     //rcFreeCompactHeightfield(compactHeightField);
@@ -311,31 +322,31 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     unsigned char* navData{ nullptr };
     int navDataSize{ 0 };
 
-    assert(config.maxVertsPerPoly <= DT_VERTS_PER_POLYGON);
+    assert(tNavMesh.config.maxVertsPerPoly <= DT_VERTS_PER_POLYGON);
 
     // Update poly flags from areas.
-    for (int i = 0; i < polyMesh->npolys; ++i)
+    for (int i = 0; i < tNavMesh.polyMesh->npolys; ++i)
     {
-        if (polyMesh->areas[i] == RC_WALKABLE_AREA)
+        if (tNavMesh.polyMesh->areas[i] == RC_WALKABLE_AREA)
         {
-            polyMesh->areas[i] = 0;
-            polyMesh->flags[i] = 1;
+            tNavMesh.polyMesh->areas[i] = 0;
+            tNavMesh.polyMesh->flags[i] = 1;
         }
     }
     dtNavMeshCreateParams params;
     memset(&params, 0, sizeof(params));
-    params.verts = polyMesh->verts;
-    params.vertCount = polyMesh->nverts;
-    params.polys = polyMesh->polys;
-    params.polyAreas = polyMesh->areas;
-    params.polyFlags = polyMesh->flags;
-    params.polyCount = polyMesh->npolys;
-    params.nvp = polyMesh->nvp;
-    params.detailMeshes = polyMeshDetail->meshes;
-    params.detailVerts = polyMeshDetail->verts;
-    params.detailVertsCount = polyMeshDetail->nverts;
-    params.detailTris = polyMeshDetail->tris;
-    params.detailTriCount = polyMeshDetail->ntris;
+    params.verts = tNavMesh.polyMesh->verts;
+    params.vertCount = tNavMesh.polyMesh->nverts;
+    params.polys = tNavMesh.polyMesh->polys;
+    params.polyAreas = tNavMesh.polyMesh->areas;
+    params.polyFlags = tNavMesh.polyMesh->flags;
+    params.polyCount = tNavMesh.polyMesh->npolys;
+    params.nvp = tNavMesh.polyMesh->nvp;
+    params.detailMeshes = tNavMesh.polyMeshDetail->meshes;
+    params.detailVerts = tNavMesh.polyMeshDetail->verts;
+    params.detailVertsCount = tNavMesh.polyMeshDetail->nverts;
+    params.detailTris = tNavMesh.polyMeshDetail->tris;
+    params.detailTriCount = tNavMesh.polyMeshDetail->ntris;
     params.offMeshConVerts = 0;
     params.offMeshConRad = 0;
     params.offMeshConDir = 0;
@@ -343,33 +354,36 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     params.offMeshConFlags = 0;
     params.offMeshConUserID = 0;
     params.offMeshConCount = 0;
-    params.walkableHeight = config.walkableHeight;
-    params.walkableRadius = config.walkableRadius;
-    params.walkableClimb = config.walkableClimb;
-    rcVcopy(params.bmin, polyMesh->bmin);
-    rcVcopy(params.bmax, polyMesh->bmax);
-    params.cs = config.cs;
-    params.ch = config.ch;
+    params.walkableHeight = tNavMesh.config.walkableHeight;
+    params.walkableRadius = tNavMesh.config.walkableRadius;
+    params.walkableClimb = tNavMesh.config.walkableClimb;
+    rcVcopy(params.bmin, tNavMesh.polyMesh->bmin);
+    rcVcopy(params.bmax, tNavMesh.polyMesh->bmax);
+    params.cs = tNavMesh.config.cs;
+    params.ch = tNavMesh.config.ch;
     params.buildBvTree = true;
 
     processResult = dtCreateNavMeshData(&params, &navData, &navDataSize);
     assert(processResult == true);
 
 
-    navMesh = dtAllocNavMesh();
-    assert(navMesh != nullptr);
+    tNavMesh.navMesh = dtAllocNavMesh();
+    assert(tNavMesh.navMesh != nullptr);
 
     dtStatus status;
-    status = navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
+    status = tNavMesh.navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
     //dtFree(navData);
     assert(dtStatusFailed(status) == false);
 
-    navQuery = dtAllocNavMeshQuery();
-    status = navQuery->init(navMesh, 2048);
+    tNavMesh.navQuery = dtAllocNavMeshQuery();
+    status = tNavMesh.navQuery->init(tNavMesh.navMesh, 2048);
 
     assert(dtStatusFailed(status) == false);
 
-    crowd->init(1024, buildSettings.maxAgentRadius, navMesh);
+    tNavMesh.crowd = dtAllocCrowd();
+    tNavMesh.crowd->init(1024, buildSettings.maxAgentRadius, tNavMesh.navMesh);
+
+    m_mapNavMesh.insert(make_pair(buildSettings.ID, tNavMesh));
 }
 
 bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
@@ -393,37 +407,44 @@ void CNavMeshMgr::render()
 
 }
 
-const Vec3& CNavMeshMgr::FindPath(float* _pStartPos, float* _pEndPos)
+const Vec3& CNavMeshMgr::FindPath(UINT _ID, float* _pStartPos, float* _pEndPos)
 {
     float polyPickExt[3] = { 6000,6000,6000 }; // 범위를 제한하기 위한 벡터
 
     //const Vec3 vScale = GetOwner()->Collider3D()->GetOffsetScale();
     //float ext[3] = { vScale.x, vScale.y, vScale.z };
 
-    const dtQueryFilter* filter = crowd->getFilter(0);
+    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_ID);
+    if (iter == m_mapNavMesh.end())
+    {
+        return Vec3::Zero;
+    }
+
+    tNavMeshInfo tNav = iter->second;
+    const dtQueryFilter* filter = tNav.crowd->getFilter(0);
 
     dtPolyRef startPoly;
     float nearestPoint[3];
-    navQuery->findNearestPoly(_pStartPos, polyPickExt, filter, &startPoly, nearestPoint);
+    tNav.navQuery->findNearestPoly(_pStartPos, polyPickExt, filter, &startPoly, nearestPoint);
 
     //const Vec3 vTargetScale = m_pTarget->Collider3D()->GetOffsetScale();
     //float targetext[3] = { vTargetScale.x, vTargetScale.y, vTargetScale.z };
 
     dtPolyRef endPoly;
-    navQuery->findNearestPoly(_pEndPos, polyPickExt, filter, &endPoly, nearestPoint);
+    tNav.navQuery->findNearestPoly(_pEndPos, polyPickExt, filter, &endPoly, nearestPoint);
 
     // 시작과 끝 위치를 찾습니다.
     float nearestStartPos[3], nearestEndPos[3];
-    dtStatus status01 = navQuery->closestPointOnPoly(startPoly, _pStartPos, nearestStartPos, 0);
-    dtStatus status02 = navQuery->closestPointOnPoly(endPoly, _pEndPos, nearestEndPos, 0);
+    dtStatus status01 = tNav.navQuery->closestPointOnPoly(startPoly, _pStartPos, nearestStartPos, 0);
+    dtStatus status02 = tNav.navQuery->closestPointOnPoly(endPoly, _pEndPos, nearestEndPos, 0);
 
     dtPolyRef path[128];
     int pathCount;
-    navQuery->findPath(startPoly, endPoly, _pStartPos, _pEndPos, filter, path, &pathCount, 128);
+    tNav.navQuery->findPath(startPoly, endPoly, _pStartPos, _pEndPos, filter, path, &pathCount, 128);
 
     float* actualPath = new float[3 * 256];
     int actualPathCount;
-    navQuery->findStraightPath(nearestStartPos, nearestEndPos, path, pathCount, actualPath, 0, 0, &actualPathCount, 256);
+    tNav.navQuery->findStraightPath(nearestStartPos, nearestEndPos, path, pathCount, actualPath, 0, 0, &actualPathCount, 256);
 
     // Vec3 형태의 경로를 생성합니다.
     vector<Vec3> vecPath(actualPathCount);
@@ -448,19 +469,17 @@ const Vec3& CNavMeshMgr::FindPath(float* _pStartPos, float* _pEndPos)
 
 }
 
-UINT CNavMeshMgr::InitMesh(const Vec3& _vScale)
+
+bool CNavMeshMgr::IsValidPoint(UINT _ID, const Vec3& _CheckPos)
 {
-    NavMeshID IDValue = {};
-    IDValue.vScale = _vScale;
+    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_ID);
+    if (iter == m_mapNavMesh.end())
+    {
+        return Vec3::Zero;
+    }
 
-    UINT iID = m_iNextID++;
-    m_hashObjID.insert(make_pair(iID, IDValue));
+    tNavMeshInfo tNav = iter->second;
 
-    return iID;
-}
-
-bool CNavMeshMgr::IsValidPoint(const Vec3& _CheckPos)
-{
     float checkpos[3] = { _CheckPos.x, _CheckPos.y, -_CheckPos.z }; // 검사 위치
 
     dtPolyRef checkRef;
@@ -471,11 +490,11 @@ bool CNavMeshMgr::IsValidPoint(const Vec3& _CheckPos)
     filter.setExcludeFlags(0);      // 제외할 폴리곤 없음
 
     // 가까운 폴리곤 검색
-    dtStatus status = navQuery->findNearestPoly(checkpos, polyPickExt, &filter, &checkRef, 0);
+    dtStatus status = tNav.navQuery->findNearestPoly(checkpos, polyPickExt, &filter, &checkRef, 0);
 
     // 시작과 끝 위치를 찾습니다.
     float nearestPos[3];
-    status = navQuery->closestPointOnPoly(checkRef, checkpos, nearestPos, 0);
+    status = tNav.navQuery->closestPointOnPoly(checkRef, checkpos, nearestPos, 0);
 
     Vec3 FinalPos = { nearestPos[0], nearestPos[1], -nearestPos[2] };
     Vec3 OriginPos = _CheckPos;

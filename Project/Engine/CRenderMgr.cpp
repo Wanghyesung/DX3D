@@ -146,7 +146,8 @@ void CRenderMgr::UpdateData()
     // GlobalData 에 광원 개수정보 세팅
     GlobalData.Light2DCount = m_vecLight2D.size();
     GlobalData.Light3DCount = m_vecLight3D.size();
-
+  
+    //GlobalData.CameraRot
     // 전역 상수 데이터 바인딩
     CConstBuffer* pGlobalBuffer = CDevice::GetInst()->GetConstBuffer(CB_TYPE::GLOBAL);
     pGlobalBuffer->SetData(&GlobalData, sizeof(tGlobal));

@@ -59,8 +59,10 @@ void CJumpState::Enter()
 
 	GetOwner()->PxRigidbody()->ChanageMaterial(10.f, 0.f);
 	GetOwner()->PxRigidbody()->SetGround(false);
+	//이거 이벤트 처리로 일정 순간에 ground false인걸로 바꾸기
+	//GetOwner()->PxRigidbody()->ClearFoce(); 
 	GetOwner()->PxRigidbody()->SetForceMode(PxForceMode::eIMPULSE);//폭발적으로 움직일 떄
-	GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);
+	//
 	
 	m_vMaxPos = GetOwner()->PxRigidbody()->GetPxPosition();
 	m_vMaxPos += Vec3(0.f, 800.f, 0.f);

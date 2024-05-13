@@ -122,8 +122,8 @@ void CDemonScript::begin()
 
 void CDemonScript::Initialize(const wstring& _strFbxName)
 {
-	m_tMonsterInfo.fHP = 300.f;
-	m_tMonsterInfo.fMaxHP = 300.f;
+	m_tMonsterInfo.fHP = 1000.f;
+	m_tMonsterInfo.fMaxHP = 1000.f;
 
 	CMonsterScript::Initialize(_strFbxName);
 
@@ -164,7 +164,7 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 		AddEvent(L"Attack3", std::bind(&CDemonScript::jump_start, this), 1305);
 
 	GetOwner()->GetChild().at(0)->Animator3D()->
-		AddEvent(L"Attack3", std::bind(&CDemonScript::jump_end, this), 1321);
+		AddEvent(L"Attack3", std::bind(&CDemonScript::jump_end, this), 1319);
 
 	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
 
@@ -174,7 +174,7 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 
 void CDemonScript::jump_start()
 {
-	m_vJumpForce = Vec3(0.f, 200.f, 0.f);
+	m_vJumpForce = Vec3(0.f, 250.f, 0.f);
 
 	tAttackInfo& tInfo = m_pFSM->GetAttackInfo(3);
 

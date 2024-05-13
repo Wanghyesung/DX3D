@@ -7,6 +7,8 @@
 #include <Engine\CRespawnMgr.h>
 #include <Engine\CFontMgr.h>
 
+
+
 CMonsterHPScript::CMonsterHPScript():
 	CScript(SCRIPT_TYPE::MONSTERHPSCRIPT),
 	m_bActive(true)
@@ -22,7 +24,18 @@ CMonsterHPScript::~CMonsterHPScript()
 void CMonsterHPScript::tick()
 {
 	//CFontMgr::GetInst()->DrawFont(m_strMonsterName.c_str(), 20, 20, 18, FONT_RGBA(255, 255, 255, 255));
-	CFontMgr::GetInst()->AddFont(m_strHangleFontName, 350, 670, 20, FONT_RGBA(255, 255, 255, 255));
+	if(m_bBoss)
+		CFontMgr::GetInst()->AddFont(m_strHangleFontName, 350, 670, 20, FONT_RGBA(255, 255, 255, 255));
+
+	//3d 공간 2d UI 빌보드 처리
+	if (!m_bBoss)
+	{
+		move();
+
+		m_pHP->UpdateCameraPos();
+		m_pFrame->UpdateCameraPos();
+	}
+
 }
 
 void CMonsterHPScript::UpdateGage(float _fMaxGage, float _fCurGage)
@@ -45,6 +58,7 @@ void CMonsterHPScript::begin()
 	//	CLevelMgr::GetInst()->GetCurLevel()->GetLayer((UINT)LAYER_TYPE::Player)->GetParentObject();
 	//if (vecObj[0] != nullptr)
 	//	m_pTarget = vecObj[0];
+
 }
 
 void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScale,
@@ -52,6 +66,7 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScal
 {
 	m_strMonsterName = _strName;
 	m_strHangleFontName = _strHangleName;
+	m_bBoss = _bBoss;
 
 	wstring strFrameName = _strName + L"Frame";
 	m_pFrame = new CEngineUI();
@@ -63,7 +78,7 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScal
 
 	//m_pFrame->AddChild(m_pHP);
 
-	if (_bBoss)
+	if (m_bBoss)
 	{
 		//140 -330 sc: 950 35 -3
 		//고정 좌표
@@ -78,7 +93,14 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScal
 	}
 }
 
+void CMonsterHPScript::move()
+{
+	Vec3 vPos = m_pMonster->PxRigidbody()->GetPxPosition();
+	vPos.y += 200.f;
 
+	m_pFrame->Transform()->SetRelativePos(vPos);
+	m_pHP->Transform()->SetRelativePos(vPos);
+}
 
 
 

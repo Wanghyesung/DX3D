@@ -4,6 +4,8 @@
 #include "CKeyMgr.h"
 #include "CResMgr.h"
 #include "CMeshRender.h"
+#include "CRenderMgr.h"
+#include "CCamera.h"
 CEngineUI::CEngineUI():
 	m_bLbntDown(false),
 	m_bMouseOn(false),
@@ -101,6 +103,16 @@ void CEngineUI::MouseOnCheck()
 		m_bMouseOn = true;
 	else
 		m_bMouseOn = false;
+}
+
+void CEngineUI::UpdateCameraPos()
+{
+	int iTrue = TRUE;
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &iTrue);
+
+	CGameObject* pMainCam = CRenderMgr::GetInst()->GetMainCam()->GetOwner();
+	Vec3 vPos = pMainCam->Transform()->GetRelativePos();
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &vPos);
 }
 
 Ptr<CMaterial> CEngineUI::create_uimatrial()

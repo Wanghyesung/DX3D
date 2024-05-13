@@ -7,13 +7,24 @@
 #include "DetourNavMeshQuery.h"
 #include "DetourCrowd.h"
 
-struct NavMeshID
+struct tNavMeshInfo
 {
-    Vec3 vScale;
+    rcContext* context;
+    rcPolyMesh* polyMesh;
+    rcConfig config;
+    rcPolyMeshDetail* polyMeshDetail;
+    rcCompactHeightfield* compactHeightField;
+    rcHeightfield* heightField;
+    dtNavMesh* navMesh;
+
+    dtNavMeshQuery* navQuery;
+    dtCrowd* crowd;
+    dtQueryFilter m_filter;
 };
 
 struct tBuildSettings
 {
+    UINT ID;
     // 길찾기 주체들의 최대 개체수
     int maxCrowdNumber{ 1024 };
     // 길찾기 주체들의 최대 충돌반경
@@ -46,23 +57,25 @@ class CNavMeshMgr : public CSingleton<CNavMeshMgr>
 
 private:
     static UINT m_iPlaneCount;
-    static UINT m_iNextID;
-    rcContext* context;
-    rcPolyMesh* polyMesh;
-    rcConfig config;
-    rcPolyMeshDetail* polyMeshDetail;
-    rcCompactHeightfield* compactHeightField;
-    rcHeightfield* heightField;
-    dtNavMesh* navMesh;
-    dtNavMeshQuery* navQuery;
-    dtCrowd* crowd;
-    dtQueryFilter m_filter;
-
     vector<Vec3> m_worldVertices;
     vector<int> m_worldFaces;
+
+    rcContext* context;
+    //rcPolyMesh* polyMesh;
+    //rcConfig config;
+    //rcPolyMeshDetail* polyMeshDetail;
+    //rcCompactHeightfield* compactHeightField;
+    //rcHeightfield* heightField;
+    //dtNavMesh* navMesh;
+    //
+    //dtNavMeshQuery* navQuery;
+    //dtCrowd* crowd;
+    //dtQueryFilter m_filter;
+
+    map<UINT, tNavMeshInfo> m_mapNavMesh;
 private:
    
-    unordered_map<UINT, NavMeshID>  m_hashObjID;
+    //unordered_map<UINT, tNavMeshInfo>  m_hashObjID;
 private:
     Vec3 m_vNavMeshScale; //현재 네비메쉬의 크기
     bool RayResultTrigger;
@@ -88,13 +101,13 @@ public:
     }
 
 public:
-    const Vec3& FindPath(float * _pStartPos, float* _pEndPos);
+    const Vec3& FindPath(UINT _ID, float * _pStartPos, float* _pEndPos);
 
-    UINT InitMesh(const Vec3& _vScale);//메쉬 생성후 내 id를 반환해줌
+    //UINT InitMesh(const Vec3& _vScale);//메쉬 생성후 내 id를 반환해줌
 
-    bool IsValidPoint(const Vec3& _CheckPos);
+    bool IsValidPoint(UINT _ID, const Vec3& _CheckPos);
 public:
-    dtCrowd* GetCrowd() { return crowd; }
-    dtNavMeshQuery* GetNavMeshQuery() { return navQuery; }
+    dtCrowd* GetCrowd(UINT _ID) { return m_mapNavMesh.find(_ID)->second.crowd; }
+    dtNavMeshQuery* GetNavMeshQuery(UINT _ID) { return m_mapNavMesh.find(_ID)->second.navQuery; }
 };
 

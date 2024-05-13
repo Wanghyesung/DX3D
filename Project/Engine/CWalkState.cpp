@@ -57,6 +57,7 @@ void CWalkState::final_tick()
 
 	if (KEY_TAP(KEY::LSHIFT))
 	{
+		GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);
 		ChanageState(GetFSM(), STATE_TYPE::JUMP);
 	}
 

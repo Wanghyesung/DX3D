@@ -178,7 +178,7 @@ void CreateTestLevel()
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
 	pAritorias->AddComponent(pRigi);
-	pRigi->init(Vec3(1591.f, 2524.f, 2941.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
+	pRigi->init(Vec3(100.f, 60.f, 100.f), Vec3(115.f, 115.f, 225.f), (int)LAYER_TYPE::Player, pAritorias);
 	pRigi->SetOffsetPosition(Vec3(0.f, -120.f, 0.f));
 	//1591 2524 2941
 	CCollider3D* pCollider = new CCollider3D();
@@ -199,7 +199,7 @@ void CreateTestLevel()
 
 	CreateMonster();
 
-	//네비메쉬는 알아서 내가 직접 만들기
+	
 	//CNavMeshMgr::GetInst()->init();
 
 	//Vec3 vStagePos = Vec3(3000.f, 3573.f, 3000.f);// stage worldpos
@@ -320,57 +320,58 @@ void CreateMonster()
 	CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
-
-	//CGameObject* pMonster = new CGameObject;
-	//pMonster->SetName(L"Balder_Knight");
-	//pMonster->AddComponent(new CTransform());
-	//pMonster->AddComponent(new CCollider3D());
-	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));	
-	//{
-	//	tBuildSettings tSetting = {};
-	//	tSetting.agentRadius = 450.f; // 900 / 5 = 180
-	//	CNavMeshMgr::GetInst()->BuildField(tSetting);
 	//
-	//	CRDNavMeshField* pNav = new CRDNavMeshField();
-	//	pMonster->AddComponent(pNav);
-	//}
-	//
-	//CPxRigidbody* pRigi = new CPxRigidbody();
-	//pMonster->AddComponent(pRigi);
-	//pRigi->init(Vec3(1783.f, 120.f, 4585.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
-	//pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
-	//
-	//
-	//CMonsterScript* pMonsterScript = new CMonsterScript();
-	//pMonster->AddComponent(pMonsterScript);
-	//pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
-	//
-    //pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
-	//pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
-	//pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
-	//pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
-	////pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
-	//
-	//CMonsterIdle* pIdle = new CMonsterIdle();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
-	//
-	//CMonsterMove* pMove = new CMonsterMove();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK,  pMove, L"Walk", 96, 140);
-	//
-	//CMonsterAttack* pAttack = new CMonsterAttack();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
-	//
-	//CMonsterHit* pHit = new CMonsterHit();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
-	//
-	//CMonsterDead* pMonsterDead = new CMonsterDead();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::DEAD, pMonsterDead, L"Dead", 1116, 1200);
-	//
-	//pMonsterScript->AddMonsterAttack(0, 0.f, 0.f, 0.6f, 629, 634, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
-	//pMonsterScript->AddMonsterAttack(1, 0.f, 0.f, 0.6f, 781, 785, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
-	//
-	//pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
-	//SpawnGameObject(pMonster, Vec3(1783.f, 120.f, 3585.f), (int)LAYER_TYPE::Monster);
+	CGameObject* pMonster = new CGameObject;
+	pMonster->SetName(L"Balder_Knight");
+	pMonster->AddComponent(new CTransform());
+	pMonster->AddComponent(new CCollider3D());
+	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));	
+	{
+		tBuildSettings tSetting = {};
+		tSetting.agentRadius = 450.f; // 900 / 5 = 180
+	    tSetting.ID = pMonster->GetID();
+		CNavMeshMgr::GetInst()->BuildField(tSetting);
+	
+		CRDNavMeshField* pNav = new CRDNavMeshField();
+		pMonster->AddComponent(pNav);
+	}
+	
+	CPxRigidbody* pRigi = new CPxRigidbody();
+	pMonster->AddComponent(pRigi);
+	pRigi->init(Vec3(1000.f, 120.f, 1000.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
+	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
+	
+	
+	CMonsterScript* pMonsterScript = new CMonsterScript();
+	pMonster->AddComponent(pMonsterScript);
+	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+	
+    pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
+	pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
+	pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
+	pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
+	//pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
+	
+	CMonsterIdle* pIdle = new CMonsterIdle();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
+	
+	CMonsterMove* pMove = new CMonsterMove();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK,  pMove, L"Walk", 96, 140);
+	
+	CMonsterAttack* pAttack = new CMonsterAttack();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
+	
+	CMonsterHit* pHit = new CMonsterHit();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
+	
+	CMonsterDead* pMonsterDead = new CMonsterDead();
+	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::DEAD, pMonsterDead, L"Dead", 1116, 1200);
+	
+	pMonsterScript->AddMonsterAttack(0, 0.f, 0.f, 0.6f, 629, 634, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
+	pMonsterScript->AddMonsterAttack(1, 0.f, 0.f, 0.6f, 781, 785, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
+	
+	pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
+	SpawnGameObject(pMonster, Vec3(1000.f, 120.f, 1000.f), (int)LAYER_TYPE::Monster);
 	//300
 
 	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
@@ -396,12 +397,12 @@ void CreateMonster()
 	pBoss->AddComponent(new CCollider3D());
 	
 	pBoss->Transform()->SetRelativeScale(Vec3(1.5f, 1.5f, 1.5f));
-	CPxRigidbody* pRigi = new CPxRigidbody();
+	pRigi = new CPxRigidbody();
 	pBoss->AddComponent(pRigi);
 	//
 	//1783 300 2985
 	//1254 1292
-	pRigi->init(Vec3(1783.f, 120.f, 3585.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
+	pRigi->init(Vec3(1783.f, 120.f, 4585.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
 	pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
 	
 	pBoss->Collider3D()->SetOffsetScale(Vec3(350.f, 600.f, 350.f));
@@ -417,6 +418,7 @@ void CreateMonster()
 		//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
 		//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
 		tBuildSettings tSetting = {};
+		tSetting.ID = pBoss->GetID();
 		tSetting.agentRadius = 900; // 900 / 5 = 180
 		CNavMeshMgr::GetInst()->BuildField(tSetting);
 	

@@ -135,7 +135,7 @@ void CMonsterScript::Initialize(const wstring& _strFbxName)
 	m_pFSM->SetOwner(pMonster);
 
 
-	//init_hp();
+	init_hp();
 }
 
 void CMonsterScript::AddAnimFrame(const wstring& _strAnimName, int _iStart, int _iEnd)
@@ -160,16 +160,17 @@ void CMonsterScript::Chanage_AnimDT(float _fDivDT)
 
 void CMonsterScript::init_hp()
 {
-	m_tMonsterInfo.fHP = 300.f;
+	m_tMonsterInfo.fHP = 600.f;
+	m_tMonsterInfo.fMaxHP = 600.f;
 
-	CGameObject* pHP = new CGameObject();
-	m_pHp = new CMonsterHPScript();
-	m_pHp->Initialize(L"texture\\GameTexture\\Monster",Vec3(360,35.f,-2.f),GetOwner()->GetName(),false);
-	m_pHp->SetMonster(GetOwner());
-
-	pHP->AddComponent(m_pHp);
-	pHP->AddComponent(new CTransform());
-	SpawnGameObject(pHP, Vec3::Zero, (int)LAYER_TYPE::Default);//3차원 공간
+	//CGameObject* pHP = new CGameObject();
+	//m_pHp = new CMonsterHPScript();
+	//m_pHp->Initialize(L"texture\\GameTexture\\Monster",Vec3(360,35.f,-2.f),GetOwner()->GetName(),false);
+	//m_pHp->SetMonster(GetOwner());
+	//
+	//pHP->AddComponent(m_pHp);
+	//pHP->AddComponent(new CTransform());
+	//SpawnGameObject(pHP, Vec3::Zero, (int)LAYER_TYPE::Default);//3차원 공간
 }
 
 void CMonsterScript::AddMonsterState(MONSTER_STATE_TYPE _eType,CMonsterState* _pState,

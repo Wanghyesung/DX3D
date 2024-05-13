@@ -29,6 +29,7 @@ public:
 
 	const vector<CEngineUI*> GetChildUI() { return m_vecChildUI; }
 
+	void UpdateCameraPos();
 private:
 	//자식 UI 업데이트
 	//void ChildUpdate();
