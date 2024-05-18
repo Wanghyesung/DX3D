@@ -249,8 +249,6 @@ void CreateTestLevel()
 	pUICam->Camera()->SetLayerMask((int)LAYER_TYPE::UI, true);	// 31번 레이어만 체크
 
 	SpawnGameObject(pUICam, Vec3(0.f, 0.f, 0.f), (int)LAYER_TYPE::Camera);
-
-
 	
 	CreateLandScape();
 	

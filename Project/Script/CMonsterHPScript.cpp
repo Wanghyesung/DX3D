@@ -34,6 +34,7 @@ void CMonsterHPScript::tick()
 
 		m_pHP->UpdateCameraPos();
 		m_pFrame->UpdateCameraPos();
+
 	}
 
 }
@@ -55,7 +56,7 @@ void CMonsterHPScript::begin()
 {
 
 	//const vector<CGameObject*>& vecObj =
-	//	CLevelMgr::GetInst()->GetCurLevel()->GetLayer((UINT)LAYER_TYPE::Player)->GetParentObject();
+	//	CLevelMgr::GetInst()->GetCurLevel()->GetLayer((UINT)LAYER_TYPE::Camera)->GetParentObject();
 	//if (vecObj[0] != nullptr)
 	//	m_pTarget = vecObj[0];
 

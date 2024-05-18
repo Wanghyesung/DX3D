@@ -126,7 +126,7 @@ struct DS_OUT
     float3 vViewBinormal : BINORMAL;
 };
 
-
+//분할된 정점마다 한번씩 호출
 [domain("tri")]
 DS_OUT DS_LandScape(const OutputPatch<HS_OUT, 3> _origin
     , float3 _vWeight : SV_DomainLocation

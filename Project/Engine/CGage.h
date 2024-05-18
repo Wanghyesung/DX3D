@@ -6,7 +6,6 @@ class CGage : public CEngineUI
 private:
 	float m_fMaxRatio;
 	float m_fCurRatio;
-
 public:
 	virtual void Initialize(const wstring& _strTexName, const Vec3& _vScale,
 		const wstring& _strName)override;

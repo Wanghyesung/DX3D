@@ -37,41 +37,7 @@ VS_OUT VS_Std2D(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
     
-    if(IS3D)
-    {
-        //원래쓰던 방법으로 다시 해보기
-        //float3 viewportVector = normalize(mul(float4(CAM_POS.xyz, 1.f), g_matView)).xyz;
-
-        float3 vFoward = float3(0.f, 0.f, 1.f);
-        float3 vWorldPos = mul(float4(_in.vLocalPos.xyz, 1.f), g_matWorld).xyz;
-        float3 vDir = normalize(CAM_POS.xyz - vWorldPos).xyz;
-        
-      
-        float fTheta = acos(dot(vDir, vFoward));
-        
-       //if (vDir.y < vFoward.y)
-       //{
-            fTheta = (2.f * 3.1415926535f) - fTheta;
-       // }
-        
-        
-        float3x3 matRotZ =
-        {
-            cos(fTheta),  0,           -sin(fTheta),
-            0,            1.f,         0,
-            sin(fTheta), 0,           cos(fTheta)
-        };
-        
-        float3 vRotate = mul(_in.vLocalPos.xzy, matRotZ);
-        
-        float4 vView = mul(float4(vWorldPos, 1.f), g_matView);
-        output.vPosition = mul(float4(vRotate + vView.xyz, 1.f), g_matProj);
-    }
-    else
-    {
-        output.vPosition = mul(float4(_in.vLocalPos, 1.f), g_matWVP);
-    }
-      
+    output.vPosition = mul(float4(_in.vLocalPos, 1.f), g_matWVP);
     output.vUV = _in.vUV;
     
     return output;

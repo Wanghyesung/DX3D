@@ -115,7 +115,7 @@ void GS_ParticleRender (point VS_OUT _in[1], inout TriangleStream<GS_OUT> _outst
             {
                 cos(fTheta),  sin(fTheta),      0,
                 -sin(fTheta), cos(fTheta),      0,
-                          0,            0,    1.f,
+                          0,            0,      1.f,
             };
             
             // 4개의 정점을 회전시킨다.

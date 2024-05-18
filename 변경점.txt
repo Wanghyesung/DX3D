@@ -68,6 +68,23 @@
 // - Draw Call
 
 
+몬스터 HP UI (빌보드 처리)
+
+--------현재
+피격, 공격 파티클 추가, (텍스쳐)
+
+SKYBOX찾아보기,
+instancingshadow,
+
+무기 추가(UI무기, 교체, 장착할 수 있게) 
+씬 전환,
+
+보스 추가(골렘)
+
+--------마지막
+motionblur
+recasteDetour mousepicking으로 높이 메쉬 늘리고 적용
+
 
 
 

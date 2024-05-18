@@ -110,9 +110,21 @@ void CEngineUI::UpdateCameraPos()
 	int iTrue = TRUE;
 	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &iTrue);
 
+	CTransform* pTransform = Transform();
+
 	CGameObject* pMainCam = CRenderMgr::GetInst()->GetMainCam()->GetOwner();
-	Vec3 vPos = pMainCam->Transform()->GetRelativePos();
-	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &vPos);
+	Vec3 vCameraPos = pMainCam->Transform()->GetRelativePos();
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &vCameraPos);
+
+	Vec3 vPos = pTransform->GetRelativePos();
+
+	//ºôº¸µå Ã³¸®
+	float fAngle = atan2(vCameraPos.x - vPos.x, vCameraPos.z - vPos.z) * (180 / XM_PI);
+	float fRadian = fAngle * (XM_PI / 180.f);
+
+	Vec3 vRot = pTransform->GetRelativeRot();
+	pTransform->SetRelativeRot(vRot.x, fRadian, vRot.z);
+
 }
 
 Ptr<CMaterial> CEngineUI::create_uimatrial()
