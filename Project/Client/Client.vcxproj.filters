@@ -122,6 +122,9 @@
     <Filter Include="UI\InspectorUI\ComponentUI\12.Equip">
       <UniqueIdentifier>{a9c8781a-3997-4576-acef-841e992beec4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LoadingScene">
+      <UniqueIdentifier>{62487dfc-e3f6-481d-bfe9-53cdd4915d7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -261,6 +264,9 @@
     </ClInclude>
     <ClInclude Include="PxRigidbodyUI.h">
       <Filter>UI\InspectorUI\ComponentUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CLoadingScene.h">
+      <Filter>LoadingScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="PxRigidbodyUI.cpp">
       <Filter>UI\InspectorUI\ComponentUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CLoadingScene.cpp">
+      <Filter>LoadingScene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

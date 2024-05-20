@@ -5,6 +5,7 @@
 #include "Client.h"
 
 #include <Engine\CDevice.h>
+#include "CLoadingScene.h"
 #include "CEditorObjMgr.h"
 
 // ImGui
@@ -37,12 +38,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
+   
+    //스브 스레드 로딩
+    //CLoadingScene::GetInst()->init();
 
     // CEngine 초기화
     if (FAILED(CEngine::GetInst()->init(g_hWnd, 1280, 768)))
     {
         return 0;
     }
+
+    //무한한복하여 스레드가 다 완료되기 전까지 로딩창만 보여주게
+    //while (true)
+    //{
+    //    CLoadingScene::getInstance()->tick();
+    //    CLoadingScene::getInstance()->render();
+
+    //    // 프레임 속도 조절 (예: 60FPS)
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    //}
 
     // Editor 초기화
     CEditorObjMgr::GetInst()->init();

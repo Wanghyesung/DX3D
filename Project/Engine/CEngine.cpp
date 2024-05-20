@@ -15,6 +15,8 @@
 #include "CPhysxMgr.h"
 #include "CNavMeshMgr.h"
 #include "CEngineUIMgr.h"
+//#include "CLoadingScene.h"
+
 CEngine::CEngine()
 	: m_hWnd(nullptr)
 {
@@ -44,7 +46,7 @@ int CEngine::init(HWND _hWnd, UINT _iWidth, UINT _iHeight)
 		MessageBox(nullptr, L"Device 초기화 실패", L"에러", MB_OK);
 		return E_FAIL;
 	}
-
+	
 
 	// Manager 초기화
 	CPathMgr::GetInst()->init();
@@ -53,6 +55,8 @@ int CEngine::init(HWND _hWnd, UINT _iWidth, UINT _iHeight)
 
 	CTimeMgr::GetInst()->init();
 
+	//loading scene
+	//CLoadingScene::GetInst()->init();
 	CResMgr::GetInst()->init();
 
 	CRenderMgr::GetInst()->init();
@@ -66,6 +70,7 @@ int CEngine::init(HWND _hWnd, UINT _iWidth, UINT _iHeight)
 	CInstancingBuffer::GetInst()->init();
 
 	CPhysxMgr::GetInst()->init();
+
 
 	return S_OK;
 }
@@ -85,6 +90,7 @@ void CEngine::progress()
 void CEngine::tick()
 {
 	// Manager Tick
+	//CLoadingScene::GetInst()->tick();
 	CResMgr::GetInst()->tick();
 	CTimeMgr::GetInst()->tick(); // DT(DeltaTime), FPS 구하기
 	CKeyMgr::GetInst()->tick();	

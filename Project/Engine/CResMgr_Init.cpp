@@ -1204,7 +1204,7 @@ void CResMgr::AddInputLayout(DXGI_FORMAT _eFormat, const char* _strSemanticName,
 	if (0 == _iSlotNum)
 	{
 		//정점버퍼 
-		LayoutDesc.AlignedByteOffset = m_iLayoutOffset_0;
+		LayoutDesc.AlignedByteOffset = m_iLayoutOffset_0; //정점 데이터 offset
 		LayoutDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		LayoutDesc.InstanceDataStepRate = 0;
 	}
