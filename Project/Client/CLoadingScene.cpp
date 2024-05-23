@@ -23,8 +23,9 @@ CLoadingScene::CLoadingScene() :
 	m_bLoadingFalse(false),
 	m_bRender(false),
 	m_fpCreateLevel(nullptr),
-	m_fCurTime(0.f),
-	m_fLoadingTime(2.f)
+	m_fCurProgress(0.f),
+	m_iLoadingRes(0),
+	m_iTotalRes(3)
 {
 
 }
@@ -56,11 +57,14 @@ void CLoadingScene::resources_load()
 	{
 		m_bRender = CEngine::GetInst()->init_mgr();
 
+		++m_iLoadingRes;
+
 		CEditorObjMgr::GetInst()->init();
+		++m_iLoadingRes;
 
 		// ImGui 초기화
 		ImGuiMgr::GetInst()->init(g_hWnd);
-
+		++m_iLoadingRes;
 	}
     //_mutex.unlock();
 
@@ -71,7 +75,8 @@ void CLoadingScene::resources_load()
 bool CLoadingScene::tick()
 {
 	CTimeMgr::GetInst()->tick();
-	if (m_bCompleted)
+	//리소스가 전부 로드되고 로딩퍼센트가 100까지 차면 level로 진입
+	if (m_bCompleted && m_fCurProgress >= 99.f) 
 	{
 		//만약 메인쓰레드가 종료되었는데 자식 스레드가 남았다면
 		//자식 쓰레드를 메인쓰레드에 편입시켜서 종료되기전까지 block
@@ -117,23 +122,12 @@ void CLoadingScene::render()
 		pMtrl->UpdateData();
 		pRectMesh->render(0);
 
+		float progress = (float)m_iLoadingRes / m_iTotalRes * 100.0f;
+		m_fCurProgress = Lerp<float>(m_fCurProgress, progress, DT *2.f);
+	    wstring strTotal = std::to_wstring((int)m_fCurProgress);
+
 		Vec2 vPos = CEngine::GetInst()->GetWindowResolution() / 2.f;
-
-		m_fCurTime += DT;
-		if (m_fCurTime >= m_fLoadingTime)
-			m_fCurTime = 0.f;
-
-		float fTime = (m_fLoadingTime - m_fCurTime) * 3;
-		int iNum = fTime;
-		if (iNum >= 4)
-			int a = 10;
-		wstring strStack = L"";
-		for (int i = 0; i < iNum; ++i)
-			strStack += L".";
-
-	
-
-		CFontMgr::GetInst()->AddFont(L"LOADING" + strStack, vPos.x -100.f, vPos.y,60.f, FONT_RGBA(255, 255, 255, 255));
+		CFontMgr::GetInst()->AddFont(L"Loading : " + strTotal, vPos.x - 150.f, vPos.y, 60.f, FONT_RGBA(255, 255, 255, 255));
 		CFontMgr::GetInst()->render();
 
 		CDevice::GetInst()->Present(); // 렌더 종료

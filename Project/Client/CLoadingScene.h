@@ -24,9 +24,10 @@ private:
 	//처음 생성될 레벨
 	std::function<void()> m_fpCreateLevel;
 
-
-	float m_fCurTime;
-	float m_fLoadingTime;
+	//전체 로딩 단계
+	float m_fCurProgress;
+	int m_iLoadingRes;
+	int m_iTotalRes;
 
 private:
 	void resources_load(/*std::mutex& _mutex*/);

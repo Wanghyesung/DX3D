@@ -127,5 +127,11 @@ void Safe_Del_Map(map<T1, T2>& _map)
 	_map.clear();
 }
 
+template<typename T>
+T Lerp(T Start, T End, float t)
+{
+	return Start + t * (End - Start);
+}
+
 
 
