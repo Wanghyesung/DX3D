@@ -12,17 +12,33 @@ class CLoadingScene
 	SINGLE(CLoadingScene);
 
 private:
+	//로딩 성공
 	bool m_bCompleted;
+	//로딩 실패
+	bool m_bLoadingFalse;
 
+	//렌더링 준비
+	bool m_bRender;
 	std::thread* m_pLoadThread;
+
+	//처음 생성될 레벨
+	std::function<void()> m_fpCreateLevel;
+
+
+	float m_fCurTime;
+	float m_fLoadingTime;
+
 private:
-	void resources_load(std::mutex& _mutex);
+	void resources_load(/*std::mutex& _mutex*/);
+
 
 public:
-	bool IsCompleted() { return m_bCompleted; }
+	void SetCreateLevelFunc(std::function<void()> _pFunc){ m_fpCreateLevel = std::move(_pFunc); }
+
+	bool ISLoadingFalse() { return m_bLoadingFalse; }
 public:
-	void init();
-	void tick();
+	bool init();
+	bool tick();
 	void render();
 
 	void OnEnter();

@@ -63,6 +63,7 @@ void CMRT::OMSet(bool _bStay)
 	}
 	else
 	{
+		//기존의 깊이 버퍼를 현재 렌더타겟과 깊이버로 사용
 		ComPtr<ID3D11DepthStencilView> pDSV = nullptr;
 
 		if (_bStay)

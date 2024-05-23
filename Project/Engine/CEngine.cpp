@@ -47,7 +47,12 @@ int CEngine::init(HWND _hWnd, UINT _iWidth, UINT _iHeight)
 		return E_FAIL;
 	}
 	
+	//init_mgr();
+	return S_OK;
+}
 
+int CEngine::init_mgr()
+{
 	// Manager ÃÊ±âÈ­
 	CPathMgr::GetInst()->init();
 
@@ -63,16 +68,15 @@ int CEngine::init(HWND _hWnd, UINT _iWidth, UINT _iHeight)
 
 	CFontMgr::GetInst()->init();
 
-	CLevelMgr::GetInst()->init();		
-	
+	CLevelMgr::GetInst()->init();
+
 	//CNavMeshMgr::GetInst()->init();
 
 	CInstancingBuffer::GetInst()->init();
 
 	CPhysxMgr::GetInst()->init();
 
-
-	return S_OK;
+	return TRUE;
 }
 
 void CEngine::progress()

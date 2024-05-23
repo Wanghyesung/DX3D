@@ -90,6 +90,7 @@ void CMeshRender::render(UINT _iSubset)
 		Animator2D()->UpdateData();
 	}
 
+
 	if (Animator3D())
 	{
 		Animator3D()->UpdateData();

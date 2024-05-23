@@ -97,7 +97,11 @@ void CDemonScript::OnOverlap(CCollider3D* _Other)
 
 			if (m_tMonsterInfo.fHP <= 0.f)
 			{
+				if (m_bDead)
+					return;
+
 				ChanageMonsterState(m_pFSM, MONSTER_STATE_TYPE::DEAD);
+				m_bDead = true;
 			}
 
 			m_pHp->UpdateGage(m_tMonsterInfo.fMaxHP, m_tMonsterInfo.fHP);

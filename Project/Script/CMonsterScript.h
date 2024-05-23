@@ -15,6 +15,7 @@ protected:
     tHitInfo m_tHitInfo;
 
     bool m_bBoss;
+    bool m_bDead;
 
     CMonsterHPScript* m_pHp;
     

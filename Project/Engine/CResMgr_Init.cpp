@@ -523,7 +523,33 @@ void CResMgr::CreateDefaultGraphicsShader()
 
 	AddRes(pShader->GetKey(), pShader);
 
+	// ============================
+	// LoadingShader
+	// RasterizerState      : None
+	// BlendState           : Mask
+	// DepthStencilState    : Less
+	//
+	// Parameter
+	// g_tex_0              : Output Texture
+	// ============================
+	pShader = new CGraphicsShader;
+	pShader->SetKey(L"LoadingShader");
+	pShader->CreateVertexShader(L"shader\\loading.fx", "VS_Std2D");
+	pShader->CreatePixelShader(L"shader\\loading.fx", "PS_Std2D");
 
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::MASK);
+
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
+
+	// Param
+	pShader->AddTexParam(TEX_0, "Output Texture");
+
+	AddRes(pShader->GetKey(), pShader);
+
+
+	/////////////////////////////////////////////////
 	pShader = new CGraphicsShader;
 	pShader->SetKey(L"EngineUIShader");
 	pShader->CreateVertexShader(L"shader\\engine_ui.fx", "VS_Std2D");
@@ -1073,6 +1099,11 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std2DShader"));
 	AddRes(L"Std2DMtrl", pMtrl);
+
+	// Loading Material
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"LoadingShader"));
+	AddRes(L"LoadingMtrl", pMtrl);
 
 	// Std2DAnim Material
 	pMtrl = new CMaterial(true);

@@ -39,40 +39,50 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
    
-    //스브 스레드 로딩
-    //CLoadingScene::GetInst()->init();
+    CLoadingScene::GetInst()->SetCreateLevelFunc(std::bind(CreateTestLevel));
 
-    // CEngine 초기화
+    //윈도우 생성
     if (FAILED(CEngine::GetInst()->init(g_hWnd, 1280, 768)))
     {
         return 0;
     }
 
-    //무한한복하여 스레드가 다 완료되기 전까지 로딩창만 보여주게
-    //while (true)
-    //{
-    //    CLoadingScene::getInstance()->tick();
-    //    CLoadingScene::getInstance()->render();
+    //서브 스레드 로딩
+    //mgr loading
+    CLoadingScene::GetInst()->init();
 
-    //    // 프레임 속도 조절 (예: 60FPS)
-    //    std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    //무한한복하여 스레드가 다 완료되기 전까지 로딩창만 보여주게
+    while (TRUE)
+    {
+        //로딩 성공시 break
+        if (CLoadingScene::GetInst()->tick())
+            break;
+
+        CLoadingScene::GetInst()->render();
+      
+        // 프레임 속도 조절 (예: 60FPS)
+        // std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+
+
+    // CEngine 초기화
+    //if (FAILED(CEngine::GetInst()->init(g_hWnd, 1280, 768)))
+    //{
+    //    return 0;
     //}
 
     // Editor 초기화
-    CEditorObjMgr::GetInst()->init();
+    //CEditorObjMgr::GetInst()->init();
        
     // ImGui 초기화
-    ImGuiMgr::GetInst()->init(g_hWnd);
+    //ImGuiMgr::GetInst()->init(g_hWnd);
 
     // 테스트 용 레벨 생성
-    CreateTestLevel();
+    //CreateTestLevel();
 
     // 메세지 루프
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
     MSG msg;
-
-
-   
 
 
     while (true)

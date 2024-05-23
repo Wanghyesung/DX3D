@@ -380,10 +380,6 @@ int CDevice::CreateBlendState()
 
 
 
-
-
-
-
 int CDevice::CreateSampler()
 {
     D3D11_SAMPLER_DESC tSamDesc = {};

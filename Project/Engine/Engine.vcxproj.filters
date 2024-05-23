@@ -1140,14 +1140,17 @@
     <FxCompile Include="func.fx">
       <Filter>Source</Filter>
     </FxCompile>
-    <FxCompile Include="weightmap.fx">
-      <Filter>Source\08. ShaderCode\Render\3D</Filter>
-    </FxCompile>
     <FxCompile Include="copybone.fx">
       <Filter>Source\08. ShaderCode\Render\3D</Filter>
     </FxCompile>
     <FxCompile Include="engine_ui.fx">
       <Filter>Source\08. ShaderCode\Render\2D</Filter>
+    </FxCompile>
+    <FxCompile Include="loading.fx">
+      <Filter>Source\08. ShaderCode\Render\2D</Filter>
+    </FxCompile>
+    <FxCompile Include="weightmap.fx">
+      <Filter>Source\08. ShaderCode\Render\3D</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

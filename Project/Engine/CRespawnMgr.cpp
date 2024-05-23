@@ -10,7 +10,7 @@ CRespawnMgr::CRespawnMgr()
 
 CRespawnMgr::~CRespawnMgr()
 {
-	//요 벡터에 들어온 오브젝트들은 Level vector에 없기 떄문에 여기서 메모리 해제
+	//현재 벡터에 들어온 오브젝트들은 Level vector에 없기 떄문에 여기서 메모리 해제
 	vector<tSpawnInfo>::iterator iter = m_vecSpawnobj.begin();
 
 	for (iter; iter != m_vecSpawnobj.end(); ++iter)
