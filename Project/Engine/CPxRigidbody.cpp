@@ -110,27 +110,43 @@ void CPxRigidbody::SetMaxVelocity(float _fMaxVelocity)
 
 const Matrix& CPxRigidbody::GetPosMatrix()
 {
-    PxTransform transform = m_pRigidbody->getGlobalPose(); // actor는 PxRigidActor* 포인터입니다.
+    PxVec3 vPos = m_pRigidbody->getGlobalPose().p; // actor는 PxRigidActor* 포인터입니다.
 
-    Matrix mat = XMMatrixTranslation(transform.p.x, transform.p.y, transform.p.z);
-
-    return mat;
+    return XMMatrixTranslation(vPos.x, vPos.y, vPos.z);
 }
 
 const Matrix& CPxRigidbody::GetRotMatrix()
 {
-    PxTransform rotation = m_pRigidbody->getGlobalPose(); 
+    PxTransform rotation = m_pRigidbody->getGlobalPose();
     PxMat33 rotationMatrix(rotation.q);
 
     Matrix matFinal = {};
-    matFinal._11 = rotationMatrix.column0.x; matFinal._21 = rotationMatrix.column1.x; matFinal._31 = rotationMatrix.column2.x;
-    matFinal._12 = rotationMatrix.column0.y; matFinal._22 = rotationMatrix.column1.y; matFinal._32 = rotationMatrix.column2.y;
-    matFinal._13 = rotationMatrix.column0.z; matFinal._23 = rotationMatrix.column1.z; matFinal._33 = rotationMatrix.column2.z;
-    matFinal._14 = 0.0f;                     matFinal._24 = 0.0f;                     matFinal._34 = 0.0f;
-    
-    matFinal._44 = 1.0f;
- 
+    matFinal._11 = rotationMatrix.column0.x; matFinal._21 = rotationMatrix.column1.x; matFinal._31 = rotationMatrix.column2.x; matFinal._41 = 0.0f;
+    matFinal._12 = rotationMatrix.column0.y; matFinal._22 = rotationMatrix.column1.y; matFinal._32 = rotationMatrix.column2.y; matFinal._42 = 0.0f;
+    matFinal._13 = rotationMatrix.column0.z; matFinal._23 = rotationMatrix.column1.z; matFinal._33 = rotationMatrix.column2.z; matFinal._43 = 0.0f;
+    matFinal._14 = 0.0f;                     matFinal._24 = 0.0f;                     matFinal._34 = 0.0f;                     matFinal._44 = 1.0f;
+
+
+    Matrix matRot = GetOwner()->Transform()->GetRotateMat();
+
+
     return matFinal;
+}
+
+const Matrix& CPxRigidbody::GetPxWorldMatrix()
+{
+   
+    //R * T
+    Matrix matIdentiy = XMMatrixIdentity();
+    //matScale *= GetOwner()->Transform()->GetRelativeScale();
+
+    //회전
+    Matrix matRot = GetRotMatrix();
+
+    //위치
+    Matrix matPos = GetPosMatrix();
+
+    return (matIdentiy * matRot * matPos);
 }
 
 const Vec3& CPxRigidbody::GetPxPosition()

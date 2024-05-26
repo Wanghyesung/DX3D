@@ -9,12 +9,15 @@ private:
 
     Vec3 m_vJumpForce; //공격, 점프..
 
+
 private:
     void jump_start();
     void jump_end();
 
     void set_attack();
-    void init_hp();
+    
+protected:
+    virtual void init_hp()override;
 public:
     virtual void tick() override;
     virtual void BeginOverlap(CCollider3D* _Other)override;

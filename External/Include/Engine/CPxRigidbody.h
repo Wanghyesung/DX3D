@@ -14,6 +14,9 @@ private:
 	PxRigidDynamic* m_pRigidbody;
 	PxMaterial* m_pPxMaterial;
 	
+	//physx가 있는 물체의 월드 행렬
+	Matrix m_matPxWorldMatrix;
+
 	PxForceMode::Enum m_eForceMode;
 
 	Vec3 m_vVelocity;
@@ -68,6 +71,7 @@ public:
 
 	const Matrix& GetPosMatrix();
 	const Matrix& GetRotMatrix();
+	const Matrix& GetPxWorldMatrix();
 
 	const Vec3& GetPxPosition();
 	const Vec3& GetPxRotate();

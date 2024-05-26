@@ -125,6 +125,10 @@ void CJumpAttackScript::OnOverlap(CCollider3D* _Other)
 	{
 		CGameObject* pMonster = _Other->GetOwner()->GetChild().at(0);
 
+		if (_Other->GetOwner()->GetScript<CMonsterScript>()->GetMonsterInfo().fHP <= 0.f)
+			return;
+
+		//if(pMonster->GetScript<CMonsterScript>()->GetFSM())
 		check_bone_pos(pMonster);
 	}
 }

@@ -21,6 +21,7 @@ private:
     CGage*      m_pHP;
     CGage*      m_pHeal;
 
+    CGameObject* CWeapon;
 public:
     virtual void begin() override;
     virtual void tick() override;

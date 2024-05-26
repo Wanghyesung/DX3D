@@ -24,6 +24,13 @@ int EquipUI::render_update()
     ImGui::SameLine();
     ImGui::DragInt("##Frame", &iCurIndex);
    
+    Vec3 vFixedPos = GetTarget()->Equip()->GetFixedPos();
+    ImGui::Text("Worldpos");
+    ImGui::SameLine();
+    ImGui::DragFloat3("##FixedPos", vFixedPos);
+
+
+    GetTarget()->Equip()->SetFixedPos(vFixedPos);
     GetTarget()->Equip()->SetIndex(iCurIndex);
 
     return TRUE;

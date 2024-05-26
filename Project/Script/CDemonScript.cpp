@@ -173,7 +173,25 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
 
 
-	init_hp();
+	//init_hp();
+
+	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
+	pWeapon->AddComponent(new CTransform());
+	pWeapon->AddComponent(new CEquip());
+
+	pWeapon->Transform()->SetRelativeScale(Vec3(4.6f, 4.6f, 4.6f));
+
+	//-500 
+	float fRadian = XM_PI / 180.f;
+	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
+
+	pWeapon->Transform()->SetAbsolute(true);
+	//-90 270 -9
+
+	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
+	pWeapon->Equip()->SetChar(GetOwner());
+	pWeapon->Equip()->SetIndex(38);//손 뼈 인덱스
+	//pWeapon->Equip()->SetFixedPos()
 }
 
 void CDemonScript::jump_start()
@@ -251,5 +269,5 @@ void CDemonScript::init_hp()
 
 	pHP->AddComponent(m_pHp);
 	pHP->AddComponent(new CTransform());
-	SpawnGameObject(pHP, Vec3::Zero, (int)LAYER_TYPE::UI);//2차원 공간
+	SpawnGameObject(pHP, Vec3::Zero, (int)LAYER_TYPE::Default);//2차원 공간
 }

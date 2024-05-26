@@ -84,7 +84,7 @@ void CAttackState::Enter()
 	wstring strFinalAnim = GetName() + m_strAttackNum;
 
 	//GetOwner()->PxRigidbody()->SetAcumulate(true);
-	Chanage_Anim(strFinalAnim, false);
+	Chanage_Anim(strFinalAnim, true);
 }
 
 void CAttackState::add_force()

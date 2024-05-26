@@ -33,8 +33,9 @@ CPlayerScript::CPlayerScript()
 	, m_fSpeed(100.f)
 	, m_iActive(1)
 	, m_pFSM(nullptr)
-	, m_iBone(4)
+	, m_iBone(127)
 	, m_vOffsetTransform(Vec3(0.f, 500.f, 520.f))
+	, CWeapon(nullptr)
 {
 	AddScriptParam(SCRIPT_PARAM::FLOAT, &m_fSpeed, "Player Speed");
 	AddScriptParam(SCRIPT_PARAM::INT,  &m_iActive, "Player Active");
@@ -69,8 +70,12 @@ void CPlayerScript::tick()
 	}
 	 m_pFSM->final_tick();
 
-
 	 tick_gage();
+	
+	 CWeapon->Equip()->SetIndex(m_iBone);
+	 
+	//test용
+	// GetOwner()->Equip()->SetIndex(m_iBone);
 	//CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
 	//CGameObject* _pMonster = pLayer->GetParentObject().at(1)->GetChild().at(0);
 	//CAnimator3D* pAnim = _pMonster->Animator3D();
@@ -118,14 +123,34 @@ void CPlayerScript::Initialize()
 	vector<Ptr<CMeshData>> vecMeshData = {};
 	CGameObject* pObj = nullptr;
 
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\house.fbx");
-	//pMeshData = CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\house.mdat");
-	//pObj = pMeshData->Instantiate();
-	//pObj->SetName(L"House");
+	//player weapon
 
+	CWeapon = InitializeFBX(L"TaurusDemon_Axe");
+	CWeapon->AddComponent(new CTransform());
+	//Ptr<CMeshData> pWeaponMesh =
+	//	CResMgr::GetInst()->Load<CMeshData >(L"meshdata\\Heavy_Knight4.mdat",L"meshdata\\Heavy_Knight4.mdat");
+	//CWeapon = pWeaponMesh->Instantiate();
+	CWeapon->SetName(L"PlayerWeapon1");
+	CWeapon->AddComponent(new CEquip());
+	CWeapon->Equip()->SetChar(GetOwner());
+	CWeapon->Equip()->SetIndex(m_iBone);
+	//CWeapon->Equip()->SetFixedPos(Vec3(77, -51, 135));
+	CWeapon->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+
+	//125 -28 252
+	//64 100 119
+	//127
+	float fRadian = XM_PI / 180.f;
+	CWeapon->Transform()->SetRelativeRot(64 * fRadian, 100 * fRadian, 119 * fRadian);
+
+	//46 -60 254
+	//CWeapon->Transform()->SetAbsolute(true);
+	SpawnGameObject(CWeapon, Vec3(125,-28.f,252.f), (int)LAYER_TYPE::Default);
+	
+	//player
 	vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Artorias4.fbx");
-
-	for (int i = 0; i < pVecMeshData.size(); ++i)
+	//마지막 인덱스는 기본 검
+	for (int i = 0; i < pVecMeshData.size() - 1; ++i)
 	{
 		wstring strNum = std::to_wstring(i);
 		//Ptr<CMeshData> pMeshData =

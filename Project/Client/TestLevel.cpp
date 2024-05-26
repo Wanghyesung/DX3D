@@ -372,19 +372,6 @@ void CreateMonster()
 	SpawnGameObject(pMonster, Vec3(1000.f, 120.f, 1000.f), (int)LAYER_TYPE::Monster);
 	//300
 
-	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
-	pWeapon->AddComponent(new CTransform());
-	pWeapon->AddComponent(new CEquip());
-	
-	pWeapon->Transform()->SetRelativeScale(Vec3(4.6f,4.6f,4.6f));
-	
-	float fRadian = XM_PI / 180.f;
-	pWeapon->Transform()->SetRelativeRot(-90.f * fRadian, 180.f * fRadian, -15.f * fRadian);
-	
-	pWeapon->Transform()->SetAbsolute(true);
-	//-90 270 -9
-	
-	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
 	
 	
 	CGameObject* pBoss = new CGameObject();
@@ -428,26 +415,9 @@ void CreateMonster()
 		//pAgent->SetRadius(0.5);
 		//pAgent->AssignToNavigationField(pNav);
 	}
-	
-	CGameObject* pHand = pBoss;
-	pWeapon->Equip()->SetChar(pHand);
+
 	SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
 
-	
-	
-	
-	//pMonster = new CGameObject();
-	//pMonster = InitializeFBX(L"Heavy_Knight");
-	//pMonster->AddComponent(new CTransform());
-	//pMonster->AddComponent(new CRigidbody());
-	//pMonster->AddComponent(new CCollider3D());
-	//pMonster->AddComponent(new CNavMesh);
-	//
-	//pMonster->Collider3D()->SetAbsolute(true);
-	//pMonsterScript = new CMonsterScript();
-	//pMonster->AddComponent(pMonsterScript);
-	//SpawnGameObject(pMonster, Vec3(1000.f, 0.f, 1000.f), (int)LAYER_TYPE::Monster);
-	//pMonsterScript->GetFSM()->SetState(MONSTER_STATE_TYPE::HIT);
 }
 
 void CreateLandScape()

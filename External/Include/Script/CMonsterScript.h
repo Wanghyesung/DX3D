@@ -33,8 +33,8 @@ public:
     void AddAnimFrame(const wstring& _strAnimName, int _iStart, int _iEnd);
     CLONE(CMonsterScript);
 
-private:
-    void init_hp();
+protected:
+    virtual void init_hp();
 
 public:
     void AddMonsterState(MONSTER_STATE_TYPE _eType, CMonsterState* _pState,
@@ -50,6 +50,7 @@ public:
     void SetMonsterInfo(const tActorInfo& _tInfo) { m_tMonsterInfo = _tInfo; }
     void SetHitInfo(const tHitInfo& _tHitInfo) { m_tHitInfo = _tHitInfo; }
 
+    const tActorInfo& GetMonsterInfo() { return m_tMonsterInfo; }
     void SetBoss(bool _bBoss) { m_bBoss = _bBoss; }
 
     CMonsterFSM* GetFSM() { return m_pFSM; }

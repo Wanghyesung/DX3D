@@ -9,7 +9,10 @@ class CEquip :
 private:
   //  CStructuredBuffer* m_pFinalMat;//내 물체 최종 위치
     vector<Matrix> m_vecFinalBone;
+
     Matrix m_matFinalBone;
+    Matrix m_matStaticWorld;
+    Vec3 m_vFixedPos;
 
     UINT m_iIndex;
 
@@ -17,12 +20,15 @@ private:
 private:
     bool check_matrix();
 
+    void single_tick();
+    void child_tick();
 public:
     void SetDead(bool _bDelete = false);//, 삭제할지
-
     void SetIndex(int _iIndex) { m_iIndex = _iIndex; }
-    int GetIndex() { return m_iIndex; }
+    void SetFixedPos(Vec3 _vPos);
 
+    Vec3 GetFixedPos() { return m_vFixedPos; }
+    int GetIndex() { return m_iIndex; }   
     const Matrix& GetFinalMat() { return m_matFinalBone; }
 
     void SetChar(CGameObject* _pGameObj) 

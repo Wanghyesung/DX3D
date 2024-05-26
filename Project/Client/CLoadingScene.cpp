@@ -122,6 +122,7 @@ void CLoadingScene::render()
 		pMtrl->UpdateData();
 		pRectMesh->render(0);
 
+		//전체 로딩 진행 단계에 따라 퍼센트로 표현
 		float progress = (float)m_iLoadingRes / m_iTotalRes * 100.0f;
 		m_fCurProgress = Lerp<float>(m_fCurProgress, progress, DT *2.f);
 	    wstring strTotal = std::to_wstring((int)m_fCurProgress);

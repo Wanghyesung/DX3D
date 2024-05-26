@@ -37,14 +37,9 @@ void CCollider3D::finaltick()
 		//크기
 		Matrix matScale = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
 
-		//회전
-		Matrix matRot = pGameObj->PxRigidbody()->GetRotMatrix();
-	
-		//위치
-		Vec3 vPxPos = pGameObj->PxRigidbody()->GetPxPosition();
-	
-		Matrix matPos = XMMatrixTranslation(vPxPos.x, vPxPos.y, vPxPos.z);
-		m_matCollider3D = matScale * matRot * matPos;
+		m_matCollider3D = pGameObj->PxRigidbody()->GetPxWorldMatrix();
+
+		m_matCollider3D = matScale * m_matCollider3D;
 	}
 
 	else
