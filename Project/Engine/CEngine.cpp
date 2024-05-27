@@ -70,8 +70,6 @@ int CEngine::init_mgr()
 
 	CLevelMgr::GetInst()->init();
 
-	//CNavMeshMgr::GetInst()->init();
-
 	CInstancingBuffer::GetInst()->init();
 
 	CPhysxMgr::GetInst()->init();
@@ -102,18 +100,18 @@ void CEngine::tick()
 	// FMOD Update
 	CSound::g_pFMOD->update();
 
-	//이번 프레임에서 충돌이 되었다면 이벤트 호출
+	//저번 프레임에서 충돌이 되었다면 이벤트 호출
+
 	CPhysxMgr::GetInst()->tick_collision();
 
+	//이전 프레임 물체 운동 업데이트
+	CPhysxMgr::GetInst()->tick();
 
 	// Level Update
 	// Level 안에 존재하는 모든 GameObject 들이 Tick 을 호출받음
 	CLevelMgr::GetInst()->tick();
 	
 	CEngineUIMgr::GetInst()->tick();
-		
-	//이전 프레임 물체 운동 업데이트
-	CPhysxMgr::GetInst()->tick();
 
 	// Level 내에 GameObject 들의 변경점에 의해서 발생한 충돌을 체크한다.
 	//CCollisionMgr::GetInst()->tick();

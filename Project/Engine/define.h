@@ -76,8 +76,8 @@ enum class COMPONENT_TYPE
 	LIGHT2D,		// 2차원 광원
 	LIGHT3D,		// 3차원 광원
 	RIGIDBODY,		// 힘을받는 강체
-	PXRIGIDBODY,	// 피직스 강체	
 
+	PXRIGIDBODY,	// 피직스 강체	
 	TRANSFORM,		// 위치, 크기, 회전
 	//TRANSFORM,		// 위치, 크기, 회전
 

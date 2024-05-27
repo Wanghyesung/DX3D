@@ -67,8 +67,6 @@ void CCollider3D::finaltick()
 			m_matCollider3D *= matWorld;
 		}
 	}
-
-
 	// DebugShape ฟไรป
 	Vec4 vColor = Vec4(0.f, 1.f, 0.f, 1.f);
 	if (0 < m_iCollisionCount)

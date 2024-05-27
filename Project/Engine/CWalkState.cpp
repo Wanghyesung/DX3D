@@ -16,17 +16,17 @@ void CWalkState::final_tick()
 	Vec3 vUp = pObj->Transform()->GetRelativeDir(DIR_TYPE::FRONT);
 	Vec3 vRight = pObj->Transform()->GetRelativeDir(DIR_TYPE::RIGHT);
 
-	float fSpeed = 1500.f;
+	float fSpeed = 1400.f;
 	Vec3 vForce = Vec3::Zero;
 
 	wstring strDir = {};
-	
+
 	if (KEY_PRESSED(KEY::D))
 	{
 		vRight *= fSpeed;
-
+	
 		vForce += vRight;
-
+	
 		strDir = L"Right";
 	}
 	else if (KEY_PRESSED(KEY::A))
@@ -57,6 +57,7 @@ void CWalkState::final_tick()
 
 	if (KEY_TAP(KEY::LSHIFT))
 	{
+		GetOwner()->PxRigidbody()->ClearFoce();
 		GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);
 		ChanageState(GetFSM(), STATE_TYPE::JUMP);
 	}
@@ -78,13 +79,6 @@ void CWalkState::final_tick()
 		ChanageState(GetFSM(), STATE_TYPE::IDLE);
 		return;
 	}
-
-	//foward -> z축 y축 반전
-	//up->y축 z축 반전 - 1
-	//Vec3 vNewForce = {};
-	//vNewForce.x = vForce.x;
-	//vNewForce.y = vForce.z;
-	//vNewForce.z = vForce.y;
 
 	if (GetFSM()->GetDir() != strDir)
 	{

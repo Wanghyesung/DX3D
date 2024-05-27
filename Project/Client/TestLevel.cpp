@@ -183,7 +183,7 @@ void CreateTestLevel()
 	//1591 2524 2941
 	CCollider3D* pCollider = new CCollider3D();
 	pAritorias->AddComponent(pCollider);
-	pCollider->SetAbsolute(true);
+	//pCollider->SetAbsolute(true);
 	pCollider->SetOffsetScale(Vec3(115.f, 115.f, 225.f));
 	
 	

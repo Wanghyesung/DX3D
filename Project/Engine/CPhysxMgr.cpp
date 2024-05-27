@@ -223,7 +223,6 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
     PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
     PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
 
-
     PxMaterial* material = GetPxMaterial();
 
     PxBoxGeometry geometry(vScale / 2.f); // 상자 크기
