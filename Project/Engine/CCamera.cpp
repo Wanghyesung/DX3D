@@ -180,8 +180,6 @@ void CCamera::UpdateMatrix()
 	g_transform.matProjInv = m_matProjInv;
 }
 
-
-
 void CCamera::SetLayerMask(int _iLayer, bool _Visible)
 {
 	if (_Visible)
@@ -351,12 +349,36 @@ void CCamera::SortObject_Shadow()
 				{
 					continue;
 				}
+				
+				UINT iMtrlCount = pRenderCom->GetMtrlCount();
+				for (UINT iMtrl = 0; iMtrl < iMtrlCount; ++iMtrl)
+				{
+					uInstID uID = {};
+					uID.llID = pRenderCom->GetInstID(iMtrl);
 
-				m_vecShadow.push_back(vecObject[j]);
+					// ID 가 0 다 ==> Mesh 나 Material 이 셋팅되지 않았다.
+					if (0 == uID.llID)
+						continue;
+
+					//처음 들어온 인스턴싱 아이디
+					map<ULONG64, vector<tInstObj>>::iterator iter = m_mapInstGroup_S.find(uID.llID);
+					if (iter == m_mapInstGroup_S.end())
+					{
+						m_mapInstGroup_S.insert(make_pair(uID.llID, vector<tInstObj>{tInstObj{ vecObject[j], iMtrl }}));
+					}
+					else
+					{
+						iter->second.push_back(tInstObj{ vecObject[j], iMtrl });
+					}
+
+					//m_vecShadow.push_back(vecObject[j]);
+				}
 			}
 		}
 
 	}
+
+	int a = 10;
 }
 
 void CCamera::render()
@@ -407,6 +429,7 @@ void CCamera::render_shadowmap()
 	//광원에있는 카메라 기준으로 행렬 재계산
 	g_transform.matView = m_matView;
 	g_transform.matProj = m_matProj;
+
 
 	for (int i = 0; i < m_vecShadow.size(); ++i)
 	{

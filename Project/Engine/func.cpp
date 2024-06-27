@@ -9,6 +9,7 @@
 #include "CRenderMgr.h"
 #include "ptr.h"
 #include "CResMgr.h"
+#include "CMeshRender.h"
 
 void SpawnGameObject(CGameObject* _NewObject, Vec3 _vWorldPos, int _LayerIdx)
 {
@@ -116,7 +117,6 @@ CGameObject* InitializeFBX(const wstring& _strFbxName)
 	{
 		wstring strNum = std::to_wstring(i);
 
-
 		Ptr<CMeshData> pMeshData = pVecMeshData[i];
 		if (pMeshData != nullptr)
 		{
@@ -127,6 +127,20 @@ CGameObject* InitializeFBX(const wstring& _strFbxName)
 	}
 
 	return pGameObj;
+}
+
+void ChanageRSType(CGameObject* const _pGameObj, RS_TYPE _eType)
+{
+	const vector<CGameObject*> vecChild = _pGameObj->GetChild();
+	for (int i = 0; i < vecChild.size(); ++i)
+	{
+		UINT iMtrlSize = vecChild[i]->MeshRender()->GetMtrlCount();
+		for (int j = 0; j < iMtrlSize; ++j)
+		{
+			Ptr<CMaterial> pMatrl = vecChild[i]->MeshRender()->GetMaterial(j);
+			pMatrl->GetShader()->SetRSType(_eType);
+		}
+	}
 }
 
 void DrawDebugRect(Vec3 _vWorldPos, Vec2 _vWorldScale, Vec4 _vColor,

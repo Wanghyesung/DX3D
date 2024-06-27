@@ -72,7 +72,7 @@ void CPlayerScript::tick()
 
 	 tick_gage();
 	
-	 CWeapon->Equip()->SetIndex(m_iBone);
+	//CWeapon->Equip()->SetIndex(m_iBone);
 	 
 	//test¿ë
 	// GetOwner()->Equip()->SetIndex(m_iBone);

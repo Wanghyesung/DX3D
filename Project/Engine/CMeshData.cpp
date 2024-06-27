@@ -31,6 +31,7 @@ CGameObject* CMeshData::Instantiate()
 
 	for (UINT i = 0; i < m_vecMtrl.size(); ++i)
 	{
+		//m_vecMtrl[i]->GetShader()->SetRSType(RS_TYPE::CULL_NONE);
 		pNewObj->MeshRender()->SetMaterial(m_vecMtrl[i], i);
 	}
 

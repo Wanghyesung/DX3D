@@ -313,14 +313,6 @@ int IntersectsLay(float3 _vertices[3], float3 _vStart, float3 _vDir, out float3 
     float3 p = _vStart + t * _vDir;
     _vCrossPoint = p;
     
-    //Triangle-Triangle Intersection
-    //삼각형 보간법 삼각형 ABC의 세 꼭지점에 대한 Barycentric 좌표 (u, v, w)는 다음과 같이 정의됩니다.
-    //P = u * A + v * B + w * C
-    //여기서 (u, v, w)는 Barycentric 좌표이며, u + v + w = 1이어야 합니다.
-    //삼각형의 한 점 P가 삼각형 내부에 있다면, 이 점 P를 구성하는 Barycentric 좌표 (u, v, w)는 모두 0에서 1 사이의 값을 가져야 합니다. 
-    //코드에서 u와 v는 이러한 조건을 검사하고, (u + v)의 값도 1을 넘지 않도록 확인하고 있습니다.
-    
-    //https://wjdgh283.tistory.com/entry/%EC%82%BC%EA%B0%81%ED%98%95-%EC%95%88%EC%97%90-%EC%9E%88%EB%8A%94-%EC%A0%90%EC%9D%98-%EB%AC%B4%EA%B2%8C%EC%A4%91%EC%8B%AC-%EC%A2%8C%ED%91%9Cbarycentric-coordinate-%EA%B5%AC%ED%95%98%EA%B8%B0
     float uu, uv, vv, wu, wv, inverseD;
     uu = dot(edge[0], edge[0]);
     uv = dot(edge[0], edge[1]);

@@ -39,7 +39,7 @@ void CRenderMgr::CreateMRT()
         m_MRT[(UINT)MRT_TYPE::SWAPCHAIN]->Create(arrRTTex, 1, pDSTex);
         m_MRT[(UINT)MRT_TYPE::SWAPCHAIN]->SetClearColor(Vec4(0.3f, 0.3f, 0.3f, 1.f), 0);
     }
-
+    
     //deferred MRT 후처리 기능
     //4종류 렌더타켓,DS는 스왑체인용 DS공용으로
     //diffus색상, normal 표면벡터, position 위치, data 나중에 필요한 데이터 있으면 사용

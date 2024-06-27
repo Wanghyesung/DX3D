@@ -12,6 +12,15 @@ struct VS_IN
     float4 vWeights : BLENDWEIGHT;
     //뼈 인덱스
     float4 vIndices : BLENDINDICES;
+    
+    
+    // Per Instance Data
+    //같은 재질이여도 물체의 위치가 다르기 때문에 vertexbuffer
+    //tInstancingData로 전달
+    row_major matrix matWorld : WORLD;
+    row_major matrix matWV : WV;
+    row_major matrix matWVP : WVP;
+    uint iRowIndex : ROWINDEX; //몇번째로 그릴 물체인지 (같은 오브젝트 배열에서)
 };
 
 struct VS_OUT
@@ -250,8 +259,8 @@ float4 PS_MergeShader(VS_OUT _in) : SV_Target
     float fShadowPow = ShadowTargetTex.Sample(g_sam_0, vScreenUV).r;
     
     
-    vOutColor.xyz = vColor.xyz * vDiffuse.xyz +//* (1.f - fShadowPow) +
-                    (vSpecular.xyz * vColor.a)+//* (1.f - fShadowPow) +
+    vOutColor.xyz = vColor.xyz * vDiffuse.xyz  + //* (1.f - fShadowPow) +
+                    (vSpecular.xyz * vColor.a) + //* (1.f - fShadowPow) +
                     vEmissive.xyz;
     
     //vColor.a = 0.f;
@@ -275,7 +284,30 @@ VS_SHADOW_OUT VS_ShadowMap(VS_IN _in)
     //애니메이션이 들어있다면
     if(g_iAnim)
     {
+        //반사광에 필요한 tan,bin,nor이 필요없기 때문에 해당 메쉬 가공처리만 
         AnimationSkinning(_in.vPos, _in.vWeights, _in.vIndices, 0);
+    }
+    
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+    
+    output.vProjPos = output.vPosition;
+    output.vProjPos.xyz /= output.vProjPos.w;
+            
+    return output;
+}
+
+VS_SHADOW_OUT VS_ShadowMap_Inst(VS_IN _in)
+{
+    VS_SHADOW_OUT output = (VS_SHADOW_OUT) 0.f;
+    
+    // 사용하는 메쉬가 RectMesh(로컬 스페이스에서 반지름 0.5 짜리 정사각형)
+    // 따라서 2배로 키워서 화면 전체가 픽셀쉐이더가 호출될 수 있게 한다.
+
+    //애니메이션이 들어있다면
+    if (g_iAnim)
+    {
+        //반사광에 필요한 tan,bin,nor이 필요없기 때문에 해당 메쉬 가공처리만 
+        AnimationSkinning(_in.vPos, _in.vWeights, _in.vIndices, _in.iRowIndex);
     }
     
     output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);

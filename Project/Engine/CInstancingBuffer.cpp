@@ -72,7 +72,7 @@ void CInstancingBuffer::SetData()
 		m_pCopyShader->Execute();
 	}
 
-	//bone 정보 전달 제지스터
+	//bone 정보 전달 레지스터
 	m_pBoneBuffer->UpdateData(30, PIPELINE_STAGE::PS_VERTEX);
 }
 

@@ -8,6 +8,7 @@
 #include "CGravityScript.h"
 #include "CJumpAttackScript.h"
 #include "CLandScpaeScript.h"
+#include "CLightMoveScript.h"
 #include "CMissileScript.h"
 #include "CMonsterAttackScript.h"
 #include "CMonsterHPScript.h"
@@ -29,6 +30,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CJumpAttackScript");
 	_vec.push_back(L"CLandFormScript");
 	_vec.push_back(L"CLandScpaeScript");
+	_vec.push_back(L"CLightMoveScript");
 	_vec.push_back(L"CMissileScript");
 	_vec.push_back(L"CMonsterAttackScript");
 	_vec.push_back(L"CMonsterHPScript");
@@ -57,6 +59,8 @@ CScript * CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new CJumpAttackScript;
 	if (L"CLandScpaeScript" == _strScriptName)
 		return new CLandScpaeScript;
+	if (L"CLightMoveScript" == _strScriptName)
+		return new CLightMoveScript;
 	if (L"CMissileScript" == _strScriptName)
 		return new CMissileScript;
 	if (L"CMonsterAttackScript" == _strScriptName)
@@ -103,6 +107,9 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 	case (UINT)SCRIPT_TYPE::LANDSCAPESCRIPT:
 		return new CLandScpaeScript;
 		break;
+	case (UINT)SCRIPT_TYPE::LIGHTMOVESCRIPT:
+		return new CLightMoveScript;
+		break;
 	case (UINT)SCRIPT_TYPE::MISSILESCRIPT:
 		return new CMissileScript;
 		break;
@@ -123,6 +130,9 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 		break;
 	case (UINT)SCRIPT_TYPE::STAIRSSCRIPT:
 		return new CStairsScript;
+		break;
+	case (UINT)SCRIPT_TYPE::TERRAINSCRIPT:
+		return new CTerrainScript;
 		break;
 	case (UINT)SCRIPT_TYPE::TESTSCRIPT:
 		return new CTestScript;
@@ -151,6 +161,10 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		return L"CDemonScript";
 		break;
 
+	case SCRIPT_TYPE::EQUIPSCRIPT:
+		return L"CEquipScript";
+		break;
+
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
 		return L"CGravityScript";
 		break;
@@ -159,8 +173,16 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		return L"CJumpAttackScript";
 		break;
 
+	case SCRIPT_TYPE::LANDFORMSCRIPT:
+		return L"CLandFormScript";
+		break;
+
 	case SCRIPT_TYPE::LANDSCAPESCRIPT:
-		return L"CLandScpaeScript";
+		return L"CLandScapeScript";
+		break;
+
+	case SCRIPT_TYPE::LIGHTMOVESCRIPT:
+		return L"CLightMoveScript";
 		break;
 
 	case SCRIPT_TYPE::MISSILESCRIPT:

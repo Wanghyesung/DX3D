@@ -512,6 +512,10 @@ void CreateLandScape()
 void CreateStage()
 {
 	CGameObject* pStage = InitializeFBX(L"Boss Stage");
+
+	//앞면 뒷면 모두 그리기
+	ChanageRSType(pStage, RS_TYPE::CULL_NONE);
+
 	pStage->AddComponent(new CTransform);
 	pStage->Transform()->SetRelativeRot(Vec3(-XM_PI / 2.f, XM_PI / 2.f, 0.f));
 	SpawnGameObject(pStage, Vec3(3000.f, 3573.f, 3000.f), (int)LAYER_TYPE::Default);
