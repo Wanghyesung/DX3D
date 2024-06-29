@@ -12,7 +12,7 @@ private:
 
 	UINT			m_iCallCount;
 	float			m_fDeltaTime;
-	float			m_fTime;
+	double			m_dTime;
 
 public:
 	void init();

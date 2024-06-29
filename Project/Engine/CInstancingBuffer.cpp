@@ -9,6 +9,7 @@ CInstancingBuffer::CInstancingBuffer()
 	: m_iMaxCount(10)
 	, m_iAnimInstCount(0)
 	, m_pBoneBuffer(nullptr)
+	, m_vecData{}
 {
 	m_pBoneBuffer = new CStructuredBuffer;
 }

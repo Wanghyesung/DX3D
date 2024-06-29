@@ -8,7 +8,7 @@ class CInstancingBuffer
 	: public CSingleton<CInstancingBuffer>
 {
 private:
-	ComPtr<ID3D11Buffer> m_pInstancingBuffer;
+	ComPtr<ID3D11Buffer> m_pInstancingBuffer; //최종적으로 instanMesh에 넘길 버퍼
 	UINT m_iMaxCount;
 	vector<tInstancingData> m_vecData;
 

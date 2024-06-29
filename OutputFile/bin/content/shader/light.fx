@@ -259,8 +259,8 @@ float4 PS_MergeShader(VS_OUT _in) : SV_Target
     float fShadowPow = ShadowTargetTex.Sample(g_sam_0, vScreenUV).r;
     
     
-    vOutColor.xyz = vColor.xyz * vDiffuse.xyz  + //* (1.f - fShadowPow) +
-                    (vSpecular.xyz * vColor.a) + //* (1.f - fShadowPow) +
+    vOutColor.xyz = vColor.xyz * vDiffuse.xyz  * (1.f - fShadowPow) +
+                    (vSpecular.xyz * vColor.a) * (1.f - fShadowPow) +
                     vEmissive.xyz;
     
     //vColor.a = 0.f;
@@ -310,7 +310,7 @@ VS_SHADOW_OUT VS_ShadowMap_Inst(VS_IN _in)
         AnimationSkinning(_in.vPos, _in.vWeights, _in.vIndices, _in.iRowIndex);
     }
     
-    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+    output.vPosition = mul(float4(_in.vPos, 1.f), _in.matWVP);
     
     output.vProjPos = output.vPosition;
     output.vProjPos.xyz /= output.vProjPos.w;
