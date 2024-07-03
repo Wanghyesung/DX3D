@@ -4,7 +4,15 @@
 class CNavMeshPlane : public CComponent
 {
 private:
-	
+	vector<Vec3> m_vecWorldVertices;
+
+	bool m_bActiveRay;
+
+private:
+	bool RayCasting();
+	float GetArea(const Vec3& _vP1, const Vec3& _vP2);
+public:
+	void SetWorldVertex(const Vec3& _vecVertex) { m_vecWorldVertices.push_back(_vecVertex); }
 
 public:
 	virtual void finaltick() override;

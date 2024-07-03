@@ -57,8 +57,8 @@ class CNavMeshMgr : public CSingleton<CNavMeshMgr>
 
 private:
     static UINT m_iPlaneCount;
-    vector<Vec3> m_worldVertices;
-    vector<int> m_worldFaces;
+    vector<Vec3> m_vecWorldVertices;
+    vector<int> m_vecWorldFaces;
 
     rcContext* context;
     //rcPolyMesh* polyMesh;
@@ -95,9 +95,10 @@ public:
     void BuildField(const tBuildSettings& buildSettings = tBuildSettings{})
     {
         assert(sizeof(Vec3) == sizeof(float) * 3);
-        assert(!m_worldVertices.empty() && !m_worldFaces.empty());
-        assert(m_worldFaces.size() % 3 == 0);
-        BuildField(reinterpret_cast<float*>(&m_worldVertices[0]), m_worldVertices.size(), &m_worldFaces[0], m_worldFaces.size() / 3, buildSettings);
+        assert(!m_vecWorldVertices.empty() && !m_vecWorldFaces.empty());
+        assert(m_vecWorldFaces.size() % 3 == 0);
+        BuildField(reinterpret_cast<float*>(&m_vecWorldVertices[0]), m_vecWorldVertices.size(),
+            &m_vecWorldFaces[0], m_vecWorldFaces.size() / 3, buildSettings);
     }
 
 public:

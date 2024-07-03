@@ -165,27 +165,28 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 }
 void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
 {
+    //1000, 1000      2000, 2000
     Vec3 vTemScale = _vScale / 2.f;
-    Vec3 vBotleft = _vPos - vTemScale; //1275, 0 , 1990
-    Vec3 vTopRight = _vPos + vTemScale;//1275, 700 ,8990
+    Vec3 vBotleft = _vPos - vTemScale; 
+    Vec3 vTopRight = _vPos + vTemScale;
 
-    int startingIdx = m_worldVertices.size();
+    int startingIdx = m_vecWorldVertices.size();
 
     // 1 ----4
     // |     |
     // 2-----3
-    m_worldVertices.push_back({ vBotleft.x, vTopRight.y,vTopRight.z }); //0 0 18000
-    m_worldVertices.push_back({ vBotleft.x, vBotleft.y ,vBotleft.z });//0, 0, -18000
-    m_worldVertices.push_back({ vTopRight.x, vBotleft.y,vBotleft.z });//18000 0 0
-    m_worldVertices.push_back({ vTopRight.x, vTopRight.y ,vTopRight.z });//-18000 0 0
+    m_vecWorldVertices.push_back(Vec3(vBotleft.x, vTopRight.y,vTopRight.z));  //0 0
+    m_vecWorldVertices.push_back(Vec3(vBotleft.x, vBotleft.y ,vBotleft.z));   //0, 0, -18000
+    m_vecWorldVertices.push_back(Vec3(vTopRight.x, vBotleft.y,vBotleft.z));   //18000 0 0
+    m_vecWorldVertices.push_back(Vec3(vTopRight.x, vTopRight.y ,vTopRight.z));//-18000 0 0
 
-
-    m_worldFaces.push_back(startingIdx + 2);
-    m_worldFaces.push_back(startingIdx + 1);
-    m_worldFaces.push_back(startingIdx + 0);
-    m_worldFaces.push_back(startingIdx + 3);
-    m_worldFaces.push_back(startingIdx + 2);
-    m_worldFaces.push_back(startingIdx + 0);
+   
+    m_vecWorldFaces.push_back(startingIdx + 2);
+    m_vecWorldFaces.push_back(startingIdx + 1);
+    m_vecWorldFaces.push_back(startingIdx + 0);
+    m_vecWorldFaces.push_back(startingIdx + 3);
+    m_vecWorldFaces.push_back(startingIdx + 2);
+    m_vecWorldFaces.push_back(startingIdx + 0);
 
     CGameObject* pGameObj = new CGameObject();
     pGameObj->SetName(L"navMeshPlane" + std::to_wstring(m_iPlaneCount));
@@ -193,8 +194,13 @@ void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
 
     pGameObj->Transform()->SetRelativeScale(_vScale);
 
+    //해당 mesh의 월드 좌표 기억해두기
+    CNavMeshPlane* pPlane = new CNavMeshPlane();
+    for (int i = m_vecWorldVertices.size() - 4; i < m_vecWorldVertices.size(); ++i)
+        pPlane->SetWorldVertex(m_vecWorldVertices[i]);
+
     pGameObj->AddComponent(new CMeshRender);
-    pGameObj->AddComponent(new CNavMeshPlane);
+    pGameObj->AddComponent(pPlane);
     SpawnGameObject(pGameObj, _vPos, (int)LAYER_TYPE::Default);
 
     ++m_iPlaneCount;
