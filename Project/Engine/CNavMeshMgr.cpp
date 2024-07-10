@@ -20,7 +20,9 @@
 
 #include "CMeshRender.h"
 #include "CNavMeshPlane.h"
-
+#include "CRDNavMeshField.h"
+#include "CLevelMgr.h"
+#include "CLayer.h"
 UINT CNavMeshMgr::m_iPlaneCount = 0;
 
 CNavMeshMgr::CNavMeshMgr()
@@ -30,35 +32,7 @@ CNavMeshMgr::CNavMeshMgr()
 
 CNavMeshMgr::~CNavMeshMgr()
 {
-    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.begin();
-    for (iter; iter != m_mapNavMesh.end(); ++iter)
-    {
-        tNavMeshInfo tNav = iter->second;
-
-        if (tNav.navMesh)
-            dtFreeNavMesh(tNav.navMesh);
-
-        if (tNav.polyMesh)
-            rcFreePolyMesh(tNav.polyMesh);
-
-        if (tNav.navQuery)
-            dtFreeNavMeshQuery(tNav.navQuery);
-
-        if (tNav.polyMeshDetail)
-            rcFreePolyMeshDetail(tNav.polyMeshDetail);
-       
-        if (tNav.heightField)
-            rcFreeHeightField(tNav.heightField);
-
-        if (tNav.compactHeightField)
-            rcFreeCompactHeightfield(tNav.compactHeightField);
-
-        if (tNav.crowd)
-            dtFreeCrowd(tNav.crowd);
-    }
-
-    if (context)
-        delete context;
+    free();
 }
 
 inline bool inRange(const float* v1, const float* v2, const float r, const float h)
@@ -198,10 +172,12 @@ void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
     CNavMeshPlane* pPlane = new CNavMeshPlane();
     for (int i = m_vecWorldVertices.size() - 4; i < m_vecWorldVertices.size(); ++i)
         pPlane->SetWorldVertex(m_vecWorldVertices[i]);
+    for (int i = m_vecWorldFaces.size() - 6; i < m_vecWorldFaces.size(); ++i)
+        pPlane->SetWorldFaces(m_vecWorldFaces[i]);
 
     pGameObj->AddComponent(new CMeshRender);
     pGameObj->AddComponent(pPlane);
-    SpawnGameObject(pGameObj, _vPos, (int)LAYER_TYPE::Default);
+    SpawnGameObject(pGameObj, _vPos, (int)LAYER_TYPE::NavMeshPlane);
 
     ++m_iPlaneCount;
 }
@@ -397,6 +373,7 @@ bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
     return false;
 }
 
+
 void CNavMeshMgr::init()
 {
     //if (!navMesh && !navQuery)
@@ -410,6 +387,54 @@ void CNavMeshMgr::tick()
 
 void CNavMeshMgr::render()
 {
+
+}
+
+void CNavMeshMgr::ReBuildField()
+{
+    //동적 해제
+    free();
+
+    //context = new rcContext();
+
+    //원래 메쉬를 지우고 월드의 새로운 메쉬로 리빌딩
+    m_vecWorldVertices.clear();
+    m_vecWorldFaces.clear();
+
+    CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurLevel();
+
+    const vector<CGameObject*>& vecPlane = pCurLevel->GetLayer((int)LAYER_TYPE::NavMeshPlane)->GetParentObject();
+    const vector<CGameObject*>& vecMonster = pCurLevel->GetLayer((int)LAYER_TYPE::Monster)->GetParentObject();
+
+    for (int i = 0; i < vecPlane.size(); ++i)
+    {
+        CNavMeshPlane* pMeshPlane = (CNavMeshPlane*)vecPlane[i]->GetComponent(COMPONENT_TYPE::NAVMESHPLANE);
+
+        const vector<int>& vecFaces = pMeshPlane->GetWorldFaces();
+        const vector<Vec3>& vecVertices = pMeshPlane->GetWorldVertices();
+
+        for (int j = 0; j < 4; ++j)
+            m_vecWorldVertices.push_back(vecVertices[j]);
+        for (int j = 0; j < 6; ++j)
+            m_vecWorldFaces.push_back(vecFaces[j]);
+    }
+
+    //몬스터마다 순회하며 자기에 맞는 navmesh를 생성 
+    for (int i = 0; i < vecMonster.size(); ++i)
+    {
+        //navmesh가 없다면 다음 몬스터로
+        CRDNavMeshField* pRDNavMesh = vecMonster[i]->RDNavMeshField();
+        if (!pRDNavMesh)
+            return;
+
+        UINT ID = vecMonster[i]->GetID();
+        tBuildSettings buildSettings = {};
+        buildSettings.ID = ID;
+        buildSettings.agentRadius = pRDNavMesh->GetRadius();
+
+        BuildField(reinterpret_cast<float*>(&m_vecWorldVertices[0]), m_vecWorldVertices.size(),
+                &m_vecWorldFaces[0], m_vecWorldFaces.size() / 3, buildSettings);
+    }
 
 }
 
@@ -515,4 +540,36 @@ bool CNavMeshMgr::IsValidPoint(UINT _ID, const Vec3& _CheckPos)
 
     return true;
 
+}
+
+void CNavMeshMgr::free()
+{
+    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.begin();
+    for (iter; iter != m_mapNavMesh.end(); ++iter)
+    {
+        tNavMeshInfo tNav = iter->second;
+
+        if (tNav.navMesh)
+            dtFreeNavMesh(tNav.navMesh);
+
+        if (tNav.polyMesh)
+            rcFreePolyMesh(tNav.polyMesh);
+
+        if (tNav.navQuery)
+            dtFreeNavMeshQuery(tNav.navQuery);
+
+        if (tNav.polyMeshDetail)
+            rcFreePolyMeshDetail(tNav.polyMeshDetail);
+
+        if (tNav.heightField)
+            rcFreeHeightField(tNav.heightField);
+
+        if (tNav.compactHeightField)
+            rcFreeCompactHeightfield(tNav.compactHeightField);
+
+        if (tNav.crowd)
+            dtFreeCrowd(tNav.crowd);
+    }
+
+    m_mapNavMesh.clear();
 }

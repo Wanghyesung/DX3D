@@ -317,9 +317,34 @@ void CreateMonster()
 	CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
 	CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
 
-	CNavMeshMgr::GetInst()->CreatePlane({ 1000 , 100, 1000 }, Vec3(700.f, 200.f, 0.f));
+	//Vec3 m_vCreateScale = Vec3(400.f, 0.f, 400.f); //+= (DT * Vec3(2.f,2.f,2.f));
+	//Vec3 vHalfScale = m_vCreateScale / 2.f;
+	//Vec3 m_vRayPoint{ 1000, 0.f, 1000 };
+	//float fHeight = 400.f;
+	////오브젝트를 설치하기 위해서 높이값을 크기의 /2 만큼 올린다
+	//float y = m_vRayPoint.y + fHeight / 2.f;
+	//Vec3 vPos = Vec3(m_vRayPoint.x, y, m_vRayPoint.z);
+	//
+	//Vec3 vDir[4] = { Vec3(0.f,0.f,1.f), Vec3(1.f, 0.f, 0.f),
+	//	Vec3(0.f,0.f, -1.f) ,Vec3(-1.f, 0.f , 0.f) };
+	//
+	//Vec3 vScaleDir[2] = { Vec3(1.f,0.f,0.f), Vec3(0.f,0.f,1.f) };
+	//
+	//for (int i = 0; i < 4; ++i)
+	//{
+	//	//정행진 방향으로 메쉬 위치 지정
+	//	Vec3 vPlanePos = vDir[i] * vHalfScale + vPos;
+	//
+	//	//크기 적용
+	//	Vec3 vScale = vScaleDir[i % 2] * m_vCreateScale;
+	//	vScale.y += fHeight; //높이값 적용
+	//
+	//	CNavMeshMgr::GetInst()->CreatePlane(vPlanePos, vScale);
+	//}
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
+	
+	//CNavMeshMgr::GetInst()->CreatePlane({ 1000 , 100, 1000 }, Vec3(700.f, 200.f, 0.f));
 	//
 	CGameObject* pMonster = new CGameObject;
 	pMonster->SetName(L"Balder_Knight");
@@ -335,6 +360,7 @@ void CreateMonster()
 	
 		CRDNavMeshField* pNav = new CRDNavMeshField();
 		pMonster->AddComponent(pNav);
+		pNav->SetRadius(tSetting.agentRadius);
 	}
 	
 	CPxRigidbody* pRigi = new CPxRigidbody();
@@ -542,20 +568,20 @@ void CreateLandScape()
 	//}
 	//3000, 3573 , 3000
 
-	CGameObject* pPlain = InitializeFBX(L"Plain_CastleTower_Ruin_01");
-	pPlain->AddComponent(new CTransform);
-	pPlain->AddComponent(new CCollider3D);
-	//pPlain->AddComponent(new CLandScpaeScript);
-	pPlain->Collider3D()->SetOffsetScale(Vec3(300.f, 350.f, 300.f));
-	pPlain->Collider3D()->SetOffsetPos(Vec3(0.f, 180.f, 0.f));
-	//pPlain->Collider3D()->SetOffsetRot(Vec3(XM_PI/4.f, 0.f, 0.f));
-
-	CPhysxMgr::GetInst()->AddActorStatic(Vec3(1000.f, 180, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero, 0.f,
-		(int)LAYER_TYPE::Obstacle, pPlain);
-	//CPhysxMgr::GetInst()->AddActor(Vec3(1000.f, 180, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero ,0.f, 
+	//CGameObject* pPlain = InitializeFBX(L"Plain_CastleTower_Ruin_01");
+	//pPlain->AddComponent(new CTransform);
+	//pPlain->AddComponent(new CCollider3D);
+	////pPlain->AddComponent(new CLandScpaeScript);
+	//pPlain->Collider3D()->SetOffsetScale(Vec3(300.f, 350.f, 300.f));
+	//pPlain->Collider3D()->SetOffsetPos(Vec3(0.f, 180.f, 0.f));
+	////pPlain->Collider3D()->SetOffsetRot(Vec3(XM_PI/4.f, 0.f, 0.f));
+	//
+	//CPhysxMgr::GetInst()->AddActorStatic(Vec3(1000.f, 180, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero, 0.f,
 	//	(int)LAYER_TYPE::Obstacle, pPlain);
-
-	SpawnGameObject(pPlain, Vec3(1000.f, 0, 1000.f), (int)LAYER_TYPE::Obstacle);
+	////CPhysxMgr::GetInst()->AddActor(Vec3(1000.f, 180, 1000.f), Vec3(300.f, 350.f, 300.f), Vec3::Zero ,0.f, 
+	////	(int)LAYER_TYPE::Obstacle, pPlain);
+	//
+	//SpawnGameObject(pPlain, Vec3(1000.f, 0, 1000.f), (int)LAYER_TYPE::Obstacle);
 
 
 

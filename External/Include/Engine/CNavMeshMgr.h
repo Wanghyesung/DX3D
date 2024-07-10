@@ -82,7 +82,7 @@ private:
 
 private:
     bool LoadNavMeshFromFile(const char* path);
-
+    void free();
     
 public:
     void init();
@@ -100,6 +100,10 @@ public:
         BuildField(reinterpret_cast<float*>(&m_vecWorldVertices[0]), m_vecWorldVertices.size(),
             &m_vecWorldFaces[0], m_vecWorldFaces.size() / 3, buildSettings);
     }
+    void ReBuildField();
+
+    const static UINT GetPlaneCount() { return m_iPlaneCount; }
+    void PlusPlaneCount() { ++m_iPlaneCount; }
 
 public:
     const Vec3& FindPath(UINT _ID, float * _pStartPos, float* _pEndPos);

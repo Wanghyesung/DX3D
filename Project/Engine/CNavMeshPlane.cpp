@@ -4,9 +4,16 @@
 #include "CKeyMgr.h"
 #include "CRenderMgr.h"
 #include "CCamera.h"
+#include "CTimeMgr.h"
+#include "CNavMeshMgr.h"
+#include "CMeshRender.h"
+
+bool CNavMeshPlane::m_bChanage = false;
+
 CNavMeshPlane::CNavMeshPlane():
 	CComponent(COMPONENT_TYPE::NAVMESHPLANE),
-	m_bActiveRay(true)
+	m_bActiveRay(false),
+	m_bActiveCreate(false)
 {
 }
 
@@ -18,18 +25,59 @@ CNavMeshPlane::~CNavMeshPlane()
 
 void CNavMeshPlane::finaltick()
 {
-	Vec4 vColor = Vec4(0.f, 0.f, 1.f, 1.f);
+	DrawCube();
 
-	const Matrix& m_tMat = GetOwner()->Transform()->GetWorldMat();
+	if (KEY_TAP(KEY::NUM_0))
+		m_bActiveCreate = true;
+	else if (KEY_TAP(KEY::NUM_1))
+		m_bActiveCreate = false;
 
-	DrawDebugCube(m_tMat,vColor,0.0f,false);
-
-	if (!m_bActiveRay)
+	if (!m_bActiveCreate)
 		return;
 
 	if (KEY_TAP(KEY::LBTN))
+	{
 		if (RayCasting())
-			int a = 10;
+			CreateObstacle();
+	}
+
+	else if (m_bChanage)
+	{
+		CNavMeshMgr::GetInst()->ReBuildField();
+		m_bChanage = false;
+		m_bActiveCreate = false;
+	}
+		
+}
+
+void CNavMeshPlane::CreateObstacle()
+{
+	m_vCreateScale = Vec3(400.f, 0.f, 400.f); //+= (DT * Vec3(2.f,2.f,2.f));
+	Vec3 vHalfScale = m_vCreateScale / 2.f;
+
+	float fHeight = 400.f;
+	//오브젝트를 설치하기 위해서 높이값을 크기의 /2 만큼 올린다
+	float y = m_vRayPoint.y + fHeight /2.f;
+	Vec3 vPos = Vec3(m_vRayPoint.x, y, m_vRayPoint.z);
+	
+	Vec3 vDir[4] = { Vec3(0.f,0.f,1.f), Vec3(1.f, 0.f, 0.f),
+		Vec3(0.f,0.f, -1.f) ,Vec3(-1.f, 0.f , 0.f) };
+
+	Vec3 vScaleDir[2] = { Vec3(1.f,0.f,0.f), Vec3(0.f,0.f,1.f) };
+
+	for (int i = 0; i < 4; ++i)
+	{
+		//정행진 방향으로 메쉬 위치 지정
+		Vec3 vPlanePos = vDir[i] * vHalfScale + vPos;
+
+		//크기 적용
+		Vec3 vScale = vScaleDir[i%2] * m_vCreateScale;
+		vScale.y += fHeight; //높이값 적용
+
+		CNavMeshMgr::GetInst()->CreatePlane(vPlanePos, vScale);
+	}
+	
+	m_bChanage = true;
 }
 
 bool CNavMeshPlane::RayCasting()
@@ -87,7 +135,9 @@ bool CNavMeshPlane::RayCasting()
 	// 0 ----3
 	// |     |
 	// 1-----2
-	// 
+	
+	// 외적을 통한 삼각형의 총 넓이 합도 가능함
+	
 	// 배리 센트릭 좌표 계산
 	double uu, uv, vv, wu, wv, inverseD;
 
@@ -122,6 +172,10 @@ bool CNavMeshPlane::RayCasting()
 	if (v < 0.0f || (u + v) > 1.0f)
 		return false;
 
+	m_vRayPoint = vPoint;
+
+	m_bActiveRay = true;
+
 	return true;
 }
 
@@ -133,6 +187,15 @@ float CNavMeshPlane::GetArea(const Vec3& _vP1, const Vec3& _vP2)
 
 	return fArea / 2.f;
 
+}
+
+void CNavMeshPlane::DrawCube()
+{
+	Vec4 vColor = Vec4(0.f, 0.f, 1.f, 1.f);
+
+	const Matrix& m_tMat = GetOwner()->Transform()->GetWorldMat();
+
+	DrawDebugCube(m_tMat, vColor, 0.0f, false);
 }
 
 void CNavMeshPlane::SaveToLevelFile(FILE* _File)

@@ -31,6 +31,7 @@ enum class LAYER_TYPE
 	Obstacle, //장애물
 	Stairs,
 	Terrain, //지형
+	NavMeshPlane,
 	Attack,
 	MonsterAttack,
 	Light,
