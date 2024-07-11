@@ -23,16 +23,21 @@
 #include "CRDNavMeshField.h"
 #include "CLevelMgr.h"
 #include "CLayer.h"
+
 UINT CNavMeshMgr::m_iPlaneCount = 0;
+UINT CNavMeshMgr::m_iStartingIdx = 0;
 
 CNavMeshMgr::CNavMeshMgr()
 {
-    context = new rcContext();
+    m_pContext = new rcContext();
 }
 
 CNavMeshMgr::~CNavMeshMgr()
 {
     free();
+
+    if (m_pContext)
+        delete m_pContext;
 }
 
 inline bool inRange(const float* v1, const float* v2, const float r, const float h)
@@ -137,14 +142,14 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 
     return npath;
 }
-void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
+CGameObject* CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
 {
     //1000, 1000      2000, 2000
     Vec3 vTemScale = _vScale / 2.f;
     Vec3 vBotleft = _vPos - vTemScale; 
     Vec3 vTopRight = _vPos + vTemScale;
 
-    int startingIdx = m_vecWorldVertices.size();
+    m_iStartingIdx = m_vecWorldVertices.size();
 
     // 1 ----4
     // |     |
@@ -155,12 +160,12 @@ void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
     m_vecWorldVertices.push_back(Vec3(vTopRight.x, vTopRight.y ,vTopRight.z));//-18000 0 0
 
    
-    m_vecWorldFaces.push_back(startingIdx + 2);
-    m_vecWorldFaces.push_back(startingIdx + 1);
-    m_vecWorldFaces.push_back(startingIdx + 0);
-    m_vecWorldFaces.push_back(startingIdx + 3);
-    m_vecWorldFaces.push_back(startingIdx + 2);
-    m_vecWorldFaces.push_back(startingIdx + 0);
+    m_vecWorldFaces.push_back(m_iStartingIdx + 2);
+    m_vecWorldFaces.push_back(m_iStartingIdx + 1);
+    m_vecWorldFaces.push_back(m_iStartingIdx + 0);
+    m_vecWorldFaces.push_back(m_iStartingIdx + 3);
+    m_vecWorldFaces.push_back(m_iStartingIdx + 2);
+    m_vecWorldFaces.push_back(m_iStartingIdx + 0);
 
     CGameObject* pGameObj = new CGameObject();
     pGameObj->SetName(L"navMeshPlane" + std::to_wstring(m_iPlaneCount));
@@ -180,6 +185,8 @@ void CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
     SpawnGameObject(pGameObj, _vPos, (int)LAYER_TYPE::NavMeshPlane);
 
     ++m_iPlaneCount;
+
+    return pGameObj;
 }
 
 void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const tBuildSettings& buildSettings)
@@ -233,7 +240,7 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     tNavMesh.heightField = rcAllocHeightfield();
     assert(tNavMesh.heightField != nullptr);
 
-    processResult = rcCreateHeightfield(context, *tNavMesh.heightField, tNavMesh.config.width, tNavMesh.config.height, tNavMesh.config.bmin,
+    processResult = rcCreateHeightfield(m_pContext, *tNavMesh.heightField, tNavMesh.config.width, tNavMesh.config.height, tNavMesh.config.bmin,
         tNavMesh.config.bmax, tNavMesh.config.cs, tNavMesh.config.ch);
     assert(processResult == true);
 
@@ -243,34 +250,34 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     //unsigned char * triareas = new unsigned char[facesNum];
     //memset(triareas, 0, facesNum*sizeof(unsigned char));
 
-    rcMarkWalkableTriangles(context, tNavMesh.config.walkableSlopeAngle, worldVertices, verticesNum, faces, facesNum, triareas.data());
-    processResult = rcRasterizeTriangles(context, worldVertices, verticesNum, faces, triareas.data(),
+    rcMarkWalkableTriangles(m_pContext, tNavMesh.config.walkableSlopeAngle, worldVertices, verticesNum, faces, facesNum, triareas.data());
+    processResult = rcRasterizeTriangles(m_pContext, worldVertices, verticesNum, faces, triareas.data(),
         facesNum, *tNavMesh.heightField, tNavMesh.config.walkableClimb);
     assert(processResult == true);
 
     // 필요없는 부분 필터링
-    rcFilterLowHangingWalkableObstacles(context, tNavMesh.config.walkableClimb, *tNavMesh.heightField);
-    rcFilterLedgeSpans(context, tNavMesh.config.walkableHeight, tNavMesh.config.walkableClimb, *tNavMesh.heightField);
-    rcFilterWalkableLowHeightSpans(context, tNavMesh.config.walkableHeight, *tNavMesh.heightField);
+    rcFilterLowHangingWalkableObstacles(m_pContext, tNavMesh.config.walkableClimb, *tNavMesh.heightField);
+    rcFilterLedgeSpans(m_pContext, tNavMesh.config.walkableHeight, tNavMesh.config.walkableClimb, *tNavMesh.heightField);
+    rcFilterWalkableLowHeightSpans(m_pContext, tNavMesh.config.walkableHeight, *tNavMesh.heightField);
 
     // 밀집 높이 필드 만들기
     tNavMesh.compactHeightField = rcAllocCompactHeightfield();
     assert(tNavMesh.compactHeightField != nullptr);
 
 
-    processResult = rcBuildCompactHeightfield(context, tNavMesh.config.walkableHeight, tNavMesh.config.walkableClimb,
+    processResult = rcBuildCompactHeightfield(m_pContext, tNavMesh.config.walkableHeight, tNavMesh.config.walkableClimb,
         *tNavMesh.heightField, *tNavMesh.compactHeightField);
     //rcFreeHeightField(heightField);
     assert(processResult == true);
 
     //agentradius 범위에 따라 메쉬 가공 -> radius가 클수록 메쉬 범위 작게
-    processResult = rcErodeWalkableArea(context, tNavMesh.config.walkableRadius, *tNavMesh.compactHeightField);
+    processResult = rcErodeWalkableArea(m_pContext, tNavMesh.config.walkableRadius, *tNavMesh.compactHeightField);
     assert(processResult == true);
 
-    processResult = rcBuildDistanceField(context, *tNavMesh.compactHeightField);
+    processResult = rcBuildDistanceField(m_pContext, *tNavMesh.compactHeightField);
     assert(processResult == true);
 
-    rcBuildRegions(context, *tNavMesh.compactHeightField, 0, tNavMesh.config.minRegionArea, 
+    rcBuildRegions(m_pContext, *tNavMesh.compactHeightField, 0, tNavMesh.config.minRegionArea,
         tNavMesh.config.mergeRegionArea);
     assert(processResult == true);
 
@@ -278,7 +285,7 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     rcContourSet* contourSet{ rcAllocContourSet() };
     assert(contourSet != nullptr);
 
-    processResult = rcBuildContours(context, *tNavMesh.compactHeightField, tNavMesh.config.maxSimplificationError,
+    processResult = rcBuildContours(m_pContext, *tNavMesh.compactHeightField, tNavMesh.config.maxSimplificationError,
         tNavMesh.config.maxEdgeLen, *contourSet);
     assert(processResult == true);
 
@@ -286,14 +293,14 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     tNavMesh.polyMesh = rcAllocPolyMesh();
     assert(tNavMesh.polyMesh != nullptr);
 
-    processResult = rcBuildPolyMesh(context, *contourSet, tNavMesh.config.maxVertsPerPoly, *tNavMesh.polyMesh);
+    processResult = rcBuildPolyMesh(m_pContext, *contourSet, tNavMesh.config.maxVertsPerPoly, *tNavMesh.polyMesh);
     assert(processResult == true);
 
     // 디테일 메시 생성
     tNavMesh.polyMeshDetail = rcAllocPolyMeshDetail();
     assert(tNavMesh.polyMeshDetail != nullptr);
 
-    processResult = rcBuildPolyMeshDetail(context, *tNavMesh.polyMesh, *tNavMesh.compactHeightField,
+    processResult = rcBuildPolyMeshDetail(m_pContext, *tNavMesh.polyMesh, *tNavMesh.compactHeightField,
         tNavMesh.config.detailSampleDist, tNavMesh.config.detailSampleMaxError, *tNavMesh.polyMeshDetail);
     assert(processResult == true);
 
@@ -413,8 +420,10 @@ void CNavMeshMgr::ReBuildField()
         const vector<int>& vecFaces = pMeshPlane->GetWorldFaces();
         const vector<Vec3>& vecVertices = pMeshPlane->GetWorldVertices();
 
+        //face 순서 여기서 정해야함
         for (int j = 0; j < 4; ++j)
             m_vecWorldVertices.push_back(vecVertices[j]);
+
         for (int j = 0; j < 6; ++j)
             m_vecWorldFaces.push_back(vecFaces[j]);
     }
@@ -425,7 +434,7 @@ void CNavMeshMgr::ReBuildField()
         //navmesh가 없다면 다음 몬스터로
         CRDNavMeshField* pRDNavMesh = vecMonster[i]->RDNavMeshField();
         if (!pRDNavMesh)
-            return;
+            continue;
 
         UINT ID = vecMonster[i]->GetID();
         tBuildSettings buildSettings = {};
@@ -436,6 +445,30 @@ void CNavMeshMgr::ReBuildField()
                 &m_vecWorldFaces[0], m_vecWorldFaces.size() / 3, buildSettings);
     }
 
+}
+
+void CNavMeshMgr::AddPlaneVertex(CNavMeshPlane* _pNavMeshPlane)
+{
+    CGameObject* pPlane = _pNavMeshPlane->GetOwner();
+
+    Vec3 vTemScale = pPlane->Transform()->GetRelativeScale() / 2.f;
+    Vec3 vBotleft  = pPlane->Transform()->GetRelativePos() - vTemScale;
+    Vec3 vTopRight = pPlane->Transform()->GetRelativePos() + vTemScale;
+
+    //mgr에 등록하지 않고 객체에만 내 인덱스 정보를 저장했기 때문에 따로 올려주기
+    m_iStartingIdx += 4;
+
+    _pNavMeshPlane->SetWorldVertex(Vec3(vBotleft.x, vTopRight.y, vTopRight.z));
+    _pNavMeshPlane->SetWorldVertex(Vec3(vBotleft.x, vBotleft.y, vBotleft.z));
+    _pNavMeshPlane->SetWorldVertex(Vec3(vTopRight.x, vBotleft.y, vBotleft.z));
+    _pNavMeshPlane->SetWorldVertex(Vec3(vTopRight.x, vTopRight.y, vTopRight.z));
+
+    _pNavMeshPlane->SetWorldFaces(2 + m_iStartingIdx);
+    _pNavMeshPlane->SetWorldFaces(1 + m_iStartingIdx);
+    _pNavMeshPlane->SetWorldFaces(0 + m_iStartingIdx);
+    _pNavMeshPlane->SetWorldFaces(3 + m_iStartingIdx);
+    _pNavMeshPlane->SetWorldFaces(2 + m_iStartingIdx);
+    _pNavMeshPlane->SetWorldFaces(0 + m_iStartingIdx);
 }
 
 const Vec3& CNavMeshMgr::FindPath(UINT _ID, float* _pStartPos, float* _pEndPos)

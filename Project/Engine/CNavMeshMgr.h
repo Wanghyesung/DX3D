@@ -57,10 +57,11 @@ class CNavMeshMgr : public CSingleton<CNavMeshMgr>
 
 private:
     static UINT m_iPlaneCount;
+    static UINT m_iStartingIdx;
     vector<Vec3> m_vecWorldVertices;
     vector<int> m_vecWorldFaces;
 
-    rcContext* context;
+    rcContext* m_pContext;
     //rcPolyMesh* polyMesh;
     //rcConfig config;
     //rcPolyMeshDetail* polyMeshDetail;
@@ -89,7 +90,8 @@ public:
     void tick();
     void render();
 
-    void CreatePlane(Vec3 _vPos, Vec3 _vScale);
+    CGameObject* CreatePlane(Vec3 _vPos, Vec3 _vScale);
+
 
     void BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const tBuildSettings& buildSettings = tBuildSettings{});
     void BuildField(const tBuildSettings& buildSettings = tBuildSettings{})
@@ -105,6 +107,7 @@ public:
     const static UINT GetPlaneCount() { return m_iPlaneCount; }
     void PlusPlaneCount() { ++m_iPlaneCount; }
 
+    void AddPlaneVertex(class CNavMeshPlane* _pNavMeshPlane);
 public:
     const Vec3& FindPath(UINT _ID, float * _pStartPos, float* _pEndPos);
 

@@ -8,12 +8,14 @@
 #include "CNavMeshMgr.h"
 #include "CMeshRender.h"
 
-bool CNavMeshPlane::m_bChanage = false;
+UINT CNavMeshPlane::m_iObstacleCount = 0;
 
 CNavMeshPlane::CNavMeshPlane():
 	CComponent(COMPONENT_TYPE::NAVMESHPLANE),
 	m_bActiveRay(false),
-	m_bActiveCreate(false)
+	m_bActiveCreate(false),
+	m_bObstaclePlane(false),
+	m_vecTargetPlane{}
 {
 }
 
@@ -27,35 +29,44 @@ void CNavMeshPlane::finaltick()
 {
 	DrawCube();
 
+	//장애물 오브젝트는 레이케스팅이 필요 없음
+	if (m_bObstaclePlane)
+		return;
+
 	if (KEY_TAP(KEY::NUM_0))
 		m_bActiveCreate = true;
 	else if (KEY_TAP(KEY::NUM_1))
 		m_bActiveCreate = false;
-
+	
 	if (!m_bActiveCreate)
 		return;
-
-	if (KEY_TAP(KEY::LBTN))
+	
+	if (KEY_PRESSED(KEY::LBTN))
 	{
 		if (RayCasting())
 			CreateObstacle();
 	}
-
-	else if (m_bChanage)
+	else if (KEY_RELEASE(KEY::LBTN) && m_bActiveRay)
 	{
-		CNavMeshMgr::GetInst()->ReBuildField();
-		m_bChanage = false;
-		m_bActiveCreate = false;
-	}
-		
+		ReBulid();
+	}	
 }
 
 void CNavMeshPlane::CreateObstacle()
 {
-	m_vCreateScale = Vec3(400.f, 0.f, 400.f); //+= (DT * Vec3(2.f,2.f,2.f));
+	//한 번만 생성하고 그 후 크기 조절
+	if (m_vecTargetPlane.empty())
+	{
+		//navmesh가 아닌 일반 오브젝트로 생성
+		for (int i = 0; i < 3; ++i)
+			CreateTemObstacle();
+	}
+
+	//위치 잡기
+	m_vCreateScale = m_vCreateScale + (DT * Vec3(40.f,40.f,40.f));
 	Vec3 vHalfScale = m_vCreateScale / 2.f;
 
-	float fHeight = 400.f;
+	float fHeight = m_vCreateScale.y;
 	//오브젝트를 설치하기 위해서 높이값을 크기의 /2 만큼 올린다
 	float y = m_vRayPoint.y + fHeight /2.f;
 	Vec3 vPos = Vec3(m_vRayPoint.x, y, m_vRayPoint.z);
@@ -65,7 +76,7 @@ void CNavMeshPlane::CreateObstacle()
 
 	Vec3 vScaleDir[2] = { Vec3(1.f,0.f,0.f), Vec3(0.f,0.f,1.f) };
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		//정행진 방향으로 메쉬 위치 지정
 		Vec3 vPlanePos = vDir[i] * vHalfScale + vPos;
@@ -74,10 +85,12 @@ void CNavMeshPlane::CreateObstacle()
 		Vec3 vScale = vScaleDir[i%2] * m_vCreateScale;
 		vScale.y += fHeight; //높이값 적용
 
-		CNavMeshMgr::GetInst()->CreatePlane(vPlanePos, vScale);
+		
+		m_vecTargetPlane[i]->Transform()->SetRelativePos(vPlanePos);
+		m_vecTargetPlane[i]->Transform()->SetRelativeScale(vScale);
 	}
 	
-	m_bChanage = true;
+	m_bActiveRay = true;
 }
 
 bool CNavMeshPlane::RayCasting()
@@ -196,6 +209,37 @@ void CNavMeshPlane::DrawCube()
 	const Matrix& m_tMat = GetOwner()->Transform()->GetWorldMat();
 
 	DrawDebugCube(m_tMat, vColor, 0.0f, false);
+}
+
+void CNavMeshPlane::CreateTemObstacle()
+{
+	CGameObject* pTargetPlane = new CGameObject();
+
+	pTargetPlane->SetName(L"navMeshObstacle" + std::to_wstring(m_iObstacleCount));
+	pTargetPlane->AddComponent(new CTransform);
+	pTargetPlane->Transform()->SetRelativeScale(Vec3::One);
+
+	pTargetPlane->AddComponent(new CMeshRender);
+	pTargetPlane->AddComponent(new CNavMeshPlane());
+	SpawnGameObject(pTargetPlane, Vec3::One, (int)LAYER_TYPE::NavMeshPlane);
+
+	m_vecTargetPlane.push_back(pTargetPlane);
+
+	++m_iObstacleCount;
+}
+
+void CNavMeshPlane::ReBulid()
+{
+	for (int i = 0; i < m_vecTargetPlane.size(); ++i)
+	{
+		m_vecTargetPlane[i]->NavMeshPlane()->m_bObstaclePlane = true;
+		CNavMeshMgr::GetInst()->AddPlaneVertex(m_vecTargetPlane[i]->NavMeshPlane());
+	}
+
+	CNavMeshMgr::GetInst()->ReBuildField();
+	m_bActiveRay = false;
+	m_bActiveCreate = false;
+	m_vecTargetPlane.clear();
 }
 
 void CNavMeshPlane::SaveToLevelFile(FILE* _File)

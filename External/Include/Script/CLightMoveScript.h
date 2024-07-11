@@ -22,7 +22,6 @@ private:
 
     CLONE(CLightMoveScript);
 
-    CGameObject* m_pTarget;
 
 private:
     void move_target();

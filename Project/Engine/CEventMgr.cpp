@@ -162,6 +162,7 @@ void CEventMgr::GC_Clear()
 	m_vecGC.clear();
 }
 
+//level vector에 해당 오브젝트를 지우기만 하기 때문에 따로 해제를 해줘야함
 void CEventMgr::EC_Clear()
 {
 	for (size_t i = 0; i < m_vecEC.size(); ++i)
@@ -170,7 +171,7 @@ void CEventMgr::EC_Clear()
 		{
 			CLevelMgr::GetInst()->EraseObject(m_vecEC[i].first, m_vecEC[i].second);
 
-			//outliner에서 확인하고 tool에서 목록 갱신
+			
 			m_LevelChanged = true;
 		}
 	}
