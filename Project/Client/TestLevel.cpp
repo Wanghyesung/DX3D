@@ -317,28 +317,30 @@ void CreateMonster()
 	CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
 	CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
 
-	//Vec3 m_vCreateScale = Vec3(200.f, 0.f, 200.f); //+= (DT * Vec3(2.f,2.f,2.f));
+	//Vec3 m_vCreateScale = Vec3(400.f, 0.f, 400.f); //+= (DT * Vec3(2.f,2.f,2.f));
 	//Vec3 vHalfScale = m_vCreateScale / 2.f;
 	//Vec3 m_vRayPoint{ 400, 0.f, 900 };
-	//float fHeight = 200.f;
+	//float fHeight = 400.f;
 	////오브젝트를 설치하기 위해서 높이값을 크기의 /2 만큼 올린다
 	//float y = m_vRayPoint.y + fHeight / 2.f;
 	//Vec3 vPos = Vec3(m_vRayPoint.x, y, m_vRayPoint.z);
 	//
-	//Vec3 vDir[4] = { Vec3(0.f,0.f,1.f), Vec3(1.f, 0.f, 0.f),
-	//	Vec3(0.f,0.f, -1.f) ,Vec3(-1.f, 0.f , 0.f) };
+	//Vec3 vDir[4] = { Vec3(0.f,0.f,1.f), Vec3(0.f,0.f, -1.f),
+	//	Vec3(1.f, 0.f, 0.f) ,Vec3(-1.f, 0.f , 0.f) };
 	//
-	//Vec3 vScaleDir[2] = { Vec3(1.f,0.f,0.f), Vec3(0.f,0.f,1.f) };
+	//Vec3 vScaleDir[4] = { Vec3(1.f,0.f,0.f), Vec3(1.f,0.f,0.f),
+	//	 Vec3(0.f,0.f,1.f) , Vec3(0.f,0.f,1.f) };
 	//
-	//for (int i = 0; i < 4; ++i)
+	//for (int i = 2; i < 4; ++i)
 	//{
 	//	//정행진 방향으로 메쉬 위치 지정
 	//	Vec3 vPlanePos = vDir[i] * vHalfScale + vPos;
 	//
 	//	//크기 적용
-	//	Vec3 vScale = vScaleDir[i % 2] * m_vCreateScale;
+	//	Vec3 vScale = vScaleDir[i] * m_vCreateScale;
 	//	vScale.y += fHeight; //높이값 적용
 	//
+	//	
 	//	CNavMeshMgr::GetInst()->CreatePlane(vPlanePos, vScale);
 	//}
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));

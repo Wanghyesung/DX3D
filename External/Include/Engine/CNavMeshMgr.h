@@ -57,7 +57,7 @@ class CNavMeshMgr : public CSingleton<CNavMeshMgr>
 
 private:
     static UINT m_iPlaneCount;
-    static UINT m_iStartingIdx;
+    UINT m_iStartingIdx;
     vector<Vec3> m_vecWorldVertices;
     vector<int> m_vecWorldFaces;
 
@@ -107,7 +107,7 @@ public:
     const static UINT GetPlaneCount() { return m_iPlaneCount; }
     void PlusPlaneCount() { ++m_iPlaneCount; }
 
-    void AddPlaneVertex(class CNavMeshPlane* _pNavMeshPlane);
+    void AddPlaneVertex(class CNavMeshPlane* _pNavMeshPlane, bool _bHorizontal = true);
 public:
     const Vec3& FindPath(UINT _ID, float * _pStartPos, float* _pEndPos);
 

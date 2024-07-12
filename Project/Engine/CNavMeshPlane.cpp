@@ -58,7 +58,7 @@ void CNavMeshPlane::CreateObstacle()
 	if (m_vecTargetPlane.empty())
 	{
 		//navmesh가 아닌 일반 오브젝트로 생성
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 4; ++i)
 			CreateTemObstacle();
 	}
 
@@ -76,7 +76,8 @@ void CNavMeshPlane::CreateObstacle()
 
 	Vec3 vScaleDir[2] = { Vec3(1.f,0.f,0.f), Vec3(0.f,0.f,1.f) };
 
-	for (int i = 0; i < 3; ++i)
+	//2번째가 안됨 (확인 세로축)
+	for (int i = 0; i < 4; ++i)
 	{
 		//정행진 방향으로 메쉬 위치 지정
 		Vec3 vPlanePos = vDir[i] * vHalfScale + vPos;
@@ -233,7 +234,7 @@ void CNavMeshPlane::ReBulid()
 	for (int i = 0; i < m_vecTargetPlane.size(); ++i)
 	{
 		m_vecTargetPlane[i]->NavMeshPlane()->m_bObstaclePlane = true;
-		CNavMeshMgr::GetInst()->AddPlaneVertex(m_vecTargetPlane[i]->NavMeshPlane());
+		CNavMeshMgr::GetInst()->AddPlaneVertex(m_vecTargetPlane[i]->NavMeshPlane(), (i+1) % 2);
 	}
 
 	CNavMeshMgr::GetInst()->ReBuildField();
