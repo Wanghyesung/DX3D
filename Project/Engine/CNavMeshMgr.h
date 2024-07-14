@@ -107,7 +107,7 @@ public:
     const static UINT GetPlaneCount() { return m_iPlaneCount; }
     void PlusPlaneCount() { ++m_iPlaneCount; }
 
-    void AddPlaneVertex(class CNavMeshPlane* _pNavMeshPlane, bool _bHorizontal = true);
+    void AddPlaneVertex(class CNavMeshPlane* _pNavMeshPlane);
 public:
     const Vec3& FindPath(UINT _ID, float * _pStartPos, float* _pEndPos);
 

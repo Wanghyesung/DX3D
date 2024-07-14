@@ -446,7 +446,7 @@ void CNavMeshMgr::ReBuildField()
 
 }
 
-void CNavMeshMgr::AddPlaneVertex(CNavMeshPlane* _pNavMeshPlane, bool _bHorizontal)
+void CNavMeshMgr::AddPlaneVertex(CNavMeshPlane* _pNavMeshPlane)
 {
     CGameObject* pPlane = _pNavMeshPlane->GetOwner();
 
@@ -461,9 +461,18 @@ void CNavMeshMgr::AddPlaneVertex(CNavMeshPlane* _pNavMeshPlane, bool _bHorizonta
     // 1 ----4
     // |     |
     // 2-----3
+    Vec3 vPoint1 = Vec3(vBotleft.x, vTopRight.y, vTopRight.z);
+    Vec3 vPoint2 = Vec3(vBotleft.x, vBotleft.y, vBotleft.z);
+    Vec3 vPoint3 = Vec3(vTopRight.x, vBotleft.y, vBotleft.z);
+    Vec3 vPoint4 = Vec3(vTopRight.x, vTopRight.y, vTopRight.z);
 
-    //수직 오브젝트
-    if (!_bHorizontal)
+    Vec3 v1 = vPoint2 - vPoint3;
+    Vec3 v2 = vPoint1 - vPoint4;
+    
+    //수직방향으로 그려진 평면인지 확인
+    bool bVertical = v1 == Vec3::Zero || v2 == Vec3::Zero;
+
+    if (bVertical)//_bHorizontal
     {
         _pNavMeshPlane->SetWorldVertex(Vec3(vBotleft.x, vTopRight.y, vTopRight.z));
         _pNavMeshPlane->SetWorldVertex(Vec3(vBotleft.x, vBotleft.y, vTopRight.z));

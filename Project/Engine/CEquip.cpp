@@ -112,11 +112,16 @@ bool CEquip::check_matrix()
 
 void CEquip::single_tick()
 {
-	//Matrix matWeaponWorld = Transform()->GetWorldMat();//무기 
+	//기존 캐릭터의 위치 offset 값을 해제해준 후 다시 월드행렬 계산
+	Vec3 vPxPos = m_pChar->PxRigidbody()->GetPxPosition();
+	Vec3 vPxOffset = m_pChar->PxRigidbody()->GetOffsetPosition();
+	vPxPos += vPxOffset;
 
+	//Matrix matCharWorld = m_pChar->Transform()->GetWorldMat(); //캐릭터 월드
+	Matrix PxPosMatrix = XMMatrixTranslation(vPxPos.x, vPxPos.y, vPxPos.z);
 	Matrix matCharWorldScale = m_pChar->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
 	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
-	Matrix matCharWorld = m_pChar->PxRigidbody()->GetPxWorldMatrix(); //R*T GetWorldMat(); //캐릭터 월드
+	Matrix matCharWorld = matCharWorldScale * m_pChar->Transform()->GetRotateMat() * PxPosMatrix; //새로 계산된 월드행렬
 	Matrix matWeapon = matCharSclaeInv * m_matStaticWorld * m_matFinalBone * matCharWorld;
 
 	//trasnform 행렬을 고정시켜서 움직여야함 (초기 위치를 기반으로 움직이게)

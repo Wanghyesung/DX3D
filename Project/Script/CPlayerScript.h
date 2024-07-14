@@ -21,7 +21,8 @@ private:
     CGage*      m_pHP;
     CGage*      m_pHeal;
 
-    CGameObject* CWeapon;
+    vector<CGameObject*> m_vecWeapon;
+    int                  m_iActiveWeaponIdx;
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -47,6 +48,8 @@ private:
     void set_ui();
     void set_attack();
     void rotate();
+
+    void change_equip();
 public:
     virtual void SaveToLevelFile(FILE* _File) override;
     virtual void LoadFromLevelFile(FILE* _FILE) override;

@@ -16,6 +16,8 @@ private:
 
     UINT m_iIndex;
 
+    bool m_bActive;
+
     CGameObject* m_pChar; //내 캐릭터
 private:
     bool check_matrix();
@@ -26,15 +28,15 @@ public:
     void SetDead(bool _bDelete = false);//, 삭제할지
     void SetIndex(int _iIndex) { m_iIndex = _iIndex; }
     void SetFixedPos(Vec3 _vPos);
+    void SetActive(bool _bActive) { m_bActive = _bActive; }
+
+    bool IsActive() { return m_bActive; }
 
     Vec3 GetFixedPos() { return m_vFixedPos; }
     int GetIndex() { return m_iIndex; }   
     const Matrix& GetFinalMat() { return m_matFinalBone; }
 
-    void SetChar(CGameObject* _pGameObj) 
-    { 
-        m_pChar = _pGameObj;
-    }
+    void SetChar(CGameObject* _pGameObj)  {m_pChar = _pGameObj;}
 public:
     virtual void begin()override;
     virtual void finaltick()override;

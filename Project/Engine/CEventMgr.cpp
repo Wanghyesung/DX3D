@@ -169,6 +169,9 @@ void CEventMgr::EC_Clear()
 	{
 		if (nullptr != m_vecEC[i].second)
 		{
+			if (m_vecEC[i].second->GetParent())
+				m_vecEC[i].second->DisconnectFromParent();
+
 			CLevelMgr::GetInst()->EraseObject(m_vecEC[i].first, m_vecEC[i].second);
 
 			

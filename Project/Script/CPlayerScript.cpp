@@ -33,9 +33,10 @@ CPlayerScript::CPlayerScript()
 	, m_fSpeed(100.f)
 	, m_iActive(1)
 	, m_pFSM(nullptr)
-	, m_iBone(127)
+	, m_iBone(125)
 	, m_vOffsetTransform(Vec3(0.f, 500.f, 520.f))
-	, CWeapon(nullptr)
+	, m_vecWeapon{}
+	, m_iActiveWeaponIdx(0)
 {
 	AddScriptParam(SCRIPT_PARAM::FLOAT, &m_fSpeed, "Player Speed");
 	AddScriptParam(SCRIPT_PARAM::INT,  &m_iActive, "Player Active");
@@ -50,6 +51,17 @@ CPlayerScript::~CPlayerScript()
 {
 	if (nullptr != m_pFSM)
 		delete m_pFSM;
+
+
+	for (int i = 0; i < m_vecWeapon.size(); ++i)
+	{
+		if (m_iActiveWeaponIdx == i)
+			continue;
+
+		delete m_vecWeapon[i];
+		m_vecWeapon[i] = nullptr;
+		
+	}
 }
 
 void CPlayerScript::begin()
@@ -68,12 +80,14 @@ void CPlayerScript::tick()
 	{
 		rotate();
 	}
-	 m_pFSM->final_tick();
+	m_pFSM->final_tick();
 
-	 tick_gage();
+	tick_gage();
 	
-	//CWeapon->Equip()->SetIndex(m_iBone);
-	 
+	change_equip();
+	
+	//m_vecWeapon[m_iActiveWeaponIdx]->Equip()->SetIndex(m_iBone);
+
 	//test용
 	// GetOwner()->Equip()->SetIndex(m_iBone);
 	//CLayer* pLayer = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Monster);
@@ -123,34 +137,10 @@ void CPlayerScript::Initialize()
 	vector<Ptr<CMeshData>> vecMeshData = {};
 	CGameObject* pObj = nullptr;
 
-	//player weapon
-
-	CWeapon = InitializeFBX(L"TaurusDemon_Axe");
-	CWeapon->AddComponent(new CTransform());
-	//Ptr<CMeshData> pWeaponMesh =
-	//	CResMgr::GetInst()->Load<CMeshData >(L"meshdata\\Heavy_Knight4.mdat",L"meshdata\\Heavy_Knight4.mdat");
-	//CWeapon = pWeaponMesh->Instantiate();
-	CWeapon->SetName(L"PlayerWeapon1");
-	CWeapon->AddComponent(new CEquip());
-	CWeapon->Equip()->SetChar(GetOwner());
-	CWeapon->Equip()->SetIndex(m_iBone);
-	//CWeapon->Equip()->SetFixedPos(Vec3(77, -51, 135));
-	CWeapon->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
-
-	//125 -28 252
-	//64 100 119
-	//127
-	float fRadian = XM_PI / 180.f;
-	CWeapon->Transform()->SetRelativeRot(64 * fRadian, 100 * fRadian, 119 * fRadian);
-
-	//46 -60 254
-	//CWeapon->Transform()->SetAbsolute(true);
-	SpawnGameObject(CWeapon, Vec3(125,-28.f,252.f), (int)LAYER_TYPE::Default);
-	
 	//player
 	vector<Ptr<CMeshData>> pVecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Artorias4.fbx");
 	//마지막 인덱스는 기본 검
-	for (int i = 0; i < pVecMeshData.size() - 1; ++i)
+	for (int i = 0; i < pVecMeshData.size()-1; ++i)
 	{
 		wstring strNum = std::to_wstring(i);
 		//Ptr<CMeshData> pMeshData =
@@ -162,7 +152,8 @@ void CPlayerScript::Initialize()
 		{
 			pObj = pMeshData->Instantiate();
 			pObj->SetName(L"Artorias4" + strNum);
-			pArtorias->AddChild(pObj);
+
+			GetOwner()->AddChild(pObj);
 
 			pObj->Animator3D()->CreateAnimationF(L"Idle", 0, 69);
 			pObj->Animator3D()->CreateAnimationF(L"Walk_Front", 71, 130);
@@ -200,9 +191,42 @@ void CPlayerScript::Initialize()
 			//pObj->Animator3D()->StartEvent() = std::bind(std::bind(&SkillLuck::create_luck, this)
 		}
 	}
-	
-	//SpawnGameObject(pAritorias, Vec3(0.f, 0.f, 100.f), L"Default");
-	//Transform()->SetRelativeScale(2.f, 2.f, 2.f);
+
+	//weapon
+	//기본 무기 먼저 push
+	// -128 218 119 
+	// 247 1 117
+	float fRadian = XM_PI / 180.f;
+
+	//기본무기만 따로 로드해서 default layer에 붙이기
+	CGameObject* pMainWeapon = pVecMeshData[pVecMeshData.size() - 1]->Instantiate();
+	pMainWeapon->SetName(L"PlayerWeapon0");
+	pMainWeapon->AddComponent(new CEquip());
+	pMainWeapon->Equip()->SetActive(true);
+	pMainWeapon->Equip()->SetChar(GetOwner());
+	pMainWeapon->Equip()->SetIndex(m_iBone);
+	SpawnGameObject(pMainWeapon, Vec3(125, -28.f, 252.f), (int)LAYER_TYPE::Default);
+	pMainWeapon->Transform()->SetRelativeRot(-140 * fRadian, 164 * fRadian, 173 * fRadian);
+	pMainWeapon->Equip()->SetFixedPos(Vec3(73, 88, 117));
+	m_vecWeapon.push_back(pMainWeapon);
+
+	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
+	pWeapon->AddComponent(new CTransform());
+	//Ptr<CMeshData> pWeaponMesh =
+	//	CResMgr::GetInst()->Load<CMeshData >(L"meshdata\\Heavy_Knight4.mdat",L"meshdata\\Heavy_Knight4.mdat");
+	//CWeapon = pWeaponMesh->Instantiate();
+	pWeapon->SetName(L"PlayerWeapon1");
+	pWeapon->AddComponent(new CEquip());
+	pWeapon->Equip()->SetChar(GetOwner());
+	pWeapon->Equip()->SetIndex(m_iBone);
+	//pWeapon->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+
+	pWeapon->Transform()->SetRelativeRot(64 * fRadian, 100 * fRadian, 119 * fRadian);
+
+	m_vecWeapon.push_back(pWeapon);
+	//SpawnGameObject(pWeapon, Vec3(125,-28.f,252.f), (int)LAYER_TYPE::Player);
+
+
 	Transform()->SetRelativeRot(-XM_PI / 2.f, 0.f, 0.f);
 
 	m_pFSM = new CFSM();
@@ -362,6 +386,26 @@ void CPlayerScript::rotate()
 	PxQuat newRotation = yRotation * xRotation;
 	
 	GetOwner()->PxRigidbody()->SetPxRotate(newRotation);
+}
+
+void CPlayerScript::change_equip()
+{
+	if (KEY_TAP(KEY::ESC))
+	{
+		int iTemIdx = m_iActiveWeaponIdx; //다음 무기로
+		if (++iTemIdx > m_vecWeapon.size() - 1)
+			iTemIdx = 0; //다시 처음 무기로
+
+		//이전 무기 해제
+		m_vecWeapon[m_iActiveWeaponIdx]->Equip()->SetActive(false);
+		EraseObject(m_vecWeapon[m_iActiveWeaponIdx], (int)LAYER_TYPE::Default);
+
+		//새로운 무기 할당
+		m_iActiveWeaponIdx = iTemIdx;
+		
+		m_vecWeapon[m_iActiveWeaponIdx]->Equip()->SetActive(true);
+		SpawnGameObject(m_vecWeapon[m_iActiveWeaponIdx], Vec3(125, -28.f, 252.f), (int)LAYER_TYPE::Default);
+	}
 }
 
 void CPlayerScript::Chanage_AnimDT(float _fDivDT)

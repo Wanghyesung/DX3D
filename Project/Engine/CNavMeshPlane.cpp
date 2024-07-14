@@ -231,13 +231,17 @@ void CNavMeshPlane::CreateTemObstacle()
 
 void CNavMeshPlane::ReBulid()
 {
+	//새로 만들어진 오브젝트를 navmeshmgr에 등록
 	for (int i = 0; i < m_vecTargetPlane.size(); ++i)
 	{
+		//장애물 오브젝트로 등록
 		m_vecTargetPlane[i]->NavMeshPlane()->m_bObstaclePlane = true;
-		CNavMeshMgr::GetInst()->AddPlaneVertex(m_vecTargetPlane[i]->NavMeshPlane(), (i+1) % 2);
+		CNavMeshMgr::GetInst()->AddPlaneVertex(m_vecTargetPlane[i]->NavMeshPlane());
 	}
 
+	//navmesh 빌드 다시 진행 후 초기화
 	CNavMeshMgr::GetInst()->ReBuildField();
+
 	m_bActiveRay = false;
 	m_bActiveCreate = false;
 	m_vecTargetPlane.clear();
