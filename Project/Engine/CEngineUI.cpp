@@ -12,7 +12,7 @@ CEngineUI::CEngineUI():
 	m_pParentUI(nullptr),
 	m_vecChildUI{}
 {
-
+	
 }
 
 CEngineUI::CEngineUI(const CEngineUI& _pOrigin):

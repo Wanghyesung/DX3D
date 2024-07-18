@@ -24,7 +24,7 @@ void CS_HeightMap(int3 _iThreadID : SV_DispatchThreadID)
         return;
     }
 
-    //1012
+    
     int2 vCenterPos = float2(WIDTH, HEIGHT) * LOCATION[0].vUV;
     int2 vScale = float2(WIDTH, HEIGHT) * SCALE; // (2024, 2024) (0.05, 0.05)
     // 101

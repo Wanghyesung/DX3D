@@ -81,10 +81,7 @@ PatchOutput PatchConstFunc(InputPatch<VS_OUT, 3> _input
     output.Edges[0] = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vUpDown), 1, 4, 1000.f, 4000.f));
     output.Edges[1] = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vLeftRight), 1, 4, 1000.f, 4000.f));
     output.Edges[2] = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vSlide), 1, 4, 1000.f, 4000.f));
-    output.Inside = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vMid), 1, 4, 1000.f, 4000.f));
-
-    return output;
-   
+    output.Inside   = pow(2, (int) GetTessFactor(distance(vCamWorldPos, vMid), 1, 4, 1000.f, 4000.f));
 
     return output;
 }
@@ -145,7 +142,7 @@ DS_OUT DS_LandScape(const OutputPatch<HS_OUT, 3> _origin
     }
 
     // 높이맵 적용
-    float2 vHeightMapUV = vUV / float2(FaceX, FaceZ);
+    float2 vHeightMapUV = vUV / float2(FaceX, FaceZ); //0.1 / 18, 18
     vLocalPos.y = HeightMap.SampleLevel(g_sam_0, vHeightMapUV, 0).x;
 
     // Normal, Tangent, Binormal 재 계산
@@ -222,7 +219,7 @@ PS_OUT PS_LandScape(DS_OUT _in)
             //vColor += TileTexArr.SampleLevel(g_sam_0, float3(_in.vUV, i), 0) * vWeight[i];
 
             //노말은 가중치중에 가장 높은 텍스쳐를 고른다
-            if(fMaxWeight < vWeight[i])
+            if (fMaxWeight < vWeight[i])
             {
                 fMaxWeight = vWeight[i];
                 iMaxWeightIdx = i;
@@ -230,8 +227,9 @@ PS_OUT PS_LandScape(DS_OUT _in)
         }
         output.vColor = float4(vColor.rgb, 1.f);
         
+        
         //타일 노말
-        if(-1 != iMaxWeightIdx)
+        if (-1 != iMaxWeightIdx)
         {
             float3 vTangentSpaceNormal = TileTexArr.SampleGrad(g_sam_0, float3(_in.vUV, iMaxWeightIdx + TileCount), derivX, derivY).xyz;
             //float3 vTangentSpaceNormal = TileTexArr.SampleLevel(g_sam_0, float3(_in.vUV, iMaxWeightIdx + TileCount), 0).xyz;
@@ -240,8 +238,9 @@ PS_OUT PS_LandScape(DS_OUT _in)
             float3x3 matTBN = { _in.vViewTangent, _in.vViewBinormal, _in.vViewNormal };
             vViewNormal = normalize(mul(vTangentSpaceNormal, matTBN));
         }
+        
     }
-    
+   
     output.vNormal = float4(vViewNormal, 1.f);
     output.vPosition = float4(_in.vViewPos, 1.f);
     output.vData = float4(1.f, 0.f, 0.f, 1.f);

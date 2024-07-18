@@ -54,7 +54,7 @@ void CRenderMgr::render()
 
     // 렌더 함수 호출
     (this->*RENDER_FUNC)();
-
+   
     // 광원 해제
     Clear();
 }
@@ -76,7 +76,7 @@ void CRenderMgr::render_play()
 
     //메인(투영) -> UI(직교) = 디버그 오브젝트 렌더시 직교투영좌표계로 렌더링됨
     //다시 메인카메라 행렬로 재계산
-    m_vecCam[(UINT)CAMERA_TYPE::MAIN]->UpdateMatrix();
+    m_vecCam[(UINT)CAMERA_TYPE::MAIN]->UpdateMatrix(); 
 }
 
 void CRenderMgr::render_editor()

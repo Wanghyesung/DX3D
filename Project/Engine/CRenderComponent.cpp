@@ -13,6 +13,7 @@ CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	, m_fBounding(500.f)
 	, m_bFrustumCheck(true)
 	, m_bDynamicShadow(false)
+	, m_bActiveShadow(true)
 {
 
 }

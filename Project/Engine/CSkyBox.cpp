@@ -15,6 +15,7 @@ CSkyBox::CSkyBox()
 	SetSkyBoxType(m_Type);
 	SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyBoxMtrl"), 0);
 	SetFrustumCheck(false);
+	SetActiveShadow(false);
 }
 
 CSkyBox::~CSkyBox()

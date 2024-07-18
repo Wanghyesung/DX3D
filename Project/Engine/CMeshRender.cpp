@@ -81,6 +81,11 @@ void CMeshRender::render(UINT _iSubset)
 	if (nullptr == GetMesh() || nullptr == GetMaterial(_iSubset))
 		return;
 
+	if (_iSubset > 0)
+	{
+		int a = 10;
+	}
+
 	// Transform ¿¡ UpdateData ¿äÃ»
 	Transform()->UpdateData();
 

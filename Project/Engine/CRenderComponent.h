@@ -23,7 +23,7 @@ private:
     float                   m_fBounding; //frusumcheck 용도 경계범위
     bool                    m_bFrustumCheck; //절두체 컬링 체크 유무
     bool                    m_bDynamicShadow; //동적 그림자 체크
-
+    bool                    m_bActiveShadow; //그림자를 그릴 물체인지
 public:
     virtual void render() = 0;
     virtual void render(UINT _iSubset) = 0;
@@ -48,7 +48,8 @@ public:
     float GetBounding() { return m_fBounding; }
     void SetDynamicShadow(bool _bSet) { m_bDynamicShadow = _bSet; }
     bool IsDynamicShadow() { return m_bDynamicShadow; }
-
+    void SetActiveShadow(bool _bSet) { m_bActiveShadow = _bSet; }
+    bool IsActiveShadow() { return m_bActiveShadow; }
 
     virtual void SaveToLevelFile(FILE* _File) override;
     virtual void LoadFromLevelFile(FILE* _File) override;

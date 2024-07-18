@@ -12,7 +12,8 @@
 
 
 MeshRenderUI::MeshRenderUI()
-	: ComponentUI("##MeshRender", COMPONENT_TYPE::MESHRENDER)	
+	: ComponentUI("##MeshRender", COMPONENT_TYPE::MESHRENDER),
+	m_bRenderShadow(false)
 {
 	SetName("MeshRender");
 }
@@ -112,6 +113,16 @@ int MeshRenderUI::render_update()
 
 		// 항목 선택시 호출받을 델리게이트 등록
 		pListUI->AddDynamic_Select(this, (UI_DELEGATE_1)&MeshRenderUI::SelectMaterial);
+	}
+
+	ImGui::NewLine();
+
+	bool bOn = ImGui::SmallButton("Active");
+	if (bOn)
+	{
+		bool bActive = GetTarget()->MeshRender()->IsActiveShadow();
+		bActive =  !bActive;
+		GetTarget()->MeshRender()->SetActiveShadow(bActive);
 	}
 
 	return TRUE;

@@ -18,6 +18,8 @@ CLandScape::CLandScape()
 	, m_iWeightIdx(2)
 {
 	init();
+
+	LoadWeightMap();
 }
 
 CLandScape::~CLandScape()
@@ -47,7 +49,8 @@ void CLandScape::finaltick()
 
 
 
-	m_eMod = LANDSCAPE_MOD::NONE;
+	m_eMod = LANDSCAPE_MOD::SPLAT;
+
 	if (LANDSCAPE_MOD::NONE == m_eMod)
 	{
 		return;
@@ -81,6 +84,12 @@ void CLandScape::finaltick()
 			m_pCSWeightMap->Execute();
 		}
 	}
+
+
+	if (KEY_TAP(KEY::ENTER))
+	{
+		SaveWeightMap();
+	}
 }
 
 void CLandScape::render()
@@ -99,9 +108,10 @@ void CLandScape::render()
 	Vec2 vResolution = Vec2(m_HeightMap->Width(), m_HeightMap->Height());
 	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &vResolution);
 	GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_2, m_HeightMap);
-
+	
 	// 가중치 버퍼 전달
 	m_pWeightMapBuffer->UpdateData(17, PIPELINE_STAGE::PS_PIXEL);
+
 
 	// 가중치 버퍼 해상도 전달
 	Vec2 vWeightMapResolution = Vec2((float)m_iWeightWidth, (float)m_iWeightHeight);
@@ -137,6 +147,8 @@ void CLandScape::render(UINT _iSubset)
 	render();
 }
 
+
+
 void CLandScape::SetFace(UINT _iFaceX, UINT _iFaceZ)
 {
 	m_iFaceX = _iFaceX;
@@ -170,9 +182,83 @@ void CLandScape::Raycasting()
 	m_pCSRaycast->SetFaceCount(m_iFaceX, m_iFaceZ);
 	m_pCSRaycast->SetCameraRay(CamRay);
 	m_pCSRaycast->SetOuputBuffer(m_pCrossBuffer);
-
+	
 	m_pCSRaycast->Execute();
 
 	//m_pCrossBuffer->GetData(&out);
 	//int a = 0;
+}
+
+bool CLandScape::LoadWeightMap()
+{
+	//파일 경로
+	wstring strFileName = L"texture\\tile\\weight.buf";
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strFileName;
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
+
+	//버퍼 가로 세로
+	fread(&m_iWeightWidth, sizeof(int), 1, pFile);
+	fread(&m_iWeightHeight, sizeof(int), 1, pFile);
+
+	//배열 데이터 사이즈 저장
+	UINT iByteSize = 0;
+	fread(&iByteSize, sizeof(int), 1, pFile);
+
+	//배열 전체의 가중치 저장
+	vector<tWeight_4> vecWeight;
+	vecWeight.resize(iByteSize);
+	for (UINT i = 0; i < iByteSize; ++i)
+		fread(&vecWeight[i], sizeof(tIndexInfo), 1, pFile);
+
+	m_pWeightMapBuffer->SetData(vecWeight.data());
+
+	fclose(pFile);
+
+	return S_OK;
+}
+
+bool CLandScape::SaveWeightMap()
+{
+	vector<tWeight_4> vecWeight = {};
+	vecWeight.resize(m_iWeightWidth * m_iWeightHeight);
+	m_pWeightMapBuffer->GetData(vecWeight.data());
+
+	// 파일 경로 만들기
+	wstring strFileName = L"texture\\tile\\weight.buf";
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strFileName;
+
+	// 파일 쓰기모드로 열기
+	FILE* pFile = nullptr;
+	errno_t err = _wfopen_s(&pFile, strFilePath.c_str(), L"wb");
+	assert(pFile);
+
+	// 버퍼 가로 세로 크기 저장 (크기 동일)
+	fwrite(&m_iWeightWidth, sizeof(int), 1, pFile);
+	fwrite(&m_iWeightHeight, sizeof(int), 1, pFile);
+	
+	// 배열 데이터 사이즈 저장
+	int iByteSize = vecWeight.size();
+	fwrite(&iByteSize, sizeof(int), 1, pFile);
+	
+	//배열 전체의 가중치 저장
+	for (UINT i = 0; i < iByteSize; ++i)
+	{
+		fwrite(&vecWeight[i], sizeof(tIndexInfo), 1, pFile);
+	}
+
+	fclose(pFile);
+
+	return S_OK;
+}
+
+void CLandScape::SaveToLevelFile(FILE* _File)
+{
+
+}
+
+void CLandScape::LoadFromLevelFile(FILE* _File)
+{
+
 }

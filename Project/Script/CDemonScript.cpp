@@ -191,6 +191,7 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	SpawnGameObject(pWeapon, Vec3(-330.f, -50.f, 360.f), (int)LAYER_TYPE::Monster);
 	pWeapon->Equip()->SetChar(GetOwner());
 	pWeapon->Equip()->SetIndex(38);//¼Õ »À ÀÎµ¦½º
+	pWeapon->Equip()->SetFixedPos(Vec3(-330.f, -50.f, 360.f));
 	//pWeapon->Equip()->SetFixedPos()
 }
 

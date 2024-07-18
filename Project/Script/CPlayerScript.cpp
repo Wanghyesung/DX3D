@@ -194,11 +194,9 @@ void CPlayerScript::Initialize()
 
 	//weapon
 	//기본 무기 먼저 push
-	// -128 218 119 
-	// 247 1 117
+
 	float fRadian = XM_PI / 180.f;
 
-	//기본무기만 따로 로드해서 default layer에 붙이기
 	CGameObject* pMainWeapon = pVecMeshData[pVecMeshData.size() - 1]->Instantiate();
 	pMainWeapon->SetName(L"PlayerWeapon0");
 	pMainWeapon->AddComponent(new CEquip());
@@ -212,19 +210,15 @@ void CPlayerScript::Initialize()
 
 	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
 	pWeapon->AddComponent(new CTransform());
-	//Ptr<CMeshData> pWeaponMesh =
-	//	CResMgr::GetInst()->Load<CMeshData >(L"meshdata\\Heavy_Knight4.mdat",L"meshdata\\Heavy_Knight4.mdat");
-	//CWeapon = pWeaponMesh->Instantiate();
 	pWeapon->SetName(L"PlayerWeapon1");
 	pWeapon->AddComponent(new CEquip());
 	pWeapon->Equip()->SetChar(GetOwner());
 	pWeapon->Equip()->SetIndex(m_iBone);
-	//pWeapon->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
-
-	pWeapon->Transform()->SetRelativeRot(64 * fRadian, 100 * fRadian, 119 * fRadian);
+	pWeapon->Transform()->SetRelativeRot(-10 * fRadian, -72 * fRadian, -71 * fRadian);
+	pWeapon->Equip()->SetFixedPos(Vec3(153, 1.f, 252.f));
 
 	m_vecWeapon.push_back(pWeapon);
-	//SpawnGameObject(pWeapon, Vec3(125,-28.f,252.f), (int)LAYER_TYPE::Player);
+	//SpawnGameObject(pWeapon, Vec3(153, 1.f, 252.f), (int)LAYER_TYPE::Default);
 
 
 	Transform()->SetRelativeRot(-XM_PI / 2.f, 0.f, 0.f);
@@ -404,7 +398,7 @@ void CPlayerScript::change_equip()
 		m_iActiveWeaponIdx = iTemIdx;
 		
 		m_vecWeapon[m_iActiveWeaponIdx]->Equip()->SetActive(true);
-		SpawnGameObject(m_vecWeapon[m_iActiveWeaponIdx], Vec3(125, -28.f, 252.f), (int)LAYER_TYPE::Default);
+		SpawnGameObject(m_vecWeapon[m_iActiveWeaponIdx], Vec3::Zero, (int)LAYER_TYPE::Default);
 	}
 }
 

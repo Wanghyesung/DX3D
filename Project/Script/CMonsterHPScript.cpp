@@ -92,6 +92,10 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScal
 		SpawnGameObject(m_pHP, Vec3::Zero, (int)LAYER_TYPE::Default);
 		SpawnGameObject(m_pFrame, Vec3::Zero, (int)LAYER_TYPE::Default);
 	}
+
+	m_pHP->GetRenderComponent()->SetActiveShadow(false); //그림자 반영 X
+	m_pFrame->GetRenderComponent()->SetActiveShadow(false); //그림자 반영 X
+
 }
 
 void CMonsterHPScript::move()

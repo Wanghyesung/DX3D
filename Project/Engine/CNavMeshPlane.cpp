@@ -30,26 +30,26 @@ void CNavMeshPlane::finaltick()
 	DrawCube();
 
 	//장애물 오브젝트는 레이케스팅이 필요 없음
-	if (m_bObstaclePlane)
-		return;
-
-	if (KEY_TAP(KEY::NUM_0))
-		m_bActiveCreate = true;
-	else if (KEY_TAP(KEY::NUM_1))
-		m_bActiveCreate = false;
-	
-	if (!m_bActiveCreate)
-		return;
-	
-	if (KEY_PRESSED(KEY::LBTN))
-	{
-		if (RayCasting())
-			CreateObstacle();
-	}
-	else if (KEY_RELEASE(KEY::LBTN) && m_bActiveRay)
-	{
-		ReBulid();
-	}	
+	//if (m_bObstaclePlane)
+	//	return;
+	//
+	//if (KEY_TAP(KEY::NUM_0))
+	//	m_bActiveCreate = true;
+	//else if (KEY_TAP(KEY::NUM_1))
+	//	m_bActiveCreate = false;
+	//
+	//if (!m_bActiveCreate)
+	//	return;
+	//
+	//if (KEY_PRESSED(KEY::LBTN))
+	//{
+	//	if (RayCasting())
+	//		CreateObstacle();
+	//}
+	//else if (KEY_RELEASE(KEY::LBTN) && m_bActiveRay)
+	//{
+	//	ReBulid();
+	//}	
 }
 
 void CNavMeshPlane::CreateObstacle()
@@ -116,12 +116,12 @@ bool CNavMeshPlane::RayCasting()
 	// 직선의 방정식 R(t)도 가능 때문에 p1 = R(t)가 되는 지점이 S가 됨
 
 	//N dot (p0 - R(t)) = 0
-	//N dot p0 - N dot R(t) = 0
-	//N dot p0 - N dot (pOrigin + t*vDir) = 0
-	//N dot p0 - N dot pOrigin - t *(N dot vDir) = 0
+	//N dot p0 -N dot R(t) = 0
+	//N dot p0 -N dot (pOrigin + t*vDir) = 0
+	//N dot p0 -N dot pOrigin -t *(N dot vDir) = 0
 	//t*(N dot vDir) = N dot p0 - N dot pOrigin
-	// t = N dot p0 - N dot pOrigin / N dot p0
-
+	// t = N dot p0 - N dot pOrigin / (N dot vDir)
+	// t = N dot (p0 - pOrigin) / N dot vDir
 
 	Vec3 vEdge[3] = {};
 	vEdge [0] = m_vecWorldVertices[0] - m_vecWorldVertices[1];

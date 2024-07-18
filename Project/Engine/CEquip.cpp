@@ -142,9 +142,9 @@ void CEquip::child_tick()
 	Matrix matCharWorldScale = m_pChar->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
 	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
 	Matrix matCharWorld = matCharWorldScale * m_pChar->Transform()->GetRotateMat() * PxPosMatrix; //새로 계산된 월드행렬
-	Matrix matWeaponWorld = Transform()->GetWorldMat();//무기 (초기 무기 offset값)
+	//Matrix matWeaponWorld = Transform()->GetWorldMat();//무기 (초기 무기 offset값)
 
-	Matrix matWeapon = matCharSclaeInv * matWeaponWorld * m_matFinalBone * matCharWorld;
+	Matrix matWeapon = matCharSclaeInv * m_matStaticWorld * m_matFinalBone * matCharWorld;
 
 	const vector<CGameObject*> vecChild = GetOwner()->GetChild();
 	//직접적으로 부모 trasnform을 건들이지 않음

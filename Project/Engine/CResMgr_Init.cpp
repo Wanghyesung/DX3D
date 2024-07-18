@@ -991,25 +991,6 @@ void CResMgr::CreateDefaultGraphicsShader()
 
 	AddRes(pShader->GetKey(), pShader);
 
-	// =====================================
-	// ShadowMap Shader , VS_ShadowMap_Inst
-	// MRT              : SHADOWMAP 
-	// Domain           : DOMAIN_LIGHT	
-	// Rasterizer       : CULL_BACK
-	// DepthStencil     : LESS
-	// Blend            : Default
-	// =====================================
-	//pShader = new CGraphicsShader;
-	//pShader->SetKey(L"ShadowMapShader");
-
-	//pShader->CreateVertexShader(L"shader\\light.fx", "VS_ShadowMap");
-	//pShader->CreatePixelShader(L"shader\\light.fx", "PS_ShadowMap");
-
-	//pShader->SetRSType(RS_TYPE::CULL_BACK);
-	//pShader->SetDSType(DS_TYPE::LESS);
-	//pShader->SetDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
-
-	//AddRes(pShader->GetKey(), pShader);
 
 	pShader = new CGraphicsShader;
 	pShader->SetKey(L"MotionBlurShader");

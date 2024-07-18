@@ -59,9 +59,8 @@ void CLandScpaeScript::OnOverlap(CCollider3D* _Other)
 		{
 			if (pPlayer->GetFSM()->GetCurStateType() == STATE_TYPE::JUMP)
 				return;
-
-			pObj->PxRigidbody()->SetGround(true);
 		}
+		pObj->PxRigidbody()->SetGround(true);
 		//else if (pMonster)
 		//{
 		//	if (pMonster->GetFSM()->GetCurStateType() == MONSTER_STATE_TYPE::JUMP)

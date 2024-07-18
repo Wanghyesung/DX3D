@@ -92,7 +92,7 @@ PS_OUT PS_DirLightShader(VS_OUT _in)
     tLightColor LightColor = (tLightColor) 0.f;
     float fSpecPow = 0.f;
     
-    //광원 본인ㅇ의 정보다 LightBuffer 내에서 어디에 있는지 인덱스를 입력
+    //광원 본인의 정보다 LightBuffer 내에서 어디에 있는지 인덱스를 입력
     //빛을 넣어줄 물체의 위치값과 노말값을 타겟 텍스쳐에 가져와서 입력
     CalcLight3D(vViewPos, vViewNormal, LightIdx, LightColor, fSpecPow);
     
@@ -179,6 +179,7 @@ PS_OUT PS_PointLightShader(VS_OUT _in)
     float3 vLocal = mul(float4(vWorldPos, 1.f), g_matWorldInv).xyz;
     float fDist = length(vLocal.xyz);
    
+    //내 사각 메쉬의 크기 0.5
     if (0.5f < fDist)
     {
         //output.vDiffuse = float4(1.f, 0.f, 0.f, 1.f);

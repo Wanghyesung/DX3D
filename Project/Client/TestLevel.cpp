@@ -140,7 +140,7 @@ void CreateTestLevel()
 	pLightObj->Light3D()->SetLightColor(Vec3(0.8f, 0.8f, 0.8f));
 	pLightObj->Light3D()->SetLightAmbient(Vec3(0.3f, 0.3f, 0.3f));
 
-	SpawnGameObject(pLightObj, Vec3(-2000, 2000.f, -2000.f), 0);
+	SpawnGameObject(pLightObj, Vec3(0, 2000.f, 0.f), 0);
 
 	//pLightObj->SetName(L"Point Light 2");
 	//
@@ -591,6 +591,10 @@ void CreateLandScape()
 void CreateStage()
 {
 	CGameObject* pStage = InitializeFBX(L"Boss Stage");
+
+	//건물 그림자 렌더링 해제
+	for (int i = 0; i < pStage->GetChild().size(); ++i)
+		pStage->GetChild().at(i)->MeshRender()->SetActiveShadow(false);
 
 	//앞면 뒷면 모두 그리기
 	ChanageRSType(pStage, RS_TYPE::CULL_NONE);

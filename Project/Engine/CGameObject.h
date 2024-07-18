@@ -49,6 +49,7 @@ private:
     float                   m_LifeTime;
     float                   m_CurLifeTime;
     bool                    m_bLifeSpan;
+
 public:
     // 레벨이 시작될 때 호출 or 시작 된 레벨에 합류할 때
     // begin은 게임이 시작될 때 초기화 

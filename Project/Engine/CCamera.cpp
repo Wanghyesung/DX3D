@@ -330,7 +330,8 @@ void CCamera::SortObject_Shadow()
 
 	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurLevel();
 
-	for (UINT i = 0; i < MAX_LAYER; ++i)
+	//ui 제외
+	for (UINT i = 0; i < MAX_LAYER -1; ++i)
 	{
 		// 레이어 마스크 확인
 		if (m_iLayerMask & (1 << i))
@@ -342,10 +343,11 @@ void CCamera::SortObject_Shadow()
 			{
 				CRenderComponent* pRenderCom = vecObject[j]->GetRenderComponent();
 
-				// 렌더링 기능이 없는 오브젝트는 제외
+				// 렌더링 기능이 없는 오브젝트, 그림자를 그리지 않는 물체라면 제외
 				if (nullptr == pRenderCom
 					|| nullptr == pRenderCom->GetMaterial(0)
-					|| nullptr == pRenderCom->GetMaterial(0)->GetShader())
+					|| nullptr == pRenderCom->GetMaterial(0)->GetShader()
+					|| !pRenderCom->IsActiveShadow())
 				{
 					continue;
 				}
@@ -371,7 +373,7 @@ void CCamera::SortObject_Shadow()
 						iter->second.push_back(tInstObj{ vecObject[j], iMtrl });
 					}
 
-					m_vecShadow.push_back(vecObject[j]);
+					//m_vecShadow.push_back(vecObject[j]);
 				}
 			}
 		}
@@ -534,10 +536,6 @@ void CCamera::render_shadowmap()
 			pair.second[0].pObj->Animator3D()->ClearData();
 		}
 	}
-	
-	//기존
-	//for (int i = 0; i < m_vecShadow.size(); ++i)
-	//	m_vecShadow[i]->render_shadowmap();
 	
 }
 

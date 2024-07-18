@@ -26,27 +26,39 @@ void CLandScape::init()
 	// Å¸ÀÏ ÅØ½ºÃÄ(Color, Normal È¥ÇÕ, ÃÑ 6Àå)	
 	//m_pTileArrTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_ARRR.dds", L"texture\\tile\\TILE_ARRR.dds");
 	//m_pTileArrTex = CResMgr::GetInst()->LoadTexture(L"texture\\tile\\TILE_ARRR.dds", L"texture\\tile\\TILE_ARRR.dds", 8);
-	m_pTileArrTex = CResMgr::GetInst()->FindRes<CTexture>(L"texture\\tile\\TILE_ARRR.dds");
+	m_pTileArrTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\WHS.dds", L"texture\\tile\\WHS.dds");
 	m_pTileArrTex->GenerateMip(8);
 
-	//vector<Ptr<CTexture>> vecTex = {};
-	//Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Grass01_N.TGA", L"texture\\tile\\T_Grass01_N.TGA");
-	//pTex->GenerateMip(8);
+	vector<Ptr<CTexture>> vecTex = {};
+	Ptr<CTexture> pTex;
+	
+	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Grass01_D.TGA", L"texture\\tile\\T_Grass01_D.TGA");
 	//vecTex.push_back(pTex);
 	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Cliff01_D.TGA", L"texture\\tile\\T_Cliff01_D.TGA");
+	//vecTex.push_back(pTex);
+	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Grass01_N.TGA", L"texture\\tile\\T_Grass01_N.TGA");
 	//vecTex.push_back(pTex);
 	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Cliff01_N.TGA", L"texture\\tile\\T_Cliff01_N.TGA");
 	//vecTex.push_back(pTex);
 	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Cliff02_D.TGA", L"texture\\tile\\T_Cliff02_D.TGA");
 	//vecTex.push_back(pTex);
-	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Cliff02_N.TGA", L"texture\\tile\\T_Cliff02_N.TGA");
-	//vecTex.push_back(pTex);
-	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Dirt_D.TGA", L"texture\\tile\\T_Dirt_D.TGA");
-	//vecTex.push_back(pTex);
-	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Dirt_N.TGA", L"texture\\tile\\T_Dirt_N.TGA");
-	//vecTex.push_back(pTex);
-	//pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Grass01_D.TGA", L"texture\\tile\\T_Grass01_D.TGA");
-	//vecTex.push_back(pTex);
+	/*pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Cliff02_N.TGA", L"texture\\tile\\T_Cliff02_N.TGA");
+	vecTex.push_back(pTex);
+	pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Dirt_D.TGA", L"texture\\tile\\T_Dirt_D.TGA");
+	vecTex.push_back(pTex);
+	pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\T_Dirt_N.TGA", L"texture\\tile\\T_Dirt_N.TGA");
+	vecTex.push_back(pTex);
+
+	vecTex.push_back(pTex);*/
+
+	//int b = pTex->CreateArrayTexture(vecTex, 8);
+	//pTex->Save(L"texture\\tile\\WHS.dds");
+	
+	m_pTileColor = CResMgr::GetInst()->CreateTexture(L"TileColor.png", 1024, 1024,
+		DXGI_FORMAT_R32G32_FLOAT, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS);
+
+	m_pTileNormal = CResMgr::GetInst()->CreateTexture(L"TileNormal.png", 1024, 1024,
+		DXGI_FORMAT_R32G32_FLOAT, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS);
 }
 
 
@@ -152,5 +164,6 @@ void CLandScape::CreateTexture()
 	m_iWeightHeight = 1024;
 
 	m_pWeightMapBuffer = new CStructuredBuffer;
-	m_pWeightMapBuffer->Create(sizeof(tWeight_4), m_iWeightWidth * m_iWeightHeight, SB_TYPE::READ_WRITE, false);
+	m_pWeightMapBuffer->Create(sizeof(tWeight_4), m_iWeightWidth * m_iWeightHeight, SB_TYPE::READ_WRITE, true);
+
 }

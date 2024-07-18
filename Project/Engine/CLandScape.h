@@ -49,6 +49,8 @@ private:
 
     Ptr<CTexture>           m_pTileArrTex;      // 타일 배열 텍스쳐
 
+    Ptr<CTexture>           m_pTileNormal;      // 저장할 타일 색상 텍스쳐
+    Ptr<CTexture>           m_pTileColor;       // 저장할 타일 노말 텍스쳐
 public:
     void SetFace(UINT _iFaceX, UINT _iFaceZ);
     void SetHeightMap(Ptr<CTexture> _HeightMap) { m_HeightMap = _HeightMap; }
@@ -56,6 +58,9 @@ public:
     virtual void finaltick() override;
     virtual void render() override;
     virtual void render(UINT _iSubset) override;
+
+    virtual void SaveToLevelFile(FILE* _File) override;
+    virtual void LoadFromLevelFile(FILE* _File) override;
 
     UINT GetFaceX() { return m_iFaceX; }
     UINT GetFaceY() { return m_iFaceZ; }
@@ -68,6 +73,9 @@ private:
     void CreateTexture();
 
     void Raycasting();
+
+    bool LoadWeightMap();
+    bool SaveWeightMap();
 
     CLONE(CLandScape);
 public:

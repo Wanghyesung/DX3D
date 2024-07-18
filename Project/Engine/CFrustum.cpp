@@ -72,6 +72,9 @@ bool CFrustum::FrustumCheck(Vec3 _vPos)
 
 bool CFrustum::FrustumCheckBound(Vec3 _vPos, float _fRadis)
 {
+    //a, b, c 법선 | x , y , z 어떠한 점 내적
+    //ax * by * cz + d = 0
+    
     for (int i = 0; i < FT_END; ++i)
     {
         Vec3 vNormal = m_arrFace[i];
