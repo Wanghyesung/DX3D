@@ -25,10 +25,10 @@ void CS_HeightMap(int3 _iThreadID : SV_DispatchThreadID)
     }
 
     
-    int2 vCenterPos = float2(WIDTH, HEIGHT) * LOCATION[0].vUV;
-    int2 vScale = float2(WIDTH, HEIGHT) * SCALE; // (2024, 2024) (0.05, 0.05)
-    // 101
+    int2 vCenterPos = float2(WIDTH, HEIGHT) * LOCATION[0].vUV; // (0.05, 0.05) 101.2
+    int2 vScale = float2(WIDTH, HEIGHT) * SCALE; // (2024, 2024)  (0.2 , 0.2) 404.8
     
+  
     // 브러쉬 범위(사각형)를 넘은 지역은 return
     if (_iThreadID.x < vCenterPos.x - (vScale.x / 2) || vCenterPos.x + (vScale.x / 2) < _iThreadID.x
         || _iThreadID.y < vCenterPos.y - (vScale.y / 2) || vCenterPos.y + (vScale.y / 2) < _iThreadID.y)
@@ -37,7 +37,8 @@ void CS_HeightMap(int3 _iThreadID : SV_DispatchThreadID)
     }
 
     // brush texture 에서 샘플링 할 UV 계산
-    //962
+    
+    //101.2 202.4
     int2 vLTPos = vCenterPos - (vScale / 2);
     float2 vUV = float2(_iThreadID.xy - vLTPos) / float2(vScale);
 

@@ -19,7 +19,9 @@ CLandScape::CLandScape()
 {
 	init();
 
+	//만약 저장된 높이, 가중치맵이 있다면 로드
 	LoadWeightMap();
+	LoadHeightMap();
 }
 
 CLandScape::~CLandScape()
@@ -49,7 +51,7 @@ void CLandScape::finaltick()
 
 
 
-	m_eMod = LANDSCAPE_MOD::SPLAT;
+	m_eMod = LANDSCAPE_MOD::HEIGHT_MAP;
 
 	if (LANDSCAPE_MOD::NONE == m_eMod)
 	{
@@ -89,7 +91,9 @@ void CLandScape::finaltick()
 	if (KEY_TAP(KEY::ENTER))
 	{
 		SaveWeightMap();
+		SaveheightMap();
 	}
+
 }
 
 void CLandScape::render()
@@ -196,8 +200,9 @@ bool CLandScape::LoadWeightMap()
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strFileName;
 
 	FILE* pFile = nullptr;
-	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
-
+	errno_t err =_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
+	if (err)
+		return false;
 	//버퍼 가로 세로
 	fread(&m_iWeightWidth, sizeof(int), 1, pFile);
 	fread(&m_iWeightHeight, sizeof(int), 1, pFile);
@@ -251,6 +256,28 @@ bool CLandScape::SaveWeightMap()
 	fclose(pFile);
 
 	return S_OK;
+}
+
+bool CLandScape::LoadHeightMap()
+{
+	Ptr<CTexture> pHeightMap =
+		CResMgr::GetInst()->FindRes<CTexture>(L"texture\\tile\\heightmap.png");
+
+	if (pHeightMap != nullptr)
+		m_HeightMap = pHeightMap;
+
+
+	return S_OK;
+}
+
+bool CLandScape::SaveheightMap()
+{
+	// 파일 경로 만들기
+	wstring strFileName = L"texture\\tile\\heightmap.png";
+	
+	HRESULT hr = m_HeightMap->Save(strFileName);
+
+	return hr;
 }
 
 void CLandScape::SaveToLevelFile(FILE* _File)

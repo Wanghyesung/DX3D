@@ -77,6 +77,9 @@ private:
     bool LoadWeightMap();
     bool SaveWeightMap();
 
+    bool LoadHeightMap();
+    bool SaveheightMap();
+
     CLONE(CLandScape);
 public:
     CLandScape();
