@@ -10,7 +10,7 @@
 #include "struct.h"
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
-	, m_fBounding(500.f)
+	, m_fBounding(50.f)
 	, m_bFrustumCheck(true)
 	, m_bDynamicShadow(false)
 	, m_bActiveShadow(true)

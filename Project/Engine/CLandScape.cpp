@@ -51,7 +51,7 @@ void CLandScape::finaltick()
 
 
 
-	m_eMod = LANDSCAPE_MOD::HEIGHT_MAP;
+	//m_eMod = LANDSCAPE_MOD::HEIGHT_MAP;
 
 	if (LANDSCAPE_MOD::NONE == m_eMod)
 	{

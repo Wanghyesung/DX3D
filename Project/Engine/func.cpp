@@ -482,3 +482,15 @@ int GetSizeofFormat(DXGI_FORMAT _eFormat)
 
 	return iRetByte / 8;
 }
+
+void SetFrustomBound(CGameObject* _pGameObj, bool _bActive, int _iBoundSize)
+{
+	vector<CGameObject*> vecGameObj = _pGameObj->GetChild();
+
+	for (int i = 0; i < vecGameObj.size(); ++i)
+	{
+		vecGameObj[i]->MeshRender()->SetBounding(_iBoundSize);
+		vecGameObj[i]->MeshRender()->SetFrustumCheck(_bActive);
+	}
+		
+}

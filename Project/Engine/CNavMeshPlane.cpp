@@ -30,26 +30,26 @@ void CNavMeshPlane::finaltick()
 	DrawCube();
 
 	//장애물 오브젝트는 레이케스팅이 필요 없음
-	//if (m_bObstaclePlane)
-	//	return;
-	//
-	//if (KEY_TAP(KEY::NUM_0))
-	//	m_bActiveCreate = true;
-	//else if (KEY_TAP(KEY::NUM_1))
-	//	m_bActiveCreate = false;
-	//
-	//if (!m_bActiveCreate)
-	//	return;
-	//
-	//if (KEY_PRESSED(KEY::LBTN))
-	//{
-	//	if (RayCasting())
-	//		CreateObstacle();
-	//}
-	//else if (KEY_RELEASE(KEY::LBTN) && m_bActiveRay)
-	//{
-	//	ReBulid();
-	//}	
+	if (m_bObstaclePlane)
+		return;
+	
+	if (KEY_TAP(KEY::NUM_0))
+		m_bActiveCreate = true;
+	else if (KEY_TAP(KEY::NUM_1))
+		m_bActiveCreate = false;
+	
+	if (!m_bActiveCreate)
+		return;
+	
+	if (KEY_PRESSED(KEY::LBTN))
+	{
+		if (RayCasting())
+			CreateObstacle();
+	}
+	else if (KEY_RELEASE(KEY::LBTN) && m_bActiveRay)
+	{
+		ReBulid();
+	}	
 }
 
 void CNavMeshPlane::CreateObstacle()

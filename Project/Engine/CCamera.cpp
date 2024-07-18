@@ -234,12 +234,12 @@ void CCamera::SortObject()
 					continue;
 
 				// FrustumCheck
-				/*if (pRenderCom->IsUseFrustumCheck())
+				if (pRenderCom->IsUseFrustumCheck())
 				{
 					Vec3 vWorldPos = vecObject[j]->Transform()->GetWorldPos();
 					if (false == m_Frustum.FrustumCheckBound(vWorldPos, pRenderCom->GetBounding()))
 						continue;
-				}*/
+				}
 
 				// 메테리얼 개수만큼 반복
 				UINT iMtrlCount = pRenderCom->GetMtrlCount();

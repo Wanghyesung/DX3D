@@ -53,6 +53,8 @@ Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat);
 
 int GetSizeofFormat(DXGI_FORMAT _eFormat);
 
+void SetFrustomBound(CGameObject* _pGameObj, bool _bActive , int _iBoundSize);
+
 const char* ToString(RES_TYPE);
 const wchar_t* ToWSTring(RES_TYPE);
 

@@ -190,7 +190,7 @@ void CreateTestLevel()
 	CPlayerScript* pScript = new CPlayerScript(); 
 	pAritorias->AddComponent(pScript);
 	pScript->Initialize(); //fbx load, FSM , components
-	
+	SetFrustomBound(pAritorias, true, 100.f);
 	//pAritorias->AddComponent(new CMotionBlur());
 	//pAritorias->MotionBlur()->Initialize();
 	
@@ -478,6 +478,7 @@ void CreateMonster()
 	CDemonScript* pDemonScript = new CDemonScript();
 	pBoss->AddComponent(pDemonScript);
 	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
+	SetFrustomBound(pBoss, true, 200.f);
 	{
 		//CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
 		//CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
@@ -595,6 +596,9 @@ void CreateStage()
 	//건물 그림자 렌더링 해제
 	for (int i = 0; i < pStage->GetChild().size(); ++i)
 		pStage->GetChild().at(i)->MeshRender()->SetActiveShadow(false);
+
+
+	SetFrustomBound(pStage, false, 0.f);
 
 	//앞면 뒷면 모두 그리기
 	ChanageRSType(pStage, RS_TYPE::CULL_NONE);
