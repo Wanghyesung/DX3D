@@ -30,9 +30,10 @@ struct VS_OUT
 // g_tex_0              : Output Texture
 // ============================
 
-#define IS3D        g_int_0
+#define IS_GAGE     g_int_0
 #define UI_SIZE     g_vec2_0
 #define CAM_POS     g_vec4_0
+
 VS_OUT VS_Std2D(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
@@ -61,9 +62,12 @@ float4 PS_Std2D(VS_OUT _in) : SV_Target
         discard; // ÇÈ¼¿ ½¦ÀÌ´õ Áß´Ü
     
     
-    float fRatio = UI_SIZE.x / 100.f;
-    if (_in.vUV.x > fRatio)
-        discard;
+    if (IS_GAGE)
+    {
+        float fRatio = UI_SIZE.x / 100.f;
+        if (_in.vUV.x > fRatio)
+            discard;
+    }
     
     return vOutColor;
 }

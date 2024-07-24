@@ -399,6 +399,8 @@ void CPlayerScript::change_equip()
 		
 		m_vecWeapon[m_iActiveWeaponIdx]->Equip()->SetActive(true);
 		SpawnGameObject(m_vecWeapon[m_iActiveWeaponIdx], Vec3::Zero, (int)LAYER_TYPE::Default);
+
+		m_vecWeapon[m_iActiveWeaponIdx]->Equip()->SetEquipUI(m_iActiveWeaponIdx);
 	}
 }
 

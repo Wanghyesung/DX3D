@@ -81,7 +81,6 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScal
 
 	if (m_bBoss)
 	{
-		//140 -330 sc: 950 35 -3
 		//°íÁ¤ ÁÂÇ¥
 		SpawnGameObject(m_pHP, Vec3(140.f,-330.f,-3.f), (int)LAYER_TYPE::UI);
 		SpawnGameObject(m_pFrame, Vec3(140.f, -330.f, -2.f), (int)LAYER_TYPE::UI);

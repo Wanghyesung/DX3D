@@ -41,6 +41,7 @@ public:
 
     //이번프레임에 회전을 바꾸고 foward값을 finaltick이 가기전에 구하기 위해서
     //ex: 캐릭터가 회전을 해도 방향벡터는 finaltick이 가기전에 이전프레임을 기록하고있을것
+    Matrix& GetDynamicRotate();
     Vec3 GetDynamicFoward();
     Vec3 GetDynamicUp();
 

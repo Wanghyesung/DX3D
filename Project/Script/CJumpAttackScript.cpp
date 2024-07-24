@@ -103,11 +103,7 @@ void CJumpAttackScript::BeginOverlap(CCollider3D* _Other)
 	{
 		m_pPlayer->GetScript<CPlayerScript>()->Chanage_AnimDT(2.f);
 
-		//구간 가르기
-		float fMonsterZ = pMonster->GetOwner()->PxRigidbody()->GetPxPosition().z;
-		float fPlayerZ = m_pPlayer->PxRigidbody()->GetPxPosition().z;
 		
-
 		//m_bBeginOn = true;
 		m_bBeginOn = check_pos(_Other->GetOwner());
 

@@ -8,6 +8,13 @@
 #include "CTransform.h"
 #include "CCollider3D.h"
 #include "CPxRigidbody.h"
+#include "CEngineUI.h"
+#include "CResMgr.h"
+
+CEngineUI* CEquip::m_pEquipIcon = nullptr;
+UINT CEquip::m_iEquipIdx = 0;
+vector<wstring> CEquip::m_vecWeaponName = { L"default",L"axe" };
+
 CEquip::CEquip() :
 	CComponent(COMPONENT_TYPE::EQUIP),
 	m_iIndex(38),
@@ -15,13 +22,33 @@ CEquip::CEquip() :
 	m_pChar(nullptr),
 	m_vFixedPos(Vec3::Zero)
 {
-	
+	//처음 실행될 때만 weaponUI 생성
+	if (m_pEquipIcon == nullptr)
+	{
+		m_pEquipIcon = new CEngineUI();
+
+		wstring strWeapon = L"texture\\GameTexture\\" + m_vecWeaponName[m_iEquipIdx] + L".png";
+
+		m_pEquipIcon->Initialize(strWeapon, Vec3(120.f, 150.f, 0.f), m_vecWeaponName[m_iEquipIdx]);
+		SpawnGameObject(m_pEquipIcon, Vec3(-280.f, -200.f, 0.f), (int)LAYER_TYPE::UI);
+	}
 }
 
 CEquip::~CEquip()
 {
+	
 }
 
+
+void CEquip::SetEquipUI(int _iIdx)
+{
+	m_iEquipIdx = _iIdx;
+	wstring strWeapon = m_vecWeaponName[m_iEquipIdx];
+	strWeapon = L"texture\\GameTexture\\" + strWeapon + L".png";
+	
+	Ptr<CTexture> pTex = CResMgr::GetInst()->FindRes<CTexture>(strWeapon);
+	m_pEquipIcon->MeshRender()->GetMaterial(0)->SetTexParam(TEX_0, pTex);
+}
 
 void CEquip::begin()
 {
@@ -117,16 +144,20 @@ void CEquip::single_tick()
 	Vec3 vPxOffset = m_pChar->PxRigidbody()->GetOffsetPosition();
 	vPxPos += vPxOffset;
 
-	//Matrix matCharWorld = m_pChar->Transform()->GetWorldMat(); //캐릭터 월드
+	//캐릭터 회전행렬 
+	Matrix matCharRotate = m_pChar->Transform()->GetDynamicRotate();
+
 	Matrix PxPosMatrix = XMMatrixTranslation(vPxPos.x, vPxPos.y, vPxPos.z);
 	Matrix matCharWorldScale = m_pChar->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
 	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
-	Matrix matCharWorld = matCharWorldScale * m_pChar->Transform()->GetRotateMat() * PxPosMatrix; //새로 계산된 월드행렬
+	Matrix matCharWorld = matCharWorldScale * matCharRotate * PxPosMatrix; //새로 계산된 월드행렬
+
 	Matrix matWeapon = matCharSclaeInv * m_matStaticWorld * m_matFinalBone * matCharWorld;
 
 	//trasnform 행렬을 고정시켜서 움직여야함 (초기 위치를 기반으로 움직이게)
 	Transform()->SetDependent(true);
 
+	//여기서 만든 행렬로 transform에 전달
 	Transform()->SetWorldMat(matWeapon);
 }
 
@@ -137,13 +168,14 @@ void CEquip::child_tick()
 	Vec3 vPxOffset = m_pChar->PxRigidbody()->GetOffsetPosition();
 	vPxPos += vPxOffset;
 
-	//Matrix matCharWorld = m_pChar->Transform()->GetWorldMat(); //캐릭터 월드
+	//캐릭터 회전행랼
+	Matrix matCharRotate = m_pChar->Transform()->GetDynamicRotate();
+	
 	Matrix PxPosMatrix = XMMatrixTranslation(vPxPos.x, vPxPos.y, vPxPos.z);
 	Matrix matCharWorldScale = m_pChar->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
 	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
-	Matrix matCharWorld = matCharWorldScale * m_pChar->Transform()->GetRotateMat() * PxPosMatrix; //새로 계산된 월드행렬
-	//Matrix matWeaponWorld = Transform()->GetWorldMat();//무기 (초기 무기 offset값)
-
+	Matrix matCharWorld = matCharWorldScale * matCharRotate * PxPosMatrix; //새로 계산된 월드행렬
+	
 	Matrix matWeapon = matCharSclaeInv * m_matStaticWorld * m_matFinalBone * matCharWorld;
 
 	const vector<CGameObject*> vecChild = GetOwner()->GetChild();
@@ -162,6 +194,7 @@ void CEquip::SetDead(bool _bDelete)
 		DestroyObject(GetOwner()); //내 무기 삭제
 		return;
 	}
+
 	m_pChar = nullptr;
 }
 

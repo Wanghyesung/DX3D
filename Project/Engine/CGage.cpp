@@ -52,7 +52,9 @@ void CGage::UpdateGage(float _fMaxGage, float _fCurGage)
 	m_fCurRatio *= m_fMaxRatio;
 
 	//상수 버퍼로 넘기기
+	int gage = 1;
 	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &m_fCurRatio);
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &gage);
 }
 
 

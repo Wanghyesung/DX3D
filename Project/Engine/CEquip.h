@@ -19,6 +19,11 @@ private:
     bool m_bActive;
 
     CGameObject* m_pChar; //내 캐릭터
+
+    static class CEngineUI* m_pEquipIcon; //내 무기 아이콘
+    static UINT m_iEquipIdx; //무기 인덱스 번호
+    static vector<wstring> m_vecWeaponName;
+
 private:
     bool check_matrix();
 
@@ -37,6 +42,8 @@ public:
     const Matrix& GetFinalMat() { return m_matFinalBone; }
 
     void SetChar(CGameObject* _pGameObj)  {m_pChar = _pGameObj;}
+
+    void SetEquipUI(int _iIdx);
 public:
     virtual void begin()override;
     virtual void finaltick()override;

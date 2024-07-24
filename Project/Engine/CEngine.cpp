@@ -97,8 +97,8 @@ void CEngine::tick()
 	CTimeMgr::GetInst()->tick(); // DT(DeltaTime), FPS 구하기
 	CKeyMgr::GetInst()->tick();	
 	
-	// FMOD Update
-	CSound::g_pFMOD->update();
+	// FMOD Update 현재 사용하지 않음
+	//CSound::g_pFMOD->update();
 
 	//저번 프레임에서 충돌이 되었다면 이벤트 호출
 

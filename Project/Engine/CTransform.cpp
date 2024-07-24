@@ -25,6 +25,16 @@ CTransform::~CTransform()
 }
 
 
+Matrix& CTransform::GetDynamicRotate()
+{
+	Matrix matRot = XMMatrixIdentity();
+	matRot = XMMatrixRotationX(m_vRelativeRot.x);
+	matRot *= XMMatrixRotationY(m_vRelativeRot.y);
+	matRot *= XMMatrixRotationZ(m_vRelativeRot.z);
+
+	return matRot;
+}
+
 Vec3 CTransform::GetDynamicFoward()
 {
 	Matrix matRot = XMMatrixIdentity();
