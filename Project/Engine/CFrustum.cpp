@@ -43,13 +43,6 @@ void CFrustum::finaltick()
         arrWorld[i] = XMVector3TransformCoord(m_arrProj[i], matPVInv);
     }
 
-    // 카메라 시야범위를 구성하는 6개의 평면을 구한다.
-     //    4 -- 5 
-    //   /|   /|  <-- Far
-    //  / |  / |
-    // 0 -- 1 -6
-    // |/   | /   <-- Near
-    // 3 -- 2
     m_arrFace[FT_NEAR] = XMPlaneFromPoints(arrWorld[0], arrWorld[1], arrWorld[2]);
     m_arrFace[FT_FAR] = XMPlaneFromPoints(arrWorld[5], arrWorld[4], arrWorld[7]);
     m_arrFace[FT_UP] = XMPlaneFromPoints(arrWorld[4], arrWorld[5], arrWorld[1]);
@@ -73,7 +66,7 @@ bool CFrustum::FrustumCheck(Vec3 _vPos)
 bool CFrustum::FrustumCheckBound(Vec3 _vPos, float _fRadis)
 {
     //a, b, c 법선 | x , y , z 어떠한 점 내적
-    //ax * by * cz + d = 0
+    //ax + by + cz + d = 0
     
     for (int i = 0; i < FT_END; ++i)
     {

@@ -43,6 +43,7 @@ void CNavMeshPlane::finaltick()
 	
 	if (KEY_PRESSED(KEY::LBTN))
 	{
+		//윗면인지 밑에 면인지 확인
 		if (RayCasting())
 			CreateObstacle();
 	}
@@ -96,12 +97,6 @@ void CNavMeshPlane::CreateObstacle()
 
 bool CNavMeshPlane::RayCasting()
 {
-	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
-	if (nullptr == pMainCam)
-		return false;
-
-	const tRay& ray = pMainCam->GetRay();
-
 	//직선의 방정식
 	//R(t) = pOrigin + t*vDir
 	//R(t) = p0 - t * vDir    R(t) : 직석상의 모든 점
@@ -123,74 +118,92 @@ bool CNavMeshPlane::RayCasting()
 	// t = N dot p0 - N dot pOrigin / (N dot vDir)
 	// t = N dot (p0 - pOrigin) / N dot vDir
 
-	Vec3 vEdge[3] = {};
-	vEdge [0] = m_vecWorldVertices[0] - m_vecWorldVertices[1];
-	vEdge [1] = m_vecWorldVertices[2] - m_vecWorldVertices[1];
-	vEdge [2] = m_vecWorldVertices[2] - m_vecWorldVertices[0];
-	//평면의 노말벡터
-	Vec3 vNormal = vEdge->Cross(vEdge[1]);
-	//N dot pOrigin / N dot p0
-	//float f = vNormal.Dot(m_vecWorldVertices[0]) - vNormal.Dot(ray.vStart);
 
-	//직선과 평면이 평행 , 평면에 포함 이 때 교점은 존재하지 않는다.
-	float f = vNormal.Dot(ray.vDir);
-	if (f == 0.f)
+	//윗쪽 삼각형 아래쪽 삼각형 둘이 나눠서 
+	Vec3 vecVertices[2][3] =
+	{
+		//윗쪽
+		{m_vecWorldVertices[0],m_vecWorldVertices[1],m_vecWorldVertices[2] },
+		{m_vecWorldVertices[2],m_vecWorldVertices[3],m_vecWorldVertices[0] },
+	};
+
+	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
+	if (nullptr == pMainCam)
 		return false;
 
-	Vec3 vLen = ray.vStart - m_vecWorldVertices[0];
-	float fResult = -vNormal.Dot(vLen);
-	float fT = fResult / f;
+	const tRay& ray = pMainCam->GetRay();
 
-	Vec3 vPoint = ray.vStart + fT * ray.vDir;
+	for (int i = 0; i < 2; ++i)
+	{
+		Vec3 vEdge[3] = {};
+		vEdge[0] = vecVertices[i][0] - vecVertices[i][1];
+		vEdge[1] = vecVertices[i][2] - vecVertices[i][1];
 
-	//교차점이 맞는지 확인
-	// 교차 지점이 사각형 내부에 있는지 확인
+		//평면의 노말벡터
+		Vec3 vNormal = vEdge->Cross(vEdge[1]);
+		//N dot pOrigin / N dot p0
+		//float f = vNormal.Dot(m_vecWorldVertices[0]) - vNormal.Dot(ray.vStart);
 
-	// 0 ----3
-	// |     |
-	// 1-----2
-	
-	// 외적을 통한 삼각형의 총 넓이 합도 가능함
-	
-	// 배리 센트릭 좌표 계산
-	double uu, uv, vv, wu, wv, inverseD;
+		//직선과 평면이 평행 , 평면에 포함 이 때 교점은 존재하지 않는다.
+		float f = vNormal.Dot(ray.vDir);
 
-	//삼각형 세 점의 가중치
-	uu = vEdge[0].Dot(vEdge[0]);
-	uv = vEdge[0].Dot(vEdge[1]);
-	vv = vEdge[1].Dot(vEdge[1]);
+		Vec3 vLen = ray.vStart - vecVertices[i][0];
+		float fResult = -vNormal.Dot(vLen);
+		float fT = fResult / f;
 
-	//삼각형 내 교점 가중치
-	Vec3 w = vPoint - m_vecWorldVertices[1];
-	wu = w.Dot(vEdge[0]);
-	wv = w.Dot(vEdge[1]);
+		Vec3 vPoint = ray.vStart + fT * ray.vDir;
 
-	//베리 센트릭 공식 대입 
-	//D는 삼각형의 배리 센트릭 좌표를 구할 때 사용되는 값
-	inverseD = uv * uv - uu * vv;
-	inverseD = 1.0f / inverseD;
+		//교차점이 맞는지 확인
+		// 교차 지점이 사각형 내부에 있는지 확인
 
-	//가중치  범위가 0~1 일때만 참으로 반환
+		// 0 ----3
+		// |     |
+		// 1-----2
 
-	//u =        D
-	//    (uv*wv - vv*wu)
+		// 외적을 통한 삼각형의 총 넓이 합도 가능함
 
-	float u = (uv * wv - vv * wu) * inverseD;
-	if (u < 0.0f || u > 1.0f) 
-		return false;
+		// 배리 센트릭 좌표 계산
+		double uu, uv, vv, wu, wv, inverseD;
 
-	//v =         D
-	//     (uv*wu - uu*wv)
+		//삼각형 세 점의 가중치
+		uu = vEdge[0].Dot(vEdge[0]);
+		uv = vEdge[0].Dot(vEdge[1]);
+		vv = vEdge[1].Dot(vEdge[1]);
 
-	float v = (uv * wu - uu * wv) * inverseD;
-	if (v < 0.0f || (u + v) > 1.0f)
-		return false;
+		//삼각형 내 교점 가중치
+		Vec3 w = vPoint - vecVertices[i][1];
+		wu = w.Dot(vEdge[0]);
+		wv = w.Dot(vEdge[1]);
 
-	m_vRayPoint = vPoint;
+		//베리 센트릭 공식 대입 
+		//D는 삼각형의 배리 센트릭 좌표를 구할 때 사용되는 값
+		inverseD = uv * uv - uu * vv;
+		inverseD = 1.0f / inverseD;
 
-	m_bActiveRay = true;
+		//가중치  범위가 0~1 일때만 참으로 반환
 
-	return true;
+		//u =        D
+		//    (uv*wv - vv*wu)
+
+		float u = (uv * wv - vv * wu) * inverseD;
+		if (u < 0.0f || u > 1.0f)
+			continue; //return false
+
+		//v =         D
+		//     (uv*wu - uu*wv)
+
+		float v = (uv * wu - uu * wv) * inverseD;
+		if (v < 0.0f || (u + v) > 1.0f)
+			continue; //return false
+
+		m_vRayPoint = vPoint;
+
+		m_bActiveRay = true;
+
+		return true;
+	}
+
+	return false;
 }
 
 float CNavMeshPlane::GetArea(const Vec3& _vP1, const Vec3& _vP2)
