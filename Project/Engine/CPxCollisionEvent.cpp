@@ -47,8 +47,6 @@ void CPxCollisionEvent::onAdvance(const PxRigidBody* const*, const PxTransform*,
 
 void CPxCollisionEvent::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 count)
 {
-	//		printf("onContact: %d pairs\n", count);
-	
 	UINT iLeftID = pairs->shapes[0]->getSimulationFilterData().word0;
 	UINT iRightID = pairs->shapes[1]->getSimulationFilterData().word0;
 
@@ -59,14 +57,9 @@ void CPxCollisionEvent::onContact(const PxContactPairHeader& pairHeader, const P
 	if (pLeftObj == nullptr || pRightObj == nullptr)
 		return;
 
-	//// ID °Ë»ö
 	if (pLeftObj->IsDead() || pRightObj->IsDead())
-	{
 		return;
-	}
 	else
-	{
-		CPhysxMgr::GetInst()->CollisionCheck(pLeftObj, pRightObj);
-	}
+		CPhysxMgr::GetInst()->CollisionObjectCheck(pLeftObj, pRightObj);
 
 }

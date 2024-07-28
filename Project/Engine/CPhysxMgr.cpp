@@ -10,8 +10,6 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
         PxFilterObjectAttributes attributes1, PxFilterData filterData1, const PxActor* a1, const PxShape* s1,
         PxPairFlags& pairFlags)	PX_OVERRIDE
     {
-        //		printf("pairFound\n");
-
         if (s0->userData || s1->userData)	// See createTriggerShape() function
         {
             pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
@@ -45,20 +43,17 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
     PxFilterObjectAttributes attributes1, PxFilterData filterData1,
     PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-    //내가 체크한 레이어들끼리 충돌했는지 검사
+   
     PxCollisionEvent pLeftEvent = CPhysxMgr::GetInst()->FIndEventObj(filterData0.word0);
     PxCollisionEvent pRightEvent = CPhysxMgr::GetInst()->FIndEventObj(filterData1.word0);
-
+    
+    //내가 체크한 레이어들끼리 충돌했는지 검사
     const bool isTriggerPair = CPhysxMgr::GetInst()->CollisionCheck(pLeftEvent.eLayerBit, pRightEvent.eLayerBit);
 
-    // If we have a trigger, replicate the trigger codepath from PxDefaultSimulationFilterShader
     if (isTriggerPair)
     {
-        //* pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_PERSISTS 기존 코드
-
         //이벤트 트리거
         pairFlags = PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eTRIGGER_DEFAULT;
-      
 
         if (!pLeftEvent.bPass && !pRightEvent.bPass)
         {
@@ -67,20 +62,9 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
      
         if (CPhysxMgr::GetInst()->UseCCD())
             pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
-        
-        return PxFilterFlag::eDEFAULT;
     }
-    else
-    {
-        //기본 트리거
-        // Otherwise use the default flags for regular pairs
-        //필터에 걸리지 않으면 기본 충돌x 이벤트 호출 o
-     
-        //pairFlags = PxPairFlag::eCONTACT_DEFAULT; //기존 코드
-        //pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_PERSISTS;// 뚫리게 할라면
 
-        return PxFilterFlag::eDEFAULT;
-    }
+    return PxFilterFlag::eDEFAULT;
 }
 
 
@@ -127,7 +111,7 @@ void CPhysxMgr::init()
 
     
     sceneDesc.filterShader = triggersUsingFilterCallback;
-    sceneDesc.filterCallback = &gTriggersFilterCallback;
+    //sceneDesc.filterCallback = &gTriggersFilterCallback;
 
     m_pCollisionCallback = new CPxCollisionEvent();
     sceneDesc.simulationEventCallback = m_pCollisionCallback;
@@ -149,8 +133,6 @@ void CPhysxMgr::init()
 }
 void CPhysxMgr::tick()
 {
-    //ResetCollisionCheck();
-
     m_pScene->simulate(1.f / 60.f);
     m_pScene->fetchResults(true);
 }
@@ -162,16 +144,6 @@ void CPhysxMgr::tick_collision()
     {
         CGameObject* pLeftObj = iter->second.pLeftObj;
         CGameObject* pRightObj = iter->second.pRightObj;
-
-        //if (pLeftObj->IsDead() || pRightObj->IsDead())
-        //{
-        //    pLeftObj->Collider3D()->EndOverlap(pRightObj->Collider3D());
-        //    pRightObj->Collider3D()->EndOverlap(pLeftObj->Collider3D());
-        //
-        //    iter->second.bOnColl = false;
-        //    ++iter;
-        //    continue;
-        //}
 
         if (!pLeftObj->Collider3D()->GetIsActive() ||
            !pRightObj->Collider3D()->GetIsActive())
@@ -188,7 +160,6 @@ void CPhysxMgr::tick_collision()
                 pLeftObj->Collider3D()->OnOverlap(pRightObj->Collider3D());
                 pRightObj->Collider3D()->OnOverlap(pLeftObj->Collider3D());
             }
-
             //이전에는 충돌하지 않음
             else
             {
@@ -197,9 +168,9 @@ void CPhysxMgr::tick_collision()
                 iter->second.bOnColl = true;
             }
 
+            //다음 프레임에서 다시 체크하기 위해서 false로 전환
             iter->second.bCheck = false;
         }
-
 
         else
         {
@@ -371,24 +342,6 @@ void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAx
     pShape->release();
 }
 
-void CPhysxMgr::CollisionCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj)
-{
-    PxCollisionID id = {};
-    id.LeftID = _pLeftObj->Collider3D()->GetID();
-    id.RightID = _pRightObj->Collider3D()->GetID();
-
-    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.find(id.id);
-   
-    if (iter == m_mapCol.end())
-    {
-        PxCheckColl pxColl = PxCheckColl{ false, false ,_pLeftObj, _pRightObj};
-        m_mapCol.insert(make_pair(id.id, pxColl));
-        iter = m_mapCol.find(id.id);
-    }
-
-    iter->second.bCheck = true;
-}
-
 void CPhysxMgr::ResetCollisionCheck()
 {
     map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.begin();
@@ -408,16 +361,17 @@ void CPhysxMgr::AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _i
     if (tEvent.pEventObj == nullptr)
     {
         PxFilterData filterData;
-        //filterData = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
+       
+        //내 게임 오브젝트의 ID를 등록
         filterData.word0 = ID; 
 
        // 충돌 그룹 및 충돌 마스크 설정
-        _pShape->setSimulationFilterData(filterData); // 충돌 그룹 설정
+        _pShape->setSimulationFilterData(filterData); 
 
-        tEvent.eLayerBit = _iLayer;
-        tEvent.pEventObj = _pGameObj;
+        tEvent.eLayerBit = _iLayer; //나와 충돌시 이벤트를 발생시킬 레이어 등록
+        tEvent.pEventObj = _pGameObj; //이벤트를 호출시킬 게임 오브젝트 등록
 
-        m_mapEventObj.insert(make_pair(ID, tEvent));
+        m_mapEventObj.insert(make_pair(ID, tEvent));//해당
     }
 }
 
@@ -463,6 +417,24 @@ void CPhysxMgr::LayerCheck(UINT _left, UINT _right)
     m_matrix[iRow] |= (1 << iCol);
 }
 
+void CPhysxMgr::CollisionObjectCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj)
+{
+    PxCollisionID id = {};
+    id.LeftID = _pLeftObj->Collider3D()->GetID();
+    id.RightID = _pRightObj->Collider3D()->GetID();
+
+    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.find(id.id);
+
+    if (iter == m_mapCol.end())
+    {
+        PxCheckColl pxColl = PxCheckColl{ false, false ,_pLeftObj, _pRightObj };
+        m_mapCol.insert(make_pair(id.id, pxColl));
+        iter = m_mapCol.find(id.id);
+    }
+
+    //충돌 검사 체크
+    iter->second.bCheck = true;
+}
 
 bool CPhysxMgr::CollisionCheck(UINT _ileft, UINT _iright)
 {

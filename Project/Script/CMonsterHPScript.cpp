@@ -23,7 +23,6 @@ CMonsterHPScript::~CMonsterHPScript()
 
 void CMonsterHPScript::tick()
 {
-	//CFontMgr::GetInst()->DrawFont(m_strMonsterName.c_str(), 20, 20, 18, FONT_RGBA(255, 255, 255, 255));
 	if(m_bBoss)
 		CFontMgr::GetInst()->AddFont(m_strHangleFontName, 350, 670, 20, FONT_RGBA(255, 255, 255, 255));
 

@@ -43,7 +43,6 @@ void CNavMeshPlane::finaltick()
 	
 	if (KEY_PRESSED(KEY::LBTN))
 	{
-		//윗면인지 밑에 면인지 확인
 		if (RayCasting())
 			CreateObstacle();
 	}
@@ -97,8 +96,13 @@ void CNavMeshPlane::CreateObstacle()
 
 bool CNavMeshPlane::RayCasting()
 {
+	// 0 ----3
+	// |     |
+	// 1-----2
+
+
 	//직선의 방정식
-	//R(t) = pOrigin + t*vDir
+	//R(t) = pOrigin + t * vDir
 	//R(t) = p0 - t * vDir    R(t) : 직석상의 모든 점
 	// pOrigin : 직선의 임의 점, t : p0로부터 떨어진 거리  vDir : 직선의 방향  
 
@@ -122,9 +126,8 @@ bool CNavMeshPlane::RayCasting()
 	//윗쪽 삼각형 아래쪽 삼각형 둘이 나눠서 
 	Vec3 vecVertices[2][3] =
 	{
-		//윗쪽
-		{m_vecWorldVertices[0],m_vecWorldVertices[1],m_vecWorldVertices[2] },
-		{m_vecWorldVertices[2],m_vecWorldVertices[3],m_vecWorldVertices[0] },
+		{m_vecWorldVertices[0],m_vecWorldVertices[1],m_vecWorldVertices[2] }, //윗쪽
+		{m_vecWorldVertices[2],m_vecWorldVertices[3],m_vecWorldVertices[0] }, //아래쪽
 	};
 
 	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
@@ -141,10 +144,7 @@ bool CNavMeshPlane::RayCasting()
 
 		//평면의 노말벡터
 		Vec3 vNormal = vEdge->Cross(vEdge[1]);
-		//N dot pOrigin / N dot p0
-		//float f = vNormal.Dot(m_vecWorldVertices[0]) - vNormal.Dot(ray.vStart);
-
-		//직선과 평면이 평행 , 평면에 포함 이 때 교점은 존재하지 않는다.
+		
 		float f = vNormal.Dot(ray.vDir);
 
 		Vec3 vLen = ray.vStart - vecVertices[i][0];
@@ -153,15 +153,7 @@ bool CNavMeshPlane::RayCasting()
 
 		Vec3 vPoint = ray.vStart + fT * ray.vDir;
 
-		//교차점이 맞는지 확인
 		// 교차 지점이 사각형 내부에 있는지 확인
-
-		// 0 ----3
-		// |     |
-		// 1-----2
-
-		// 외적을 통한 삼각형의 총 넓이 합도 가능함
-
 		// 배리 센트릭 좌표 계산
 		double uu, uv, vv, wu, wv, inverseD;
 
@@ -180,17 +172,16 @@ bool CNavMeshPlane::RayCasting()
 		inverseD = uv * uv - uu * vv;
 		inverseD = 1.0f / inverseD;
 
-		//가중치  범위가 0~1 일때만 참으로 반환
 
 		//u =        D
 		//    (uv*wv - vv*wu)
 
+		//v =         D
+		//     (uv*wu - uu*wv)
+
 		float u = (uv * wv - vv * wu) * inverseD;
 		if (u < 0.0f || u > 1.0f)
 			continue; //return false
-
-		//v =         D
-		//     (uv*wu - uu*wv)
 
 		float v = (uv * wu - uu * wv) * inverseD;
 		if (v < 0.0f || (u + v) > 1.0f)

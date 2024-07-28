@@ -27,8 +27,7 @@ private:
 private:
     bool check_matrix();
 
-    void single_tick();
-    void child_tick();
+    void tick_equip();
 public:
     void SetDead(bool _bDelete = false);//, 삭제할지
     void SetIndex(int _iIndex) { m_iIndex = _iIndex; }

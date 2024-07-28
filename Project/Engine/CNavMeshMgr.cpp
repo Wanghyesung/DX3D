@@ -399,17 +399,12 @@ void CNavMeshMgr::render()
 
 void CNavMeshMgr::ReBuildField()
 {
-    //동적 해제
-    free();
+    free();  //이전 메쉬 메모리 해제
 
-    //context = new rcContext();
-
-    //원래 메쉬를 지우고 월드의 새로운 메쉬로 리빌딩
     m_vecWorldVertices.clear();
     m_vecWorldFaces.clear();
 
     CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurLevel();
-
     const vector<CGameObject*>& vecPlane = pCurLevel->GetLayer((int)LAYER_TYPE::NavMeshPlane)->GetParentObject();
     const vector<CGameObject*>& vecMonster = pCurLevel->GetLayer((int)LAYER_TYPE::Monster)->GetParentObject();
 
@@ -422,23 +417,19 @@ void CNavMeshMgr::ReBuildField()
 
         for (int j = 0; j < 4; ++j)
             m_vecWorldVertices.push_back(vecVertices[j]);
-
         for (int j = 0; j < 6; ++j)
             m_vecWorldFaces.push_back(vecFaces[j]);
     }
 
-    //몬스터마다 순회하며 자기에 맞는 navmesh를 생성 
     for (int i = 0; i < vecMonster.size(); ++i)
     {
-        //navmesh가 없다면 다음 몬스터로
-        CRDNavMeshField* pRDNavMesh = vecMonster[i]->RDNavMeshField();
-        if (!pRDNavMesh)
+        if (!vecMonster[i]->RDNavMeshField())
             continue;
 
-        UINT ID = vecMonster[i]->GetID();
+        UINT ID = vecMonster[i]->GetID(); 
         tBuildSettings buildSettings = {};
         buildSettings.ID = ID;
-        buildSettings.agentRadius = pRDNavMesh->GetRadius();
+        buildSettings.agentRadius = vecMonster[i]->RDNavMeshField()->GetRadius();
 
         BuildField(reinterpret_cast<float*>(&m_vecWorldVertices[0]), m_vecWorldVertices.size(),
                 &m_vecWorldFaces[0], m_vecWorldFaces.size() / 3, buildSettings);

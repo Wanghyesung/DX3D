@@ -94,7 +94,7 @@ public:
 
 
 	//collision
-	void CollisionCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj);
+	void CollisionObjectCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj);
 	void ResetCollisionCheck();//PxCheckColl에 bCheck값을 false로
 	void AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer);
 	PxCollisionEvent FIndEventObj(UINT _iID);

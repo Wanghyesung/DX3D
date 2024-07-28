@@ -101,7 +101,6 @@ void CEngine::tick()
 	//CSound::g_pFMOD->update();
 
 	//저번 프레임에서 충돌이 되었다면 이벤트 호출
-
 	CPhysxMgr::GetInst()->tick_collision();
 
 	//이전 프레임 물체 운동 업데이트

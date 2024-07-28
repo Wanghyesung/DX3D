@@ -58,9 +58,6 @@ void CEquip::begin()
 
 void CEquip::SetFixedPos(Vec3 _vPos)
 {
-	//물체의 월드 행렬을 초기에 셋팅
-	//이 행렬을 기반으로 무기가 움직이게
-	
 	//물체 주인이 없다면 assert
 
 	CGameObject* pOwner = GetOwner();
@@ -97,20 +94,12 @@ void CEquip::finaltick()
 	if (!check_matrix())
 		return;
 
-	const vector<CGameObject*> vecChild = GetOwner()->GetChild();
-
-	if (vecChild.size() == 0)
-		single_tick();
-	else
-		child_tick();
+	tick_equip();
 }
 
 bool CEquip::check_matrix()
 {
-	if (m_pChar == nullptr)
-		return false;
-	
-	else if (m_pChar->IsDead())
+	if (m_pChar->IsDead())
 	{
 		m_pChar = nullptr;
 		return false;
@@ -137,33 +126,9 @@ bool CEquip::check_matrix()
 	return false;
 }
 
-void CEquip::single_tick()
+void CEquip::tick_equip()
 {
-	//기존 캐릭터의 위치 offset 값을 해제해준 후 다시 월드행렬 계산
-	Vec3 vPxPos = m_pChar->PxRigidbody()->GetPxPosition();
-	Vec3 vPxOffset = m_pChar->PxRigidbody()->GetOffsetPosition();
-	vPxPos += vPxOffset;
-
-	//캐릭터 회전행렬 
-	Matrix matCharRotate = m_pChar->Transform()->GetDynamicRotate();
-
-	Matrix PxPosMatrix = XMMatrixTranslation(vPxPos.x, vPxPos.y, vPxPos.z);
-	Matrix matCharWorldScale = m_pChar->Transform()->GetWorldScaleMat();//캐릭터 크기 역행렬
-	Matrix matCharSclaeInv = XMMatrixInverse(nullptr, matCharWorldScale);
-	Matrix matCharWorld = matCharWorldScale * matCharRotate * PxPosMatrix; //새로 계산된 월드행렬
-
-	Matrix matWeapon = matCharSclaeInv * m_matStaticWorld * m_matFinalBone * matCharWorld;
-
-	//trasnform 행렬을 고정시켜서 움직여야함 (초기 위치를 기반으로 움직이게)
-	Transform()->SetDependent(true);
-
-	//여기서 만든 행렬로 transform에 전달
-	Transform()->SetWorldMat(matWeapon);
-}
-
-void CEquip::child_tick()
-{
-	//기존 캐릭터의 위치 offset 값을 해제해준 후 다시 월드행렬 계산
+	//기존 캐릭터의 위치 offset 값만큼 더하고 위치값 재계산
 	Vec3 vPxPos = m_pChar->PxRigidbody()->GetPxPosition();
 	Vec3 vPxOffset = m_pChar->PxRigidbody()->GetOffsetPosition();
 	vPxPos += vPxOffset;
@@ -178,13 +143,11 @@ void CEquip::child_tick()
 	
 	Matrix matWeapon = matCharSclaeInv * m_matStaticWorld * m_matFinalBone * matCharWorld;
 
-	const vector<CGameObject*> vecChild = GetOwner()->GetChild();
-	//직접적으로 부모 trasnform을 건들이지 않음
-	for (int i = 0; i < vecChild.size(); ++i)
-	{
-		vecChild[i]->Transform()->SetDependent(true);//final_tick에서 월드행렬 따로 만들지 않게
-		vecChild[i]->Transform()->SetWorldMat(matWeapon);
-	}
+	//trasnform 행렬을 고정시켜서 움직여야함 (초기 위치를 기반으로 움직이게)
+	Transform()->SetDependent(true);
+
+	//여기서 만든 행렬로 transform에 전달
+	Transform()->SetWorldMat(matWeapon);
 }
 
 void CEquip::SetDead(bool _bDelete)

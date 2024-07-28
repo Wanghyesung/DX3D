@@ -50,8 +50,6 @@ void CreateTestLevel()
 {
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Monster, (UINT)LAYER_TYPE::Attack);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player,(UINT)LAYER_TYPE::MonsterAttack);
-
-	//CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Monster);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::LandScape);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Monster, (UINT)LAYER_TYPE::LandScape);
 	CPhysxMgr::GetInst()->LayerCheck((UINT)LAYER_TYPE::Player, (UINT)LAYER_TYPE::Stairs);
@@ -61,7 +59,7 @@ void CreateTestLevel()
 
 	//return;
 
-	// 컴퓨트 쉐이더 테스트
+	// 컴퓨트 쉐이더 테스트S
 	//Ptr<CTexture> pTestTexture =
 	//	CResMgr::GetInst()->CreateTexture(L"ComputeTestTex"
 	//		, 200, 200, DXGI_FORMAT_R8G8B8A8_UNORM

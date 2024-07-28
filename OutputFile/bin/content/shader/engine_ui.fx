@@ -32,7 +32,6 @@ struct VS_OUT
 
 #define IS_GAGE     g_int_0
 #define UI_SIZE     g_vec2_0
-#define CAM_POS     g_vec4_0
 
 VS_OUT VS_Std2D(VS_IN _in)
 {
