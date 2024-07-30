@@ -11,7 +11,8 @@
 
 CMonsterHPScript::CMonsterHPScript():
 	CScript(SCRIPT_TYPE::MONSTERHPSCRIPT),
-	m_bActive(true)
+	m_bActive(true),
+	m_vOffsetPos(Vec3(0.f,200.f,0.f))
 {
 
 }
@@ -31,9 +32,8 @@ void CMonsterHPScript::tick()
 	{
 		move();
 
-		m_pHP->UpdateCameraPos();
-		m_pFrame->UpdateCameraPos();
-
+		m_pHP->UpdateBillboard();
+		m_pFrame->UpdateBillboard();
 	}
 
 }
@@ -99,7 +99,7 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScal
 void CMonsterHPScript::move()
 {
 	Vec3 vPos = m_pMonster->PxRigidbody()->GetPxPosition();
-	vPos.y += 200.f;
+	vPos += m_vOffsetPos;
 
 	m_pFrame->Transform()->SetRelativePos(vPos);
 	m_pHP->Transform()->SetRelativePos(vPos);

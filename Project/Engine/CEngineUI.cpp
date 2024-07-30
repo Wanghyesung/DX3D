@@ -105,7 +105,7 @@ void CEngineUI::MouseOnCheck()
 		m_bMouseOn = false;
 }
 
-void CEngineUI::UpdateCameraPos()
+void CEngineUI::UpdateBillboard()
 {
 	int iTrue = TRUE;
 	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &iTrue);
@@ -124,9 +124,9 @@ void CEngineUI::UpdateCameraPos()
 	Vec3 vCross = vFoward.Cross(vDir);
 
 	if (vCross.y >= 0)
-		fRadian = XM_PI + acos(fCos);
+		fRadian = acos(fCos);
 	else
-		fRadian = XM_PI - acos(fCos);
+		fRadian = -acos(fCos);
 
 	Vec3 vRot = Transform()->GetRelativeRot();
 	Transform()->SetRelativeRot(vRot.x, fRadian, vRot.z);

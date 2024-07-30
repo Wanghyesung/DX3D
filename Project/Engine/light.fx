@@ -301,10 +301,6 @@ VS_SHADOW_OUT VS_ShadowMap_Inst(VS_IN _in)
 {
     VS_SHADOW_OUT output = (VS_SHADOW_OUT) 0.f;
     
-    // 사용하는 메쉬가 RectMesh(로컬 스페이스에서 반지름 0.5 짜리 정사각형)
-    // 따라서 2배로 키워서 화면 전체가 픽셀쉐이더가 호출될 수 있게 한다.
-
-    //애니메이션이 들어있다면
     if (g_iAnim)
     {
         //반사광에 필요한 tan,bin,nor이 필요없기 때문에 해당 메쉬 가공처리만 
@@ -312,7 +308,6 @@ VS_SHADOW_OUT VS_ShadowMap_Inst(VS_IN _in)
     }
     
     output.vPosition = mul(float4(_in.vPos, 1.f), _in.matWVP);
-    
     output.vProjPos = output.vPosition;
     output.vProjPos.xyz /= output.vProjPos.w;
             

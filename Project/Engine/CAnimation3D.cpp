@@ -68,15 +68,10 @@ void CAnimation3D::update()
 	m_fCurTime += m_pOwner->GetAnimDT();
 	//const vector<tMTAnimClip>* vecClip = m_pOwner->GetAnimClip();
 
-	//전체 시간 48초
-	//초마다 30프레임 emode30
-	// 2 프레임 
-	//전체 프레임 1432
-	//뼈 134
 	check_event();
 
 	//30프레임 고정
-	int iFrameCount = 30;
+	const int iFrameCount = 30;
 	// 현재 프레임 인덱스 구하기
 	double dFrameIdx = m_fCurTime * (double)iFrameCount;
 	m_iCurFrame = (int)(dFrameIdx);

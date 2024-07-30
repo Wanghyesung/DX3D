@@ -330,15 +330,12 @@ void CAnimator3D::Play(const std::wstring& _strName, bool _bRepeat)
 	if (pAnim)
 	{
 		m_pCurAnimation = pAnim;
-		//m_iCurAnim = pAnim->GetAnimIdx;
 	}
 
 	pEvents = FindEvents(m_pCurAnimation->GetKey());
 	if (pEvents)
 		pEvents->tStartEvent();
 
-
-	//m_pCurAnimation->m_bRepeat = _bRepeat;
 	m_bRepeat = _bRepeat;
 	m_pCurAnimation->Reset();
 }

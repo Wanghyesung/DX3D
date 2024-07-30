@@ -378,8 +378,6 @@ void CCamera::SortObject_Shadow()
 			}
 		}
 	}
-
-	int a = 10;
 }
 
 void CCamera::render()

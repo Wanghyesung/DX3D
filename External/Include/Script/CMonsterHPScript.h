@@ -17,6 +17,8 @@ private:
     bool m_bBoss;
     bool m_bActive;
 
+    Vec3 m_vOffsetPos;
+
 public:
     virtual void tick() override;
     virtual void BeginOverlap(CCollider3D* _Other)override {};

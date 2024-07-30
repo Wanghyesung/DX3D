@@ -56,9 +56,7 @@ struct PS_OUT
 VS_OUT VS_DirLightShader(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
-    
-    //사용하는 메쉬가 RectMesh(로컬 스페이스에서 반지름 0.5 짜리 정사각형)
-    //따라서 2배로 키워서 화면 전체가 픽셀쉐이더가 호출될 수 있게 한다
+
     output.vPosition = float4(_in.vPos.xyz * 2.f, 1.f);
     
     return output;
@@ -76,11 +74,11 @@ PS_OUT PS_DirLightShader(VS_OUT _in)
     float3 vViewNormal = NormalTargetTex.Sample(g_sam_0, vScreenUV).xyz;
     float3 vData = DataTargetText.Sample(g_sam_0, vScreenUV).xyz;
     
-    if (vData.x < 0.5f)
-    {
-        output.vDiffuse = g_Light3DBuffer[LightIdx].Color.vDiffuse;
-        return output;
-    }
+    //if (vData.x < 0.5f)
+    //{
+    //    output.vDiffuse = g_Light3DBuffer[LightIdx].Color.vDiffuse;
+    //    return output;
+    //}
     
     //픽셀 위치와 동일한 UV위치에서 position값을 가져왔는데, 해당 지점에 기록된 물체가 없다
     if (vViewPos.x == 0.f && vViewPos.y == 0.f && vViewPos.z == 0.f)
