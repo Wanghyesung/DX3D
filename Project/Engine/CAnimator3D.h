@@ -13,6 +13,7 @@ struct Event
 {
     void operator=(std::function<void()> _func)
     {
+        //무조건 인수를 rvalue 참조로 캐스트
         m_Event = std::move(_func);
     }
 

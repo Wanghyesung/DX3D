@@ -62,6 +62,8 @@ void CalcLight2D(float3 _vWorldPos, float3 _vWorldDir, inout tLightColor _Light)
 
 void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLightColor _Light, inout float _SpecPow)
 {
+    //_vViewPos는 호출된 픽셀의 위치
+    
     tLightInfo LightInfo = g_Light3DBuffer[_LightIdx];
     
     float fLightPow = 0.f;

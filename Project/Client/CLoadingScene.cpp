@@ -16,6 +16,7 @@
 #include <Engine\CDevice.h>
 #include <Engine\CFontMgr.h>
 #include <Engine\CTimeMgr.h>
+
 extern HWND g_hWnd;
 
 CLoadingScene::CLoadingScene() :
@@ -23,6 +24,7 @@ CLoadingScene::CLoadingScene() :
 	m_bLoadingFalse(false),
 	m_bRender(false),
 	m_fpCreateLevel(nullptr),
+	m_Mutex{},
 	m_fCurProgress(0.f),
 	m_iLoadingRes(0),
 	m_iTotalRes(3)
@@ -39,24 +41,21 @@ CLoadingScene::~CLoadingScene()
 
 bool CLoadingScene::init()
 {
-	//std::mutex mutex;
-
 	//load resources
-	m_pLoadThread = new std::thread(&CLoadingScene::resources_load, this);
+	m_pLoadThread = new std::thread(&CLoadingScene::resources_load, this, std::ref(m_Mutex));
 
 	//m_pLoadThread->detach();//백드라운드에서 작업
 	//m_pLoadThread->join();
 	return TRUE;
 }
 
-void CLoadingScene::resources_load()
+void CLoadingScene::resources_load(mutex& _mutex)
 {
 	//임계영역
-	//현재 데이터 작업을 하기 때문에 다른 쪽 스레드에서 작업을 하지 못하게 함
-	//_mutex.lock();
+	//현재 데이터 작업을 하기 때문에 다른 쪽 스레드에서 이 작업을 하지 못하게 함
+	_mutex.lock();
 	{
 		m_bRender = CEngine::GetInst()->init_mgr();
-
 		++m_iLoadingRes;
 
 		CEditorObjMgr::GetInst()->init();
@@ -66,7 +65,7 @@ void CLoadingScene::resources_load()
 		ImGuiMgr::GetInst()->init(g_hWnd);
 		++m_iLoadingRes;
 	}
-    //_mutex.unlock();
+    _mutex.unlock();
 
 	//complete
 	m_bCompleted = true;
@@ -76,6 +75,7 @@ bool CLoadingScene::tick()
 {
 	CTimeMgr::GetInst()->tick();
 	//리소스가 전부 로드되고 로딩퍼센트가 100까지 차면 level로 진입
+
 	if (m_bCompleted && m_fCurProgress >= 99.f) 
 	{
 		//만약 메인쓰레드가 종료되었는데 자식 스레드가 남았다면
@@ -131,7 +131,7 @@ void CLoadingScene::render()
 		CFontMgr::GetInst()->AddFont(L"Loading : " + strTotal, vPos.x - 150.f, vPos.y, 60.f, FONT_RGBA(255, 255, 255, 255));
 		CFontMgr::GetInst()->render();
 
-		CDevice::GetInst()->Present(); // 렌더 종료
+		CDevice::GetInst()->Present(); 
 	}
 
 }

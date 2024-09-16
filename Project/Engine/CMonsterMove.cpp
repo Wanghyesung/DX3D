@@ -78,9 +78,6 @@ bool CMonsterMove::check_len()
 
 	float fLen = (vTargetPos - vPos).Length();
 
-	//m_fCheckLen = GetCheckLen();
-	
-	//m_fStopLen = GetStopLen();
 
 	if (fLen >= m_fCheckLen)
 	{
@@ -115,13 +112,9 @@ bool CMonsterMove::rotate()
 	Vec3 vCross = vFoward.Cross(vDir);
 
 	if (vCross.y >= 0)
-	{
 		fRadian = XM_PI + acos(fCos);
-	}
 	else
-	{
 		fRadian = XM_PI - acos(fCos);
-	}
 
 	//
 	Vec3 vRot = GetOwner()->Transform()->GetRelativeRot();

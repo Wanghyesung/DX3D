@@ -188,12 +188,9 @@ void CPlayerScript::Initialize()
 			pObj->Animator3D()->CreateAnimationF(L"Dead", 1465, 1685);
 
 			pObj->Animator3D()->Play(L"Idle", true);
-			//pObj->Animator3D()->StartEvent() = std::bind(std::bind(&SkillLuck::create_luck, this)
 		}
 	}
 
-	//weapon
-	//기본 무기 먼저 push
 
 	float fRadian = XM_PI / 180.f;
 
@@ -270,7 +267,7 @@ void CPlayerScript::Initialize()
 void CPlayerScript::set_ui()
 {
 	m_pHP = new CGage();
-	m_pHP->Initialize(L"texture\\GameTexture\\PlayerHP.png", Vec3(800.f, 24.f, 0.f), L"PlayerHP");
+	m_pHP->Initialize(L"texture\\GameTexture\\PlayerHP.png", L"PlayerHP", Vec3(800.f, 24.f, 0.f));
 	SpawnGameObject(m_pHP, Vec3(-85.f, 283.f, -2.f), (int)LAYER_TYPE::UI);
 
 	//-85
@@ -321,7 +318,7 @@ void CPlayerScript::set_attack()
 	attack1.tAttackValue.fAttRcnt = 200.f;
 	attack1.tAttackValue.fAttackTime = 0.5f;
 	attack1.tAttackValue.fDamage = 200.f;
-	attack0.tAttackValue.fAddForceTime = 0.55f;
+	attack1.tAttackValue.fAddForceTime = 0.55f;
 	attack1.tAttackValue.bDown = true;
 
 	pAttackScript = new CAttackScript();
@@ -335,7 +332,7 @@ void CPlayerScript::set_attack()
 	attackjump.iEndFrame = 960;
 	attackjump.vAttackScale = Vec3(200.f, 250.f, 200.f);
 	attackjump.tAttackValue.iMaxCount = 1;
-	attackjump.tAttackValue.fAttackTime = 0.f;
+	attackjump.tAttackValue.fAttackTime = 0.5f;
 	attackjump.tAttackValue.fDamage = 200.f;
 	attackjump.tAttackValue.bDown = true;
 	
@@ -443,11 +440,15 @@ void CPlayerScript::OnOverlap(CCollider3D* _Other)
 		if (m_pFSM->GetCurStateType() == STATE_TYPE::HIT)
 			return;
 
+
 		tAttack tAttack = pAttack->GetAttackValue();
 		CHitState* pHit = dynamic_cast<CHitState*>(m_pFSM->FindState(STATE_TYPE::HIT));
 		pHit->SetHitInfo(m_tHitInfo);
 
 		m_tPlayerInfo.fHP -= m_tHitInfo.fDamage;
+		
+		if (m_pFSM->GetCurStateType() == STATE_TYPE::JUMP)
+			return;
 
 		ChanageState(m_pFSM, STATE_TYPE::HIT);
 	}

@@ -7,8 +7,7 @@ private:
 	float m_fMaxRatio;
 	float m_fCurRatio;
 public:
-	virtual void Initialize(const wstring& _strTexName, const Vec3& _vScale,
-		const wstring& _strName)override;
+	virtual void Initialize(const wstring& _strTexName, const wstring& _strName, const Vec3& _vScale)override;
 	void UpdateGage(float _fMaxGage, float _fCurGage);
 
 public:

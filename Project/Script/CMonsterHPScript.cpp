@@ -61,8 +61,8 @@ void CMonsterHPScript::begin()
 
 }
 
-void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScale,
-	const wstring& _strName, bool _bBoss, const wstring& _strHangleName)
+void CMonsterHPScript::Initialize(const wstring& _strTexName, const wstring& _strName, const wstring& _strHangleName,
+	const Vec3& _vScale , bool _bBoss)
 {
 	m_strMonsterName = _strName;
 	m_strHangleFontName = _strHangleName;
@@ -70,11 +70,11 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const Vec3& _vScal
 
 	wstring strFrameName = _strName + L"Frame";
 	m_pFrame = new CEngineUI();
-	m_pFrame->Initialize(_strTexName + L"Frame.png", _vScale, strFrameName);
+	m_pFrame->Initialize(_strTexName + L"Frame.png", strFrameName, _vScale);
 
 	wstring strHPName = _strName + L"HP";
 	m_pHP = new CGage();
-	m_pHP->Initialize(_strTexName + L"HP.png", _vScale, strHPName);
+	m_pHP->Initialize(_strTexName + L"HP.png", strHPName, _vScale);
 
 	//m_pFrame->AddChild(m_pHP);
 

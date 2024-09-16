@@ -19,8 +19,10 @@ CGage::~CGage()
 }
 
 
-void CGage::Initialize(const wstring& _strTexName, const Vec3& _vScale, const wstring& _strName)
+void CGage::Initialize(const wstring& _strTexName, const wstring& _strName, const Vec3& _vScale)
 {
+	SetName(_strName);
+
 	//EngineUIMtrl
 	CMeshRender* pMeshRender = new CMeshRender;
 	pMeshRender->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
@@ -39,8 +41,6 @@ void CGage::Initialize(const wstring& _strTexName, const Vec3& _vScale, const ws
 	}
 
 	Transform()->SetRelativeScale(_vScale);
-
-	SetName(_strName);
 
 	Vec2 vUISize = Vec2(100.f, 100.f);
 	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &vUISize);

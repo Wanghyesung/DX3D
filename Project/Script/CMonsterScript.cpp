@@ -172,7 +172,7 @@ void CMonsterScript::init_hp()
 
 	CGameObject* pHP = new CGameObject();
 	m_pHp = new CMonsterHPScript();
-	m_pHp->Initialize(L"texture\\GameTexture\\Monster",Vec3(360,35.f,-2.f),GetOwner()->GetName(),false);
+	m_pHp->Initialize(L"texture\\GameTexture\\Monster",GetOwner()->GetName(), L"", Vec3(360, 35.f, -2.f), false);
 	m_pHp->SetMonster(GetOwner());
 	
 	pHP->AddComponent(m_pHp);

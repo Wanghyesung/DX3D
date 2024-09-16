@@ -179,7 +179,7 @@ PS_OUT PS_PointLightShader(VS_OUT _in)
     float3 vLocal = mul(float4(vWorldPos, 1.f), g_matWorldInv).xyz;
     float fDist = length(vLocal.xyz);
    
-    //내 사각 메쉬의 크기 0.5
+    //내 사각 메쉬의 크기 0.5 범위를 넘긴다면 discard
     if (0.5f < fDist)
     {
         //output.vDiffuse = float4(1.f, 0.f, 0.f, 1.f);
@@ -259,7 +259,7 @@ float4 PS_MergeShader(VS_OUT _in) : SV_Target
     float4 vEmissive = EmissiveTargetTex.Sample(g_sam_0, vScreenUV);
     float fShadowPow = ShadowTargetTex.Sample(g_sam_0, vScreenUV).r;
     
-    
+    //vColor.a에 재질 계수를 넣어둠
     vOutColor.xyz = vColor.xyz * vDiffuse.xyz  * (1.f - fShadowPow) +
                     (vSpecular.xyz * vColor.a) * (1.f - fShadowPow) +
                     vEmissive.xyz;

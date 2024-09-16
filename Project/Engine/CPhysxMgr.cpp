@@ -126,9 +126,9 @@ void CPhysxMgr::init()
 
 
     //디버그 시각화를 활성화하려면 먼저 전역 시각화 배율을 양수 값으로 설정해야 합니다.
-    m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+    // m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
     //그런 다음 시각화되어야 하는 개별 속성을 다시 양수 값을 사용하여 활성화할 수 있습니다.
-    m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 2.0f);
+    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 2.0f);
 
 }
 void CPhysxMgr::tick()

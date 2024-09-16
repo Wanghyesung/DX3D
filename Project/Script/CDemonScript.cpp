@@ -77,11 +77,11 @@ void CDemonScript::OnOverlap(CCollider3D* _Other)
 		if (bOn)
 		{
 			//공중에서 맞을 때 4배 데미지
-			if (fYLen >= 300.f)
+			if (fYLen >= 200.f)
 			{
 				CMonsterHit* pHit = dynamic_cast<CMonsterHit*>(m_pFSM->FindState(MONSTER_STATE_TYPE::HIT));
 				pHit->SetHitInfo(m_tHitInfo);
-				m_tMonsterInfo.fHP -= (m_tHitInfo.fDamage * 4);
+				m_tMonsterInfo.fHP -= (m_tHitInfo.fDamage * 2);
 
 				if (m_pFSM->GetCurStateType() == MONSTER_STATE_TYPE::HIT)
 					return;
@@ -263,8 +263,8 @@ void CDemonScript::init_hp()
 {
 	CGameObject* pHP = new CGameObject();
 	m_pHp = new CMonsterHPScript();
-	m_pHp->Initialize(L"texture\\GameTexture\\Monster", Vec3(950.f, 35.f, 1.f), 
-		GetOwner()->GetName(),true, L"소머리 데몬");
+	m_pHp->Initialize(L"texture\\GameTexture\\Monster", GetOwner()->GetName(), L"소머리 데몬", 
+		Vec3(950.f, 35.f, 1.f), true);
 
 	m_pHp->SetMonster(GetOwner());
 

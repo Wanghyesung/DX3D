@@ -59,9 +59,9 @@ bool CJumpAttackScript::check_pos(CGameObject* _pMonster)
 
 	Vec3 vDiff =  vPlayerPos - vMonsterPos;
 
-	float fRevision = 300.f;
+	float fRevision = 200.f;
 
-	if (vDiff.y > fRevision)
+	if (vDiff.y >= fRevision)
 	{
 		//몬스터 up방향 x z 축 곱하기 500
 		Vec3 vDir = _pMonster->Transform()->GetRelativeDir(DIR_TYPE::UP);

@@ -315,32 +315,6 @@ void CreateMonster()
 	CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
 	CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
 
-	//Vec3 m_vCreateScale = Vec3(400.f, 0.f, 400.f); //+= (DT * Vec3(2.f,2.f,2.f));
-	//Vec3 vHalfScale = m_vCreateScale / 2.f;
-	//Vec3 m_vRayPoint{ 400, 0.f, 900 };
-	//float fHeight = 400.f;
-	////오브젝트를 설치하기 위해서 높이값을 크기의 /2 만큼 올린다
-	//float y = m_vRayPoint.y + fHeight / 2.f;
-	//Vec3 vPos = Vec3(m_vRayPoint.x, y, m_vRayPoint.z);
-	//
-	//Vec3 vDir[4] = { Vec3(0.f,0.f,1.f), Vec3(0.f,0.f, -1.f),
-	//	Vec3(1.f, 0.f, 0.f) ,Vec3(-1.f, 0.f , 0.f) };
-	//
-	//Vec3 vScaleDir[4] = { Vec3(1.f,0.f,0.f), Vec3(1.f,0.f,0.f),
-	//	 Vec3(0.f,0.f,1.f) , Vec3(0.f,0.f,1.f) };
-	//
-	//for (int i = 2; i < 4; ++i)
-	//{
-	//	//정행진 방향으로 메쉬 위치 지정
-	//	Vec3 vPlanePos = vDir[i] * vHalfScale + vPos;
-	//
-	//	//크기 적용
-	//	Vec3 vScale = vScaleDir[i] * m_vCreateScale;
-	//	vScale.y += fHeight; //높이값 적용
-	//
-	//	
-	//	CNavMeshMgr::GetInst()->CreatePlane(vPlanePos, vScale);
-	//}
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
 	//CNavMeshMgr::GetInst()->CreatePlane({ 1000 , 100, 1000 }, Vec3(700.f, 200.f, 0.f));
@@ -351,7 +325,6 @@ void CreateMonster()
 	pMonster->AddComponent(new CCollider3D());
 	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));	
 	{
-		//수정 필요
 		tBuildSettings tSetting = {};
 		tSetting.agentRadius = 100.f; // 900 / 5 = 180
 	    tSetting.ID = pMonster->GetID();
@@ -399,61 +372,66 @@ void CreateMonster()
 	pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
 	SpawnGameObject(pMonster, Vec3(1000.f, 120.f, 1000.f), (int)LAYER_TYPE::Monster);
 	
-
-	//pMonster = new CGameObject;
-	//pMonster->SetName(L"Balder_Knight_2");
-	//pMonster->AddComponent(new CTransform());
-	//pMonster->AddComponent(new CCollider3D());
-	//pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
+	//frustum test
+	////////////////////////////////////////////////////////
+	//for (int i = 0; i < 20; ++i)
 	//{
-	//	tBuildSettings tSetting = {};
-	//	tSetting.agentRadius = 450.f; // 900 / 5 = 180
-	//	tSetting.ID = pMonster->GetID();
-	//	CNavMeshMgr::GetInst()->BuildField(tSetting);
+	//	pMonster = new CGameObject;
+	//	pMonster->AddComponent(new CTransform());
+	//	pMonster->AddComponent(new CCollider3D());
+	//	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
+	//	{
+	//		tBuildSettings tSetting = {};
+	//		tSetting.agentRadius = 450.f; // 900 / 5 = 180
+	//		tSetting.ID = pMonster->GetID();
+	//		CNavMeshMgr::GetInst()->BuildField(tSetting);
 	//
-	//	CRDNavMeshField* pNav = new CRDNavMeshField();
-	//	pMonster->AddComponent(pNav);
+	//		CRDNavMeshField* pNav = new CRDNavMeshField();
+	//		pMonster->AddComponent(pNav);
+	//	}
+	//
+	//	pRigi = new CPxRigidbody();
+	//	pMonster->AddComponent(pRigi);
+	//	pRigi->init(Vec3(200.f + (i * 150), 120.f, 1000.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
+	//	pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
+	//
+	//
+	//	pMonsterScript = new CMonsterScript();
+	//	pMonster->AddComponent(pMonsterScript);
+	//	pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
+	//
+	//	pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
+	//	pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
+	//	pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
+	//	pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
+	//	//pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
+	//
+	//	pIdle = new CMonsterIdle();
+	//	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
+	//
+	//	pMove = new CMonsterMove();
+	//	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 96, 140);
+	//
+	//	pAttack = new CMonsterAttack();
+	//	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
+	//
+	//	pHit = new CMonsterHit();
+	//	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
+	//
+	//	pMonsterDead = new CMonsterDead();
+	//	pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::DEAD, pMonsterDead, L"Dead", 1116, 1200);
+	//
+	//	pMonsterScript->AddMonsterAttack(0, 0.f, 0.f, 0.6f, 629, 634, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
+	//	pMonsterScript->AddMonsterAttack(1, 0.f, 0.f, 0.6f, 781, 785, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
+	//
+	//	pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
+	//	SpawnGameObject(pMonster, Vec3(200.f + (i * 150), 120.f, 1000.f), (int)LAYER_TYPE::Monster);
+	//
+	//	pMonster->SetName(L"Balder_Knight" + std::to_wstring(i));
 	//}
-	//
-	//pRigi = new CPxRigidbody();
-	//pMonster->AddComponent(pRigi);
-	//pRigi->init(Vec3(500.f, 120.f, 1000.f), Vec3(150.f, 340.f, 150.f), (int)LAYER_TYPE::Monster, pMonster);
-	//pRigi->SetOffsetPosition(Vec3(0.f, -170.f, 0.f));
-	//
-	//
-	//pMonsterScript = new CMonsterScript();
-	//pMonster->AddComponent(pMonsterScript);
-	//pMonsterScript->Initialize(L"Balder_Knight"); //fbx load, FSM , components
-	//
-	//pMonsterScript->AddAnimFrame(L"Hit", 431, 481);
-	//pMonsterScript->AddAnimFrame(L"HitDown", 482, 602);
-	//pMonsterScript->AddAnimFrame(L"Attack0", 603, 687);
-	//pMonsterScript->AddAnimFrame(L"Attack1", 759, 850);
-	////pMonsterScript->AddAnimFrame(L"Dead", 1116, 1200);
-	//
-	//pIdle = new CMonsterIdle();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::IDLE, pIdle, L"Idle", 0, 95);
-	//
-	//pMove = new CMonsterMove();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::WALK, pMove, L"Walk", 96, 140);
-	//
-	//pAttack = new CMonsterAttack();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::ATTACK, pAttack, L"Attack");
-	//
-	//pHit = new CMonsterHit();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::HIT, pHit, L"Hit");
-	//
-	//pMonsterDead = new CMonsterDead();
-	//pMonsterScript->AddMonsterState(MONSTER_STATE_TYPE::DEAD, pMonsterDead, L"Dead", 1116, 1200);
-	//
-	//pMonsterScript->AddMonsterAttack(0, 0.f, 0.f, 0.6f, 629, 634, Vec3(150.f, 150.f, 150.f), 90.f, Vec3::Zero);
-	//pMonsterScript->AddMonsterAttack(1, 0.f, 0.f, 0.6f, 781, 785, Vec3(170.f, 170.f, 170.f), 100.f, Vec3::Zero);
-	//
-	//pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
-	//SpawnGameObject(pMonster, Vec3(500.f, 120.f, 1000.f), (int)LAYER_TYPE::Monster);
+	///////////////////////////////////////////////////////////////////////////////
 
-	
-	
+
 	CGameObject* pBoss = new CGameObject();
 	pBoss->SetName(L"Taurus_Demon_Fianl");
 	
@@ -464,9 +442,7 @@ void CreateMonster()
 	pBoss->Transform()->SetRelativeScale(Vec3(1.5f, 1.5f, 1.5f));
 	pRigi = new CPxRigidbody();
 	pBoss->AddComponent(pRigi);
-	//
-	//1783 300 2985
-	//1254 1292
+	
 	pRigi->init(Vec3(1783.f, 120.f, 4585.f), Vec3(350.f, 600.f, 350.f), (int)LAYER_TYPE::Monster, pBoss);
 	pRigi->SetOffsetPosition(Vec3(0.f, -300.f, 0.f));
 	
@@ -790,12 +766,12 @@ void CreateUI()
 {
 	//-540 272
 	CEngineUI* pPlayerIcon = new CEngineUI();
-	pPlayerIcon->Initialize(L"texture\\GameTexture\\playerIcon.png", Vec3(100.f,100.f,0.f), L"PlayerIcon");
+	pPlayerIcon->Initialize(L"texture\\GameTexture\\playerIcon.png", L"PlayerIcon", Vec3(100.f,100.f,0.f));
 	SpawnGameObject(pPlayerIcon, Vec3(-540.f, 272.f, -1.f), (int)LAYER_TYPE::UI);
 
 	//-85 272
 	CEngineUI* pPlayerFrame = new CEngineUI();
-	pPlayerFrame->Initialize(L"texture\\GameTexture\\playerframe.png", Vec3(800.f, 48.f, 0.f),L"PlayerFrame");
+	pPlayerFrame->Initialize(L"texture\\GameTexture\\playerframe.png", L"PlayerFrame", Vec3(800.f, 48.f, 0.f));
 	SpawnGameObject(pPlayerFrame, Vec3(-85, 272.f, 5.f), (int)LAYER_TYPE::UI);
 
 	//hp heal playerscript로
@@ -804,21 +780,21 @@ void CreateUI()
 
 	//-520 -200
 	CEngineUI* pLeftMenu = new CEngineUI();
-	pLeftMenu->Initialize(L"texture\\GameTexture\\LeftRightMenu.png", Vec3(120.f, 150.f, 0.f), L"LeftRightMenu0");
+	pLeftMenu->Initialize(L"texture\\GameTexture\\LeftRightMenu.png", L"LeftRightMenu0", Vec3(120.f, 150.f, 0.f));
 	SpawnGameObject(pLeftMenu, Vec3(-520.f, -200.f, -1.f), (int)LAYER_TYPE::UI);
 
 	//-280 -200
 	CEngineUI* pRightMenu = new CEngineUI();
-	pRightMenu->Initialize(L"texture\\GameTexture\\LeftRightMenu.png", Vec3(120.f, 150.f, 0.f), L"LeftRightMenu1");
+	pRightMenu->Initialize(L"texture\\GameTexture\\LeftRightMenu.png", L"LeftRightMenu1", Vec3(120.f, 150.f, 0.f));
 	SpawnGameObject(pRightMenu, Vec3(-280.f, -200.f, -1.f), (int)LAYER_TYPE::UI);
 
 	//-400 -90
 	CEngineUI* pTopMenu = new CEngineUI();
-	pTopMenu->Initialize(L"texture\\GameTexture\\TopBottomMenu.png", Vec3(99.f, 150.f, 0.f), L"TopBottomMenu0");
+	pTopMenu->Initialize(L"texture\\GameTexture\\TopBottomMenu.png", L"TopBottomMenu0", Vec3(99.f, 150.f, 0.f));
 	SpawnGameObject(pTopMenu, Vec3(-400.f, -90.f, -1.f), (int)LAYER_TYPE::UI);
 	//-400 -300
 	CEngineUI* pBottomMenu = new CEngineUI();
-	pBottomMenu->Initialize(L"texture\\GameTexture\\TopBottomMenu.png", Vec3(99.f, 150.f, 0.f), L"TopBottomMenu1");
+	pBottomMenu->Initialize(L"texture\\GameTexture\\TopBottomMenu.png", L"TopBottomMenu1", Vec3(99.f, 150.f, 0.f));
 	SpawnGameObject(pBottomMenu, Vec3(-400.f, -300.f, -1.f), (int)LAYER_TYPE::UI);
 	
 }

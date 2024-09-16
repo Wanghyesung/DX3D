@@ -29,7 +29,7 @@ CEquip::CEquip() :
 
 		wstring strWeapon = L"texture\\GameTexture\\" + m_vecWeaponName[m_iEquipIdx] + L".png";
 
-		m_pEquipIcon->Initialize(strWeapon, Vec3(120.f, 150.f, 0.f), m_vecWeaponName[m_iEquipIdx]);
+		m_pEquipIcon->Initialize(strWeapon, m_vecWeaponName[m_iEquipIdx], Vec3(120.f, 150.f, 0.f));
 		SpawnGameObject(m_pEquipIcon, Vec3(-280.f, -200.f, 0.f), (int)LAYER_TYPE::UI);
 	}
 }

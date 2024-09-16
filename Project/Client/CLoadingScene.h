@@ -4,6 +4,8 @@
 #include <mutex>
 #include <functional>
 
+using std::mutex;
+using std::thread;
 
 class CLoadingScene 
 	: public CSingleton< CLoadingScene>
@@ -19,7 +21,8 @@ private:
 
 	//렌더링 준비
 	bool m_bRender;
-	std::thread* m_pLoadThread;
+	thread* m_pLoadThread;
+	mutex m_Mutex;
 
 	//처음 생성될 레벨
 	std::function<void()> m_fpCreateLevel;
@@ -30,7 +33,7 @@ private:
 	int m_iTotalRes;
 
 private:
-	void resources_load(/*std::mutex& _mutex*/);
+	void resources_load(mutex& _mutex);
 
 
 public:

@@ -31,8 +31,8 @@ public:
 
     virtual void begin();
 
-    virtual void Initialize(const wstring& _strTexName, const Vec3& _vScale,
-        const wstring& _strName, bool _bBoss, const wstring& _strHangleName = L"");
+    virtual void Initialize(const wstring& _strTexName, const wstring& _strName, const wstring& _strHangleName,
+        const Vec3& _vScale, bool _bBoss);
 
     CLONE(CMonsterHPScript);
 private:

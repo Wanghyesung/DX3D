@@ -30,9 +30,10 @@ CEngineUI::~CEngineUI()
 	
 }
 
-void CEngineUI::Initialize(const wstring& _strTexName, const Vec3& _vScale, 
-	const wstring& _strName)
+void CEngineUI::Initialize(const wstring& _strTexName, const wstring& _strName, const Vec3& _vScale)
 {
+	SetName(_strName);
+
 	CMeshRender* pMeshRender = new CMeshRender;
 	pMeshRender->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DMtrl"), 0);
@@ -50,8 +51,6 @@ void CEngineUI::Initialize(const wstring& _strTexName, const Vec3& _vScale,
 	}
 
 	Transform()->SetRelativeScale(_vScale);
-	
-	SetName(_strName);
 }
 
 void CEngineUI::finaltick()

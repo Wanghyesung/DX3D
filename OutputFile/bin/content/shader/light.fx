@@ -56,7 +56,9 @@ struct PS_OUT
 VS_OUT VS_DirLightShader(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
-
+    
+    //사용하는 메쉬가 RectMesh(로컬 스페이스에서 반지름 0.5 짜리 정사각형)
+    //따라서 2배로 키워서 화면 전체가 픽셀쉐이더가 호출될 수 있게 한다
     output.vPosition = float4(_in.vPos.xyz * 2.f, 1.f);
     
     return output;
@@ -74,11 +76,11 @@ PS_OUT PS_DirLightShader(VS_OUT _in)
     float3 vViewNormal = NormalTargetTex.Sample(g_sam_0, vScreenUV).xyz;
     float3 vData = DataTargetText.Sample(g_sam_0, vScreenUV).xyz;
     
-    //if (vData.x < 0.5f)
-    //{
-    //    output.vDiffuse = g_Light3DBuffer[LightIdx].Color.vDiffuse;
-    //    return output;
-    //}
+    if (vData.x < 0.5f)
+    {
+        output.vDiffuse = g_Light3DBuffer[LightIdx].Color.vDiffuse;
+        return output;
+    }
     
     //픽셀 위치와 동일한 UV위치에서 position값을 가져왔는데, 해당 지점에 기록된 물체가 없다
     if (vViewPos.x == 0.f && vViewPos.y == 0.f && vViewPos.z == 0.f)
@@ -177,7 +179,7 @@ PS_OUT PS_PointLightShader(VS_OUT _in)
     float3 vLocal = mul(float4(vWorldPos, 1.f), g_matWorldInv).xyz;
     float fDist = length(vLocal.xyz);
    
-    //내 사각 메쉬의 크기 0.5
+    //내 사각 메쉬의 크기 0.5 범위를 넘긴다면 discard
     if (0.5f < fDist)
     {
         //output.vDiffuse = float4(1.f, 0.f, 0.f, 1.f);
@@ -257,7 +259,7 @@ float4 PS_MergeShader(VS_OUT _in) : SV_Target
     float4 vEmissive = EmissiveTargetTex.Sample(g_sam_0, vScreenUV);
     float fShadowPow = ShadowTargetTex.Sample(g_sam_0, vScreenUV).r;
     
-    
+    //vColor.a에 재질 계수를 넣어둠
     vOutColor.xyz = vColor.xyz * vDiffuse.xyz  * (1.f - fShadowPow) +
                     (vSpecular.xyz * vColor.a) * (1.f - fShadowPow) +
                     vEmissive.xyz;
@@ -299,10 +301,6 @@ VS_SHADOW_OUT VS_ShadowMap_Inst(VS_IN _in)
 {
     VS_SHADOW_OUT output = (VS_SHADOW_OUT) 0.f;
     
-    // 사용하는 메쉬가 RectMesh(로컬 스페이스에서 반지름 0.5 짜리 정사각형)
-    // 따라서 2배로 키워서 화면 전체가 픽셀쉐이더가 호출될 수 있게 한다.
-
-    //애니메이션이 들어있다면
     if (g_iAnim)
     {
         //반사광에 필요한 tan,bin,nor이 필요없기 때문에 해당 메쉬 가공처리만 
@@ -310,7 +308,6 @@ VS_SHADOW_OUT VS_ShadowMap_Inst(VS_IN _in)
     }
     
     output.vPosition = mul(float4(_in.vPos, 1.f), _in.matWVP);
-    
     output.vProjPos = output.vPosition;
     output.vProjPos.xyz /= output.vProjPos.w;
             

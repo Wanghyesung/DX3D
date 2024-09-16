@@ -225,6 +225,8 @@ void CCamera::SortObject()
 
 			for (size_t j = 0; j < vecObject.size(); ++j)
 			{
+				if ((LAYER_TYPE::Monster) == (LAYER_TYPE)i)
+					int a = 10;
 				CRenderComponent* pRenderCom = vecObject[j]->GetRenderComponent();
 
 				// 렌더링 기능이 없는 오브젝트는 제외
