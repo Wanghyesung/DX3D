@@ -173,7 +173,6 @@ void CDemonScript::Initialize(const wstring& _strFbxName)
 	m_pFSM->SetState(MONSTER_STATE_TYPE::IDLE);
 
 
-	//init_hp();
 
 	CGameObject* pWeapon = InitializeFBX(L"TaurusDemon_Axe");
 	pWeapon->AddComponent(new CTransform());

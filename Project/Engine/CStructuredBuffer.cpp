@@ -135,6 +135,7 @@ void CStructuredBuffer::SetData(void* _pSrc, UINT _iSize)
 	memcpy(tSub.pData, _pSrc, iSize);
 	CONTEXT->Unmap(m_SB_CPU_Write.Get(), 0);
 
+
 	// CPU WriteBuffer -> Main Buffer
 	CONTEXT->CopyResource(m_SB.Get(), m_SB_CPU_Write.Get());
 }

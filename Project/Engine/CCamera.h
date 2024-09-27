@@ -98,6 +98,7 @@ public:
     void render();
     void render_shadowmap();//광원 카메라 전용 깊이값 저장
 
+
 public:
     virtual void begin() override;
     virtual void finaltick() override;

@@ -19,31 +19,67 @@
 
 extern HWND g_hWnd;
 
+/*
+m_bCompleted, m_bRender, m_iLoadingRes와 같은 변수를 std::atomic으로 변경하면 코드가 간결해지고,
+mutex로 인한 병목을 줄일 수 있습니다. 하지만, 모든 변수에 대해 atomic을 사용할 필요는 없으며,
+주로 동기화가 필요한 단순한 플래그나 카운터에 사용하는 것이 좋습니다.
+*/
+
+
+/*
+std::condition_variable은 C++에서 스레드 간의 동기화를 위해 사용되는 클래스입니다. 
+여러 스레드가 특정 조건을 만족할 때까지 기다리거나, 특정 조건이 만족될 때 다른 스레드에게 이를 알리는 데 사용됩니다.
+*/
+
+/*
+std::condition_variable은 다음과 같은 두 가지 주요 함수로 구성됩니다:
+
+wait() 함수: 특정 조건이 만족될 때까지 스레드를 블록(block)합니다.
+notify_one() 및 notify_all() 함수: 대기 중인 스레드에게 특정 조건이 만족되었음을 알립니다.
+std::condition_variable은 항상 std::mutex와 함께 사용됩니다. std::mutex는 스레드 간의 데이터 접근을 안전하게 보장하고,
+std::condition_variable은 스레드가 안전하게 기다리고, 깨어날 수 있도록 도와줍니다.
+*/
+
 CLoadingScene::CLoadingScene() :
-	m_bCompleted(false),
 	m_bLoadingFalse(false),
 	m_bRender(false),
 	m_fpCreateLevel(nullptr),
 	m_Mutex{},
 	m_fCurProgress(0.f),
+	m_iTotalRes(3),
 	m_iLoadingRes(0),
-	m_iTotalRes(3)
+	m_bResLoad(false)
 {
 
 }
 
 CLoadingScene::~CLoadingScene()
 {
-	delete m_pLoadThread;
-	m_pLoadThread = nullptr;
+	for (int i = 0; i < m_vecLoadThread.size(); ++i)
+	{
+		delete m_vecLoadThread[i];
+		m_vecLoadThread[i] = nullptr;
+	}
+	
 }
 
 
 bool CLoadingScene::init()
 {
 	//load resources
-	m_pLoadThread = new std::thread(&CLoadingScene::resources_load, this, std::ref(m_Mutex));
+	m_vecLoadThread.push_back(new thread(&CLoadingScene::load_mgr, this, std::ref(m_iLoadingRes)));
+	m_vecLoadThread.push_back(new thread(&CLoadingScene::load_editor, this, std::ref(m_iLoadingRes)));
+	m_vecLoadThread.push_back(new thread(&CLoadingScene::load_imgui, this, std::ref(m_iLoadingRes)));
 
+	//for (auto& thread : m_vecLoadThread) 
+	//{
+	//	if (m_iLoadingRes == 3)
+	//	{
+	//		thread->join();
+	//	}
+	//}
+
+	//m_pLoadThread = new std::thread(&CLoadingScene::resources_load, this, std::ref(m_Mutex));
 	//m_pLoadThread->detach();//백드라운드에서 작업
 	//m_pLoadThread->join();
 	return TRUE;
@@ -53,22 +89,54 @@ void CLoadingScene::resources_load(mutex& _mutex)
 {
 	//임계영역
 	//현재 데이터 작업을 하기 때문에 다른 쪽 스레드에서 이 작업을 하지 못하게 함
-	_mutex.lock();
-	{
-		m_bRender = CEngine::GetInst()->init_mgr();
-		++m_iLoadingRes;
+	//_mutex.lock();
+	//{
+	//	m_bRender = CEngine::GetInst()->init_mgr();
+	//	++m_iLoadingRes;
+	//
+	//	CEditorObjMgr::GetInst()->init();
+	//	++m_iLoadingRes;
+	//
+	//	// ImGui 초기화
+	//	ImGuiMgr::GetInst()->init(g_hWnd);
+	//	++m_iLoadingRes;
+	//}
+    //_mutex.unlock();
+	//
+	////complete
+	//m_bCompleted = true;
+}
 
-		CEditorObjMgr::GetInst()->init();
-		++m_iLoadingRes;
+void CLoadingScene::load_imgui(int _iLoadingRes)
+{
+	std::unique_lock<mutex> lock(m_Mutex);
+	m_CV.wait(lock, [this]() {return m_bResLoad; });
 
-		// ImGui 초기화
-		ImGuiMgr::GetInst()->init(g_hWnd);
-		++m_iLoadingRes;
-	}
-    _mutex.unlock();
+	ImGuiMgr::GetInst()->init(g_hWnd);
+	++m_iLoadingRes;
+}
 
-	//complete
-	m_bCompleted = true;
+void CLoadingScene::load_mgr(int _iLoadingRes)
+{
+	//std::unique_lock은 생성자에서 자동으로 뮤텍스를 잠그고, 
+	// 소멸자에서 자동으로 뮤텍스를 해제합니다.이로 인해 예외가 발생해도
+	// 뮤텍스가 해제되므로 리소스 누수를 방지할 수 있습니다.
+	std::unique_lock<mutex> lock(m_Mutex);
+
+	m_bRender = CEngine::GetInst()->init_mgr();
+	++m_iLoadingRes;
+	m_bResLoad = true;
+
+	m_CV.notify_all();
+}
+
+void CLoadingScene::load_editor(int _iLoadingRes)
+{
+	std::unique_lock<mutex> lock(m_Mutex);
+	m_CV.wait(lock, [this]() {return m_bResLoad; });
+
+	CEditorObjMgr::GetInst()->init();
+	++m_iLoadingRes;
 }
 
 bool CLoadingScene::tick()
@@ -76,11 +144,14 @@ bool CLoadingScene::tick()
 	CTimeMgr::GetInst()->tick();
 	//리소스가 전부 로드되고 로딩퍼센트가 100까지 차면 level로 진입
 
-	if (m_bCompleted && m_fCurProgress >= 99.f) 
+	if (m_iLoadingRes == m_iTotalRes && m_fCurProgress >= 99.f)
 	{
 		//만약 메인쓰레드가 종료되었는데 자식 스레드가 남았다면
 		//자식 쓰레드를 메인쓰레드에 편입시켜서 종료되기전까지 block
-		m_pLoadThread->join();
+		for (auto& thread : m_vecLoadThread)
+		{
+			thread->join();	
+		}
 
 		//메인쓰레드와 완전히 분히 시켜 독립전인 스레드 운영가능
 		//m_pLoadThread->detach();
@@ -138,7 +209,7 @@ void CLoadingScene::render()
 
 void CLoadingScene::OnEnter()
 {
-	m_bCompleted = false;
+	//m_bCompleted = false;
 	m_bLoadingFalse = false;
 }
 

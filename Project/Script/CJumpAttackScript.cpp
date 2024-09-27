@@ -74,10 +74,12 @@ bool CJumpAttackScript::check_pos(CGameObject* _pMonster)
 	}
 	return false;
 }
+
 void CJumpAttackScript::lookAtPlayer()
 {
 
 }
+
 void CJumpAttackScript::tick()
 {
 	CAttackScript::tick();

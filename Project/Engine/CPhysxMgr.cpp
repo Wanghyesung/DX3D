@@ -37,7 +37,9 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
         printf("statusChange\n");
         return false;
     }
-}gTriggersFilterCallback;
+}gTriggersFilterCallback;//사용 안함
+
+
 
 static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
     PxFilterObjectAttributes attributes1, PxFilterData filterData1,

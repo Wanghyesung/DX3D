@@ -102,6 +102,7 @@ void CCamera::CalRay()
 	//비율 해당 위치를 전체 크기에 비율값을 구함 
 	//화면 좌표를 투영 좌표로 변환
 	//투영좌표를 m_matProj.11 , 22(투영행렬은 11, 22에만 영향을 끼치기 때문에 이 성분만 나누면 view좌표가 나옴)
+	//win좌표는 0~1을 비율로 잡지만 투영좌표계는 -1~1까지로 잡아야하기 때문에 2로 곱해주고 음수를 표현해야하기 때문에 -1를 빼줌
 	m_ray.vDir.x = ((((vMousePos.x - tVP.TopLeftX) * 2.f / tVP.Width) - 1.f)/* - m_matProj._31*/) / m_matProj._11;
 	m_ray.vDir.y = (-(((vMousePos.y - tVP.TopLeftY) * 2.f / tVP.Height) - 1.f) /*- m_matProj._32*/) / m_matProj._22;
 	m_ray.vDir.z = 1.f;
@@ -169,7 +170,7 @@ void CCamera::CalcProjMat()
 
 void CCamera::UpdateMatrix()
 {
-		//이전 행렬
+	//이전 행렬
 	g_transform.matPrevView = m_matPrevView;
 	g_transform.matPrevProj = m_matPrevProj;
 

@@ -35,7 +35,7 @@ private:
 
     Ptr<CTexture>               m_RTCopyTex;
 
-
+   
 public:
     void init();
     void render();

@@ -27,7 +27,6 @@ private:
 	// BlendState
 	ComPtr<ID3D11BlendState>		m_BSState[(UINT)BS_TYPE::END];
 
-
 	D3D11_VIEWPORT					m_ViewPort;
 
 	// ∑ª¥ı≈∏∞Ÿ «ÿªÛµµ
