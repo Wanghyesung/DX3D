@@ -6,6 +6,7 @@
 #include "DetourNavMeshBuilder.h"
 #include "DetourNavMeshQuery.h"
 #include "DetourCrowd.h"
+#include "CRDNavMeshField.h"
 
 struct tNavMeshInfo
 {
@@ -24,7 +25,8 @@ struct tNavMeshInfo
 
 struct tBuildSettings
 {
-    UINT ID;
+    wstring Key;
+
     // 길찾기 주체들의 최대 개체수
     int maxCrowdNumber{ 1024 };
     // 길찾기 주체들의 최대 충돌반경
@@ -36,7 +38,7 @@ struct tBuildSettings
     // 오를 수 있는 단차
     float walkableClimb{ 0.3f };
     // 천장의 최소 높이
-    float walkableHeight{ 1.f };
+    float walkableHeight{ 10.f };
     // x축,z축 공간 분할의 단위, 단위가 작을수록 판정이 더 세밀해지지만, 네비게이션 빌드와 길찾기 시스템의 부하가 늘게 된다.
     float divisionSizeXZ{ 5.f };
     // y축 공간 분할의 단위, 단위가 작을수록 판정이 더 세밀해지지만, 네비게이션 빌드와 길찾기 시스템의 부하가 늘게 된다.
@@ -56,31 +58,20 @@ class CNavMeshMgr : public CSingleton<CNavMeshMgr>
     SINGLE(CNavMeshMgr);
 
 private:
+    static map<wstring, tNavMeshInfo> m_mapNavMesh; //몬스터 이름에 따른 네비메쉬
+    static vector<UINT> m_vecDeleteExpected; //경로 업데이트를 받지 않을 메쉬 등록
+    static map<UINT, CRDNavMeshField*> m_mapNavMeshField; //현재 몬스터 아이디와 네비메쉬 컴포넌트
     static UINT m_iPlaneCount;
+
     UINT m_iStartingIdx;
     vector<Vec3> m_vecWorldVertices;
     vector<int> m_vecWorldFaces;
-
+        
     rcContext* m_pContext;
-    //rcPolyMesh* polyMesh;
-    //rcConfig config;
-    //rcPolyMeshDetail* polyMeshDetail;
-    //rcCompactHeightfield* compactHeightField;
-    //rcHeightfield* heightField;
-    //dtNavMesh* navMesh;
-    //
-    //dtNavMeshQuery* navQuery;
-    //dtCrowd* crowd;
-    //dtQueryFilter m_filter;
-
-    map<UINT, tNavMeshInfo> m_mapNavMesh;
-private:
-   
-    //unordered_map<UINT, tNavMeshInfo>  m_hashObjID;
-private:
-    Vec3 m_vNavMeshScale; //현재 네비메쉬의 크기
-    bool RayResultTrigger;
-
+    
+    atomic<bool> m_bRunning;
+    mutex m_mutex;
+    thread m_pathThread;
 private:
     bool LoadNavMeshFromFile(const char* path);
     void free();
@@ -108,14 +99,19 @@ public:
     void PlusPlaneCount() { ++m_iPlaneCount; }
 
     void AddPlaneVertex(class CNavMeshPlane* _pNavMeshPlane);
-public:
-    const Vec3& FindPath(UINT _ID, float * _pStartPos, float* _pEndPos);
 
-    //UINT InitMesh(const Vec3& _vScale);//메쉬 생성후 내 id를 반환해줌
-
-    bool IsValidPoint(UINT _ID, const Vec3& _CheckPos);
+    void AddNavMeshField(UINT _ID, CRDNavMeshField* _pNavMeshField);
+    void DeleteNavMeshField(UINT _ID);
 public:
-    dtCrowd* GetCrowd(UINT _ID) { return m_mapNavMesh.find(_ID)->second.crowd; }
-    dtNavMeshQuery* GetNavMeshQuery(UINT _ID) { return m_mapNavMesh.find(_ID)->second.navQuery; }
+    
+    static Vec3 FindPath(const wstring& _strKey, float * _pStartPos, float* _pEndPos);
+    static void CalculatePath();
+
+  
+    bool IsValidPoint(const wstring& _strKey, const Vec3& _CheckPos);
+
+public:
+    dtCrowd* GetCrowd(const wstring& _strKey) { return m_mapNavMesh.find(_strKey)->second.crowd; }
+    dtNavMeshQuery* GetNavMeshQuery(const wstring& _strKey) { return m_mapNavMesh.find(_strKey)->second.navQuery; }
 };
 

@@ -32,9 +32,7 @@ void CMonsterMove::final_tick()
 		return;
 
 	if (check_len())
-	{
-		return; //lookat_player();
-	}
+		return; 
 
 	else
 	{
@@ -61,12 +59,15 @@ void CMonsterMove::Enter()
 		m_pTarget = vecObj[0];
 
 	GetOwner()->RDNavMeshField()->SetActive(true);
+	CNavMeshMgr::GetInst()->AddNavMeshField(GetOwner()->GetID(), GetOwner()->RDNavMeshField()); //다른 스레드에서 자동으로 범위 체크
+
 	m_bActive = true;
 }
 
 void CMonsterMove::Exit()
 {
 	GetOwner()->RDNavMeshField()->SetActive(false);
+	CNavMeshMgr::GetInst()->DeleteNavMeshField(GetOwner()->GetID());
 	m_bActive = false;
 }
 

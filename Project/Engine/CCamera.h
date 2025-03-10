@@ -30,7 +30,7 @@ private:
     UINT        m_iLayerMask;
 
     int         m_iCamIdx;  // 카메라 우선순위
-    tRay                    m_ray;      // 마우스 방향을 향하는 직선
+    tRay        m_ray;      // 마우스 방향을 향하는 직선
 
 
     map<ULONG64, vector<tInstObj>>      m_mapInstGroup_S;       // shadow 

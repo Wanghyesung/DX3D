@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CEntity.h"
 
-UINT CEntity::g_iNextID = 0;
+UINT CEntity::g_iNextID = 1;
 
 CEntity::CEntity()
 	: m_iID(g_iNextID++)

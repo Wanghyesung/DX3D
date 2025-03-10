@@ -17,6 +17,7 @@ CConstBuffer::~CConstBuffer()
 
 void CConstBuffer::Create(UINT _iElementSize, UINT _iElementCount)
 {
+	//셰이더에서 사용할 데이터를 GPU에 전달
 	m_iElementSize = _iElementSize;
 	m_iElementCount = _iElementCount;
 
@@ -28,7 +29,7 @@ void CConstBuffer::Create(UINT _iElementSize, UINT _iElementCount)
 	// 상수버퍼 생성
 	m_Desc.ByteWidth = iBufferSize;
 	m_Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	m_Desc.Usage = D3D11_USAGE_DYNAMIC;
+	m_Desc.Usage = D3D11_USAGE_DYNAMIC; 
 	m_Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	if (FAILED(DEVICE->CreateBuffer(&m_Desc, nullptr, m_CB.GetAddressOf())))

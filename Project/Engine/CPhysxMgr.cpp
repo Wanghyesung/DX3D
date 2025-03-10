@@ -21,7 +21,7 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
             pairFlags = PxPairFlag::eCONTACT_DEFAULT;                          
        
 
-        return PxFilterFlags();
+        return PxFilterFlag::eDEFAULT;
     }
 
     virtual		void	pairLost(PxU64 pairID,
@@ -40,22 +40,25 @@ class TriggersFilterCallback : public PxSimulationFilterCallback
 }gTriggersFilterCallback;//사용 안함
 
 
-
+//충돌 가능성이 있는 쌍만 들어옴 AABB
 static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
     PxFilterObjectAttributes attributes1, PxFilterData filterData1,
     PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-   
-    PxCollisionEvent pLeftEvent = CPhysxMgr::GetInst()->FIndEventObj(filterData0.word0);
-    PxCollisionEvent pRightEvent = CPhysxMgr::GetInst()->FIndEventObj(filterData1.word0);
+    //내 ID로 찾기
+    if (filterData0.word0 == 0 || filterData1.word0 == 0)
+        return PxFilterFlag::eKILL;  
     
     //내가 체크한 레이어들끼리 충돌했는지 검사
-    const bool isTriggerPair = CPhysxMgr::GetInst()->CollisionCheck(pLeftEvent.eLayerBit, pRightEvent.eLayerBit);
-
+    const bool isTriggerPair = CPhysxMgr::GetInst()->CollisionCheck(filterData0.word1, filterData1.word1);
+    
     if (isTriggerPair)
     {
+        PxCollisionEvent pLeftEvent = CPhysxMgr::GetInst()->FindEventObj(filterData0.word0);
+        PxCollisionEvent pRightEvent = CPhysxMgr::GetInst()->FindEventObj(filterData1.word0);
+
         //이벤트 트리거
-        pairFlags = PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eTRIGGER_DEFAULT;
+        pairFlags = PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eTRIGGER_DEFAULT;
 
         if (!pLeftEvent.bPass && !pRightEvent.bPass)
         {
@@ -65,6 +68,8 @@ static	PxFilterFlags triggersUsingFilterCallback(PxFilterObjectAttributes attrib
         if (CPhysxMgr::GetInst()->UseCCD())
             pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
     }
+    else
+        return PxFilterFlag::eKILL;//필요 없는 충돌 페어 제거
 
     return PxFilterFlag::eDEFAULT;
 }
@@ -135,20 +140,22 @@ void CPhysxMgr::init()
 }
 void CPhysxMgr::tick()
 {
+    //가변 시간 스텝 방식 (Variable Time Step)
+
     m_pScene->simulate(1.f / 60.f);
     m_pScene->fetchResults(true);
 }
 
 void CPhysxMgr::tick_collision()
 {
-    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.begin();
-    for (iter; iter != m_mapCol.end(); )
+    map<UINT_PTR, PxCollisionPair>::iterator iter = m_mapCollisionPair.begin();
+    for (iter; iter != m_mapCollisionPair.end(); )
     {
         CGameObject* pLeftObj = iter->second.pLeftObj;
         CGameObject* pRightObj = iter->second.pRightObj;
 
         if (!pLeftObj->Collider3D()->GetIsActive() ||
-           !pRightObj->Collider3D()->GetIsActive())
+            !pRightObj->Collider3D()->GetIsActive())
         {
             ++iter;
             continue;
@@ -173,7 +180,6 @@ void CPhysxMgr::tick_collision()
             //다음 프레임에서 다시 체크하기 위해서 false로 전환
             iter->second.bCheck = false;
         }
-
         else
         {
             //이번 프레임에서 충돌체크를 받지 않았는데 onColl이 true면 exit
@@ -190,6 +196,7 @@ void CPhysxMgr::tick_collision()
     }
 
 }
+
 
 PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer, CGameObject* _pCollEventObj)
 {
@@ -214,8 +221,6 @@ PxRigidDynamic* CPhysxMgr::GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer
     pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, m_bUseCCD); // CCD 설정
     
 
-    //POD(PxVisualDebugger)설치
-    //pRigidbody->getActorFlags().setAll(PxActorFlag::eVISUALIZATION); // 시각화 플래그 설정
     pRigidbody->setContactReportThreshold(0.01f);
         
     m_pScene->addActor(*pRigidbody);
@@ -344,40 +349,30 @@ void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAx
     pShape->release();
 }
 
-void CPhysxMgr::ResetCollisionCheck()
-{
-    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.begin();
-
-    for (iter; iter != m_mapCol.end(); ++iter)
-    {
-        iter->second.bCheck = false;//충돌검사 전에 전부 false로 충돌이 됐다면 eventcallback에서 true로 전환
-    }
-}
-
 void CPhysxMgr::AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer)
 {
     UINT ID = _pGameObj->GetID();
     
-    PxCollisionEvent tEvent = FIndEventObj(ID);
+    PxCollisionEvent tEvent = FindEventObj(ID);
 
     if (tEvent.pEventObj == nullptr)
     {
-        PxFilterData filterData;
+        PxFilterData filterData = {};
        
         //내 게임 오브젝트의 ID를 등록
         filterData.word0 = ID; 
+        filterData.word1 = _iLayer; //레이어 등록
 
        // 충돌 그룹 및 충돌 마스크 설정
         _pShape->setSimulationFilterData(filterData); 
 
-        tEvent.eLayerBit = _iLayer; //나와 충돌시 이벤트를 발생시킬 레이어 등록
         tEvent.pEventObj = _pGameObj; //이벤트를 호출시킬 게임 오브젝트 등록
 
         m_mapEventObj.insert(make_pair(ID, tEvent));//해당
     }
 }
 
-PxCollisionEvent CPhysxMgr::FIndEventObj(UINT _iID)
+PxCollisionEvent CPhysxMgr::FindEventObj(UINT _iID)
 {
     map<UINT, PxCollisionEvent>::iterator iter = m_mapEventObj.find(_iID);
     if (iter == m_mapEventObj.end())
@@ -385,6 +380,7 @@ PxCollisionEvent CPhysxMgr::FIndEventObj(UINT _iID)
         return PxCollisionEvent();
     }
     
+    //동적으로 변경할 수 있게 체크
     CPxRigidbody* pRigid = iter->second.pEventObj->PxRigidbody();
     if (pRigid)
     {
@@ -419,24 +415,24 @@ void CPhysxMgr::LayerCheck(UINT _left, UINT _right)
     m_matrix[iRow] |= (1 << iCol);
 }
 
-void CPhysxMgr::CollisionObjectCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj)
+void CPhysxMgr::AddCollisionPair(CGameObject* _pLeftObj, CGameObject* _pRightObj)
 {
     PxCollisionID id = {};
-    id.LeftID = _pLeftObj->Collider3D()->GetID();
-    id.RightID = _pRightObj->Collider3D()->GetID();
+    id.LeftID = _pLeftObj->GetID();
+    id.RightID = _pRightObj->GetID();
 
-    map<UINT_PTR, PxCheckColl>::iterator iter = m_mapCol.find(id.id);
-
-    if (iter == m_mapCol.end())
+    const auto& iter = m_mapCollisionPair.find(id.id);
+    if (iter == m_mapCollisionPair.end())
     {
-        PxCheckColl pxColl = PxCheckColl{ false, false ,_pLeftObj, _pRightObj };
-        m_mapCol.insert(make_pair(id.id, pxColl));
-        iter = m_mapCol.find(id.id);
+        PxCollisionPair tPxPair = PxCollisionPair{ true, false ,_pLeftObj, _pRightObj };
+        m_mapCollisionPair.insert(make_pair(id.id, tPxPair));
+        return;
     }
 
     //충돌 검사 체크
     iter->second.bCheck = true;
 }
+
 
 bool CPhysxMgr::CollisionCheck(UINT _ileft, UINT _iright)
 {

@@ -48,19 +48,20 @@ void CPxCollisionEvent::onAdvance(const PxRigidBody* const*, const PxTransform*,
 
 void CPxCollisionEvent::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 count)
 {
-	UINT iLeftID = pairs->shapes[0]->getSimulationFilterData().word0;
-	UINT iRightID = pairs->shapes[1]->getSimulationFilterData().word0;
+	while (count--)
+	{
+		const PxContactPair& pair = *pairs++;
+		
+		UINT iLeftID = pair.shapes[0]->getSimulationFilterData().word0;
+		UINT iRightID = pair.shapes[1]->getSimulationFilterData().word0;
 
-	CGameObject* pLeftObj = CPhysxMgr::GetInst()->FIndEventObj(iLeftID).pEventObj;
-	CGameObject* pRightObj = CPhysxMgr::GetInst()->FIndEventObj(iRightID).pEventObj;
+		CGameObject* pLeftObj = CPhysxMgr::GetInst()->FindEventObj(iLeftID).pEventObj;
+		CGameObject* pRightObj = CPhysxMgr::GetInst()->FindEventObj(iRightID).pEventObj;
+		
 
-	
-	if (pLeftObj == nullptr || pRightObj == nullptr)
-		return;
+		if (pLeftObj == nullptr || pRightObj == nullptr || pLeftObj->IsDead() || pRightObj->IsDead())
+			return;
 
-	if (pLeftObj->IsDead() || pRightObj->IsDead())
-		return;
-	else
-		CPhysxMgr::GetInst()->CollisionObjectCheck(pLeftObj, pRightObj);
-
+		CPhysxMgr::GetInst()->AddCollisionPair(pLeftObj, pRightObj);
+	}
 }

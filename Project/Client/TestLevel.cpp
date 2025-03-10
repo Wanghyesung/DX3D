@@ -309,16 +309,7 @@ void CreateTestLevel()
 }
 
 void CreateMonster()
-{
-	//navmesh
-	CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-	CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-	CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
-
-	//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
-	//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
-	//CNavMeshMgr::GetInst()->CreatePlane({ 1000 , 100, 1000 }, Vec3(700.f, 200.f, 0.f));
-	
+{	
 	CGameObject* pMonster = new CGameObject;
 	pMonster->SetName(L"Balder_Knight");
 	pMonster->AddComponent(new CTransform());
@@ -326,8 +317,8 @@ void CreateMonster()
 	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));	
 	{
 		tBuildSettings tSetting = {};
-		tSetting.agentRadius = 100.f; // 900 / 5 = 180
-	    tSetting.ID = pMonster->GetID();
+		tSetting.agentRadius = 160.f; 
+		tSetting.Key = pMonster->GetName();
 		CNavMeshMgr::GetInst()->BuildField(tSetting);
 	
 		CRDNavMeshField* pNav = new CRDNavMeshField();
@@ -454,23 +445,14 @@ void CreateMonster()
 	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
 	SetFrustomBound(pBoss, true, 200.f);
 	{
-		//CNavMeshMgr::GetInst()->CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-		//CNavMeshMgr::GetInst()->CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
-		//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
-		//CNavMeshMgr::GetInst()->CreatePlane({ 1275 , 350, 5490 }, Vec3(0, 700.f, 7000.f));
-		//CNavMeshMgr::GetInst()->CreatePlane({ 1700 , 0, 2400 }, Vec3(1300.f, 0.f, 800.f));
 		tBuildSettings tSetting = {};
-		tSetting.ID = pBoss->GetID();
+		tSetting.Key = pBoss->GetName();
 		tSetting.agentRadius = 900; // 900 / 5 = 180
 		CNavMeshMgr::GetInst()->BuildField(tSetting);
 	
 		CRDNavMeshField* pNav = new CRDNavMeshField();
 		pBoss->AddComponent(pNav);
-		//CNavAgent* pAgent = new CNavAgent;
-		//pBoss->AddComponent(pAgent);
-		//pAgent->SetSpeed(2);
-		//pAgent->SetRadius(0.5);
-		//pAgent->AssignToNavigationField(pNav);
+		pNav->SetRadius(tSetting.agentRadius);
 	}
 
 	SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);

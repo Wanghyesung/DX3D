@@ -1,38 +1,50 @@
 #include "pch.h"
 #include "CNavMeshMgr.h"
-
-#include "CPathMgr.h"
-#include "CTimeMgr.h"
-
 #include "CTransform.h"
-#include "CLevelMgr.h"
-#include "CLayer.h"
-#include "CLevel.h"
 #include "CEventMgr.h"
-
 #include "CResMgr.h"
-#include "CMesh.h"
-#include "CCollider2D.h"
-#include "CCollider3D.h"
-#include "CRenderMgr.h"
-#include "CCamera.h"
-#include "CCollisionMgr.h"
-
+#include "CPxRigidbody.h"
 #include "CMeshRender.h"
 #include "CNavMeshPlane.h"
-#include "CRDNavMeshField.h"
 #include "CLevelMgr.h"
 #include "CLayer.h"
 
 UINT CNavMeshMgr::m_iPlaneCount = 0;
+map<UINT, CRDNavMeshField*> CNavMeshMgr::m_mapNavMeshField = {};
+map<wstring, tNavMeshInfo> CNavMeshMgr::m_mapNavMesh = {};
+vector<UINT> CNavMeshMgr::m_vecDeleteExpected = {};
 
-CNavMeshMgr::CNavMeshMgr()
+CNavMeshMgr::CNavMeshMgr():
+    m_bRunning(true)
 {
     m_pContext = new rcContext();
+
+    //스레드 생성
+    m_pathThread = thread([this]()
+        {
+            while (m_bRunning)
+            {
+                {
+                    std::lock_guard<mutex> lock(m_mutex);
+                    CalculatePath();
+                }
+                std::this_thread::sleep_for(0.1s);
+            }
+        });
+
 }
 
 CNavMeshMgr::~CNavMeshMgr()
 {
+    {
+        //락경합에서 이기면 그 때 false
+        std::lock_guard<mutex> lock(m_mutex); 
+        m_bRunning.store(false);
+    }
+    
+    if (m_pathThread.joinable())
+        m_pathThread.join();
+
     free();
 
     if (m_pContext)
@@ -141,6 +153,7 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 
     return npath;
 }
+
 CGameObject* CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
 {
 
@@ -191,6 +204,9 @@ CGameObject* CNavMeshMgr::CreatePlane(Vec3 _vPos, Vec3 _vScale)
 
 void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, const int* faces, size_t facesNum, const tBuildSettings& buildSettings)
 {
+    if (m_mapNavMesh.find(buildSettings.Key) != m_mapNavMesh.end())
+        return;
+
     tNavMeshInfo tNavMesh = {};
     float bmin[3] = { WCHAR_MAX,WCHAR_MAX, WCHAR_MAX };
     float bmax[3] = { -WCHAR_MAX, -WCHAR_MAX, -WCHAR_MAX };
@@ -247,9 +263,7 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
 
     std::vector<unsigned char> triareas;
     triareas.resize(facesNum);
-    //unsigned char * triareas = new unsigned char[facesNum];
-    //memset(triareas, 0, facesNum*sizeof(unsigned char));
-
+   
     rcMarkWalkableTriangles(m_pContext, tNavMesh.config.walkableSlopeAngle, worldVertices, verticesNum, faces, facesNum, triareas.data());
     processResult = rcRasterizeTriangles(m_pContext, worldVertices, verticesNum, faces, triareas.data(),
         facesNum, *tNavMesh.heightField, tNavMesh.config.walkableClimb);
@@ -363,7 +377,7 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     status = tNavMesh.navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
     //dtFree(navData);
     assert(dtStatusFailed(status) == false);
-
+    
     tNavMesh.navQuery = dtAllocNavMeshQuery();
     status = tNavMesh.navQuery->init(tNavMesh.navMesh, 2048);
 
@@ -372,7 +386,7 @@ void CNavMeshMgr::BuildField(const float* worldVertices, size_t verticesNum, con
     tNavMesh.crowd = dtAllocCrowd();
     tNavMesh.crowd->init(1024, buildSettings.maxAgentRadius, tNavMesh.navMesh);
 
-    m_mapNavMesh.insert(make_pair(buildSettings.ID, tNavMesh));
+    m_mapNavMesh.insert(make_pair(buildSettings.Key, tNavMesh));
 }
 
 bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
@@ -383,6 +397,10 @@ bool CNavMeshMgr::LoadNavMeshFromFile(const char* path)
 
 void CNavMeshMgr::init()
 {
+    CreatePlane({ 1000, 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+    CreatePlane({ 3000 , 0, 1000 }, Vec3(2000.f, 0.f, 2000.f));
+    CreatePlane({ 1700 , 0, 5500 }, Vec3(1000.f, 0.f, 7000.f));
+
     //if (!navMesh && !navQuery)
     //    LoadNavMeshFromFile("navmesh\\solo_navmesh.bin");
 }
@@ -426,9 +444,9 @@ void CNavMeshMgr::ReBuildField()
         if (!vecMonster[i]->RDNavMeshField())
             continue;
 
-        UINT ID = vecMonster[i]->GetID(); 
+        const wstring& strKey = vecMonster[i]->GetName(); 
         tBuildSettings buildSettings = {};
-        buildSettings.ID = ID;
+        buildSettings.Key = strKey;
         buildSettings.agentRadius = vecMonster[i]->RDNavMeshField()->GetRadius();
 
         BuildField(reinterpret_cast<float*>(&m_vecWorldVertices[0]), m_vecWorldVertices.size(),
@@ -486,62 +504,94 @@ void CNavMeshMgr::AddPlaneVertex(CNavMeshPlane* _pNavMeshPlane)
     _pNavMeshPlane->SetWorldFaces(0 + m_iStartingIdx);
 }
 
-const Vec3& CNavMeshMgr::FindPath(UINT _ID, float* _pStartPos, float* _pEndPos)
+void CNavMeshMgr::AddNavMeshField(UINT _ID, CRDNavMeshField* _pNavMeshField)
 {
-    float polyPickExt[3] = { 6000,6000,6000 }; // 범위를 제한하기 위한 벡터
+    m_mapNavMeshField.insert(make_pair(_ID, _pNavMeshField));
+}
 
-    //const Vec3 vScale = GetOwner()->Collider3D()->GetOffsetScale();
-    //float ext[3] = { vScale.x, vScale.y, vScale.z };
+void CNavMeshMgr::DeleteNavMeshField(UINT _ID)
+{
+    m_vecDeleteExpected.push_back(_ID);
+}
 
-    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_ID);
-    if (iter == m_mapNavMesh.end())
+//다른 스레드에서 계산
+void CNavMeshMgr::CalculatePath()
+{
+    //삭제 예정
+    for (int i = 0; i < m_vecDeleteExpected.size(); ++i)
     {
-        return Vec3::Zero;
+        m_mapNavMeshField.find(m_vecDeleteExpected[i])->second->SetPathDir(Vec3::Zero);
+        m_mapNavMeshField.erase(m_vecDeleteExpected[i]);
     }
+    m_vecDeleteExpected.clear();
 
-    tNavMeshInfo tNav = iter->second;
+    for (const auto& iter : m_mapNavMeshField)
+    {
+        CRDNavMeshField* pNavMeshCom = iter.second;
+        if (!pNavMeshCom->m_bActive)
+            return;
+
+        const wstring& _strName = pNavMeshCom->GetOwner()->GetName();//해당 몬스터에 맞는 네비 메쉬
+   
+        Vec3 vTargetPos = pNavMeshCom->m_pTarget->PxRigidbody()->GetPxPosition();
+        Vec3 vPos = pNavMeshCom->GetOwner()->PxRigidbody()->GetPxPosition();
+        float fStart[3] = { vPos.x, vPos.y,vPos.z };
+        float fEnd[3] = { vTargetPos.x, vTargetPos.y, vTargetPos.z };
+
+        pNavMeshCom->SetPathDir(FindPath(_strName, fStart, fEnd));
+    }
+}
+
+Vec3 CNavMeshMgr::FindPath(const wstring& _strKey, float* _pStartPos, float* _pEndPos)
+{
+    float polyPickExt[3] = { 2000.f, 2000.f, 2000.f }; // 적절한 탐색 범위 설정
+
+    
+    map<wstring, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_strKey);
+    if (iter == m_mapNavMesh.end())
+        return Vec3::Zero;
+
+    const tNavMeshInfo& tNav = iter->second;
     const dtQueryFilter* filter = tNav.crowd->getFilter(0);
 
-    dtPolyRef startPoly;
-    float nearestPoint[3];
-    tNav.navQuery->findNearestPoly(_pStartPos, polyPickExt, filter, &startPoly, nearestPoint);
+    dtPolyRef startPoly, endPoly;
+    float nearestStartPoint[3], nearestEndPoint[3];
 
-    //const Vec3 vTargetScale = m_pTarget->Collider3D()->GetOffsetScale();
-    //float targetext[3] = { vTargetScale.x, vTargetScale.y, vTargetScale.z };
+    // 시작점과 끝점에서 가장 가까운 네비게이션 메시 폴리곤을 찾음
+    tNav.navQuery->findNearestPoly(_pStartPos, polyPickExt, filter, &startPoly, nearestStartPoint);
+    tNav.navQuery->findNearestPoly(_pEndPos, polyPickExt, filter, &endPoly, nearestEndPoint);
 
-    dtPolyRef endPoly;
-    tNav.navQuery->findNearestPoly(_pEndPos, polyPickExt, filter, &endPoly, nearestPoint);
-
-    // 시작과 끝 위치를 찾습니다.
+    // 실제 네비 메시 위의 좌표를 찾음
     float nearestStartPos[3], nearestEndPos[3];
     dtStatus status01 = tNav.navQuery->closestPointOnPoly(startPoly, _pStartPos, nearestStartPos, 0);
     dtStatus status02 = tNav.navQuery->closestPointOnPoly(endPoly, _pEndPos, nearestEndPos, 0);
 
     dtPolyRef path[128];
     int pathCount;
-    tNav.navQuery->findPath(startPoly, endPoly, _pStartPos, _pEndPos, filter, path, &pathCount, 128);
+    tNav.navQuery->findPath(startPoly, endPoly, nearestStartPos, nearestEndPos, filter, path, &pathCount, 128);
 
     float* actualPath = new float[3 * 256];
+    unsigned char pathFlags[256];
+    dtPolyRef pathPolys[256];
     int actualPathCount;
-    tNav.navQuery->findStraightPath(nearestStartPos, nearestEndPos, path, pathCount, actualPath, 0, 0, &actualPathCount, 256);
 
-    // Vec3 형태의 경로를 생성합니다.
+    tNav.navQuery->findStraightPath(nearestStartPos, nearestEndPos, path, pathCount, actualPath, pathFlags, pathPolys, &actualPathCount, 256);
+
+    // Vec3 형태의 경로를 생성
     vector<Vec3> vecPath(actualPathCount);
     for (int i = 0; i < actualPathCount; ++i)
     {
         vecPath[i] = Vec3(actualPath[3 * i], actualPath[3 * i + 1], actualPath[3 * i + 2]);
     }
 
-    delete[] actualPath; // 더이상 필요없는 calcPath를 삭제합니다.
+    delete[] actualPath; // 항상 실행되도록 이동
 
-    if (vecPath.size() == 0)
+    if (vecPath.size() < 2)
     {
         return Vec3::Zero;
     }
 
-    Vec3 vDir = Vec3(vecPath[1].x - vecPath[0].x, vecPath[1].y - vecPath[0].y,
-        vecPath[1].z - vecPath[0].z);
-
+    Vec3 vDir = Vec3(vecPath[1].x - vecPath[0].x, vecPath[1].y - vecPath[0].y, vecPath[1].z - vecPath[0].z);
     vDir.Normalize();
 
     return vDir;
@@ -549,9 +599,9 @@ const Vec3& CNavMeshMgr::FindPath(UINT _ID, float* _pStartPos, float* _pEndPos)
 }
 
 
-bool CNavMeshMgr::IsValidPoint(UINT _ID, const Vec3& _CheckPos)
+bool CNavMeshMgr::IsValidPoint(const wstring& _strKey, const Vec3& _CheckPos)
 {
-    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_ID);
+    map<wstring, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_strKey);
     if (iter == m_mapNavMesh.end())
     {
         return Vec3::Zero;
@@ -562,7 +612,7 @@ bool CNavMeshMgr::IsValidPoint(UINT _ID, const Vec3& _CheckPos)
     float checkpos[3] = { _CheckPos.x, _CheckPos.y, -_CheckPos.z }; // 검사 위치
 
     dtPolyRef checkRef;
-    float polyPickExt[3] = { 6000,6000,6000 }; // 범위를 제한하기 위한 벡터
+    float polyPickExt[3] = { 2000,2000,2000 }; // 범위를 제한하기 위한 벡터
 
     dtQueryFilter filter;
     filter.setIncludeFlags(0xFFFF); // 모든 폴리곤 참조
@@ -592,7 +642,7 @@ bool CNavMeshMgr::IsValidPoint(UINT _ID, const Vec3& _CheckPos)
 
 void CNavMeshMgr::free()
 {
-    map<UINT, tNavMeshInfo>::iterator iter = m_mapNavMesh.begin();
+    map<wstring, tNavMeshInfo>::iterator iter = m_mapNavMesh.begin();
     for (iter; iter != m_mapNavMesh.end(); ++iter)
     {
         tNavMeshInfo tNav = iter->second;

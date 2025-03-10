@@ -9,9 +9,7 @@
 
 CRDNavMeshField::CRDNavMeshField() :
     CComponent(COMPONENT_TYPE::RDNAVMESHFIELD),
-    m_bActive(false),
-    m_fCurTime(0.1f),
-    m_fSearchTime(0.1f)
+    m_bActive(false)
 {
 
 }
@@ -31,25 +29,7 @@ void CRDNavMeshField::begin()
 
 void CRDNavMeshField::finaltick()
 {
-    if (!m_bActive)
-        return;
-
-   m_fCurTime += DT;
-   if (m_fSearchTime <= m_fCurTime)
-   {
-       m_fCurTime = 0.f;
-   
-       if (!m_pTarget)
-           return;
-   
-       Vec3 vTargetPos = m_pTarget->PxRigidbody()->GetPxPosition();
-       Vec3 vPos = GetOwner()->PxRigidbody()->GetPxPosition();
-   
-       float fStart[3] = { vPos.x, vPos.y,vPos.z };
-       float fEnd[3] = { vTargetPos.x, vTargetPos.y, vTargetPos.z };
-   
-       m_vPathDir = CNavMeshMgr::GetInst()->FindPath(GetOwner()->GetID(), fStart, fEnd);
-   }
+    
 }
 
 

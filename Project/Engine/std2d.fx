@@ -12,7 +12,7 @@ struct VS_IN
 
 struct VS_OUT
 {
-    float4 vPosition : SV_Position;
+    float4 vPosition : SV_Position; //픽셀이 어디에 그려질지를 결정 클립 공간 좌표를 정규화된 장치 좌표(NDC)로 변환
     float4 vColor : COLOR;
     float2 vUV : TEXCOORD;
 };
@@ -139,8 +139,8 @@ float4 PS_Std2DLight(VS_Light_OUT _in) : SV_Target
             }
             else
             {
-                vOutColor = float4(1.f, 1.f, 0.f, 1.f);
-                //discard;
+                //vOutColor = float4(1.f, 1.f, 0.f, 1.f);
+                discard;
             }
         }
         else

@@ -19,6 +19,8 @@ class CGraphicsShader :
     public CShader
 {
 private:
+    //기존 포인터를 변경 **
+    //원소 포인터 * 
     ComPtr<ID3DBlob>                m_VSBlob;
     ComPtr<ID3DBlob>                m_VSInstBlob;
     ComPtr<ID3DBlob>                m_HSBlob;

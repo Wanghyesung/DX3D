@@ -11,6 +11,7 @@ private:
     CLevel*     m_pCurLevel;
 
     map<wstring, CLevel*> m_mapLevel;
+   
 public:
     CLevel* GetCurLevel() { return m_pCurLevel; }
     CGameObject* FindObjectByName(const wstring& _strName);

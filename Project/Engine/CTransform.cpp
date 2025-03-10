@@ -116,7 +116,7 @@ void CTransform::finaltick()
 		}
 		else
 		{
-			m_matWorldScale = pParent->Transform()->m_matWorldScale;
+			m_matWorldScale = pParent->Transform()->m_matWorldScale; //부모가 크기를 조절하면 자식도 동일한 비율로 변화
 			m_matWorld *= pParent->Transform()->m_matWorld;
 		}
 
@@ -138,7 +138,7 @@ void CTransform::UpdateData()
 
 	g_transform.matWorld = m_matWorld;
 	g_transform.matWorldInv = m_matWorldInv;
-
+	
 	g_transform.matPrevWorld = m_matPrevWorld;
 
 	g_transform.matWV = g_transform.matWorld * g_transform.matView;

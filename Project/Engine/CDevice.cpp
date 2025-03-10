@@ -29,7 +29,7 @@ int CDevice::init(HWND _hWnd, UINT _iWidth, UINT _iHeight)
 
     int iFlag = 0;
 #ifdef _DEBUG
-    iFlag = D3D11_CREATE_DEVICE_DEBUG;
+    //iFlag = D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
     D3D_FEATURE_LEVEL eLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;

@@ -9,7 +9,7 @@
 #pragma comment(lib, "Physx/debug/PhysXFoundation_64")
 #pragma comment(lib, "Physx/debug/PhysXExtensions_static_64")
 #else
-#pragma comment(lib, "Physx/release/PhysX_64"))
+#pragma comment(lib, "Physx/release/PhysX_64")
 #pragma comment(lib, "Physx/release/PhysXFoundation_64")
 #pragma comment(lib, "Physx/release/PhysXExtensions_static_64")
 #endif
@@ -28,10 +28,10 @@ union PxCollisionID
 	UINT_PTR id;
 };
 
-struct PxCheckColl
+struct PxCollisionPair
 {
-	bool bOnColl;//충돌 체크
 	bool bCheck;//이번프레임에서 업데이트를 받았는지
+	bool bOnColl;//충돌 체크
 
 	CGameObject* pLeftObj;
 	CGameObject* pRightObj;
@@ -40,8 +40,8 @@ struct PxCheckColl
 struct PxCollisionEvent
 {
 	CGameObject* pEventObj;
-	UINT eLayerBit; // 0 << 1
-
+	
+	bool bCollision;
 	bool bPass;
 };
 
@@ -68,7 +68,8 @@ private:
 
 	UINT	m_matrix[MAX_LAYER];
 	map<UINT, PxCollisionEvent> m_mapEventObj;//충돌 될시에 이벤트 호출될 오브젝트들
-	map<UINT_PTR, PxCheckColl> m_mapCol;//물체가 충돌됐는지 안됐는지 확인용
+	map<UINT_PTR, PxCollisionPair> m_mapCollisionPair;//// 충돌한 객체 ID 저장 (이미 충돌 중인지 확인하기 위함)
+
 	//PxMaterial* m_pMaterial;
 
 	bool m_bUseCCD;
@@ -94,10 +95,10 @@ public:
 
 
 	//collision
-	void CollisionObjectCheck(CGameObject* _pLeftObj, CGameObject* _pRightObj);
-	void ResetCollisionCheck();//PxCheckColl에 bCheck값을 false로
+	void AddCollisionPair(CGameObject* _pLeftObj, CGameObject* _pRightObj);
+
 	void AddCollEventObj(PxShape* _pShape, CGameObject* _pGameObj, int _iLayer);
-	PxCollisionEvent FIndEventObj(UINT _iID);
+	PxCollisionEvent FindEventObj(UINT _iID);
 	void DeleteEventObj(UINT _iID);
 
 	void Clear()

@@ -1,15 +1,31 @@
 #include "pch.h"
 
-#include "CEventMgr.h"
+#include "CEngine.h"
+#include "CPathMgr.h"
+#include "CKeyMgr.h"
+#include "CTimeMgr.h"
+#include "CResMgr.h"
 #include "CLevelMgr.h"
+#include "CRenderMgr.h"
+#include "CCollisionMgr.h"
+#include "CEventMgr.h"
+#include "CFontMgr.h"
+#include "CPhysxMgr.h"
+#include "CNavMeshMgr.h"
+#include "CEngineUIMgr.h"
+#include "CRespawnMgr.h"
+#include "CBattleMgr.h"
+#include "CDevice.h"
+#include "CInstancingBuffer.h"
+
 #include "CLevel.h"
 #include "CLayer.h"
 #include "CGameObject.h"
 #include "CTransform.h"
-#include "CRenderMgr.h"
 #include "ptr.h"
-#include "CResMgr.h"
 #include "CMeshRender.h"
+
+
 
 void SpawnGameObject(CGameObject* _NewObject, Vec3 _vWorldPos, int _LayerIdx)
 {
@@ -493,4 +509,25 @@ void SetFrustomBound(CGameObject* _pGameObj, bool _bActive, int _iBoundSize)
 		vecGameObj[i]->MeshRender()->SetFrustumCheck(_bActive);
 	}
 		
+}
+
+void DestroyMgr()
+{
+	CEngine::Destroy();
+	CDevice::Destroy();
+	CInstancingBuffer::Destroy();
+	CPathMgr::Destroy();
+	CKeyMgr::Destroy();
+	CTimeMgr::Destroy();
+	CResMgr::Destroy();
+	CNavMeshMgr::Destroy();
+	CLevelMgr::Destroy();
+	CRenderMgr::Destroy();
+	CCollisionMgr::Destroy();
+	CEventMgr::Destroy();
+	CFontMgr::Destroy();
+	CPhysxMgr::Destroy();
+	CEngineUIMgr::Destroy();
+	CRespawnMgr::Destroy();
+	CBattleMgr::Destroy();
 }

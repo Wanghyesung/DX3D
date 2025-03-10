@@ -55,11 +55,11 @@ CLoadingScene::CLoadingScene() :
 
 CLoadingScene::~CLoadingScene()
 {
-	for (int i = 0; i < m_vecLoadThread.size(); ++i)
-	{
-		delete m_vecLoadThread[i];
-		m_vecLoadThread[i] = nullptr;
-	}
+	//for (int i = 0; i < m_vecLoadThread.size(); ++i)
+	//{
+	//	delete m_vecLoadThread[i];
+	//	m_vecLoadThread[i] = nullptr;
+	//}
 	
 }
 
@@ -67,96 +67,59 @@ CLoadingScene::~CLoadingScene()
 bool CLoadingScene::init()
 {
 	//load resources
-	m_vecLoadThread.push_back(new thread(&CLoadingScene::load_mgr, this, std::ref(m_iLoadingRes)));
-	m_vecLoadThread.push_back(new thread(&CLoadingScene::load_editor, this, std::ref(m_iLoadingRes)));
-	m_vecLoadThread.push_back(new thread(&CLoadingScene::load_imgui, this, std::ref(m_iLoadingRes)));
+	m_vecLoadThread.push_back(thread(&CLoadingScene::load_mgr, this));
+	m_vecLoadThread.push_back(thread(&CLoadingScene::load_editor, this));
+	m_vecLoadThread.push_back(thread(&CLoadingScene::load_imgui, this));
 
-	//for (auto& thread : m_vecLoadThread) 
-	//{
-	//	if (m_iLoadingRes == 3)
-	//	{
-	//		thread->join();
-	//	}
-	//}
-
-	//m_pLoadThread = new std::thread(&CLoadingScene::resources_load, this, std::ref(m_Mutex));
-	//m_pLoadThread->detach();//백드라운드에서 작업
-	//m_pLoadThread->join();
 	return TRUE;
 }
 
 void CLoadingScene::resources_load(mutex& _mutex)
 {
-	//임계영역
-	//현재 데이터 작업을 하기 때문에 다른 쪽 스레드에서 이 작업을 하지 못하게 함
-	//_mutex.lock();
-	//{
-	//	m_bRender = CEngine::GetInst()->init_mgr();
-	//	++m_iLoadingRes;
-	//
-	//	CEditorObjMgr::GetInst()->init();
-	//	++m_iLoadingRes;
-	//
-	//	// ImGui 초기화
-	//	ImGuiMgr::GetInst()->init(g_hWnd);
-	//	++m_iLoadingRes;
-	//}
-    //_mutex.unlock();
-	//
-	////complete
-	//m_bCompleted = true;
 }
 
-void CLoadingScene::load_imgui(int _iLoadingRes)
+void CLoadingScene::load_imgui()
 {
 	std::unique_lock<mutex> lock(m_Mutex);
 	m_CV.wait(lock, [this]() {return m_bResLoad; });
 
 	ImGuiMgr::GetInst()->init(g_hWnd);
-	++m_iLoadingRes;
+	m_iLoadingRes.fetch_add(1);
 }
 
-void CLoadingScene::load_mgr(int _iLoadingRes)
+void CLoadingScene::load_mgr()
 {
-	//std::unique_lock은 생성자에서 자동으로 뮤텍스를 잠그고, 
-	// 소멸자에서 자동으로 뮤텍스를 해제합니다.이로 인해 예외가 발생해도
-	// 뮤텍스가 해제되므로 리소스 누수를 방지할 수 있습니다.
 	std::unique_lock<mutex> lock(m_Mutex);
 
 	m_bRender = CEngine::GetInst()->init_mgr();
-	++m_iLoadingRes;
+	m_iLoadingRes.fetch_add(1);
 	m_bResLoad = true;
 
 	m_CV.notify_all();
 }
 
-void CLoadingScene::load_editor(int _iLoadingRes)
+void CLoadingScene::load_editor()
 {
 	std::unique_lock<mutex> lock(m_Mutex);
 	m_CV.wait(lock, [this]() {return m_bResLoad; });
 
 	CEditorObjMgr::GetInst()->init();
-	++m_iLoadingRes;
+	m_iLoadingRes.fetch_add(1);
 }
 
 bool CLoadingScene::tick()
-{
-	CTimeMgr::GetInst()->tick();
-	//리소스가 전부 로드되고 로딩퍼센트가 100까지 차면 level로 진입
-
+{	
 	if (m_iLoadingRes == m_iTotalRes && m_fCurProgress >= 99.f)
 	{
-		//만약 메인쓰레드가 종료되었는데 자식 스레드가 남았다면
-		//자식 쓰레드를 메인쓰레드에 편입시켜서 종료되기전까지 block
+		//block
 		for (auto& thread : m_vecLoadThread)
 		{
-			thread->join();	
+			thread.join();	
 		}
 
-		//메인쓰레드와 완전히 분히 시켜 독립전인 스레드 운영가능
+		//메인쓰레드와 완전히 분히 시켜 독립전인 스레드 운영가능(백그라운드)
 		//m_pLoadThread->detach();
 		
-		//level enter
 		if (m_fpCreateLevel != nullptr)
 			m_fpCreateLevel();
 
