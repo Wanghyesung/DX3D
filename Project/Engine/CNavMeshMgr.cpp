@@ -12,7 +12,8 @@
 UINT CNavMeshMgr::m_iPlaneCount = 0;
 map<UINT, CRDNavMeshField*> CNavMeshMgr::m_mapNavMeshField = {};
 map<wstring, tNavMeshInfo> CNavMeshMgr::m_mapNavMesh = {};
-vector<UINT> CNavMeshMgr::m_vecDeleteExpected = {};
+unordered_set<UINT> CNavMeshMgr::m_hashDeleteExpected = {};
+unordered_set<CRDNavMeshField*> CNavMeshMgr::m_hashAddExpected = {};
 
 CNavMeshMgr::CNavMeshMgr():
     m_bRunning(true)
@@ -24,10 +25,7 @@ CNavMeshMgr::CNavMeshMgr():
         {
             while (m_bRunning)
             {
-                {
-                    std::lock_guard<mutex> lock(m_mutex);
-                    CalculatePath();
-                }
+                CalculatePath();     
                 std::this_thread::sleep_for(0.1s);
             }
         });
@@ -36,11 +34,8 @@ CNavMeshMgr::CNavMeshMgr():
 
 CNavMeshMgr::~CNavMeshMgr()
 {
-    {
-        //락경합에서 이기면 그 때 false
-        std::lock_guard<mutex> lock(m_mutex); 
-        m_bRunning.store(false);
-    }
+     //navmeshMgr이 끝나고 씬 몬스터 처리 == 크래시 나지 않음
+     m_bRunning.store(false);   
     
     if (m_pathThread.joinable())
         m_pathThread.join();
@@ -504,26 +499,32 @@ void CNavMeshMgr::AddPlaneVertex(CNavMeshPlane* _pNavMeshPlane)
     _pNavMeshPlane->SetWorldFaces(0 + m_iStartingIdx);
 }
 
-void CNavMeshMgr::AddNavMeshField(UINT _ID, CRDNavMeshField* _pNavMeshField)
+void CNavMeshMgr::AddNavMeshField(CRDNavMeshField* _pNavMeshField)
 {
-    m_mapNavMeshField.insert(make_pair(_ID, _pNavMeshField));
+    m_hashAddExpected.insert(_pNavMeshField);
 }
 
 void CNavMeshMgr::DeleteNavMeshField(UINT _ID)
 {
-    m_vecDeleteExpected.push_back(_ID);
+    m_hashDeleteExpected.insert(_ID);
 }
 
 //다른 스레드에서 계산
 void CNavMeshMgr::CalculatePath()
 {
-    //삭제 예정
-    for (int i = 0; i < m_vecDeleteExpected.size(); ++i)
+    for (auto& iter : m_hashAddExpected)
     {
-        m_mapNavMeshField.find(m_vecDeleteExpected[i])->second->SetPathDir(Vec3::Zero);
-        m_mapNavMeshField.erase(m_vecDeleteExpected[i]);
+        m_mapNavMeshField.insert(make_pair(iter->GetOwner()->GetID(), iter));   
     }
-    m_vecDeleteExpected.clear();
+   
+    for (auto& iter : m_hashDeleteExpected)
+    {
+        //m_mapNavMeshField.find(iter)->second->SetPathDir(Vec3::Zero);
+        m_mapNavMeshField.erase(iter);
+    }
+  
+    m_hashDeleteExpected.clear();
+    m_hashAddExpected.clear();
 
     for (const auto& iter : m_mapNavMeshField)
     {
@@ -538,13 +539,17 @@ void CNavMeshMgr::CalculatePath()
         float fStart[3] = { vPos.x, vPos.y,vPos.z };
         float fEnd[3] = { vTargetPos.x, vTargetPos.y, vTargetPos.z };
 
-        pNavMeshCom->SetPathDir(FindPath(_strName, fStart, fEnd));
+        /*
+        FSM 스레드가 PhysX 데이터에 접근할 때, 길찾기 스레드가 동시에 데이터를 수정하면 충돌 발생 가능.
+        mutex 없이 PhysX 데이터를 읽고 있으면, 다른 스레드에서 객체가 삭제되거나 이동하면서 무효한 메모리를 읽어서 터질 가능성.
+        */
+        pNavMeshCom->SetPathDir(FindPath(_strName, fStart, fEnd, pNavMeshCom->GetSearchRange()));
     }
 }
 
-Vec3 CNavMeshMgr::FindPath(const wstring& _strKey, float* _pStartPos, float* _pEndPos)
+Vec3 CNavMeshMgr::FindPath(const wstring& _strKey, float* _pStartPos, float* _pEndPos, float _fSearchRange)
 {
-    float polyPickExt[3] = { 2000.f, 2000.f, 2000.f }; // 적절한 탐색 범위 설정
+    float polyPickExt[3] = { _fSearchRange, _fSearchRange, _fSearchRange }; // 적절한 탐색 범위 설정
 
     
     map<wstring, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_strKey);
@@ -570,7 +575,10 @@ Vec3 CNavMeshMgr::FindPath(const wstring& _strKey, float* _pStartPos, float* _pE
     int pathCount;
     tNav.navQuery->findPath(startPoly, endPoly, nearestStartPos, nearestEndPos, filter, path, &pathCount, 128);
 
-    float* actualPath = new float[3 * 256];
+    if (pathCount == 0)
+        return Vec3::Zero;
+
+    float actualPath[3 * 256];
     unsigned char pathFlags[256];
     dtPolyRef pathPolys[256];
     int actualPathCount;
@@ -582,16 +590,15 @@ Vec3 CNavMeshMgr::FindPath(const wstring& _strKey, float* _pStartPos, float* _pE
     for (int i = 0; i < actualPathCount; ++i)
     {
         vecPath[i] = Vec3(actualPath[3 * i], actualPath[3 * i + 1], actualPath[3 * i + 2]);
-    }
+    } 
 
-    delete[] actualPath; // 항상 실행되도록 이동
-
+    //바로 앞이라면
     if (vecPath.size() < 2)
     {
         return Vec3::Zero;
     }
-
-    Vec3 vDir = Vec3(vecPath[1].x - vecPath[0].x, vecPath[1].y - vecPath[0].y, vecPath[1].z - vecPath[0].z);
+   
+    Vec3 vDir = vecPath[1] - vecPath[0]; // Vec3(vecPath[1].x - vecPath[0].x, vecPath[1].y - vecPath[0].y, vecPath[1].z - vecPath[0].z);
     vDir.Normalize();
 
     return vDir;
@@ -604,7 +611,7 @@ bool CNavMeshMgr::IsValidPoint(const wstring& _strKey, const Vec3& _CheckPos)
     map<wstring, tNavMeshInfo>::iterator iter = m_mapNavMesh.find(_strKey);
     if (iter == m_mapNavMesh.end())
     {
-        return Vec3::Zero;
+        return false;
     }
 
     tNavMeshInfo tNav = iter->second;
@@ -637,7 +644,6 @@ bool CNavMeshMgr::IsValidPoint(const wstring& _strKey, const Vec3& _CheckPos)
     }
 
     return true;
-
 }
 
 void CNavMeshMgr::free()

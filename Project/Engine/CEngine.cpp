@@ -15,6 +15,7 @@
 #include "CPhysxMgr.h"
 #include "CNavMeshMgr.h"
 #include "CEngineUIMgr.h"
+
 //#include "CLoadingScene.h"
 
 CEngine::CEngine()
@@ -101,7 +102,6 @@ void CEngine::tick()
 	
 	// FMOD Update 현재 사용하지 않음
 	//CSound::g_pFMOD->update();
-
 	//이전 프레임 물체 운동 업데이트
 	CPhysxMgr::GetInst()->tick();
 	
@@ -110,6 +110,7 @@ void CEngine::tick()
 
 	// Level Update
 	// Level 안에 존재하는 모든 GameObject 들이 Tick 을 호출받음
+	
 	CLevelMgr::GetInst()->tick();
 	
 	CEngineUIMgr::GetInst()->tick();

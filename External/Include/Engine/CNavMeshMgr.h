@@ -58,9 +58,12 @@ class CNavMeshMgr : public CSingleton<CNavMeshMgr>
     SINGLE(CNavMeshMgr);
 
 private:
-    static map<wstring, tNavMeshInfo> m_mapNavMesh; //몬스터 이름에 따른 네비메쉬
-    static vector<UINT> m_vecDeleteExpected; //경로 업데이트를 받지 않을 메쉬 등록
-    static map<UINT, CRDNavMeshField*> m_mapNavMeshField; //현재 몬스터 아이디와 네비메쉬 컴포넌트
+    static map<wstring, tNavMeshInfo> m_mapNavMesh;        //몬스터 이름에 따른 네비메쉬
+    static map<UINT, CRDNavMeshField*> m_mapNavMeshField;
+    static unordered_set<UINT> m_hashDeleteExpected;
+    static unordered_set<CRDNavMeshField*> m_hashAddExpected; //현재 몬스터 아이디와 네비메쉬 컴포넌트
+
+
     static UINT m_iPlaneCount;
 
     UINT m_iStartingIdx;
@@ -70,8 +73,9 @@ private:
     rcContext* m_pContext;
     
     atomic<bool> m_bRunning;
-    mutex m_mutex;
+    //mutex m_mutex;
     thread m_pathThread;
+
 private:
     bool LoadNavMeshFromFile(const char* path);
     void free();
@@ -100,11 +104,11 @@ public:
 
     void AddPlaneVertex(class CNavMeshPlane* _pNavMeshPlane);
 
-    void AddNavMeshField(UINT _ID, CRDNavMeshField* _pNavMeshField);
+    void AddNavMeshField(CRDNavMeshField* _pNavMeshField);
     void DeleteNavMeshField(UINT _ID);
 public:
     
-    static Vec3 FindPath(const wstring& _strKey, float * _pStartPos, float* _pEndPos);
+    static Vec3 FindPath(const wstring& _strKey, float * _pStartPos, float* _pEndPos, float _fSearchRange);
     static void CalculatePath();
 
   

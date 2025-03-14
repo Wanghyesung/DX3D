@@ -6,6 +6,7 @@
 
 #include "CTransform.h"
 #include "CCollider3D.h"
+
 CMonsterFSM::CMonsterFSM()
 {
 
@@ -27,7 +28,7 @@ void CMonsterFSM::final_tick()
 {
 	if (!m_pCurState)
 		return;
-
+	
 	m_pCurState->final_tick();
 }
 

@@ -9,7 +9,7 @@ CDemonMove::CDemonMove():
 	m_fMaxRadian(XM_PI / 2.1f)
 	, m_fMaxDegree(15.f)
 {
-	SetCheckLen(3100.f);
+	m_fAttackLen = 600.f;
 }
 
 CDemonMove::~CDemonMove()
@@ -30,13 +30,8 @@ void CDemonMove::final_tick()
 
 	else
 	{
-		if (!m_bActive)
-			return;
-
 		if (!rotate())
-		{
 			return;
-		}
 
 		move();
 	}
@@ -107,8 +102,7 @@ bool CDemonMove::check_len()
 	Vec2 vXY = Vec2(vPos.x, vPos.z);
 
 	float fLen = (vTargetXY - vXY).Length(); //xy축으로만 계산
-	float fAttackLen = 600.f;
-
+	
 
 	if (fLen >= m_fCheckLen)
 	{
@@ -129,10 +123,9 @@ bool CDemonMove::check_len()
 
 	else
 	{
-		if (fLen <= fAttackLen)
+		if (fLen <= m_fAttackLen)
 		{
-			//각도 계산 캐릭터가 위에 있는지
-			ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);//wait
+			ChanageMonsterState(GetFSM(), MONSTER_STATE_TYPE::ATTACK);
 			return true;
 		}
 	}

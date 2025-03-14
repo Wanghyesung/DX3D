@@ -55,14 +55,14 @@ void CWalkState::final_tick()
 		strDir = L"Back";
 	}
 
-	if (KEY_TAP(KEY::LSHIFT))
-	{
-		GetOwner()->PxRigidbody()->ClearFoce();
-		GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);
-		ChanageState(GetFSM(), STATE_TYPE::JUMP);
-	}
+	//if (KEY_TAP(KEY::LSHIFT))
+	//{
+	//	GetOwner()->PxRigidbody()->ClearFoce();
+	//	GetOwner()->PxRigidbody()->SetVelocity(Vec3::Zero);
+	//	ChanageState(GetFSM(), STATE_TYPE::JUMP);
+	//}
 
-	else if (KEY_TAP(KEY::SPACE))
+	if (KEY_TAP(KEY::SPACE))
 	{
 		ChanageState(GetFSM(), STATE_TYPE::ROLL);
 		return;

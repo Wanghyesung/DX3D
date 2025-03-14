@@ -11,18 +11,15 @@ protected:
 	float m_fCheckLen;
 	float m_fStopLen;
 
-	bool m_bActive;
 
 public:
 	virtual void final_tick()override;
 	virtual void Enter()override;
 	virtual void Exit()override;
 
-	float GetCheckLen() { return m_fCheckLen; }
 	float GetStopLen() { return m_fStopLen; }
 	float GetAttackLen() { return m_fAttackLen; }
 
-	void SetCheckLen(float _fLen) { m_fCheckLen = _fLen; }
 	void SetStopLen(float _fLen) { m_fStopLen = _fLen; }
 	void SetAttackLen(float _fLen) { m_fAttackLen = _fLen; }
 protected:

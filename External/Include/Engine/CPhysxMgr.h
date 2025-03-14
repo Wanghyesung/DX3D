@@ -58,7 +58,6 @@ private:
 	PxDefaultErrorCallback	gErrorCallback;
 	PxFoundation* m_pFoundation;
 
-	// PxFoundation이 있어야 gPhysics를 생성할 수 있다.
 	PxPhysics* m_pPhysics;
 	PxScene* m_pScene;
 
@@ -66,13 +65,15 @@ private:
 	PxDefaultCpuDispatcher* m_pDispatcher;
 	CPxCollisionEvent* m_pCollisionCallback;
 
+	//충돌 관련 변수
 	UINT	m_matrix[MAX_LAYER];
 	map<UINT, PxCollisionEvent> m_mapEventObj;//충돌 될시에 이벤트 호출될 오브젝트들
 	map<UINT_PTR, PxCollisionPair> m_mapCollisionPair;//// 충돌한 객체 ID 저장 (이미 충돌 중인지 확인하기 위함)
 
-	//PxMaterial* m_pMaterial;
-
 	bool m_bUseCCD;
+
+	
+
 
 public:
 	void init();
@@ -80,16 +81,14 @@ public:
 	void tick_collision();
 
 	PxScene* GetScene() { return m_pScene; }
-	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer, CGameObject* _pCollEventObj = nullptr);
+	
 	PxMaterial* GetPxMaterial();
 	CPxCollisionEvent* GetEvent() { return m_pCollisionCallback; }
 
 	bool UseCCD() { return m_bUseCCD; }
 	const PxVec3& GetGravity() { return m_pScene->getGravity(); }
 
-	void AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
-		CGameObject* _pCollEventObj = nullptr);
-
+	PxRigidDynamic* GetRigidDynamic(Vec3 _vPos, Vec3 _vScale, int _iLayer, CGameObject* _pCollEventObj = nullptr);
 	void AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
 		CGameObject* _pCollEventObj = nullptr);
 

@@ -82,17 +82,46 @@ CPhysxMgr::CPhysxMgr()
     , m_mapEventObj{}
     , m_bUseCCD(true)
 {
-
+   
 }
 
 CPhysxMgr::~CPhysxMgr()
 {
+    //m_bRunning = false;
+    //if (m_physxThread.joinable())
+    //    m_physxThread.join();
+
     m_pDispatcher->release();
     m_pPhysics->release();
     m_pFoundation->release();
 
     if (m_pCollisionCallback)
         delete m_pCollisionCallback;
+}
+
+
+
+
+void CPhysxMgr::tick()
+{
+    m_pScene->simulate(1.f / 60.f);
+    m_pScene->fetchResults(true);
+
+    
+    //for (int i = 0; i < m_vecAddExpected.size(); ++i)
+    //{
+    //    m_pScene->addActor(*m_vecAddExpected[i]);
+    //}
+    //m_vecAddExpected.clear();
+    //
+    //if (!m_bPhysicsComplete)
+    //{
+    //    if (m_pScene->fetchResults(true))
+    //    {
+    //        m_bPhysicsComplete = true;
+    //    }
+    //    
+    //}
 }
 
 
@@ -110,10 +139,8 @@ void CPhysxMgr::init()
 
 
     PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
-    //sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // 중력 세팅
-
   
-    m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
+    m_pDispatcher = PxDefaultCpuDispatcherCreate(4);
     sceneDesc.cpuDispatcher = m_pDispatcher;
 
     
@@ -130,20 +157,7 @@ void CPhysxMgr::init()
 
     m_pScene->setGravity(PxVec3(0.0f, -981.f, 0.0f));//중력
     m_pScene->setFlag(PxSceneFlag::eENABLE_CCD, m_bUseCCD); // CCD 활성화
-
-
-    //디버그 시각화를 활성화하려면 먼저 전역 시각화 배율을 양수 값으로 설정해야 합니다.
-    // m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
-    //그런 다음 시각화되어야 하는 개별 속성을 다시 양수 값을 사용하여 활성화할 수 있습니다.
-    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 2.0f);
-
-}
-void CPhysxMgr::tick()
-{
-    //가변 시간 스텝 방식 (Variable Time Step)
-
-    m_pScene->simulate(1.f / 60.f);
-    m_pScene->fetchResults(true);
+    
 }
 
 void CPhysxMgr::tick_collision()
@@ -249,56 +263,6 @@ PxMaterial* CPhysxMgr::GetPxMaterial()
     return pMaterial;
 }
 
-void CPhysxMgr::AddActor(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
-    CGameObject* _pCollEventObj)
-{
-   
-    PxVec3 vScale = PxVec3(_vScale.x, _vScale.y, _vScale.z);
-    PxVec3 vPos = PxVec3(_vPos.x, _vPos.y, _vPos.z);
-
-    PxMaterial* material = GetPxMaterial();
-    PxBoxGeometry geometry(vScale / 2.f); // 상자 크기
-
-    //초기화할 위치
-    PxTransform pose(vPos);
-    
-    //회전
-    if (_vAxis != Vec3::Zero)
-    {
-        // 회전 각도 설정 (45도를 라디안으로 변환)
-        float angle = XMConvertToRadians(_fAngle);
-
-        PxVec3 axis(_vAxis.x, _vAxis.y, _vAxis.z); // 회전할 축
-
-        // 쿼터니언으로 회전을 나타내는 부분
-        PxQuat rotation(angle, axis);
-
-        // 기존의 쿼터니언을 새로운 회전으로 업데이트
-        pose.q = rotation * pose.q;
-    }
-
-    PxRigidDynamic* pRigidbody = PxCreateDynamic(*m_pPhysics, pose, geometry, *material, 1.0f); 
-    PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSIMULATION_SHAPE;
-    PxShape* pShape = m_pPhysics->createShape(geometry, *material, true, shapeFlags);
-
-    pRigidbody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);//중력 안받게
-    //pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
-    pRigidbody->attachShape(*pShape);
-    pRigidbody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, m_bUseCCD); // CCD 설정
-    
-   
-    pRigidbody->setContactReportThreshold(0.01f);
-
-    m_pScene->addActor(*pRigidbody);
-
-    if (nullptr != _pCollEventObj)
-    {
-        AddCollEventObj(pShape, _pCollEventObj, _iLayer);
-    }
-
-    material->release();
-    pShape->release();
-}
 
 void CPhysxMgr::AddActorStatic(const Vec3& _vPos, const Vec3& _vScale, Vec3 _vAxis, float _fAngle, int _iLayer,
     CGameObject* _pCollEventObj)

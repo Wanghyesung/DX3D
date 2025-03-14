@@ -29,6 +29,8 @@ using std::queue;
 using std::mutex;
 using std::thread;
 using std::atomic;
+using std::unique_lock;
+using std::condition_variable;
 using namespace std::chrono_literals;
 
 #include <typeinfo>

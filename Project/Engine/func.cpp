@@ -530,4 +530,5 @@ void DestroyMgr()
 	CEngineUIMgr::Destroy();
 	CRespawnMgr::Destroy();
 	CBattleMgr::Destroy();
+	
 }

@@ -33,7 +33,7 @@ void CDemonHit::Enter()
 	{
 		Chanage_Anim(GetName(), false);
 	}
-
+	
 
 }
 

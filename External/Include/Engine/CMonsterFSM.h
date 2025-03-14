@@ -41,5 +41,6 @@ public:
 	CMonsterFSM();
 	virtual ~CMonsterFSM();
 
+	friend class CMonsterFSMMgr;
 };
 

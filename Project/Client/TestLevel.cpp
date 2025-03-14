@@ -38,7 +38,7 @@
 #include <Script\CBossStageScript.h>
 #include <Script\CLandScpaeScript.h>
 #include <Script\CStairsScript.h>
-
+#include<Script\CLightMoveScript.h>
 #include "CLevelSaveLoad.h"
 
 
@@ -131,7 +131,9 @@ void CreateTestLevel()
 	pLightObj->SetName(L"Directional Light");
 
 	pLightObj->AddComponent(new CTransform);
-	pLightObj->AddComponent(new CLight3D);
+	pLightObj->AddComponent(new CLightMoveScript);
+	pLightObj->AddComponent(new CLight3D());
+
 
 	pLightObj->Transform()->SetRelativeRot(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f));
 	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
@@ -323,6 +325,7 @@ void CreateMonster()
 	
 		CRDNavMeshField* pNav = new CRDNavMeshField();
 		pMonster->AddComponent(pNav);
+		pNav->SetSearchRange(1000.f);
 		pNav->SetRadius(tSetting.agentRadius);
 	}
 	
@@ -442,8 +445,7 @@ void CreateMonster()
 	
 	CDemonScript* pDemonScript = new CDemonScript();
 	pBoss->AddComponent(pDemonScript);
-	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
-	SetFrustomBound(pBoss, true, 200.f);
+	SetFrustomBound(pBoss, false, 0.f);
 	{
 		tBuildSettings tSetting = {};
 		tSetting.Key = pBoss->GetName();
@@ -451,9 +453,12 @@ void CreateMonster()
 		CNavMeshMgr::GetInst()->BuildField(tSetting);
 	
 		CRDNavMeshField* pNav = new CRDNavMeshField();
+		pNav->SetSearchRange(3100.f);
 		pBoss->AddComponent(pNav);
 		pNav->SetRadius(tSetting.agentRadius);
 	}
+
+	pDemonScript->Initialize(L"Taurus_Demon_Fianl");
 
 	SpawnGameObject(pBoss, Vec3(1700.f, 120.f, 1700.f), (int)LAYER_TYPE::Monster);
 }

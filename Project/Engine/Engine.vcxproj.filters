@@ -1063,6 +1063,9 @@
     <Filter Include="Source\11. EngineUI">
       <UniqueIdentifier>{47a6c379-bdc6-4793-8590-e2555c9d4f55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\16.MonsterFSMMgr">
+      <UniqueIdentifier>{1d7a1582-1842-479f-b0e5-ca4d4645d176}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

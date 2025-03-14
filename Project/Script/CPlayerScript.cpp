@@ -437,7 +437,9 @@ void CPlayerScript::OnOverlap(CCollider3D* _Other)
 
 	if (pAttack)
 	{
-		if (m_pFSM->GetCurStateType() == STATE_TYPE::HIT)
+		STATE_TYPE tType = m_pFSM->GetCurStateType();
+
+		if (tType == STATE_TYPE::HIT)
 			return;
 
 
@@ -447,7 +449,7 @@ void CPlayerScript::OnOverlap(CCollider3D* _Other)
 
 		m_tPlayerInfo.fHP -= m_tHitInfo.fDamage;
 		
-		if (m_pFSM->GetCurStateType() == STATE_TYPE::JUMP)
+		if (tType == STATE_TYPE::JUMP || tType == STATE_TYPE::JUMPING)
 			return;
 
 		ChanageState(m_pFSM, STATE_TYPE::HIT);

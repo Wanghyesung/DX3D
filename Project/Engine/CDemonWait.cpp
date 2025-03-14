@@ -63,6 +63,7 @@ void CDemonWait::Enter()
 
 	Vec3 vFinalRot = Vec3(-XM_PI / 2.f, XM_PI, 0.f);
 
+	//앞으로 이동
 	PxQuat yRotation(vFinalRot.y, PxVec3(0.0f, 1.0f, 0.0f));
 	GetOwner()->PxRigidbody()->SetPxRotate(yRotation);
 	GetOwner()->Transform()->SetRelativeRot(vFinalRot);

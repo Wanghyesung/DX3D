@@ -33,21 +33,19 @@ void CLightMoveScript::begin()
 {
 	m_pTarget = CLevelMgr::GetInst()->GetCurLevel()->GetLayer((int)LAYER_TYPE::Player)
 		->GetParentObject().at(0);
+
+	m_vLightPos = GetOwner()->Transform()->GetRelativePos();
 }
 
 
 void CLightMoveScript::Light3DMove()
 {
 	//내 초기 위치를 고정하고 main카메라 위치에 더하기
-	static Vec3 vLightPos; 
-	if (vLightPos == Vec3::Zero)
-		vLightPos = GetOwner()->Transform()->GetRelativePos();
-
-	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
-	Vec3 vCamPos = pMainCam->GetOwner()->Transform()->GetRelativePos();
 	
+	Vec3 vPlayerPos = m_pTarget->Transform()->GetRelativePos();
+	vPlayerPos.y = 0;
 
-	GetOwner()->Transform()->SetRelativePos(vLightPos + vCamPos);
+	GetOwner()->Transform()->SetRelativePos(m_vLightPos + vPlayerPos);
 }
 
 

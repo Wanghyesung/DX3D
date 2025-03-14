@@ -12,6 +12,7 @@ private:
 
     bool        m_bCameMove;
 
+    Vec3 m_vLightPos;
 public:
     virtual void tick() override;
     virtual void begin() override;

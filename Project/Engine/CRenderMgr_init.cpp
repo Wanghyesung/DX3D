@@ -155,7 +155,13 @@ void CRenderMgr::CreateMRT()
     {
         m_MRT[(UINT)MRT_TYPE::SHADOWMAP] = new CMRT;
 
-        Vec2 vResol = Vec2(8192, 8192);
+        /*
+        카메라 거리에 따라 해상도 다르게 GPU가 계산해야 하는 픽셀 수가 줄어들어 연산량이 감소를 목표
+       텍스처의 해상도가 클수록 샘플링 비용이 올라감
+        해상도를 낮추면 텍스처 접근 비용이 감소
+        */
+          
+        Vec2 vResol = Vec2(2048, 2048);
 
         Ptr<CTexture> arrRTTex[8] = {};
         arrRTTex[0] = CResMgr::GetInst()->CreateTexture(L"DynamicShadowMapTex", vResol.x, vResol.y

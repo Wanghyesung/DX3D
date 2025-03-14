@@ -191,6 +191,7 @@ void CPxRigidbody::SetPxRotate(const PxQuat& _pQuat)
     rotation = _pQuat;
 
     transform.q = rotation;
+    //simulate() 실행 중에 setGlobalPose()를 부르면 안 됨 
     m_pRigidbody->setGlobalPose(transform);
 }
 

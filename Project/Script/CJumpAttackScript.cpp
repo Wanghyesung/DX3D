@@ -9,6 +9,7 @@
 #include <Engine\CStructuredBuffer.h>
 #include <Engine\CLevelMgr.h>
 #include <Engine\CFSM.h>
+
 CJumpAttackScript::CJumpAttackScript() :
 	CAttackScript(SCRIPT_TYPE::JUMPATTACKSCRIPT),
 	m_bBeginOn(false),
@@ -69,10 +70,10 @@ bool CJumpAttackScript::check_pos(CGameObject* _pMonster)
 		vDir.x *= -500.f;
 		m_vOffsetTransform.z = vDir.z;
 		m_vOffsetTransform.x = vDir.x;
-
-		return true;
 	}
-	return false;
+
+
+	return true;
 }
 
 void CJumpAttackScript::lookAtPlayer()
@@ -106,7 +107,7 @@ void CJumpAttackScript::BeginOverlap(CCollider3D* _Other)
 		m_pPlayer->GetScript<CPlayerScript>()->Chanage_AnimDT(2.f);
 
 		
-		//m_bBeginOn = true;
+		
 		m_bBeginOn = check_pos(_Other->GetOwner());
 
 		if (m_bBeginOn)
@@ -129,6 +130,7 @@ void CJumpAttackScript::OnOverlap(CCollider3D* _Other)
 		//if(pMonster->GetScript<CMonsterScript>()->GetFSM())
 		check_bone_pos(pMonster);
 	}
+	
 }
 
 void CJumpAttackScript::EndOverlap(CCollider3D* _Other)

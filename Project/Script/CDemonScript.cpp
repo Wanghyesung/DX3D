@@ -231,7 +231,7 @@ void CDemonScript::set_attack()
 	tAttackInfo attackjump = {};
 	//attackjump.iStartFrame = 954;
 	//attackjump.iEndFrame = 960;
-	attackjump.vAttackScale = Vec3(1000.f, 600.f, 1000.f);
+	attackjump.vAttackScale = Vec3(1500.f, 600.f, 1500.f);
 	attackjump.tAttackValue.iMaxCount = 1;
 	attackjump.tAttackValue.fAttRcnt = 200.f;
 	attackjump.tAttackValue.fDamage = 40.f;
