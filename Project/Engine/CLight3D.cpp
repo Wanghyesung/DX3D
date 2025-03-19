@@ -6,6 +6,9 @@
 #include "CRenderMgr.h"
 #include "CTransform.h"
 #include "CCamera.h"
+#include "CTransform.h"
+
+#include "CMRT.h"
 
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
@@ -72,10 +75,15 @@ void CLight3D::render()
 
 	if (m_LightInfo.LightType == (UINT)LIGHT_TYPE::DIRECTIONAL)
 	{
-		Matrix matVP = m_pCamObj->Camera()->GetViewMat() * m_pCamObj->Camera()->GetProjMat();
-		m_Mtrl->SetScalarParam(MAT_0, &matVP);
-		m_Mtrl->SetTexParam(TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"DynamicShadowMapTex"));
+		Matrix matView = m_pCamObj->Camera()->GetViewMat();//빛의 좌표계
+		Matrix matProj = m_pCamObj->Camera()->GetProjMat();
+		m_Mtrl->SetScalarParam(MAT_0, &matView);
+		m_Mtrl->SetScalarParam(MAT_1, &matProj);
 
+		m_Mtrl->SetTexParam(TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"DynamicShadowMapTex0"));//near
+		m_Mtrl->SetTexParam(TEX_3, CResMgr::GetInst()->FindRes<CTexture>(L"DynamicShadowMapTex1"));//near
+		m_Mtrl->SetTexParam(TEX_4, CResMgr::GetInst()->FindRes<CTexture>(L"DynamicShadowMapTex2"));//near
+		
 		m_Mtrl->SetTexParam(TEX_6, CResMgr::GetInst()->FindRes<CTexture>(L"DataTargetTex"));
 	}
 
@@ -98,6 +106,7 @@ void CLight3D::SetLightType(LIGHT_TYPE _type)
 {
 	m_LightInfo.LightType = (int)_type;
 
+	
 	if (LIGHT_TYPE::DIRECTIONAL == (LIGHT_TYPE)m_LightInfo.LightType)
 	{
 		// 광원을 렌더링 할 때, 광원의 영향범위를 형상화 할 수 있는 메쉬(볼륨메쉬) 를 선택
@@ -134,7 +143,12 @@ void CLight3D::render_shadowmap()
 {
 	m_pCamObj->Camera()->SortObject_Shadow();
 
-	m_pCamObj->Camera()->render_shadowmap();
+	for (int i = (int)MRT_TYPE::NEAR_SHADOWMAP; i <= (int)MRT_TYPE::FAR_SHADOWMAP; ++i)
+	{	
+		CRenderMgr::GetInst()->GetMRT((MRT_TYPE)i)->OMSet();
+		m_pCamObj->Camera()->render_shadowmap();
+	}
+	
 }
 
 

@@ -53,7 +53,7 @@ struct VS_OUT
     float3 vViewTangent : TANGENT;
     float3 vViewBinormal : BINORMAL;
     
-    float vDepth : DEPTH;
+    //float vDepth : DEPTH;
 };
 
 // ===============
@@ -65,8 +65,9 @@ struct VS_OUT
 // Blend State          : Default
 
 // Parameter
-#define     SpecCoeff    g_float_0
-#define     bActiveColor g_int_3
+#define     SpecCoeff     g_float_0
+#define     bActiveShadow g_int_2
+#define     bActiveColor  g_int_3
 // ===============
 
 
@@ -91,7 +92,7 @@ VS_OUT VS_Std3D_Deferred(VS_IN _in)
     output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
     output.vUV = _in.vUV;
     
-    output.vDepth = output.vPosition.z / output.vPosition.w;
+    //output.vDepth = output.vPosition.z / output.vPosition.w;
     //깊이
     return output;
 }
@@ -169,11 +170,10 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
     
     //1번째 속성에 빛을 받을지 안받을지 결정
     output.vData = float4(1.f, 0.f, 0.f, 1.f);
-    if (bActiveColor)
-    {
-        output.vData.x = 1.f;
-    }
-    output.vData.y = _in.vDepth;
+    //if (bActiveColor)
+    //    output.vData.x = 1.f;
+    if (bActiveShadow == 0)
+        output.vData.y = 1.f;
    
     //재질계수
     output.vColor.a = 0.5f; //saturate(SpecCoeff);

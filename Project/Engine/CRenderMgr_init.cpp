@@ -153,26 +153,35 @@ void CRenderMgr::CreateMRT()
    // ShadowMap MRT 만들기
    // ====================
     {
-        m_MRT[(UINT)MRT_TYPE::SHADOWMAP] = new CMRT;
+        m_MRT[(UINT)MRT_TYPE::NEAR_SHADOWMAP] = new CMRT;
+        m_MRT[(UINT)MRT_TYPE::MID_SHADOWMAP] = new CMRT;
+        m_MRT[(UINT)MRT_TYPE::FAR_SHADOWMAP] = new CMRT;
 
         /*
         카메라 거리에 따라 해상도 다르게 GPU가 계산해야 하는 픽셀 수가 줄어들어 연산량이 감소를 목표
-       텍스처의 해상도가 클수록 샘플링 비용이 올라감
+        텍스처의 해상도가 클수록 샘플링 비용이 올라감
         해상도를 낮추면 텍스처 접근 비용이 감소
         */
-          
-        Vec2 vResol = Vec2(2048, 2048);
 
-        Ptr<CTexture> arrRTTex[8] = {};
-        arrRTTex[0] = CResMgr::GetInst()->CreateTexture(L"DynamicShadowMapTex", vResol.x, vResol.y
-            , DXGI_FORMAT_R32_FLOAT
-            , D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+        Vec2 arrResol[3] = { Vec2(4096, 4096) , Vec2(1024, 1024) , Vec2(512, 512) };
+        //Vec2 vResol = Vec2(4096, 4096);
+        Ptr<CTexture> RTTex = {};
+       
+        UINT iShadowMRT = (UINT)MRT_TYPE::NEAR_SHADOWMAP;
+        for (int i = 0; i < 3; ++i)
+        {
+            RTTex = CResMgr::GetInst()->CreateTexture(L"DynamicShadowMapTex" + std::to_wstring(i), arrResol[i].x, arrResol[i].y
+                , DXGI_FORMAT_R32_FLOAT
+                , D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
 
-        Ptr<CTexture> pDSTex = CResMgr::GetInst()->CreateTexture(L"DynamicShadowMapDepthTex", vResol.x, vResol.y
-            , DXGI_FORMAT_D32_FLOAT
-            , D3D11_BIND_DEPTH_STENCIL);
 
-        m_MRT[(UINT)MRT_TYPE::SHADOWMAP]->Create(arrRTTex, 1, pDSTex);
+            Ptr<CTexture> pDSTex = CResMgr::GetInst()->CreateTexture(L"DynamicShadowMapDepthTex" + std::to_wstring(i), arrResol[i].x, arrResol[i].y
+                , DXGI_FORMAT_D32_FLOAT
+                , D3D11_BIND_DEPTH_STENCIL);
+
+
+            m_MRT[iShadowMRT++]->Create(&RTTex, 1, pDSTex);
+        }
     }
 
 }

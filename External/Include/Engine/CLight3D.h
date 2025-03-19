@@ -11,6 +11,7 @@ private:
     tLightInfo      m_LightInfo;
     Ptr<CMesh>      m_Mesh;
     Ptr<CMaterial>  m_Mtrl;
+ 
     int             m_LightIdx;
     bool            m_bShowRange;
 

@@ -383,6 +383,8 @@ void CCamera::SortObject_Shadow()
 	}
 }
 
+
+
 void CCamera::render()
 {
 	UpdateMatrix();
@@ -396,7 +398,7 @@ void CCamera::render()
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::BOTION_BLUER)->OMSet(true);
 	render_blur();
 
-	render_middle();
+	//render_middle();
 
 	// Light MRT 로 변경
 	// Deferred 물체에 광원 적용시키기
@@ -425,6 +427,7 @@ void CCamera::render()
 
 	//CRenderMgr::GetInst()->CopyRenderTarget();
 }
+
 
 void CCamera::render_shadowmap()
 {
@@ -500,10 +503,10 @@ void CCamera::render_shadowmap()
 	
 			CInstancingBuffer::GetInst()->AddInstancingData(tInstData);
 		}
-	
+
 		// 인스턴싱에 필요한 데이터를 세팅(SysMem -> GPU Mem)
 		CInstancingBuffer::GetInst()->SetData();
-	
+
 		if (bHasAnim3D)
 		{
 			pMtrl->SetAnim3D(true); // Animation Mesh 알리기
@@ -885,7 +888,7 @@ void CCamera::render_final()
 		if (!bSet)
 		{
 			bSet = true;
-			pMtrl->SetTexParam(TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"MiddleTargetTex"));
+			pMtrl->SetTexParam(TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"ColorTargetTex"));
 			pMtrl->SetTexParam(TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex"));
 			pMtrl->SetTexParam(TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"SpecularTargetTex"));
 			pMtrl->SetTexParam(TEX_3, CResMgr::GetInst()->FindRes<CTexture>(L"EmissiveTargetTex"));

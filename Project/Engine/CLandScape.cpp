@@ -134,8 +134,8 @@ void CLandScape::render()
 	GetMaterial(0)->UpdateData();
 
 	// Camera World Pos Àü´Ş
-	Vec3 vCamWorldPos = CRenderMgr::GetInst()->GetMainCam()->Transform()->GetWorldPos();
-	GetMaterial(0)->SetScalarParam(VEC4_0, &vCamWorldPos);
+	//Vec3 vCamWorldPos = CRenderMgr::GetInst()->GetMainCam()->Transform()->GetWorldPos();
+	//GetMaterial(0)->SetScalarParam(VEC4_0, &vCamWorldPos);
 
 	// ·»´õ
 	GetMesh()->render(0);

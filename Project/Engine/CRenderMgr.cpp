@@ -8,6 +8,7 @@
 #include "CCamera.h"
 #include "CLight2D.h"
 #include "CLight3D.h"
+#include "CTransform.h"
 
 #include "CResMgr.h"
 #include "CMRT.h"
@@ -147,6 +148,7 @@ void CRenderMgr::UpdateData()
     GlobalData.Light2DCount = m_vecLight2D.size();
     GlobalData.Light3DCount = m_vecLight3D.size();
   
+    GlobalData.CameraPos = GetMainCam()->Transform()->GetRelativePos();
     //GlobalData.CameraRot
     // 전역 상수 데이터 바인딩
     CConstBuffer* pGlobalBuffer = CDevice::GetInst()->GetConstBuffer(CB_TYPE::GLOBAL);
@@ -158,7 +160,7 @@ void CRenderMgr::UpdateData()
 void CRenderMgr::render_shadowmap()
 {
     // ShadowMap MRT 로 교체
-    GetMRT(MRT_TYPE::SHADOWMAP)->OMSet();
+    //GetMRT(MRT_TYPE::SHADOWMAP)->OMSet();
 
     for (size_t i = 0; i < m_vecLight3D.size(); ++i)
     {

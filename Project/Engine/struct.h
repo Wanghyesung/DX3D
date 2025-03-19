@@ -326,6 +326,7 @@ struct tMtrlConst
 
 struct tGlobal
 {
+	Vec4  CameraPos;
 	Vec4  CameraRot;
 	Vec2  Resolution;
 	float tDT;

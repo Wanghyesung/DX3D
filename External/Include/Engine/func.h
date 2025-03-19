@@ -33,6 +33,7 @@ class CMonsterFSM;
 void ChanageMonsterState(CMonsterFSM* _pFSM, MONSTER_STATE_TYPE _eNextType);
 CGameObject* InitializeFBX(const wstring& _strFbxName);
 void ChanageRSType(CGameObject* const _pGameObj, RS_TYPE _eType);
+void ChanageDSType(CGameObject* const _pGameObj, DS_TYPE _eType);
 
 // DrawDebugShape
 void DrawDebugRect(Vec3 _vWorldPos, Vec2 _vWorldScale, Vec4 _vColor, Vec3 _vRotation, float _fTime = 0.f, bool DepthTest = false);

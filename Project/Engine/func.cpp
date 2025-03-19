@@ -159,6 +159,20 @@ void ChanageRSType(CGameObject* const _pGameObj, RS_TYPE _eType)
 	}
 }
 
+void ChanageDSType(CGameObject* const _pGameObj, DS_TYPE _eType)
+{
+	const vector<CGameObject*> vecChild = _pGameObj->GetChild();
+	for (int i = 0; i < vecChild.size(); ++i)
+	{
+		UINT iMtrlSize = vecChild[i]->MeshRender()->GetMtrlCount();
+		for (int j = 0; j < iMtrlSize; ++j)
+		{
+			Ptr<CMaterial> pMatrl = vecChild[i]->MeshRender()->GetMaterial(j);
+			pMatrl->GetShader()->SetDSType(_eType);
+		}
+	}
+}
+
 void DrawDebugRect(Vec3 _vWorldPos, Vec2 _vWorldScale, Vec4 _vColor,
 	Vec3 _vRotation, float _fTime, bool DepthTest)
 {

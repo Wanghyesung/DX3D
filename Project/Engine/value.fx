@@ -80,6 +80,7 @@ cbuffer MATERIAL : register(b1)
 
 cbuffer GLOBAL : register(b2)
 {
+    float4 g_CameraPos;
     float4 g_CameraRot;
     float2 g_Resolution;
     float g_DT;

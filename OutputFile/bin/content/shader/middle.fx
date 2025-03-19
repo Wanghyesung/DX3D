@@ -41,36 +41,39 @@ VS_OUT VS_MiddleMergeShader(VS_IN _in)
 float4 PS_MiddleMergeShader(VS_OUT _in) : SV_Target
 {
     float4 vOutColor = float4(0.f, 0.f, 0.f, 1.f);
-    
-    //내 픽셀이 호출된 위치비율 값 잡기
+     //내 픽셀이 호출된 위치비율 값 잡기
     float2 vScreenUV = _in.vPosition.xy / g_Resolution.xy;
+    
+    return ColorTargetTex.Sample(g_sam_0, vScreenUV.xy);
+    
+   
 
     
-    float4 velocity = VelocityTargetTex.Sample(g_sam_0, vScreenUV);
-   
-    
-    const int SAMPLE_COUNT = 10; // 샘플링 횟수
-       
-    velocity.xy /= SAMPLE_COUNT;
-    
-    int iCOUNT = 1;
-    float4 vColor;
-    float4 vBackColor;
-    for (int i = 0; i < SAMPLE_COUNT; ++i)
-    {
-        float2 sampleTexCoord = vScreenUV + (velocity.xy * float(i) * 0.04f);
-        vBackColor = ColorTargetTex.Sample(g_sam_0, sampleTexCoord.xy);
-        
-        vColor += vBackColor;
-        ++iCOUNT;
-    }
-    
-    vColor /= (float) iCOUNT;
-    
-    vOutColor.xyz = vColor.xyz;
-    
- 
-    return vOutColor;
+    //float4 velocity = VelocityTargetTex.Sample(g_sam_0, vScreenUV);
+    //
+    //
+    //const int SAMPLE_COUNT = 10; // 샘플링 횟수
+    //   
+    //velocity.xy /= SAMPLE_COUNT;
+    //
+    //int iCOUNT = 1;
+    //float4 vColor;
+    //float4 vBackColor;
+    //for (int i = 0; i < SAMPLE_COUNT; ++i)
+    //{
+    //    float2 sampleTexCoord = vScreenUV + (velocity.xy * float(i) * 0.04f);
+    //    vBackColor = ColorTargetTex.Sample(g_sam_0, sampleTexCoord.xy);
+    //    
+    //    vColor += vBackColor;
+    //    ++iCOUNT;
+    //}
+    //
+    //vColor /= (float) iCOUNT;
+    //
+    //vOutColor.xyz = vColor.xyz;
+    //
+    //
+    //return vOutColor;
 }
 
 

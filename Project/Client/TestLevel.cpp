@@ -368,20 +368,24 @@ void CreateMonster()
 	
 	//frustum test
 	////////////////////////////////////////////////////////
-	//for (int i = 0; i < 20; ++i)
+	//for (int i = 0; i < 4; ++i)
 	//{
 	//	pMonster = new CGameObject;
+	//	pMonster->SetName(L"Balder_Knight");
 	//	pMonster->AddComponent(new CTransform());
 	//	pMonster->AddComponent(new CCollider3D());
 	//	pMonster->Collider3D()->SetOffsetScale(Vec3(150.f, 340.f, 150.f));
 	//	{
 	//		tBuildSettings tSetting = {};
-	//		tSetting.agentRadius = 450.f; // 900 / 5 = 180
-	//		tSetting.ID = pMonster->GetID();
+	//		tSetting.agentRadius = 160.f; // 900 / 5 = 180
+	//		tSetting.Key = pMonster->GetName();
+	//
 	//		CNavMeshMgr::GetInst()->BuildField(tSetting);
 	//
 	//		CRDNavMeshField* pNav = new CRDNavMeshField();
 	//		pMonster->AddComponent(pNav);
+	//		pNav->SetSearchRange(1000.f);
+	//		pNav->SetRadius(tSetting.agentRadius);
 	//	}
 	//
 	//	pRigi = new CPxRigidbody();
@@ -421,7 +425,6 @@ void CreateMonster()
 	//	pMonster->Transform()->SetRelativeScale(Vec3(2.f, 2.f, 2.f));
 	//	SpawnGameObject(pMonster, Vec3(200.f + (i * 150), 120.f, 1000.f), (int)LAYER_TYPE::Monster);
 	//
-	//	pMonster->SetName(L"Balder_Knight" + std::to_wstring(i));
 	//}
 	///////////////////////////////////////////////////////////////////////////////
 
@@ -558,11 +561,11 @@ void CreateStage()
 	for (int i = 0; i < pStage->GetChild().size(); ++i)
 		pStage->GetChild().at(i)->MeshRender()->SetActiveShadow(false);
 
-
 	SetFrustomBound(pStage, false, 0.f);
 
 	//앞면 뒷면 모두 그리기
 	ChanageRSType(pStage, RS_TYPE::CULL_NONE);
+	//ChanageDSType(pStage, DS_TYPE::NO_TEST_NO_WRITE);
 
 	pStage->AddComponent(new CTransform);
 	pStage->Transform()->SetRelativeRot(Vec3(-XM_PI / 2.f, XM_PI / 2.f, 0.f));

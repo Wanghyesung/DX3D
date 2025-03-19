@@ -362,5 +362,86 @@ float GetTessFactor(float _Length, int _iMinLevel, int _iMaxLevel, float _MinDis
     }
 }
 
+int GetShadowIdx(float _fDistance)
+{
+    float fDistacne = abs(_fDistance);
+    if (fDistacne < 2000.f)  
+        return 0; // 근경 
+    else if (fDistacne < 4000.f)
+        return 1; // 중경 
+    else
+        return 2; // 원경 
+}
+
+static const float2 HardOffset[8] =
+{
+    float2(0.0, 1.0), 
+    float2(0.707, 0.707), 
+    float2(1.0, 0.0), 
+    float2(0.707, -0.707), 
+    float2(0.0, -1.0), 
+    float2(-0.707, -0.707), 
+    float2(-1.0, 0.0), 
+    float2(-0.707, 0.707) 
+};
+
+// 4각 샘플 오프셋
+static const float2 SimpleOffset[4] =
+{
+    float2(-0.5, -0.5), float2(0.5, -0.5),
+    float2(-0.5, 0.5), float2(0.5, 0.5)
+};
+
+//#define ShadowTargetTex g_tex_4
+//float CalcShadow(float2 _fUV, float _fDistance)
+//{
+//    int iCount = GetShadowSampleCount(_fDistance);
+    
+//    float fShadowPow = 0.f;
+//    if(iCount == 8)
+//    {
+//        for (int i = 0; i < 8; ++i)
+//        {
+//            float2 fsampleOffset = HardOffset[i] * 0.005; // 오프셋 크기 조정
+//            fShadowPow += ShadowTargetTex.Sample(g_sam_0, _fUV + fsampleOffset).r;
+//        }
+//        fShadowPow /= 8.f;
+//    }
+//    else if(iCount ==4)
+//    {
+//        for (int i = 0; i < 4; ++i)
+//        {
+//            float2 fsampleOffset = SimpleOffset[i] * 0.001; // 오프셋 크기 조정
+//            fShadowPow += ShadowTargetTex.Sample(g_sam_0, _fUV + fsampleOffset).r;
+//        }
+//        fShadowPow /= 4.f;
+//    }
+//    else
+//    {
+//        fShadowPow = ShadowTargetTex.Sample(g_sam_0, _fUV + _fUV).r;
+//    }
+    
+//    return fShadowPow;
+//}
+
+#define NearShadowMapTargetTex g_tex_2
+#define MidShadowMapTargetTex g_tex_3
+#define FarShadowMapTargetTex g_tex_4
+
+float CalcShadow(float2 _fUV, float _fDistance)
+{
+    int iIdx = GetShadowIdx(_fDistance);
+    float fShadowPow = 0.f;
+    
+    if (iIdx == 0)
+        fShadowPow = NearShadowMapTargetTex.Sample(g_sam_1, _fUV).r + 0.0005;
+    else if (iIdx == 1)
+        fShadowPow = MidShadowMapTargetTex.Sample(g_sam_1, _fUV).r + 0.005f;
+    else
+        fShadowPow = FarShadowMapTargetTex.Sample(g_sam_1, _fUV).r + 0.01f;
+    
+    return fShadowPow;
+}
+
 
 #endif

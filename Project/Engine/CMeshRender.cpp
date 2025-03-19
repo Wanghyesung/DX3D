@@ -17,10 +17,7 @@ CMeshRender::~CMeshRender()
 
 void CMeshRender::finaltick()
 {
-	//Vec3 vPos = GetMesh()->GetVtxSysMem()->vPos;
-	//Matrix matScale = Transform()->GetWorldScaleMat();
-	//Vec3 vScale = XMVector4Transform(vPos, matScale);
-	//int a = 10;
+	
 }
 
 void CMeshRender::render()
@@ -81,11 +78,6 @@ void CMeshRender::render(UINT _iSubset)
 	if (nullptr == GetMesh() || nullptr == GetMaterial(_iSubset))
 		return;
 
-	if (_iSubset > 0)
-	{
-		int a = 10;
-	}
-
 	// Transform 에 UpdateData 요청
 	Transform()->UpdateData();
 
@@ -102,6 +94,11 @@ void CMeshRender::render(UINT _iSubset)
 		GetMaterial(_iSubset)->SetAnim3D(true); //Animation Mesh 알리기
 		GetMaterial(_iSubset)->SetBoneCount(Animator3D()->GetBoneCount());
 	}
+
+	//그림자 체크
+	int iActiveShadow = IsActiveShadow() ? 1 : 0;
+	GetMaterial(_iSubset)->SetScalarParam(INT_2, &iActiveShadow);
+
 
 	GetMaterial(_iSubset)->UpdateData();
 

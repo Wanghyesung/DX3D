@@ -74,7 +74,7 @@ PatchOutput PatchConstFunc(InputPatch<VS_OUT, 3> _input
     float3 vSlide = (_input[0].vWorldPos + _input[1].vWorldPos) / 2.f;
     float3 vMid = (_input[0].vWorldPos + _input[1].vWorldPos + _input[2].vWorldPos) / 3.f;
 
-    float3 vCamWorldPos = CamWorldPos;
+    float3 vCamWorldPos = g_CameraPos.xyz;//CamWorldPos;
     vCamWorldPos.y = 0.f;
     
     //카메라를 기준으로 가까워지면 분할이 많아지게 비율을 가져옴

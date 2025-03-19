@@ -30,6 +30,7 @@ public:
 
     int Create(ComPtr<ID3D11Texture2D> _tex2D);
     int CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex, int _iMapLevel);
+    int CreateArrayTextrue(const Ptr<CTexture>& _pTex, int _iArrSize);
     void GenerateMip(UINT _iMipLevel);
 
 public:

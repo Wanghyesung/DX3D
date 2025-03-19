@@ -414,9 +414,37 @@ int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex, int _iMap
 	return hr;
 }
 
+int CTexture::CreateArrayTextrue(const Ptr<CTexture>& _pTex, int _iArrSize)
+{
+	m_Desc = _pTex->GetDesc();
+	m_Desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	m_Desc.ArraySize = _iArrSize;
+	m_Desc.MipLevels = 1;
+
+	HRESULT hr = DEVICE->CreateTexture2D(&m_Desc, nullptr, m_Tex2D.GetAddressOf());
+	if (FAILED(hr))
+		return hr;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC viewdesc = {};
+	viewdesc.Format = m_Desc.Format;
+	viewdesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	viewdesc.Texture2DArray.MipLevels = 1;
+	viewdesc.Texture2DArray.MostDetailedMip = 0;
+	viewdesc.Texture2DArray.ArraySize = _iArrSize;
+
+	hr = DEVICE->CreateShaderResourceView(m_Tex2D.Get(), &viewdesc, m_SRV.GetAddressOf());
+	if (FAILED(hr))
+		return FALSE;
+
+	return TRUE;
+}
+
 
 void CTexture::GenerateMip(UINT _iMipLevel)
 {
+	if (m_Image.GetImages() == nullptr)
+		CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), m_Image);
+
 	m_Tex2D = nullptr;
 	m_SRV = nullptr;
 	m_RTV = nullptr;
@@ -436,7 +464,7 @@ void CTexture::GenerateMip(UINT _iMipLevel)
 	else
 	{
 		tDesc.MipLevels = _iMipLevel;// MAX_MIP;	// 0 ==> 가능한 모든 밉맵이 저장 될 수 있는 공간이 만들어짐	
-		tDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		tDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE; //Mipmap을 생성하려면 `BIND_RENDER_TARGET`이 필요함.
 		tDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 	}
 

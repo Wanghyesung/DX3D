@@ -8,7 +8,7 @@
 
 CDemonJump::CDemonJump() :
 	m_bAttackTrigger(false),
-	m_vJumpForce(Vec3(0.f, 3200.f, 0.f)),
+	m_vJumpForce(Vec3(0.f, 2500.f, 0.f)),
 	m_iJumpStartFrame(1727),
 	m_vFinalJumpPos(Vec3(1800, 2510, 3286))
 {
