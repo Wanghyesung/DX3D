@@ -37,8 +37,8 @@ private:
 
     //오브젝트마다 이번 프레임 인스턴싱데이터 기록 
     map<ULONG64, vector<tInstancingData>>   m_mapInstShadowData;
-    map<ULONG64,   vector<tInstObj>>          m_mapInstShadwObj;
-
+    map<ULONG64, vector<tInstObj>>          m_mapInstShadowObj;
+    
     map<ULONG64, vector<tInstObj>>		    m_mapInstGroup_D;	    // Deferred
     map<ULONG64, vector<tInstObj>>		    m_mapInstGroup_F;	    // Foward ( Opaque, Mask )	
     map<INT_PTR, vector<tInstObj>>		    m_mapSingleObj;		    // Single Object
@@ -102,6 +102,7 @@ public:
     void SortObject_Shadow();//광원 카메라 전용
 
     void render();
+    void update_shadow();
     void render_shadowmap();//광원 카메라 전용 깊이값 저장
 
 

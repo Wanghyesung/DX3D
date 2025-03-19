@@ -334,7 +334,7 @@ void CCamera::SortObject_Shadow()
 	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurLevel();
 
 	//ui 제외
-	for (UINT i = 0; i < MAX_LAYER -1; ++i)
+	for (UINT i = 0; i < MAX_LAYER - 1; ++i)
 	{
 		// 레이어 마스크 확인
 		if (m_iLayerMask & (1 << i))
@@ -354,7 +354,7 @@ void CCamera::SortObject_Shadow()
 				{
 					continue;
 				}
-				
+
 				UINT iMtrlCount = pRenderCom->GetMtrlCount();
 				for (UINT iMtrl = 0; iMtrl < iMtrlCount; ++iMtrl)
 				{
@@ -428,8 +428,73 @@ void CCamera::render()
 	//CRenderMgr::GetInst()->CopyRenderTarget();
 }
 
-
 void CCamera::render_shadowmap()
+{
+	for (auto& instPair : m_mapInstShadowObj)
+	{
+		//인스턴싱 (같은 메쉬, 재질 .. 한번에 렌더링)
+		//오브젝트가 전부 같은 메쉬 재질을 가지고있기때문에 0번에 접근
+		CGameObject* pObj = instPair.second[0].pObj;
+		Ptr<CMesh> pMesh = pObj->GetRenderComponent()->GetMesh();
+		Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"ShadowMapMtrl");
+
+		CInstancingBuffer::GetInst()->Clear();
+
+		bool bHasAnim3D = false;
+		const vector<tInstObj>& vecObj = instPair.second;
+		for (int i = 0; i < vecObj.size(); ++i)
+		{
+			if (vecObj[i].pObj->Animator3D())
+			{
+				vecObj[i].pObj->Animator3D()->UpdateData();
+				CInstancingBuffer::GetInst()->AddInstancingBoneMat(vecObj[i].pObj->Animator3D()->GetFinalBoneMat());
+
+				bHasAnim3D = true;
+			}
+			CInstancingBuffer::GetInst()->AddInstancingData(m_mapInstShadowData.find(instPair.first)->second[i]);
+		}
+
+		// 인스턴싱에 필요한 데이터를 세팅(SysMem -> GPU Mem)
+		CInstancingBuffer::GetInst()->SetData();
+
+		if (bHasAnim3D)
+		{
+			pMtrl->SetAnim3D(true); // Animation Mesh 알리기
+			pMtrl->SetBoneCount(pMesh->GetBoneCount());
+		}
+
+		pMtrl->Update_Inst();
+		pMesh->render_instancing(instPair.second[0].iMtrlIdx);
+
+		// 정리
+		if (bHasAnim3D)
+		{
+			pMtrl->SetAnim3D(false); // Animation Mesh 알리기
+			pMtrl->SetBoneCount(0);
+		}
+
+	}
+
+	// 개별 랜더링
+	for (auto& pair : m_mapSingleObj)
+	{
+		if (pair.second.empty())
+			continue;
+
+		for (auto& instObj : pair.second)
+		{
+			instObj.pObj->render_shadowmap();
+		}
+
+		if (pair.second[0].pObj->Animator3D())
+		{
+			pair.second[0].pObj->Animator3D()->ClearData();
+		}
+	}
+}
+
+
+void CCamera::update_shadow()
 {
 	//광원에있는 카메라 기준으로 행렬 재계산
 	g_transform.matView = m_matView;
@@ -439,7 +504,9 @@ void CCamera::render_shadowmap()
 	{
 		pair.second.clear();
 	}
-	
+	m_mapInstShadowObj.clear();
+	m_mapInstShadowData.clear();
+
 	//// Shadow render
 	tInstancingData tInstData = {};
 	//
@@ -448,7 +515,7 @@ void CCamera::render_shadowmap()
 		// 그룹 오브젝트가 없거나, 쉐이더가 없는 경우
 		if (pair.second.empty())
 			continue;
-	
+
 		// instancing 개수 조건 미만이거나
 		// Animation2D 오브젝트거나(스프라이트 애니메이션 오브젝트)
 		// Shader 가 Instancing 을 지원하지 않는경우
@@ -461,7 +528,7 @@ void CCamera::render_shadowmap()
 			{
 				map<INT_PTR, vector<tInstObj>>::iterator iter
 					= m_mapSingleObj.find((INT_PTR)pair.second[i].pObj);
-	
+
 				if (iter != m_mapSingleObj.end())
 					iter->second.push_back(pair.second[i]);
 				else
@@ -472,75 +539,39 @@ void CCamera::render_shadowmap()
 			continue;
 		}
 
-		//인스턴싱 (같은 메쉬, 재질 .. 한번에 렌더링)
-		//오브젝트가 전부 같은 메쉬 재질을 가지고있기때문에 0번에 접근
-		CGameObject* pObj = pair.second[0].pObj;
-		Ptr<CMesh> pMesh = pObj->GetRenderComponent()->GetMesh();
-		Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"ShadowMapMtrl");
-	
 		// Instancing 버퍼 클리어
 		CInstancingBuffer::GetInst()->Clear();
-	
+
 		int iRowIdx = 0;
-		bool bHasAnim3D = false;
+
 		for (UINT i = 0; i < pair.second.size(); ++i)
 		{
 			//물체마다의 위치는 다르기 때문에 행렬 업데이트
 			tInstData.matWorld = pair.second[i].pObj->Transform()->GetWorldMat();
 			tInstData.matWV = tInstData.matWorld * m_matView;
 			tInstData.matWVP = tInstData.matWV * m_matProj;
-	
+
 			//애니메이션이 있다면 rowidx를 늘려서 구분해주기
 			if (pair.second[i].pObj->Animator3D())
 			{
-				pair.second[i].pObj->Animator3D()->UpdateData();
 				tInstData.iRowIdx = iRowIdx++;
-				CInstancingBuffer::GetInst()->AddInstancingBoneMat(pair.second[i].pObj->Animator3D()->GetFinalBoneMat());
-				bHasAnim3D = true;
 			}
 			else
 				tInstData.iRowIdx = -1;
-	
-			CInstancingBuffer::GetInst()->AddInstancingData(tInstData);
-		}
 
-		// 인스턴싱에 필요한 데이터를 세팅(SysMem -> GPU Mem)
-		CInstancingBuffer::GetInst()->SetData();
+			auto dataIter = m_mapInstShadowData.find(pair.first);
+			if (dataIter != m_mapInstShadowData.end())
+				dataIter->second.push_back(tInstData);
+			else
+				m_mapInstShadowData.insert(make_pair(pair.first, vector<tInstancingData>{tInstData}));;
 
-		if (bHasAnim3D)
-		{
-			pMtrl->SetAnim3D(true); // Animation Mesh 알리기
-			pMtrl->SetBoneCount(pMesh->GetBoneCount());
-		}
-	
-		pMtrl->Update_Inst();
-		pMesh->render_instancing(pair.second[0].iMtrlIdx);
-	
-		// 정리
-		if (bHasAnim3D)
-		{
-			pMtrl->SetAnim3D(false); // Animation Mesh 알리기
-			pMtrl->SetBoneCount(0);
+			auto ObjIter = m_mapInstShadowObj.find(pair.first);
+			if (ObjIter != m_mapInstShadowObj.end())
+				ObjIter->second.push_back(pair.second[i]);
+			else
+				m_mapInstShadowObj.insert(make_pair(pair.first, vector<tInstObj>{pair.second[i]}));
 		}
 	}
-
-	// 개별 랜더링
-	for (auto& pair : m_mapSingleObj)
-	{
-		if (pair.second.empty())
-			continue;
-	
-		for (auto& instObj : pair.second)
-		{
-			instObj.pObj->render_shadowmap();
-		}
-	
-		if (pair.second[0].pObj->Animator3D())
-		{
-			pair.second[0].pObj->Animator3D()->ClearData();
-		}
-	}
-	
 }
 
 
@@ -591,7 +622,7 @@ void CCamera::render_deferred()
 		// instancing 개수 조건 미만이거나
 		// Animation2D 오브젝트거나(스프라이트 애니메이션 오브젝트)
 		// Shader 가 Instancing 을 지원하지 않는경우
-			if (pair.second.size() <= 1
+		if (pair.second.size() <= 1
 			|| pair.second[0].pObj->Animator2D()
 			|| pair.second[0].pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx)->GetShader()->GetVSInst() == nullptr)
 		{

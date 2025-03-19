@@ -142,6 +142,7 @@ void CLight3D::SetLightType(LIGHT_TYPE _type)
 void CLight3D::render_shadowmap()
 {
 	m_pCamObj->Camera()->SortObject_Shadow();
+	m_pCamObj->Camera()->update_shadow();
 
 	for (int i = (int)MRT_TYPE::NEAR_SHADOWMAP; i <= (int)MRT_TYPE::FAR_SHADOWMAP; ++i)
 	{	
