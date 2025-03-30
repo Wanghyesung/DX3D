@@ -57,7 +57,6 @@ enum class LEVEL_TYPE
 enum class COMPONENT_TYPE
 {
 	//update 순서
-
 	EQUIP,			// 물체 위치를 행렬을 반환
 	ANIMATOR2D,		// Sprite Animation
 	ANIMATOR3D,		// Bone Sknning Animation
@@ -68,10 +67,11 @@ enum class COMPONENT_TYPE
 	LIGHT2D,		// 2차원 광원
 	LIGHT3D,		// 3차원 광원
 	RIGIDBODY,		// 힘을받는 강체
-
 	PXRIGIDBODY,	// 피직스 강체	
 	TRANSFORM,		// 위치, 크기, 회전
 	//TRANSFORM,		// 위치, 크기, 회전
+
+	//TEST,
 
 	NAVAGENT,		//실질적으로 움질일 메쉬
 	RDNAVMESHFIELD,		//라이브러리 네이게이션

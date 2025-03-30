@@ -539,10 +539,6 @@ void CNavMeshMgr::CalculatePath()
         float fStart[3] = { vPos.x, vPos.y,vPos.z };
         float fEnd[3] = { vTargetPos.x, vTargetPos.y, vTargetPos.z };
 
-        /*
-        FSM 스레드가 PhysX 데이터에 접근할 때, 길찾기 스레드가 동시에 데이터를 수정하면 충돌 발생 가능.
-        mutex 없이 PhysX 데이터를 읽고 있으면, 다른 스레드에서 객체가 삭제되거나 이동하면서 무효한 메모리를 읽어서 터질 가능성.
-        */
         pNavMeshCom->SetPathDir(FindPath(_strName, fStart, fEnd, pNavMeshCom->GetSearchRange()));
     }
 }

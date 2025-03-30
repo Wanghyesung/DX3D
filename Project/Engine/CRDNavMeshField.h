@@ -14,7 +14,12 @@ private:
 
    
     mutex m_mutex;
+
     Vec3 m_vPathDir;
+    Vec3 m_vPreDir[2];
+    atomic<int>  m_iWriteIndex;   // 워커가 어느 버퍼에 썼는지 표시
+    atomic<bool> m_atReady;      // 데이터 준비됨 여부
+
 
     bool m_bActive;
     float m_fSearchRange;
@@ -35,8 +40,8 @@ public:
     virtual void begin();
     virtual void finaltick();
    
-    void SetPathDir(const Vec3& _vPathDir) { m_vPathDir = _vPathDir; }
-    const Vec3& GetFindPath() { return m_vPathDir; }
+    void SetPathDir(const Vec3& _vPathDir);
+    const Vec3& GetFindPath();
 
 public:
     virtual void SaveToLevelFile(FILE* _File);

@@ -24,11 +24,12 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CAttackScript");
 	_vec.push_back(L"CBossStageScript");
 	_vec.push_back(L"CCameraMoveScript");
+	_vec.push_back(L"CDemonHeadScript");
 	_vec.push_back(L"CDemonScript");
-	_vec.push_back(L"CEquipScript");
+	
 	_vec.push_back(L"CGravityScript");
 	_vec.push_back(L"CJumpAttackScript");
-	_vec.push_back(L"CLandFormScript");
+
 	_vec.push_back(L"CLandScpaeScript");
 	_vec.push_back(L"CLightMoveScript");
 	_vec.push_back(L"CMissileScript");
@@ -37,7 +38,6 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CMonsterScript");
 	_vec.push_back(L"CObjstacleScript");
 	_vec.push_back(L"CPlayerScript");
-	_vec.push_back(L"CStairsScript");
 	_vec.push_back(L"CTerrainScript");
 	_vec.push_back(L"CTestScript");
 	_vec.push_back(L"StairsScript");
@@ -104,7 +104,7 @@ CScript * CScriptMgr::GetScript(UINT _iScriptType)
 	case (UINT)SCRIPT_TYPE::JUMPATTACKSCRIPT:
 		return new CJumpAttackScript;
 		break;
-	case (UINT)SCRIPT_TYPE::LANDSCAPESCRIPT:
+	case (UINT)SCRIPT_TYPE::LANDSCPAESCRIPT:
 		return new CLandScpaeScript;
 		break;
 	case (UINT)SCRIPT_TYPE::LIGHTMOVESCRIPT:
@@ -161,10 +161,6 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		return L"CDemonScript";
 		break;
 
-	case SCRIPT_TYPE::EQUIPSCRIPT:
-		return L"CEquipScript";
-		break;
-
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
 		return L"CGravityScript";
 		break;
@@ -173,12 +169,8 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 		return L"CJumpAttackScript";
 		break;
 
-	case SCRIPT_TYPE::LANDFORMSCRIPT:
-		return L"CLandFormScript";
-		break;
-
-	case SCRIPT_TYPE::LANDSCAPESCRIPT:
-		return L"CLandScapeScript";
+	case SCRIPT_TYPE::LANDSCPAESCRIPT:
+		return L"CLandScpaeScript";
 		break;
 
 	case SCRIPT_TYPE::LIGHTMOVESCRIPT:
@@ -219,6 +211,10 @@ const wchar_t * CScriptMgr::GetScriptName(CScript * _pScript)
 
 	case SCRIPT_TYPE::TESTSCRIPT:
 		return L"CTestScript";
+		break;
+
+	case SCRIPT_TYPE::TAIRSSCRIPT:
+		return L"StairsScript";
 		break;
 
 	}

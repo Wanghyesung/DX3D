@@ -95,7 +95,7 @@ void CLandScpaeScript::LoadFromLevelFile(FILE* _FILE)
 
 
 CLandScpaeScript::CLandScpaeScript():
-	CScript(SCRIPT_TYPE::LANDSCAPESCRIPT)
+	CScript(SCRIPT_TYPE::LANDSCPAESCRIPT)
 {
 	
 }
