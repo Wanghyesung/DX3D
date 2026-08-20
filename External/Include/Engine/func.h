@@ -12,15 +12,15 @@ void DeleteArray(T* (&Arr)[_Size])
 }
 
 
-// ¿ÀºêÁ§Æ® »ý¼º
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 class CGameObject;
 void SpawnGameObject(CGameObject* _NewObject, Vec3 _vWorldPos, int _LayerIdx);
 void SpawnGameObject(CGameObject* _NewObject, Vec3 _vWorldPos, const wstring& _LayerName);
 
-// ¿ÀºêÁ§Æ® »èÁ¦
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 void DestroyObject(CGameObject* _DeletObject);
 
-// ¿ÀºêÁ§Æ® ¾À¿¡¼­ Á¦°Å
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 void EraseObject(CGameObject* _EraseObject, int _LayerIdx);
 
 bool IsValidObj(CGameObject*& _Target);
@@ -90,7 +90,7 @@ void LoadResRef(Ptr<T>& _Res, FILE* _File)
 		LoadWString(strKey, _File);
 		LoadWString(strRelativePath, _File);
 
-		_Res = CResMgr::GetInst()->Load<T>(strKey, strRelativePath);
+		_Res = CResMgr::GetInst()->template Load<T>(strKey, strRelativePath);
 	}
 }
 
