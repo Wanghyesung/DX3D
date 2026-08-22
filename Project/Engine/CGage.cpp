@@ -46,12 +46,23 @@ void CGage::Initialize(const wstring& _strTexName, const wstring& _strName, cons
 	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &vUISize);
 }
 
+void CGage::InitializeBillboard(const wstring& _strTexName, const wstring& _strName, const Vec2& _vWorldSize)
+{
+	CEngineUI::InitializeBillboard(_strTexName, _strName, _vWorldSize);
+
+	int iTrue = TRUE;
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &iTrue);
+
+	Vec2 vUISize = Vec2(100.f, 100.f);
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &vUISize);
+}
+
 void CGage::UpdateGage(float _fMaxGage, float _fCurGage)
 {
 	m_fCurRatio = _fCurGage / _fMaxGage;
 	m_fCurRatio *= m_fMaxRatio;
 
-	//»ó¼ö ¹öÆÛ·Î ³Ñ±â±â
+	//ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û·ï¿½ ï¿½Ñ±ï¿½ï¿½
 	int gage = 1;
 	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &m_fCurRatio);
 	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &gage);

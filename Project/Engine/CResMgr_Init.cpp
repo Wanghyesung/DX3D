@@ -17,7 +17,7 @@ void CResMgr::CreateDefaultMesh()
 	Ptr<CMesh> pMesh = nullptr;
 
 	// ==============
-	// PointMesh »ý¼º
+	// PointMesh ï¿½ï¿½ï¿½ï¿½
 	// ==============
 	v.vPos = Vec3(0.f, 0.f, 0.f);
 	v.vUV = Vec2(0.f, 0.f);
@@ -31,7 +31,7 @@ void CResMgr::CreateDefaultMesh()
 
 
 	// =============
-	// RectMesh »ý¼º
+	// RectMesh ï¿½ï¿½ï¿½ï¿½
 	// =============
 	// 0 --- 1 
 	// |  \  |
@@ -94,14 +94,14 @@ void CResMgr::CreateDefaultMesh()
 	//      3 
 	//   4     2
 	//  5 --0-- 1	
-	// ¹ÝÁö¸§
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	float fRadius = 0.5f;
 
-	// °¢µµ
+	// ï¿½ï¿½ï¿½ï¿½
 	UINT Slice = 40;
 	float fTheta = XM_2PI / (float)Slice;
 
-	// Áß½ÉÁ¡
+	// ï¿½ß½ï¿½ï¿½ï¿½
 	v.vPos = Vec3(0.f, 0.f, 0.f);
 	v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
 	v.vUV = Vec2(0.5f, 0.5f);
@@ -112,7 +112,7 @@ void CResMgr::CreateDefaultMesh()
 
 	vecVtx.push_back(v);
 
-	// Á¤Á¡ À§Ä¡ ÁöÁ¤
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
 	for (UINT i = 0; i < Slice; ++i)
 	{
 		v.vPos = Vec3(fRadius * cosf(fTheta * (float)i), fRadius * sinf(fTheta * (float)i), 0.f);
@@ -120,7 +120,7 @@ void CResMgr::CreateDefaultMesh()
 		vecVtx.push_back(v);
 	}
 
-	// ÀÎµ¦½º ¼³Á¤
+	// ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	for (UINT i = 0; i < Slice - 1; ++i)
 	{
 		vecIdx.push_back(0);
@@ -128,7 +128,7 @@ void CResMgr::CreateDefaultMesh()
 		vecIdx.push_back(i + 1);
 	}
 
-	// ¸¶Áö¸· »ï°¢Çü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï°¢ï¿½ï¿½
 	vecIdx.push_back(0);
 	vecIdx.push_back(1);
 	vecIdx.push_back(Slice);
@@ -156,18 +156,18 @@ void CResMgr::CreateDefaultMesh()
 	// ========
 	for (UINT i = 0; i < Slice; ++i)
 	{
-		//À­ ¿ø
+		//ï¿½ï¿½ ï¿½ï¿½
 		v.vPos = Vec3(fRadius * cosf(fTheta * (float)i), 0.5f , fRadius * sinf(fTheta * (float)i));
 		v.vUV = Vec2(v.vPos.x + 0.5f, -v.vPos.y + 0.5f);
 		vecVtx.push_back(v);
 
-		//¾Æ·¡ ¿ø
+		//ï¿½Æ·ï¿½ ï¿½ï¿½
 		v.vPos = Vec3(fRadius * cosf(fTheta * (float)i), -0.5f, fRadius * sinf(fTheta * (float)i));
 		v.vUV = Vec2(v.vPos.x + 0.5f, -v.vPos.y + 0.5f);
 		vecVtx.push_back(v);
 	}
 
-	// ÀÎµ¦½º ¼³Á¤
+	// ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	for (UINT i = 0; i < Slice * 2; ++i)
 	{
 		// 0
@@ -200,7 +200,7 @@ void CResMgr::CreateDefaultMesh()
 	// ========
 
 	Vtx arrCube[24] = {};
-	// À­¸é
+	// ï¿½ï¿½ï¿½ï¿½
 	arrCube[0].vPos = Vec3(-0.5f, 0.5f, 0.5f);
 	arrCube[0].vColor = Vec4(1.f, 1.f, 1.f, 1.f);
 	arrCube[0].vUV = Vec2(0.f, 0.f);
@@ -222,7 +222,7 @@ void CResMgr::CreateDefaultMesh()
 	arrCube[3].vNormal = Vec3(0.f, 1.f, 0.f);
 
 
-	// ¾Æ·§ ¸é	
+	// ï¿½Æ·ï¿½ ï¿½ï¿½	
 	arrCube[4].vPos = Vec3(-0.5f, -0.5f, -0.5f);
 	arrCube[4].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
 	arrCube[4].vUV = Vec2(0.f, 0.f);
@@ -243,7 +243,7 @@ void CResMgr::CreateDefaultMesh()
 	arrCube[7].vUV = Vec2(0.f, 0.f);
 	arrCube[7].vNormal = Vec3(0.f, -1.f, 0.f);
 
-	// ¿ÞÂÊ ¸é
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	arrCube[8].vPos = Vec3(-0.5f, 0.5f, 0.5f);
 	arrCube[8].vColor = Vec4(0.f, 1.f, 0.f, 1.f);
 	arrCube[8].vUV = Vec2(0.f, 0.f);
@@ -264,7 +264,7 @@ void CResMgr::CreateDefaultMesh()
 	arrCube[11].vUV = Vec2(0.f, 0.f);
 	arrCube[11].vNormal = Vec3(-1.f, 0.f, 0.f);
 
-	// ¿À¸¥ÂÊ ¸é
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	arrCube[12].vPos = Vec3(0.5f, 0.5f, -0.5f);
 	arrCube[12].vColor = Vec4(0.f, 0.f, 1.f, 1.f);
 	arrCube[12].vUV = Vec2(0.f, 0.f);
@@ -285,7 +285,7 @@ void CResMgr::CreateDefaultMesh()
 	arrCube[15].vUV = Vec2(0.f, 0.f);
 	arrCube[15].vNormal = Vec3(1.f, 0.f, 0.f);
 
-	// µÞ ¸é
+	// ï¿½ï¿½ ï¿½ï¿½
 	arrCube[16].vPos = Vec3(0.5f, 0.5f, 0.5f);
 	arrCube[16].vColor = Vec4(1.f, 1.f, 0.f, 1.f);
 	arrCube[16].vUV = Vec2(0.f, 0.f);
@@ -306,7 +306,7 @@ void CResMgr::CreateDefaultMesh()
 	arrCube[19].vUV = Vec2(0.f, 0.f);
 	arrCube[19].vNormal = Vec3(0.f, 0.f, 1.f);
 
-	// ¾Õ ¸é
+	// ï¿½ï¿½ ï¿½ï¿½
 	arrCube[20].vPos = Vec3(-0.5f, 0.5f, -0.5f);;
 	arrCube[20].vColor = Vec4(1.f, 0.f, 1.f, 1.f);
 	arrCube[20].vUV = Vec2(0.f, 0.f);
@@ -327,7 +327,7 @@ void CResMgr::CreateDefaultMesh()
 	arrCube[23].vUV = Vec2(0.f, 0.f);
 	arrCube[23].vNormal = Vec3(0.f, 0.f, -1.f);
 
-	// ÀÎµ¦½º
+	// ï¿½Îµï¿½ï¿½ï¿½
 	for (int i = 0; i < 12; i += 2)
 	{
 		vecIdx.push_back(i * 2);
@@ -372,8 +372,8 @@ void CResMgr::CreateDefaultMesh()
 	vecVtx.push_back(v);
 
 	// Body
-	UINT iStackCount = 40; // °¡·Î ºÐÇÒ °³¼ö
-	UINT iSliceCount = 40; // ¼¼·Î ºÐÇÒ °³¼ö
+	UINT iStackCount = 40; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	UINT iSliceCount = 40; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	float fStackAngle = XM_PI / iStackCount;
 	float fSliceAngle = XM_2PI / iSliceCount;
@@ -421,8 +421,8 @@ void CResMgr::CreateDefaultMesh()
 	v.vBinormal = Vec3(0.f, 0.f, -1.f);
 	vecVtx.push_back(v);
 
-	// ÀÎµ¦½º
-	// ºÏ±ØÁ¡
+	// ï¿½Îµï¿½ï¿½ï¿½
+	// ï¿½Ï±ï¿½ï¿½ï¿½
 	for (UINT i = 0; i < iSliceCount; ++i)
 	{
 		vecIdx.push_back(0);
@@ -430,7 +430,7 @@ void CResMgr::CreateDefaultMesh()
 		vecIdx.push_back(i + 1);
 	}
 
-	// ¸öÅë
+	// ï¿½ï¿½ï¿½ï¿½
 	for (UINT i = 0; i < iStackCount - 2; ++i)
 	{
 		for (UINT j = 0; j < iSliceCount; ++j)
@@ -451,7 +451,7 @@ void CResMgr::CreateDefaultMesh()
 		}
 	}
 
-	// ³²±ØÁ¡
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	UINT iBottomIdx = (UINT)vecVtx.size() - 1;
 	for (UINT i = 0; i < iSliceCount; ++i)
 	{
@@ -566,6 +566,31 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->AddScalarParam(SCALAR_PARAM::VEC2_0, "UI Size");
 
 	AddRes(pShader->GetKey(), pShader);
+
+	// ============================================================
+	// WorldUIBillboardShader (monster HP/Frame world-space billboard)
+	// ============================================================
+	pShader = new CGraphicsShader;
+	pShader->SetKey(L"WorldUIBillboardShader");
+	pShader->CreateVertexShader(L"shader\\engine_ui.fx", "VS_WorldUIRender");
+	pShader->CreateGeometryShader(L"shader\\engine_ui.fx", "GS_WorldUIRender");
+	pShader->CreatePixelShader(L"shader\\engine_ui.fx", "PS_WorldUIRender");
+
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	// Param
+	pShader->AddTexParam(TEX_0, "Output Texture");
+	pShader->AddScalarParam(SCALAR_PARAM::INT_0, "Is Gage");
+	pShader->AddScalarParam(SCALAR_PARAM::VEC2_0, "Gage Ratio");
+	pShader->AddScalarParam(SCALAR_PARAM::VEC2_1, "World Size");
+
+	AddRes(pShader->GetKey(), pShader);
+
 	// ======================================
 	// Std2DLightShader
 	// RasterizerState      : None
@@ -823,7 +848,7 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DECAL);
 
 	// Parameter	
-	//Ãâ·Â¿ë tex
+	//ï¿½ï¿½Â¿ï¿½ tex
 	pShader->AddTexParam(TEX_1, "Output Texture");
 
 	AddRes(pShader->GetKey(), pShader);
@@ -877,7 +902,7 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
 
 	//parameter
-	//Ãâ·ÂÅØ½ºÆ® , ÀçÁú°è¼ö
+	//ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	pShader->AddTexParam(TEX_0, "Output Texture");
 	pShader->AddScalarParam(FLOAT_0, "Spec Coeffient");
 
@@ -943,7 +968,7 @@ void CResMgr::CreateDefaultGraphicsShader()
 
 	pShader->SetRSType(RS_TYPE::CULL_BACK);
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
-	//¿ÀºêÁ§Æ®°¡ÀÌ »ç¿ëÇÏ´Â ½¦ÀÌ´õ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
 
 	AddRes(pShader->GetKey(), pShader);
@@ -966,7 +991,7 @@ void CResMgr::CreateDefaultGraphicsShader()
 
 	pShader->SetRSType(RS_TYPE::CULL_BACK);
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
-	//¿ÀºêÁ§Æ®°¡ÀÌ »ç¿ëÇÏ´Â ½¦ÀÌ´õ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
 
 	AddRes(pShader->GetKey(), pShader);
@@ -1061,25 +1086,25 @@ void CResMgr::CreateDefaultComputeShader()
 {
 	Ptr<CComputeShader> pCS = nullptr;
 
-	// Texture »ö»ó º¯°æ ½¦ÀÌ´õ
+	// Texture ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½
 	pCS = new CSetColorShader(32, 32, 1);
 	pCS->SetKey(L"SetColorCS");
 	pCS->CreateComputeShader(L"shader\\setcolor.fx", "CS_SetColor");
 	AddRes(pCS->GetKey(), pCS);
 
-	// Particle Update ½¦ÀÌ´õ
+	// Particle Update ï¿½ï¿½ï¿½Ì´ï¿½
 	pCS = new CParticleUpdateShader(128, 1, 1);
 	pCS->SetKey(L"ParticleUpdateCS");
 	pCS->CreateComputeShader(L"shader\\particle_update.fx", "CS_ParticleUpdate");
 	AddRes(pCS->GetKey(), pCS);
 
-	// Animation Matrix Update ½¦ÀÌ´õ
+	// Animation Matrix Update ï¿½ï¿½ï¿½Ì´ï¿½
 	pCS = new CAnimation3DShader(256, 1, 1);
 	pCS->SetKey(L"Animation3DUpdateCS");
 	pCS->CreateComputeShader(L"shader\\animation3d.fx", "CS_Animation3D");
 	AddRes(pCS->GetKey(), pCS);
 
-	// Animation Matrix Copy ½¦ÀÌ´õ
+	// Animation Matrix Copy ï¿½ï¿½ï¿½Ì´ï¿½
 	pCS = new CCopyBoneShader(1024, 1, 1);
 	pCS->SetKey(L"CopyBoneCS");
 	pCS->CreateComputeShader(L"shader\\copybone.fx", "CS_CopyBoneMatrix");
@@ -1114,6 +1139,11 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"EngineUIShader"));
 	AddRes(L"EngineUIMtrl", pMtrl);
+
+	// WorldUIBillboard Material
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"WorldUIBillboardShader"));
+	AddRes(L"WorldUIBillboardMtrl", pMtrl);
 
 	// Std2DLight Material
 	pMtrl = new CMaterial(true);
@@ -1231,11 +1261,11 @@ void CResMgr::AddInputLayout(DXGI_FORMAT _eFormat, const char* _strSemanticName,
 {
 	D3D11_INPUT_ELEMENT_DESC LayoutDesc = {};
 
-	//2°³ÀÇ Á¤Á¡¹öÆÛ¸¦ ´øÁü 0¹øÀº ±âÁ¸ 1¹øÀº (Á¤Á¡º° ¸Þ½¬¹øÈ£, ÀçÁú ¹øÈ£(ÀÎ½ºÅÏ½Ìµ¥ÀÌÅÍ)
+	//2ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½ ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½È£, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£(ï¿½Î½ï¿½ï¿½Ï½Ìµï¿½ï¿½ï¿½ï¿½ï¿½)
 	if (0 == _iSlotNum)
 	{
-		//Á¤Á¡¹öÆÛ 
-		LayoutDesc.AlignedByteOffset = m_iLayoutOffset_0; //Á¤Á¡ µ¥ÀÌÅÍ offset
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+		LayoutDesc.AlignedByteOffset = m_iLayoutOffset_0; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ offset
 		LayoutDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		LayoutDesc.InstanceDataStepRate = 0;
 	}
@@ -1253,7 +1283,7 @@ void CResMgr::AddInputLayout(DXGI_FORMAT _eFormat, const char* _strSemanticName,
 
 	m_vecLayoutInfo.push_back(LayoutDesc);
 
-	//offset Áõ°¡
+	//offset ï¿½ï¿½ï¿½ï¿½
 	if (0 == _iSlotNum)
 		m_iLayoutOffset_0 += GetSizeofFormat(_eFormat);
 	else if (1 == _iSlotNum)

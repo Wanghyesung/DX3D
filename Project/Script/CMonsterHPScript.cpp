@@ -27,13 +27,13 @@ void CMonsterHPScript::tick()
 	if(m_bBoss)
 		CFontMgr::GetInst()->AddFont(m_strHangleFontName, 350, 670, 20, FONT_RGBA(255, 255, 255, 255));
 
-	//3d °ø°£ 2d UI ºôº¸µå Ã³¸®
+	//3d ï¿½ï¿½ï¿½ï¿½ 2d UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
 	if (!m_bBoss)
 	{
 		move();
 
-		m_pHP->UpdateBillboard();
-		m_pFrame->UpdateBillboard();
+		// GS_WorldUIRender(geometry shader)ê°€ view-spaceì—ì„œ í•­ìƒ ì¹´ë©”ë¼ë¥¼ í–¥í•˜ë„ë¡
+		// ë¹Œë³´ë“œë¥¼ êµ¬ì„±í•˜ë¯€ë¡œ CPUì¸¡ íšŒì „ ê³„ì‚°(UpdateBillboard)ì€ ë” ì´ìƒ í•„ìš” ì—†ìŒ
 	}
 
 }
@@ -42,7 +42,7 @@ void CMonsterHPScript::UpdateGage(float _fMaxGage, float _fCurGage)
 {
 	m_pHP->UpdateGage(_fMaxGage, _fCurGage);
 
-	//spanwmgr¿¡ ÀúÀå level¿¡¼­ Á¦¿Ü
+	//spanwmgrï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ levelï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (_fCurGage <= 0.f)
 	{
 		CRespawnMgr::GetInst()->AddObject(m_pFrame, 10.f, Vec3::Zero);
@@ -70,29 +70,35 @@ void CMonsterHPScript::Initialize(const wstring& _strTexName, const wstring& _st
 
 	wstring strFrameName = _strName + L"Frame";
 	m_pFrame = new CEngineUI();
-	m_pFrame->Initialize(_strTexName + L"Frame.png", strFrameName, _vScale);
 
 	wstring strHPName = _strName + L"HP";
 	m_pHP = new CGage();
-	m_pHP->Initialize(_strTexName + L"HP.png", strHPName, _vScale);
 
 	//m_pFrame->AddChild(m_pHP);
 
 	if (m_bBoss)
 	{
-		//°íÁ¤ ÁÂÇ¥
+		// í™”ë©´ ê³ ì • HUD UI (ê¸°ì¡´ ë°©ì‹ ê·¸ëŒ€ë¡œ, ë¹Œë³´ë“œ ì•„ë‹˜)
+		m_pFrame->Initialize(_strTexName + L"Frame.png", strFrameName, _vScale);
+		m_pHP->Initialize(_strTexName + L"HP.png", strHPName, _vScale);
+
+		//ë³´ìŠ¤ ì¢Œí‘œ
 		SpawnGameObject(m_pHP, Vec3(140.f,-330.f,-3.f), (int)LAYER_TYPE::UI);
 		SpawnGameObject(m_pFrame, Vec3(140.f, -330.f, -2.f), (int)LAYER_TYPE::UI);
 	}
 	else
 	{
-		//¸ó½ºÅÍ¿¡ µû¶ó ¿òÁ÷ÀÌ±â
+		// ëª¬ìŠ¤í„° ë¨¸ë¦¬ ìœ„ ì›”ë“œ ìŠ¤íŽ˜ì´ìŠ¤ UI -> GS ë¹Œë³´ë“œë¡œ í•­ìƒ ì¹´ë©”ë¼ë¥¼ í–¥í•˜ê²Œ ë Œë”ë§
+		m_pFrame->InitializeBillboard(_strTexName + L"Frame.png", strFrameName, Vec2(_vScale.x, _vScale.y));
+		m_pHP->InitializeBillboard(_strTexName + L"HP.png", strHPName, Vec2(_vScale.x, _vScale.y));
+
+		//ëª¬ìŠ¤í„°ì— ë”°ë¼ ì›€ì§ì´ê¸°
 		SpawnGameObject(m_pHP, Vec3::Zero, (int)LAYER_TYPE::Default);
 		SpawnGameObject(m_pFrame, Vec3::Zero, (int)LAYER_TYPE::Default);
 	}
 
-	m_pHP->GetRenderComponent()->SetActiveShadow(false); //±×¸²ÀÚ ¹Ý¿µ X
-	m_pFrame->GetRenderComponent()->SetActiveShadow(false); //±×¸²ÀÚ ¹Ý¿µ X
+	m_pHP->GetRenderComponent()->SetActiveShadow(false); //ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½ X
+	m_pFrame->GetRenderComponent()->SetActiveShadow(false); //ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½ X
 
 }
 

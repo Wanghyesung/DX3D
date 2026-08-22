@@ -8,6 +8,7 @@ private:
 	float m_fCurRatio;
 public:
 	virtual void Initialize(const wstring& _strTexName, const wstring& _strName, const Vec3& _vScale)override;
+	virtual void InitializeBillboard(const wstring& _strTexName, const wstring& _strName, const Vec2& _vWorldSize)override;
 	void UpdateGage(float _fMaxGage, float _fCurGage);
 
 public:

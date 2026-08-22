@@ -10,12 +10,16 @@ public:
 	virtual ~CEngineUI();
 
 	virtual void Initialize(const wstring& _strTexName, const wstring& _strName, const Vec3& _vScale);
+
+	// ì¹´ë©”ë¼ ë°©í–¥ê³¼ ë¬´ê´€í•˜ê²Œ í•­ìƒ ì •ë©´ì„ í–¥í•˜ëŠ” ì›”ë“œ ìŠ¤í˜ì´ìŠ¤ UI (GS ë¹Œë³´ë“œ) ì´ˆê¸°í™”
+	virtual void InitializeBillboard(const wstring& _strTexName, const wstring& _strName, const Vec2& _vWorldSize);
+
 	virtual void finaltick()override;
 	
-	virtual void MouseOn();//UIÀ§¿¡ ¸¶¿ì½º ¿Ã¶ó¿ÔÀ» ‹š 
-	virtual void MouseLbtnDown();//UI¾È¿¡¼­ ´­·ÈÀ» ‹š
-	virtual void MouseLbtnUp();//UI¾È¿¡¼­ ¶®À» ¶§
-	virtual void MouseLbtnClicked();//UI¾È¿¡¼­ ´©¸£°í ‹®À» ‹š
+	virtual void MouseOn();//UIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ì½º ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 
+	virtual void MouseLbtnDown();//UIï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+	virtual void MouseLbtnUp();//UIï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+	virtual void MouseLbtnClicked();//UIï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 
 	void MoveUI(CEngineUI* _pUI);
 	void MoveToParent(Vector2 _vDiff);
@@ -30,7 +34,7 @@ public:
 
 	void UpdateBillboard();
 private:
-	//ÀÚ½Ä UI ¾÷µ¥ÀÌÆ®
+	//ï¿½Ú½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	//void ChildUpdate();
 	//void ChildRender();
 	//void ChildLateupdate();
@@ -39,9 +43,9 @@ private:
 	Ptr<class CMaterial> create_uimatrial();
 
 private:
-	//³» ÀÚ½Ä UI
+	//ï¿½ï¿½ ï¿½Ú½ï¿½ UI
 	vector<CEngineUI*> m_vecChildUI;
-	//³» ºÎ¸ğ UI
+	//ï¿½ï¿½ ï¿½Î¸ï¿½ UI
 	CEngineUI* m_pParentUI;
 
 	bool m_bMouseOn;

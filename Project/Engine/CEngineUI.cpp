@@ -53,6 +53,34 @@ void CEngineUI::Initialize(const wstring& _strTexName, const wstring& _strName, 
 	Transform()->SetRelativeScale(_vScale);
 }
 
+void CEngineUI::InitializeBillboard(const wstring& _strTexName, const wstring& _strName, const Vec2& _vWorldSize)
+{
+	SetName(_strName);
+
+	CMeshRender* pMeshRender = new CMeshRender;
+	pMeshRender->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
+	pMeshRender->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"WorldUIBillboardMtrl"), 0);
+
+	AddComponent(pMeshRender);
+	AddComponent(new CTransform);
+
+	Ptr<CMaterial> pMaterial = pMeshRender->MeshRender()->GetMaterial(0);
+	if (pMaterial->GetTexParam(TEX_0) == nullptr)
+		pMaterial->SetTexParam(TEX_0, CResMgr::GetInst()->FindRes<CTexture>(_strTexName));
+	else
+	{
+		Ptr<CMaterial> pDyanmicMater = pMeshRender->MeshRender()->GetDynamicMaterial(0);
+		pDyanmicMater->SetTexParam(TEX_0, CResMgr::GetInst()->FindRes<CTexture>(_strTexName));
+	}
+
+	// Billboard quad size is driven by the WORLD_SIZE(g_vec2_1) shader param, not by mesh scale
+	int iFalse = FALSE;
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &iFalse);
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_1, &_vWorldSize);
+
+	Transform()->SetRelativeScale(Vec3(_vWorldSize.x, _vWorldSize.y, 1.f));
+}
+
 void CEngineUI::finaltick()
 {
 	CGameObject::finaltick();
