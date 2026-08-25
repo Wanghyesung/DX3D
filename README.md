@@ -4,6 +4,7 @@ C++ / DirectX11로 밑바닥부터 직접 만든 자체 엔진 위에서 제작�
 렌더링·물리·길찾기·애니메이션까지 엔진 코드를 전부 1인으로 개발했습니다.
 
 > 데모 영상: https://1drv.ms/v/c/d9470e8558d46727/IQBShbsPOFYYSKuibxMSLmObAWTLO_FL8DPUOcpxPnj-1wg?e=GEIpsc
+<img width="631" height="413" alt="image" src="https://github.com/user-attachments/assets/dd003d20-5969-47ef-9ecf-6f6416335222" />
 
 
 ## 게임 소개
