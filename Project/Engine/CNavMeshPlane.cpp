@@ -156,10 +156,9 @@ bool CNavMeshPlane::RayCasting()
 		// 교차 지점이 사각형 내부에 있는지 확인
 		// 배리 센트릭 좌표 계산
 		double uu, uv, vv, wu, wv, inverseD;
-
 		//삼각형 세 점의 가중치
-		uu = vEdge[0].Dot(vEdge[0]);
-		uv = vEdge[0].Dot(vEdge[1]);
+		uu = vEdge[0].Dot(vEdge[0]); 
+		uv = vEdge[0].Dot(vEdge[1]); 
 		vv = vEdge[1].Dot(vEdge[1]);
 
 		//삼각형 내 교점 가중치
@@ -171,26 +170,20 @@ bool CNavMeshPlane::RayCasting()
 		//D는 삼각형의 배리 센트릭 좌표를 구할 때 사용되는 값
 		inverseD = uv * uv - uu * vv;
 		inverseD = 1.0f / inverseD;
-
-
 		//u =        D
 		//    (uv*wv - vv*wu)
-
 		//v =         D
 		//     (uv*wu - uu*wv)
 
 		float u = (uv * wv - vv * wu) * inverseD;
 		if (u < 0.0f || u > 1.0f)
 			continue; //return false
-
 		float v = (uv * wu - uu * wv) * inverseD;
 		if (v < 0.0f || (u + v) > 1.0f)
 			continue; //return false
 
 		m_vRayPoint = vPoint;
-
 		m_bActiveRay = true;
-
 		return true;
 	}
 

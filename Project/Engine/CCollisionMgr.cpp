@@ -175,10 +175,9 @@ bool CCollisionMgr::CollisionBtwCollider(CCollider3D* _pLeft, CCollider3D* _pRig
 	arrProj[4] = XMVector3TransformCoord(arrLocal[3], _pRight->GetColliderWorldMat()) - XMVector3TransformCoord(arrLocal[0], _pRight->GetColliderWorldMat());
 	arrProj[5] = XMVector3TransformCoord(arrLocal[4], _pRight->GetColliderWorldMat()) - XMVector3TransformCoord(arrLocal[0], _pRight->GetColliderWorldMat());
 
-	// 두 충돌체의 중심점을 구함
-	Vec3 vCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), _pRight->GetColliderWorldMat()) - XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), _pLeft->GetColliderWorldMat());
-
-
+	// 두 충돌체의 중심점
+	Vec3 vCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), _pRight->GetColliderWorldMat()) - 
+		XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), _pLeft->GetColliderWorldMat());
 	// 분리축 테스트
 	for (int i = 0; i < 6; ++i)
 	{
@@ -192,9 +191,7 @@ bool CCollisionMgr::CollisionBtwCollider(CCollider3D* _pLeft, CCollider3D* _pRig
 			fProjDist += fabsf(arrProj[j].Dot(vProj));
 		}
 		fProjDist /= 2.f;
-
 		float fCenter = fabsf(vCenter.Dot(vProj));
-
 		if (fProjDist < fCenter)
 			return false;
 	}
